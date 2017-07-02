@@ -1,0 +1,20 @@
+Gebruikersovereenkomst
+
+Versie 1.1.
+
+Deze software wordt geleverd zoals deze is ZONDER GARANTIE.
+
+Dat klopt: zelfs als de software met virussen is afgeladen of uw harde schijf crasht, kan de auteur niet verantwoordelijk worden gehouden. Ik zou nooit opzettelijk malware met de distributie meesturen, maar ik heb geen controle over de servers die de software hosten en kan dus geen enkele garantie geven.
+
+Als u dit niet leuk vindt moet u de software niet uitvoeren.
+
+Als u  dit goed vindt, voel u vrij om de software op een aantal computers uit te voeren en gebruik ze zoals u wilt.
+
+Als u deze software wijzigt of verspreidt moet u de GPL-licentie (license.txt) respecteren.
+
+Als u deze EULA niet bepaald rustgevend vindt en u zich zorgen maakt voor wat betreft het uitvoeren van de software, zijn hier enkele algemene suggesties:
+(1) De software uitvoeren in een sandbox-omgeving. (VM-Ware Player biedt uitstekende en gratis virtualisatie)
+(2) Niet uitvoeren als beheerder, maar als een niet-bevoorrechte gebruiker.
+(3) Compileer zelf de bronnen.
+(4) Controleer de checksums van MD5 / SHA1 om te zien of aan de bestanden is gepeuterd.
+(5) Zoek op Google om te zien of iemand problemen heeft met de software.

@@ -1,0 +1,26 @@
+Diese Software wird entweder unter LGPL 2.1 ( "LICENSE.LGPL") oder 3 GPL ( "LICENSE.GPL3").
+
+Die Wahl der Lizenz wird ermittelt und von der Version von Qt verwendet geerbt.
+Siehe: http://www.qtsoftware.com/products/licensing für weitere Informationen.
+
+END USER LICENSE AGREEMENT.
+
+Version 1.1.
+
+
+Diese Software wird zur Verfügung gestellt OHNE GARANTIE.
+
+Das ist richtig: auch nicht, wenn die Software wimmelt von Viren oder Ihre Festplatte abstürzt, kann der Autor haftbar gemacht werden. Ich würde niemals absichtlich Malware in die Distribution einbauen, aber ich haben keine Kontrolle über die Server-Hosting-Software, und keine Garantien für die Zukunft.
+
+Wenn Ihnen dies nicht zusagt, starten Sie die Software bitte nicht.
+
+Wenn Sie dies in Ordnung finden, zögern Sie nicht, starten Sie die Software auf beliebig vielen Computern und verwenden Sie sie irgendwie, ganz nach Wunsch.
+
+Wenn Sie die Softwäre ändern oder sie weiterverteilen möchten, respektieren Sie bitte die GPL-Lizenz (license.txt).
+
+Sollten Sie feststellen, dass dieser EULA Sie nicht gerade erleichtert und Sie besorgt sind über diese Software, haben wir nachfolgend einige allgemeine Vorschläge:
+(1) Lassen Sie die Software laufen in einer Sandbox-Umgebung. (VM-Ware Player bietet ausgezeichnete und kostenlose Virtualisierung)
+(2) Lassen Sie die Softwäre nicht als Administrator, sondern als ein nicht-privilegierter Benutzer laufen.
+(3) Stellen Sie die Quellen selbst zusammen.
+(4) Überprüfen Sie die MD5/SHA1 Prüfsummen um zu sehen, ob die Dateien manipuliert wurden.
+(5) Suchen Sie mit der Suchmaschine Google, ob jemand Probleme mit der Software erlebt hat.
