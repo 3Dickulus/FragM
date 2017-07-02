@@ -1,11 +1,8 @@
 # FragM
-This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium 
-
-Changes since v0.9.5
-
+This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representing a compilation of features and fixes contibuted by many users at FractalForums.com over 3-4 years.
+# Changes since v0.9.5
 + Stops playing/rendering at the end of animation.
-+ Saves render "frames per second" as app setting so it gets set where you
-  left it from the last run.
++ Saves render "frames per second" as app setting so it gets set where you left it from the last run.
 + Time represented as frame ticks rather than floating point seconds.
 + Setting and saving camera spline path controlpoints as "KeyFrame"
   presets. Menu item "Edit->Insert Command->Presets->Insert Preset
