@@ -1,0 +1,1 @@
+-b:v 2400k -bt 3400k -vcodec libx264 -coder 0 -bf 0 -refs 1 -level 30 -bufsize 1835k -maxrate 30M

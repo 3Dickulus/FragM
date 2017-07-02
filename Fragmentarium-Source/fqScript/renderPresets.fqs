@@ -1,0 +1,110 @@
+// Fragmentarium qscript
+// testing cmd script
+// 3Dickulus 09/14/15
+// just replace the preset names and OutputBaseFileNames with the ones you want/need
+// frame specs
+function setFrameSpec(w,h,m,s) {
+  // set the tile buffer size
+  app.setTileWidth(w);
+  app.setTileHeight(h);
+  // set tile multiplier
+  app.setTileMax(m);
+  // how many frames to accumulate
+  app.setSubFrames(s);
+}
+
+// starting point
+function init(){
+
+  // false = save images
+  // true = open a preview window for EACH image (be careful)
+  app.setPreview(false);
+
+  // false = no control from frag
+  // true = control from frag
+  app.setAnimation(false);
+
+  // begin
+  app.setFrame(0);
+  app.setStartFrame(0);
+  app.setEndFrame(0);
+}
+
+// call our startup function
+init();
+
+  // size of tiled/frame to render
+  setFrameSpec(64,36,60,60);
+
+  app.applyPresetByName("Default")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/Cathedral.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("FaceOfOde")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/FaceOfOde.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("AtAlt")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/AtAlt.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("ThePath")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/ThePath.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("Brood")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/Brood.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("CogNite")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/CogNite.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("Interface")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/Interface.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("Predator")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/Predator.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+
+  app.applyPresetByName("CryoGene")
+  // we need to adjust the filename for each preset
+  app.setOutputBaseFileName("Cathedral_Files/CryoGene.exr");
+  // if the user wants to stop rendering break before next image
+  if(!app.scriptRunning()) break;
+  // render an image
+  app.tileBasedRender();
+

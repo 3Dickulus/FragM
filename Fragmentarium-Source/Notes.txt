@@ -1,0 +1,19 @@
+Fragmentarium 2.0 beta
+
+Please read the FAQ, before asking questions: 
+http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/
+
+For examples of images take a look at the Flickr Fragmentarium stream:
+http://www.flickr.com/groups/fragmentarium/
+
+Simple examples of the major differences between this version and 1.0:
+3Dickulus-HOW-TO.txt
+
+All changes since v0.95:
+3Dickulus.changes
+
+Testing double types:
+(GL => 4.0 required)
+Examples/Experimental/DoubleTest.frag
+Examples/Include/Progressive2D-4.frag
+Examples/Include/BufferShader-4.frag

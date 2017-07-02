@@ -1,0 +1,153 @@
+Fragmentarium commands avilable in fqScript.
+
+
+General commands
+
+    void setFrame(int);
+
+    Sets the current frame number.
+
+
+    int getFrame();
+
+    Returns the current frame number.
+
+
+    void loadFragFile(String);
+
+    Opens a new editor tab, loads the named fragment file, initializes default preset,
+    initializes keyframes and easing curves if the file contains these settings.
+
+
+    bool initializeFragment();
+
+    Returns success or fail.
+    Must be called after altering a locked variable before rendering an image.
+
+
+
+
+Parameter commands
+
+
+    void setParameter(String);
+
+    Set a parameter from String in the form of "parameter = value" also accepts parameter file formated string.
+
+
+    void setParameter(String, bool);
+
+    Sets a boolean parameter where String is the parameter name and bool is TRUE or FALSE
+
+
+    void setParameter(String, int);
+
+    Sets an integer parameter where String is the parameter name and int is any integer.
+
+
+    void setParameter(String, x);
+
+    Sets a float parameter where String is the parameter name and x is any floating point number.
+
+
+    void setParameter(String, x, y);
+
+    Sets a float2 parameter where String is the parameter name and x,y are any floating point numbers.
+
+
+    void setParameter(String, x, y, z);
+
+    Sets a float3 parameter where String is the parameter name and x,y,z are any floating point numbers.
+
+
+    void setParameter(String, x, y, z, w);
+
+    Sets a float4 parameter where String is the parameter name and x,y,z,w are any floating point numbers.
+
+
+    String getParameter(String);
+
+    Returns a string representing the value(s) for the named parameter, user must parse this into usable values.
+
+
+    void applyPresetByName(String);
+
+    Applies the named preset.
+
+
+    
+Hires image and animation dialog commands
+
+
+    void setAnimationLength(int);
+
+    Sets the total animation duration in seconds.
+
+
+    void setTileWidth(int);
+    void setTileHeight(int);
+
+    Sets the tile width and height.
+
+
+    void setTileMax(int);
+
+    Sets the number of row and column tiles, this value squared = total tiles.
+
+
+    void setSubFrames(int);
+
+    Sets the number of frames to accumulate.
+
+
+    void setOutputBaseFileName(String);
+
+    Sets the filename for saved image,
+    if script has total control this must be set by the script for every frame,
+    if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.
+
+
+    void setFps(int);
+
+    Sets the frames per second for rendering.
+
+
+    void setStartFrame(int);
+
+    Sets the start frame number for rendering a range of frames.
+
+
+    void setEndFrame(int);
+
+    Sets the end frame number for rendering a range of frames.
+
+
+    void setAnimation(bool);
+
+    FALSE sets animation to script control exclusively.
+    TRUE enables control from keyframes and easing curves.
+
+
+    void setPreview(bool);
+
+    TRUE will preview frames in a window on the desktop instead of saving image files.
+    WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready.
+
+
+Control commands
+
+    bool scriptRunning();
+
+    Returns FALSE when the user selects the [Stop] button in the script editor.
+    For user implemented test in script to break out of the script control loop.
+
+
+    void stopScript();
+
+    For user implemented test in script to break out of the script control loop or error like file not found, initialization fail etc.
+
+
+    void tileBasedRender();
+
+    Begins rendering the current frame or range of frames applying the current state for keyframes and active easing settings.
+

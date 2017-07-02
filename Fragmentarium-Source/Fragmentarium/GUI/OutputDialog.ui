@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>3dickulus@fractalforums.com</author>
+ <class>OutputDialog</class>
+ <widget class="QDialog" name="OutputDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>439</width>
+    <height>508</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>High Resolution and Animation Render</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0" colspan="5">
+    <widget class="QSlider" name="paddingSlider">
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="24" column="0" colspan="5">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="5">
+    <spacer name="verticalSpacer_1">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>408</width>
+       <height>7</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="18" column="0" colspan="5">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>418</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="8" column="0" colspan="4">
+    <widget class="QLabel" name="subFramesLabel">
+     <property name="text">
+      <string>Number of subframes (for progressive rendering):</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="0">
+    <widget class="QLabel" name="filenameLabel">
+     <property name="text">
+      <string>Filename:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="4">
+    <widget class="QSpinBox" name="subFrameSpinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="2">
+    <widget class="QSpinBox" name="startFrameSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <number>100000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="1" colspan="3">
+    <widget class="QLineEdit" name="filenameEdit"/>
+   </item>
+   <item row="11" column="0" colspan="5">
+    <widget class="qRangeSlider" name="frameRangeSlider" native="true">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>12</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="5">
+    <widget class="QCheckBox" name="animCheckBox">
+     <property name="text">
+      <string>Animation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="0" colspan="5">
+    <widget class="QLabel" name="totalFrames">
+     <property name="text">
+      <string>Total Frames:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="5">
+    <widget class="QSlider" name="tilesSlider">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>3</number>
+     </property>
+     <property name="sliderPosition">
+      <number>3</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="QLabel" name="endFrameLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>End Frame:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="QLabel" name="endTimeLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Maximum length in seconds:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="4">
+    <widget class="QPushButton" name="fileButton">
+     <property name="text">
+      <string>File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="5">
+    <widget class="QLabel" name="paddingLabel">
+     <property name="text">
+      <string>Padding 0%: (resulting size: nnn x nnn pixels - nnn MegaPixel):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="23" column="0" colspan="5">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>388</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="4">
+    <widget class="QSpinBox" name="tileHeightSpinBox">
+     <property name="minimum">
+      <number>9</number>
+     </property>
+     <property name="maximum">
+      <number>2160</number>
+     </property>
+     <property name="value">
+      <number>36</number>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QSpinBox" name="tileWidthSpinBox">
+     <property name="minimum">
+      <number>16</number>
+     </property>
+     <property name="maximum">
+      <number>3840</number>
+     </property>
+     <property name="value">
+      <number>64</number>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="QLabel" name="startFrameLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Start Frame:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="2">
+    <widget class="QSpinBox" name="endFrameSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <number>100000</number>
+     </property>
+     <property name="value">
+      <number>2500</number>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <widget class="QLabel" name="fpsLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>FPS:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="5">
+    <spacer name="verticalSpacer_0">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>408</width>
+       <height>9</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="21" column="0" colspan="5">
+    <widget class="QCheckBox" name="uniqueCheckBox">
+     <property name="text">
+      <string>Add unique ID to name ()</string>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="0" colspan="5">
+    <widget class="QCheckBox" name="autoSaveCheckBox">
+     <property name="text">
+      <string>Autosave fragment (as [ImageOutputName].frag)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="0" colspan="5">
+    <widget class="QCheckBox" name="previewFrameCheckBox">
+     <property name="text">
+      <string>Preview frame in window</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="5">
+    <widget class="QLabel" name="tilesLabel">
+     <property name="text">
+      <string>Render tiles: (2x2 - 1630x1920 pixels - 3.1 MPixel):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="2">
+    <widget class="QSpinBox" name="fpsSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>25</number>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Tile width:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="4">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Tile height:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="2">
+    <widget class="QDoubleSpinBox" name="endTimeSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <double>9999.989999999999782</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qRangeSlider</class>
+   <extends>QWidget</extends>
+   <header>qrangeslider.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>OutputDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>OutputDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>295</x>
+     <y>478</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>startFrameLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>60</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>108</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>startFrameSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>endFrameLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>84</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>83</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>endFrameSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>272</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fpsLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>245</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fpsSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>endTimeLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>29</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>182</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previewFrameCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>filenameLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previewFrameCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>uniqueCheckBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>25</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>25</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previewFrameCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>autoSaveCheckBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>12</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>15</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previewFrameCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>filenameEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>336</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previewFrameCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fileButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>337</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>374</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>frameRangeSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>126</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,1 @@
+-vf ow=6:3:3:unsharp=c3x3:0.5:l3x3:0.5 -of lavf -ovc x264 -lavcopts vcodec=libx264 -x264encopts crf=25

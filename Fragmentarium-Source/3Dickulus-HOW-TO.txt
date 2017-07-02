@@ -1,0 +1,128 @@
+****************************************************************************
+*                  How-To create a keyframe animation:                     *
+****************************************************************************
+
+Select menu item...
+Edit->Insert Command->Presets->Insert Preset From Current Settings or F8 key
+The cursor will move to the end of the GLSL script if no text is blockmarked
+
+This will give you the opportunity to choose a name or use the one provided:
+For a normal preset just change the name to whatever you like.
+Leave it as is to add this as a key frame, must be named "KeyFrame.nnn" and
+it will auto increment as you add new ones
+or use the index of the currently blockmarked preset keyframe.
+
+Must have at least 2 key frames to begin animating.
+
+Suggest starting with only a default Preset.
+
+After adding a few click the "Animation" button and hit play. You should see
+your key frames play.
+
+If you already have key frames and want to adjust one...
+
+Apply KeyFrame.nnn you want to edit as current view.
+(from the preset selection in the parameters area)
+
+Make changes to your view, where you look at, location etc,
+
+Block mark the KeyFrame.nnn in the editor
+
+In the menu select...
+Edit->Insert Command->Presets->Insert Preset From Current Settings or F8 key
+
+Confirm the name "KeyFrame.nnn" where "nnn" is the same number as the frame
+you intend to replace.
+
+New camera coordinates will replace the block marked key frame.
+
+That's it :D
+
+****************************************************************************
+*                How-To create a parameter morph animation:                *
+****************************************************************************
+
+The comments like this are the settings for the actions
+
+Cycles1:CosineCurve:44:1:24:1:240:0.3:1:1.7
+Power1:SineCurve:43:1:6:20:220:0.3:1:1.7
+RotAngle1:OutInBack:36:0:360:40:200:0.3:1:1.7
+
+The items on each line are used as follows...
+
+[variable name]:[ease name]:[ease type]:[start frame]:[end frame]:
+[begin parameter value]:[end parameter value]:[period]:[amplitude]:
+[overshoot]:[loops]:[ping/pong]
+
+Yes yes a lot of silly things to remember but fortunately there is a nice
+little GUI for all that.
+
+1> load tutorial 32.
+2> Select the "Mandelbulb" tab.
+3> Select the "Power" slider.
+4> Push "F7" key (or menu item "Edit->Add Easing Curve").
+5> Change some settings.
+6> hit OK that is it, done!
+
+Frames before start will use start value until start frame is reached.
+Frames after finish will use finish value until end of animation is reached.
+These become active when the animation is playing.
+
+When you do this on a variable that already has a curve you will be prompted
+"Apply" "Discard" "Cancel".
+
+"Apply" will change these settings for this variable (like it, keep it).
+"Discard" will delete the settings for this variable (clean up, no animating).
+"Cancel" does nothing.
+
+
+This only saves the changes internally!!! if you like the result then...
+
+1> you need to save parameters file or
+2> add a new preset with a new name and save the GLSL script or
+3> render a highres or anim to create "<name>png Files"
+   this  folder will have all of your var morph settings in a single default
+   preset but no camera path key frames
+4> You can also create "Range-nnnnn-nnnnn" presets, A preset using "Range" as
+   the base name will contain currently active easing curve settings. You can
+   group them based on the frame range or keep them all in one preset named
+   "Ranges". If you keep them in the "Default" preset they will be activated
+   when the frag file is loaded, it will complain until the animation length
+   is long enough to cover the maximum frame range.
+
+Camera path key frames are only saved to a file when you save the GLSL script
+you create them in.
+
+NOTE: Preferences->Presets contain easing curve settings : when creating a
+new preset any existing easing curve settings are save in the preset
+otherwise you must create (F8) a preset with a name that starts with "Range"
+
+****************************************************************************
+*                        How-To enable auto focus:                         *
+****************************************************************************
+
+Add this code to your GLSL script...
+Before the raytracer #include like...
+
+Code:
+#define AUTOFOCUS
+END Code:
+
+Now in the Raytracer tab you can enable/disable focal plane target tracking,
+the focal plane maximum distance is 5, if you need more than that open the
+3D.frag file and at around line 94 edit the focal plane widget maximum...
+
+Code:
+uniform float FocalPlane; slider[0,1,5]
+END Code:
+
+to whatever you  need like...
+
+Code:
+uniform float FocalPlane; slider[0,1,50]
+END Code:
+
+keep in mind that the target floats around at some distance from the camera,
+dynamically adjusted (sometimes a lot) as you navigate, it is generally
+beyond what you are looking at and will need to be adjusted by hand in the
+keyframe presets.

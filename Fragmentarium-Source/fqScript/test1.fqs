@@ -1,0 +1,61 @@
+// Fragmentarium qscript
+// testing frag only control
+// 3Dickulus 07/04/15
+// requires ./anim/ folder
+
+// frame specs
+function setFrameSpec(w,h,m,s) {
+  // set the tile buffer size
+  app.setTileWidth(w);
+  app.setTileHeight(h);
+  // set tile multiplier
+  app.setTileMax(m);
+  // how many frames to accumulate
+  app.setSubFrames(s);
+}
+
+seconds = 10;
+fps = 25;
+
+// starting point
+function init(){
+  // uncomment to load a frag file, this will open a new tab in Fragmentarium (be careful)
+  //  app.loadFragFile("./My_Params/new-Mandelbulb-anim.frag");
+
+  // used to calculate range frames and/or total frames
+  app.setFps(fps);
+
+  // this number should be => EasingCurve max frame / fps when animation = true
+  app.setAnimationLength( seconds );
+
+  // false = save images
+  // true = open a preview window for EACH image (be careful)
+  app.setPreview(false);
+
+  // false = no control from frag
+  // true = control from frag
+  app.setAnimation(true);
+
+  // begin
+  app.setFrame(1);
+  app.setStartFrame(1);
+  app.setEndFrame(seconds*fps);
+}
+
+// call our initialization function
+init();
+
+// we are using animation from frag so set the basename only
+// Fragmentarium will create our filename from this
+app.setOutputBaseFileName("./anim/test.png");
+
+// size of tiled/frame to render
+setFrameSpec(64,36,10,10);
+
+// the user wants to stop rendering
+// this only works in loops where script takes control of frames
+// if(!app.scriptRunning()) break;
+// in this script the frag file has control
+
+// render all frames in animation
+app.tileBasedRender();

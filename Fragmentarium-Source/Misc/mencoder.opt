@@ -1,0 +1,1 @@
+-of lavf -ovc x264 -lavcopts vcodec=libx264 -x264encopts crf=25
