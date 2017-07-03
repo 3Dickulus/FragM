@@ -15,6 +15,8 @@ find_package ( Qt5Xml REQUIRED )
 find_package ( Qt5Script REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
+SET ( CMAKE_CXX_FLAGS "-std=c++11" )
+
 # ON to compile with AsmBrowser enabled requires nVidia + GL > 4.0
 OPTION ( NVIDIAGL4PLUS "Build for nVidia GL v4+" ON)
 # ON if you have OpenEXR libs and include files
@@ -108,6 +110,7 @@ set ( Fragmentarium_SRCS
 set ( Fragmentarium_RSCS
 	Fragmentarium.qrc
 	)
+
 QT5_ADD_RESOURCES(RSCS ${Fragmentarium_RSCS})
 
 SET ( Fragmentarium_FORMS
