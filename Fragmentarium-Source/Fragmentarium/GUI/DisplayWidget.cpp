@@ -111,7 +111,7 @@ DisplayWidget::DisplayWidget ( QGLFormat format, MainWindow* mainWin, QWidget* p
     /// BEGIN 3DTexture
     //     m3DTexId = 0;
     /// END 3DTexture
-
+    buttonDown = false;
     }
 
 void DisplayWidget::updateRefreshRate() {

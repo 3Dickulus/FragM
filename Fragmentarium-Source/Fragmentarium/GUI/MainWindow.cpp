@@ -533,7 +533,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = SyntopiaCore::Misc::Version(2, 0, 0, 170702, " (\"beta\")");
+    version = SyntopiaCore::Misc::Version(2, 0, 0, 170707, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -1262,7 +1262,8 @@ void MainWindow::createMenus()
     // RMB in menu bar for "windows" menu access
     QMenu* mc = createPopupMenu();
     mc->setTitle(tr("Windows"));
-
+    menuBar()->addMenu(mc);
+    
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
     helpMenu->addAction(aboutAction);
