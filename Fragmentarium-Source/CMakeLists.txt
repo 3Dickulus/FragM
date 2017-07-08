@@ -24,37 +24,52 @@ OPTION ( USE_OPEN_EXR "Build with OpenEXR" OFF)
 
 set (OpenEXR_LIBRARIES "")
 
-# set to the mingw lib path
-IF ( MINGW )
-  set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
-ENDIF ()
-
 IF( NVIDIAGL4PLUS )
   ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
 ENDIF ()
 
-IF(UNIX)
 FIND_LIBRARY(OpenGL_LIBRARY GL )
-ELSEIF(APPLE)
-FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
-ELSEIF(WIN32)
-set(OpenGL_LIBRARY "-lopengl32" )
-ENDIF ()
 
 MARK_AS_ADVANCED (OpenGL_LIBRARY)
 
-add_definitions ( -Wall )
-
 IF ( USE_OPEN_EXR )
-  set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
-  ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
-ENDIF ()
+
+    FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
+    FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
+
+    if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+
+        set( OpenEXR_LIBS
+            IlmImf
+            Half
+            Imath
+            Iex
+            IexMath
+            IlmThread
+        )
+        
+        set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
+        set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
+
+        ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 -pthread )
+
+        set(OpenEXR_LIBRARIES -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+
+    endif(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+
+ENDIF (USE_OPEN_EXR)
+
+add_definitions ( -Wall )
 
 include_directories (
 	${OpenEXR_INCLUDE_DIR}
-	${Qt5Core_INCLUDE_DIRS} ${Qt5Script_INCLUDE_DIRS}
-	${Qt5Widgets_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS} 	${Qt5OpenGL_INCLUDE_DIRS}
-	${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+	${Qt5Core_INCLUDE_DIRS}
+	${Qt5Script_INCLUDE_DIRS}
+	${Qt5Widgets_INCLUDE_DIRS}
+	${Qt5Xml_INCLUDE_DIRS}
+	${Qt5OpenGL_INCLUDE_DIRS}
+	${CMAKE_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
 	Fragmentarium/GUI
 	SyntopiaCore/Logging
 	Fragmentarium/Parser
@@ -129,18 +144,6 @@ set ( Fragmentarium_MOCS
 
 QT5_WRAP_CPP(MOCS ${Fragmentarium_MOCS})
 
-IF ( USE_OPEN_EXR )
-set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
-
-set( OpenEXR_LIBS
-	IlmImf-2_1
-	Half Imath-2_1
-	Iex-2_1
-	IexMath-2_1
-	IlmThread-2_1
- )
-ENDIF (USE_OPEN_EXR)
-
 set(QM)
 IF(Qt5LinguistTools_FOUND)
     IF(NOT Qt5_LUPDATE_EXECUTABLE)
@@ -167,28 +170,7 @@ IF(Qt5LinguistTools_FOUND)
 
 ENDIF(Qt5LinguistTools_FOUND)
 
-
-IF (UNIX)
-  ADD_DEFINITIONS(-pthread)
-  IF ( USE_OPEN_EXR )
-    set(OpenEXR_LIBRARIES -Bstatic -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -Bdynamic z pthread)
-  ENDIF (USE_OPEN_EXR)
-ENDIF(UNIX)
-
-IF (MINGW)
-    MESSAGE("Using MinGW threads")
-    ADD_DEFINITIONS(-mthreads)
-  IF ( USE_OPEN_EXR )
-    set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
-  ENDIF (USE_OPEN_EXR)
-ENDIF(MINGW)
-
-IF ( UNIX OR APPLE )
-  add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
-ELSEIF ( WIN32 )
-  set ( WIN32_EXECUTABLE ON )
-  add_executable ( Fragmentarium-2.0.b WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
-ENDIF ()
+add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 
 target_link_libraries ( Fragmentarium-2.0.b ${OpenGL_LIBRARY} ${OpenEXR_LIBRARIES} )
 

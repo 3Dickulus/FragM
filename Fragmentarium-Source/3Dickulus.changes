@@ -131,6 +131,8 @@ Changes since v0.9.5
 -- removed Math/* now using Qt vector and matrix
 ++ implemented double types
 ++ move to 2.0-beta
+++ reworked CMakeLists.txt to use system installed OpenEXR libraries and includes
+++ no longer distributing OpenEXR sources for static build
 
 *** GUI Language Translations ***
 + German by Sabine
