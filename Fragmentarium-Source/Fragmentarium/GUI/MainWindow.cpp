@@ -45,6 +45,7 @@ using namespace Imf_2_1;
 using namespace Imath_2_1;
 #endif
 
+using namespace SyntopiaCore::Misc;
 using namespace SyntopiaCore::Logging;
 using namespace SyntopiaCore::Exceptions;
 using namespace Fragmentarium::Parser;
@@ -533,7 +534,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = SyntopiaCore::Misc::Version(2, 0, 0, 170707, " (\"beta\")");
+    version = Version(2, 0, 0, 170707, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -2805,7 +2806,7 @@ void MainWindow::makeScreenshot() {
 }
 
 void MainWindow::saveImage(QImage image) {
-    QString filename = SyntopiaCore::Misc::GetImageFileName(this, tr("Save screenshot as:"));
+    QString filename = GetImageFileName(this, tr("Save screenshot as:"));
     if (filename.isEmpty()) return;
 
     image.setText("fRAg", variableEditor->getSettings());

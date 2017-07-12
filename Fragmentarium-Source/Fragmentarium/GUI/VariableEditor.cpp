@@ -619,7 +619,6 @@ bool VariableEditor::setSettings(QString text) {
     foreach (QString s, l) {
         s=s.trimmed();
         if (s.startsWith("#")) continue;
-        if (s.startsWith("///")) s=s.split(" ").at(1); // test and fix if old format
         if (s.split(":").count() == 12) { // 12 items in an easing curve setting line
                 setEasingCurves(s);
             continue;

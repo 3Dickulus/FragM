@@ -1189,6 +1189,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         if(found) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
     qDebug() << " ";
+
+    
 }
 
 void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
@@ -1784,10 +1786,10 @@ void DisplayWidget::showEvent(QShowEvent * event) {
         mainWindow->highlightBuildButton ( true );
     }
 
-#ifdef WIN32
-  int i=0;
-  while(i++ < maxSubFrames) paintGL();
-#endif
+// #ifdef WIN32
+//   int i=0;
+//   while(i++ < maxSubFrames) paintGL();
+// #endif
 
 }
 

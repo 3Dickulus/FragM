@@ -150,10 +150,7 @@ FloatWidget::FloatWidget(QWidget* parent, QWidget* variableEditor, QString name,
 };
 
 void FloatWidget::setValue(double f) {
-//     qDebug() << objectName() << isDouble();
-    comboSlider1->blockSignals(true);
     comboSlider1->setValue(f);
-    comboSlider1->blockSignals(false);
 }
 
 QString FloatWidget::toString() {
@@ -206,12 +203,8 @@ QString Float2Widget::toString() {
 }
 
 void Float2Widget::setValue(QVector3D v) {
-    comboSlider1->blockSignals(true);
-    comboSlider2->blockSignals(true);
     comboSlider1->setValue(v.x());
     comboSlider2->setValue(v.y());
-    comboSlider1->blockSignals(false);
-    comboSlider2->blockSignals(false);
 }
 
 void Float2Widget::fromString(QString string) {
@@ -261,16 +254,9 @@ Float3Widget::Float3Widget(QWidget* parent, QWidget* variableEditor, QString nam
 }
 
 void Float3Widget::setValue(QVector3D v) {
-    comboSlider1->blockSignals(true);
-    comboSlider2->blockSignals(true);
-    comboSlider3->blockSignals(true);
     comboSlider1->setValue(v.x());
     comboSlider2->setValue(v.y());
     comboSlider3->setValue(v.z());
-    comboSlider1->blockSignals(false);
-    comboSlider2->blockSignals(false);
-    comboSlider3->blockSignals(false);
-
 }
 
 
@@ -406,18 +392,10 @@ Float4Widget::Float4Widget(QWidget* parent, QWidget* variableEditor, QString nam
 }
 
 void Float4Widget::setValue(QVector4D v) {
-    comboSlider1->blockSignals(true);
-    comboSlider2->blockSignals(true);
-    comboSlider3->blockSignals(true);
-    comboSlider4->blockSignals(true);
     comboSlider1->setValue(v.x());
     comboSlider2->setValue(v.y());
     comboSlider3->setValue(v.z());
     comboSlider3->setValue(v.w());
-    comboSlider1->blockSignals(false);
-    comboSlider2->blockSignals(false);
-    comboSlider3->blockSignals(false);
-    comboSlider4->blockSignals(false);
 }
 
 QString Float4Widget::getUniqueName() {
