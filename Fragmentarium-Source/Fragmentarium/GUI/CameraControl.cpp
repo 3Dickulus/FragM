@@ -87,7 +87,7 @@ namespace Fragmentarium {
             QVector3D right = QVector3D::crossProduct(direction.normalized(), up->getValue()).normalized();
             QVector3D upV = up->getValue();
 
-            double factor = stepSize;
+            double factor = stepSize*10.0;
 
             bool keysDown = false;
             if (keyDown(Qt::Key_1)) {
@@ -207,7 +207,7 @@ namespace Fragmentarium {
             
             askForRedraw = false;
             if (keysDown) {
-	      orthogonalizeUpVector();
+              orthogonalizeUpVector();
               askForRedraw = true;
             }
             
@@ -283,8 +283,8 @@ namespace Fragmentarium {
                 up->setValue((my*mx)*upDown);
               } else if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // orient camera
-                QMatrix4x4 mx; mx.rotate(-dp.x()*mouseSpeed*10.0, upDown);
-                QMatrix4x4 my; my.rotate(-dp.y()*mouseSpeed*10.0, rightDown);
+                QMatrix4x4 mx; mx.rotate(-dp.x()*mouseSpeed*100.0, upDown);
+                QMatrix4x4 my; my.rotate(-dp.y()*mouseSpeed*100.0, rightDown);
                 target->setValue((my*mx)*directionDown+eye->getValue()); // before: eyeDown
                 up->setValue((my*mx)*upDown);
               }
