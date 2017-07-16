@@ -303,7 +303,7 @@ namespace Fragmentarium {
         setEndFrame(value+1);
       };
       
-      void ByName(QString n) {
+      void applyPresetByName(QString n) {
         variableEditor->setPreset(n);
       };
       

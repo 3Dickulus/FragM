@@ -1545,7 +1545,8 @@ retry:
               
               if (!progress.wasCanceled()) {
 
-                    QImage im = engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps);
+                    QImage im;
+                    engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
 
                     if (padding>0.0)  {
                         int w = im.width();
@@ -1613,7 +1614,8 @@ retry:
                 
                 if (!progress.wasCanceled()) {
 
-                    QImage im = engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps);
+                    QImage im;
+                    engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
 
                     if (padding>0.0)  {
                         int w = im.width();
