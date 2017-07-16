@@ -97,7 +97,7 @@ namespace Fragmentarium {
       ~DisplayWidget();
       
       void clearTileBuffer();
-      QImage renderTile(double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int* steps);
+      void renderTile(double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int* steps, QImage *im);
       
       /// Use this whenever a redraw is required.
       /// Calling this function multiple times will still only result in one redraw
@@ -153,7 +153,7 @@ namespace Fragmentarium {
       QOpenGLShaderProgram* getBufferShader() {
         return bufferShaderProgram;
       }
-      void keyReleaseEvent(QKeyEvent* ev);
+      void keyReleaseEvent(QKeyEvent* ev) Q_DECL_OVERRIDE;
       void keyPressEvent(QKeyEvent* ev) Q_DECL_OVERRIDE; 
       void setMaxSubFrames(int i ) {
         maxSubFrames = i;

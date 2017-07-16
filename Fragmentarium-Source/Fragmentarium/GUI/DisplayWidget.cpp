@@ -1180,11 +1180,15 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             // this sets User (32 bit) uniforms not handled above
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName() && !found) {
+                    vw[n]->setIsDouble(false); // ensure sliders set to float decimals
                     vw[n]->setUserUniform(shaderProg);
                     break;
                 }
             }
-        } else { tp.sprintf("%x",type); qDebug() << tp << uniformName; }
+        } else {
+            tp.sprintf("%x",type);
+            qDebug() << tp << uniformName;
+        }
         
         if(found) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
@@ -1239,10 +1243,9 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
     l = shaderProgram->uniformLocation ( "globalPixelSize" );
     if ( l != -1 ) {
-        int d = 1; // TODO: Set to Tile factor.
-        if ( d<1 ) d = 1;
+        int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
         if ( viewFactor > 0 ) {
-            d = viewFactor+1.;
+            d = viewFactor+1;
         }
         shaderProgram->setUniformValue ( l, ( ( float ) d/w ), ( ( float ) d/h ) );
     }
@@ -1400,11 +1403,9 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         // for DepthBufferShader.frag & NODE-Raytracer.frag
         l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
         if ( l != -1 ) {
-            int d = 1; // TODO: Set to Tile factor.
-            if ( d<1 ) d = 1;
-
+            int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
             if ( viewFactor > 0 ) {
-                d = viewFactor+ 1.;
+                d = viewFactor+ 1;
             }
             shaderProgram->setUniformValue ( l, ( d/ ( float ) s.width() ), ( d/ ( float ) s.height() ) );
         }
@@ -1525,7 +1526,7 @@ void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 }
 #endif
 
-QImage DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps ) {
+void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im ) {
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -1585,7 +1586,7 @@ QImage DisplayWidget::renderTile ( double pad, double time, int subframes, int w
     }
 
 
-    QImage im = hiresBuffer->toImage();
+    (*im) = hiresBuffer->toImage();
 
     subframeCounter=0;
 
@@ -1593,7 +1594,6 @@ QImage DisplayWidget::renderTile ( double pad, double time, int subframes, int w
       WARNING ( tr("Failed to release hiresBuffer FBO") );
     }
 
-    return im;
 }
 
 void DisplayWidget::setState ( DrawingState state ) {
@@ -1785,12 +1785,6 @@ void DisplayWidget::showEvent(QShowEvent * event) {
         WARNING ( tr("If the preset alters locked variables \"Build\" will be required again.") );
         mainWindow->highlightBuildButton ( true );
     }
-
-// #ifdef WIN32
-//   int i=0;
-//   while(i++ < maxSubFrames) paintGL();
-// #endif
-
 }
 
 void DisplayWidget::setZappaStatus(Qt::KeyboardModifiers km) {
