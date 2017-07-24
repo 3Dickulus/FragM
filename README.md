@@ -32,7 +32,7 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + Syntax Highlighter fixed?
 + Added braket highlighting
 + Animation switches from play to stop at the end
-- glu library dependancy removed
++ glu library dependancy removed
 + Uses QMatrix4x4 perspective and lookat
 + Now Float 1 -2 -3 -4 widgets can have easing curves
 + Easing curves can loop multiple times
@@ -56,7 +56,7 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + [spacebar] toggles animation play/stop
 + added preferences option for infinite loop play
 + added preferences option for text editor stylesheet
-- Removed platform build folders,
++ Removed platform build folders,
   Using QtCreator to load the Fragmentarium.pro file should work on all platforms,
   CmakeLists.txt should also work on all platforms. Input and tweaks are welcomed.
 + added scripting abilities
@@ -84,21 +84,21 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + All motion actions are now scaled to step size, set with shift->wheel or keypad 1-2-3, 5 resets to default
 + fixed Easing Curve Ping Pong Loop bug
 
-* These came about after collaborating with Matt Benesi
+# These came about after collaborating with Matt Benesi
++ Added special "feedback array" uniform so frag code can get mouse click locations
++ enabled screenTo3D function, read out object XYZ @ mouse pos in status bar tnx M Benesi
++ enabled MiddleButton (Wheel) click = center view at this location
++ Shift+Tilde key resets camera to look at origin 0,0,0
++ Shift+Alt+LMB rotates around target
++ CTRL+LMB record mouse pos and increment feedback array counter
++ CTRL+Alt+LMB record mouse pos to feedback array
++ CTRL+SHIFT+LMB erase last mouse pos from feedback array and decrement counter
++ added zappa toolbar when all the fedback vars are detected
++ added zaplock, when checked normal controls are locked out and zap control is enabled
++ added zap index selection so you can select which zap gets affected by mouse and wheel
++ added Zap Clr button to reset/clear the feedback arrays
 
-* Added special "feedback array" uniform so frag code can get mouse click locations
-* enabled screenTo3D function, read out object XYZ @ mouse pos in status bar tnx M Benesi
-* enabled MiddleButton (Wheel) click = center view at this location
-* Shift+Tilde key resets camera to look at origin 0,0,0
-* Shift+Alt+LMB rotates around target
-* CTRL+LMB record mouse pos and increment feedback array counter
-* CTRL+Alt+LMB record mouse pos to feedback array
-* CTRL+SHIFT+LMB erase last mouse pos from feedback array and decrement counter
-* added zappa toolbar when all the fedback vars are detected
-* added zaplock, when checked normal controls are locked out and zap control is enabled
-* added zap index selection so you can select which zap gets affected by mouse and wheel
-* added Zap Clr button to reset/clear the feedback arrays
-
+# Most recent
 + CTRL+MMB sets light pos when using DE-Kn2.frag (uniform vec3 LightPos in frag)
 + fixed Texture Persistence bug (again?)
 + Qt5.4 loads EXR format but doesn't save this format so still need OpenEXR static libs for that
@@ -127,13 +127,13 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 
 + remembers ToolBar state (Sabine)
 + tabs in Variable Editor automatically switch from East to North for Dock/UnDock event (05/22/17 Sabine)
-
 + removed Math/* now using Qt vector and matrix
 + implemented double types
 + move to 2.0-beta
 
 + Added OpenEXR Tools menu, displays some help info on usage
 + Added samplerCube variable widget
++ Timeline easing curves
 
 ** GUI Language Translations **
 + German by Sabine
