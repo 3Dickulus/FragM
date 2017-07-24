@@ -141,43 +141,42 @@ namespace Fragmentarium {
 	    const QMetaObject &mo = QEasingCurve::staticMetaObject;
 	    QMetaEnum metaEnum = mo.enumerator(mo.indexOfEnumerator("Type"));
 	    for (int i = 0; i < QEasingCurve::NCurveTypes - 3; ++i) {
-		painter.fillRect(QRect(QPoint(0, 0), m_iconSize), brush);
-		QEasingCurve curve((QEasingCurve::Type)i);
-		painter.setPen(QColor(0, 0, 255, 64));
-		qreal xAxis = m_iconSize.height()/1.5;
-		qreal yAxis = m_iconSize.width()/3;
-		painter.drawLine(0, xAxis, m_iconSize.width(),  xAxis);
-		painter.drawLine(yAxis, 0, yAxis, m_iconSize.height());
+            painter.fillRect(QRect(QPoint(0, 0), m_iconSize), brush);
+            QEasingCurve curve((QEasingCurve::Type)i);
+            painter.setPen(QColor(0, 0, 255, 64));
+            qreal xAxis = m_iconSize.height()/1.5;
+            qreal yAxis = m_iconSize.width()/3;
+            painter.drawLine(0, xAxis, m_iconSize.width(),  xAxis);
+            painter.drawLine(yAxis, 0, yAxis, m_iconSize.height());
 
-		qreal curveScale = m_iconSize.height()/2;
+            qreal curveScale = m_iconSize.height()/2;
 
-		painter.setPen(Qt::NoPen);
+            painter.setPen(Qt::NoPen);
 
-		// start point
-		painter.setBrush(Qt::red);
-		QPoint start(yAxis, xAxis - curveScale * curve.valueForProgress(0));
-		painter.drawRect(start.x() - 1, start.y() - 1, 3, 3);
+            // start point
+            painter.setBrush(Qt::red);
+            QPoint start(yAxis, xAxis - curveScale * curve.valueForProgress(0));
+            painter.drawRect(start.x() - 1, start.y() - 1, 3, 3);
+            // end point
+            painter.setBrush(Qt::blue);
+            QPoint end(yAxis + curveScale, xAxis - curveScale * curve.valueForProgress(1));
+            painter.drawRect(end.x() - 1, end.y() - 1, 3, 3);
 
-		// end point
-		painter.setBrush(Qt::blue);
-		QPoint end(yAxis + curveScale, xAxis - curveScale * curve.valueForProgress(1));
-		painter.drawRect(end.x() - 1, end.y() - 1, 3, 3);
-
-		QPainterPath curvePath;
-		curvePath.moveTo(start);
-		for (qreal t = 0; t <= 1.0; t+=1.0/curveScale) {
-		    QPoint to;
-		    to.setX(yAxis + curveScale * t);
-		    to.setY(xAxis - curveScale * curve.valueForProgress(t));
-		    curvePath.lineTo(to);
-		}
-		painter.setRenderHint(QPainter::Antialiasing, true);
-		painter.strokePath(curvePath, QColor(32, 32, 32));
-		painter.setRenderHint(QPainter::Antialiasing, false);
-		QListWidgetItem *item = new QListWidgetItem;
-		item->setIcon(QIcon(pix));
-		item->setText(metaEnum.key(i));
-		m_ui.easingCurvePicker->addItem(item);
+            QPainterPath curvePath;
+            curvePath.moveTo(start);
+            for (qreal t = 0; t <= 1.0; t+=1.0/curveScale) {
+                QPoint to;
+                to.setX(yAxis + curveScale * t);
+                to.setY(xAxis - curveScale * curve.valueForProgress(t));
+                curvePath.lineTo(to);
+            }
+            painter.setRenderHint(QPainter::Antialiasing, true);
+            painter.strokePath(curvePath, QColor(32, 32, 32));
+            painter.setRenderHint(QPainter::Antialiasing, false);
+            QListWidgetItem *item = new QListWidgetItem;
+            item->setIcon(QIcon(pix));
+            item->setText(metaEnum.key(i));
+            m_ui.easingCurvePicker->addItem(item);
 	    }
 	}
 

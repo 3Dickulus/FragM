@@ -203,37 +203,57 @@ void TimeLineDialog::createKeyframeMap() {
     }
 }
 
+QPainterPath TimeLineDialog::createCurve(QSize sz, int t)
+{
+        QEasingCurve curve((QEasingCurve::Type)t);
+        qreal curveScale = sz.height();
+        QPoint start(0, curveScale - (curveScale * curve.valueForProgress(0)));
+        QPoint end(sz.width(), curveScale - curveScale * curve.valueForProgress(1));
+
+        QPainterPath curvePath;
+        curvePath.moveTo(start);
+        for (qreal t = 0; t <= 1.0; t+=1.0/curveScale) {
+            QPoint to;
+            to.setX(sz.width() * t);
+            to.setY(curveScale - (curveScale * curve.valueForProgress(t)));
+            curvePath.lineTo(to);
+        }
+        
+        return curvePath;
+}
+
 void TimeLineDialog::createEasingCurveMap() {
-    // use the map
-  if(mainWin->getVariableEditor()->hasEasing())
-    for ( int i = 0; i < easingMap.count(); i++ ) {
-        QString name = easingMap[i]->slidername;
-        QString u = name;
-        u.truncate(name.length()-1);
-        int len = (easingMap[i]->lastFrame - easingMap[i]->firstFrame)*3;
-        int yPos = (uNames.indexOf( u )*yOff)+1;
-        int xPos = ((len-(name.length()*4))*0.5);
 
-        // render an elipse that covers the range of frames for this easingcurve
-        ellipseMap[i] = scene->addEllipse( 0, 0, len, 6, outlinePen, redBrush);
-        // put a name on it
-        textMap[i] = scene->addText( name , QFont("Arial", 6));
-        textMap[i]->setPos( xPos , -5);
-        // tie the name to the ellipse
-        eGroupMap[i] = new QGraphicsItemGroup(0);
-        eGroupMap[i]->addToGroup(ellipseMap[i]);
-        eGroupMap[i]->addToGroup(textMap[i]);
+    if(mainWin->getVariableEditor()->hasEasing()) {
+        for ( int i = 0; i < easingMap.count(); i++ ) {
+            QString name = easingMap[i]->slidername;
+            QString u = name;
+            u.truncate(name.length()-1);
+            int len = (easingMap[i]->lastFrame - easingMap[i]->firstFrame)*3;
+            int yPos = (uNames.indexOf( u )*yOff)+1;
+            int xPos = ((len-(name.length()*4))*0.5);
 
-        eGroupMap[i]->setFlag(QGraphicsItem::ItemIsMovable);
-        eGroupMap[i]->setFlag(QGraphicsItem::ItemIsSelectable);
+            // render a curve that covers the range of frames for this easingcurve
+            pathMap[i] = scene->addPath( createCurve( QSize(len,6), easingMap[i]->typeNum ), outlinePen );
+            // put a name on it
+            textMap[i] = scene->addText( name , QFont("Arial", 6));
+            textMap[i]->setPos( xPos , -5);
+            // tie the name to the curve
+            eGroupMap[i] = new QGraphicsItemGroup(0);
+            eGroupMap[i]->addToGroup(pathMap[i]);
+            eGroupMap[i]->addToGroup(textMap[i]);
 
-        scene->addItem(eGroupMap[i]);
+            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsMovable);
+            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsSelectable);
 
-        eGroupMap[i]->setPos(easingMap[i]->firstFrame*3, yPos);
-        int startf = eGroupMap[i]->x()/3;
-        int endf = startf + int(len/3);
+            scene->addItem(eGroupMap[i]);
 
-        eGroupMap[i]->setToolTip(QString("%1,%2").arg( startf ).arg( endf ));
+            eGroupMap[i]->setPos(easingMap[i]->firstFrame*3, yPos);
+            int startf = eGroupMap[i]->x()/3;
+            int endf = startf + int(len/3);
+
+            eGroupMap[i]->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( easingMap[i]->startVal ).arg( easingMap[i]->endVal ));
+        }
     }
 }
 

@@ -54,6 +54,7 @@ class TimeLineDialog : public QDialog
       void saveTimeLineSettings();
       void createKeyframeMap();
       void createEasingCurveMap();
+      QPainterPath createCurve(QSize sz, int type);
     private:
       Ui::TimeLineDialog m_ui;
       MainWindow* mainWin;
@@ -73,7 +74,7 @@ class TimeLineDialog : public QDialog
       QGraphicsTextItem *text;
       QMap<int, QGraphicsTextItem *> textMap;
       QMap<int, QGraphicsRectItem*> rectMap;
-      QMap<int, QGraphicsEllipseItem*> ellipseMap;
+      QMap<int, QGraphicsPathItem*> pathMap;
       QMap<int, QGraphicsItemGroup*> eGroupMap;
       QMap<int, KeyFrameInfo*> keyframeMap;
       QMap<int, EasingInfo*> easingMap;
