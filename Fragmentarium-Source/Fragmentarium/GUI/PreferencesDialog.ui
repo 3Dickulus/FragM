@@ -14,7 +14,7 @@
    <string>Preferences</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="2" column="0">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="mainGroupBox">
      <property name="title">
       <string/>
@@ -147,7 +147,7 @@
         </item>
        </layout>
       </item>
-      <item row="12" column="0">
+      <item row="13" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="stylesheetLabel">
@@ -165,7 +165,7 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0">
+      <item row="15" column="0">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -178,10 +178,28 @@
         </property>
        </spacer>
       </item>
+      <item row="12" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="exrBinPathsLabel">
+          <property name="text">
+           <string>EXR binaries paths:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="exrBinPathsLineEdit">
+          <property name="text">
+           <string>/usr/bin;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
