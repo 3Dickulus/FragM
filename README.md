@@ -132,6 +132,9 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + implemented double types
 + move to 2.0-beta
 
++ Added OpenEXR Tools menu, displays some help info on usage
++ Added samplerCube variable widget
+
 ** GUI Language Translations **
 + German by Sabine
 + Dutch by Sabine
