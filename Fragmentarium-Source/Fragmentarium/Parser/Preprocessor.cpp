@@ -229,6 +229,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
     static QRegExp sampler2D ( "^\\s*uniform\\s+sampler2D\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
     static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
     static QRegExp subframeMax ( "^\\s*#define\\s+subframemax\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
@@ -328,6 +329,22 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             }
             if(QFileInfo(fileName).isFile()) {
                 INFO ( "Added texture: " + name + " -> " + fileName );
+            }
+            fs.textures[name] = fileName;
+            SamplerParameter* sp= new SamplerParameter ( currentGroup, name, lastComment, fileName );
+            setLockType ( sp, "alwayslocked" );
+            fs.params.append ( sp );
+        } else if ( samplerCube.indexIn ( s ) != -1 ) {
+            QString name = samplerCube.cap ( 1 );
+            fs.source[i] = "uniform samplerCube " + name + ";";
+            QString fileName;
+            try {
+                fileName = fileManager->resolveName ( samplerCube.cap ( 2 ),file );
+            } catch ( Exception& e ) {
+                CRITICAL ( e.getMessage() );
+            }
+            if(QFileInfo(fileName).isFile()) {
+                INFO ( "Added Cube texture: " + name + " -> " + fileName );
             }
             fs.textures[name] = fileName;
             SamplerParameter* sp= new SamplerParameter ( currentGroup, name, lastComment, fileName );
