@@ -119,6 +119,7 @@ namespace Fragmentarium {
 //       void setObjFile( QString ofn );
 // #endif // USE_OPEN_EXR
 /// END 3DTexture
+
       void setUserUniforms(QOpenGLShaderProgram* shaderProgram);
       QVector<VariableWidget*> getUserUniforms(){return variableEditor->getUserUniforms();};
       void setFeedbackUniforms(QOpenGLShaderProgram* shaderProgram);
@@ -338,8 +339,13 @@ namespace Fragmentarium {
       void dumpShaderAsm();
       #endif // NVIDIAGL4PLUS
       void setFeedbackId( int fbi ){ zapIndex->setValue(fbi); };
-      
+
     private slots:
+#ifdef USE_OPEN_EXR
+  void initTools();
+  void runTool();
+#endif // USE_OPEN_EXR
+  
       void veDockChanged(bool t){variableEditor->dockChanged( t );}; // 05/22/17 Sabine ;)
       void clearKeyFrameControl();
       void bufferSpinBoxChanged(int);
@@ -562,6 +568,10 @@ namespace Fragmentarium {
       QAction* loadfdbkAction;
       QAction* savefdbkAction;
       
+#ifdef USE_OPEN_EXR
+      QMenu *exrToolsMenu;
+      QStringList exrBinaryPath;
+#endif // USE_OPEN_EXR
     };
     
   }

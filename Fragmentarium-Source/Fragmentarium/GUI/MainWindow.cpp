@@ -61,6 +61,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     lastStoredTime = 0;
     bufferSizeMultiplier = 1;
     exrMode = false;
+    exrToolsMenu = 0;
     // M Benesi "Spray gun" MainWindow
     fragHasFeedbackVars = false;
     feedbackindex = 0;
@@ -91,18 +92,20 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     preprocessorMenu->addAction("#define SubframeMax 20", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#define AUTO_FOCUS", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#define DEPTH_TO_ALPHA", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_CLAMP", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_CLAMP", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_LEVEL 1000", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_REPEAT", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_REPEAT", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_LINEAR", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_ANISOTROPY float(>1.0 <16.0)", textEdit , SLOT(insertText()));
+
+    QMenu *textureFlagsMenu = new QMenu(tr("2D Texture Options"), 0);
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_CLAMP", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_CLAMP", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_LEVEL 1000", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_REPEAT", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_REPEAT", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_LINEAR", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_ANISOTROPY float(>1.0 <16.0)", textEdit , SLOT(insertText()));
 
     QMenu *uniformMenu = new QMenu(tr("Special Uniforms"), 0);
     uniformMenu->addAction("uniform float time;", textEdit , SLOT(insertText()));
@@ -115,9 +118,12 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     uniformMenu->addAction("uniform vec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform bool b; checkbox[true]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform sampler2D tex; file[tex.jpg]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform samplerCube cubetex; file[cubetex.jpg]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec3 color; color[0.0,0.0,0.0]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec4 color; color[0.0,1.0,0.0,0.0,0.0,0.0]", textEdit , SLOT(insertText()));
 
+    uniformMenu->insertMenu(0, textureFlagsMenu);
+    
     QMenu *presetMenu = new QMenu(tr("Presets"), 0);
     presetMenu->addAction(tr("Insert Preset from Current Settings"),mainWindow, SLOT(insertPreset()));
 
@@ -690,10 +696,104 @@ void MainWindow::init()
     }
 #endif // NVIDIAGL4PLUS
 
+#ifdef USE_OPEN_EXR
+initTools();
+#endif // USE_OPEN_EXR
+
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
     play();
     setupScriptEngine();
 }
+
+#ifdef USE_OPEN_EXR
+void MainWindow::initTools() {
+
+    QStringList filters;
+    
+    if(exrToolsMenu == 0)
+      exrToolsMenu = menuBar()->addMenu(tr("EXR &Tools"));
+
+    QDir exrbp( exrBinaryPath.first() );
+    
+    while (!exrbp.exists()) {
+        exrBinaryPath.removeFirst();
+        exrbp.setPath( exrBinaryPath.first() );
+    }
+
+    if (!exrbp.exists()) {
+        QAction* a = new QAction(tr("Unable to locate: ")+exrbp.absolutePath(), this);
+        a->setEnabled(false);
+        exrToolsMenu->addAction(a);
+    } else {
+
+        exrToolsMenu->clear();
+
+        // -- OpenEXR binary tools Menu --
+        if(exrToolsMenu != 0) {
+            filters.clear();
+            filters << "exr*";
+
+            QString path = exrbp.absolutePath();
+            QDir dir(path);
+
+            dir.setNameFilters(filters);
+
+            QStringList sl = dir.entryList();
+            if(sl.size() == 0) {
+                QAction* a = new QAction(tr("Unable to locate OpenEXR binaries !!!"), this);
+                a->setEnabled(false);
+                exrToolsMenu->addAction(a);
+            } else {
+                for (int i = 0; i < sl.size(); i++) {
+                    QAction* a = new QAction(sl[i], this);
+                    QString absPath = QDir(path ).absoluteFilePath(sl[i]);
+
+                    a->setData(absPath);
+                    a->setObjectName(absPath);
+
+                    connect(a, SIGNAL(triggered()), this, SLOT(runTool()));
+                    exrToolsMenu->addAction(a);
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::runTool() {
+    QString cmnd = sender()->objectName();
+        // execute once with -h option and capture the output
+        cmnd += " -h &> .htxt"; // > filename 2>&1
+        system( cmnd.toStdString().c_str() );
+
+        // open the resulting textfile and parse for command information
+        QFile file(".htxt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+        // grab the general help text
+        QString helpText;
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            if( QString(line).contains("Options") && QString(line).contains(":")) break;
+            helpText += QString(line);
+        }
+        // grab the option details
+        QString detailedText;
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            if( QString(line).contains("Options:") ) continue;
+            detailedText += QString(line);
+        }
+        file.remove();
+        
+        // display for user
+        QMessageBox msgBox;
+        msgBox.setText(helpText);
+        msgBox.setDetailedText(detailedText);
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+}
+
+#endif // USE_OPEN_EXR
 
 void MainWindow::showWelcomeNote() {
     QString s =
@@ -2317,6 +2417,9 @@ void MainWindow::readSettings()
     variableEditor->updateGeometry();
     variableEditor->setSaveEasing(settings.value("saveEasing", true).toBool());
     fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";", QString::SkipEmptyParts));
+#ifdef USE_OPEN_EXR
+    exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
+#endif // USE_OPEN_EXR
 }
 
 void MainWindow::writeSettings()
@@ -2332,7 +2435,14 @@ void MainWindow::writeSettings()
     settings.setValue("loopPlay", wantLoopPlay);
     settings.setValue("editorStylesheet", editorStylesheet);
     settings.setValue("splitterSizes", splitter->saveState());
-    settings.setValue("includePaths", fileManager.getIncludePaths().join(";"));
+    QString ipaths = fileManager.getIncludePaths().join(";");
+    if(fileManager.getIncludePaths().count() == 1) ipaths += ";";
+    settings.setValue("includePaths", ipaths);
+#ifdef USE_OPEN_EXR
+    QString ebpaths = exrBinaryPath.join(";");
+    if(exrBinaryPath.count() == 1) ebpaths += ";";
+    settings.setValue("exrBinPaths", ebpaths);
+#endif // USE_OPEN_EXR
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
@@ -2953,6 +3063,9 @@ void MainWindow::preferences() {
     readSettings();
     engine->updateRefreshRate();
     getTextEdit()->setStyleSheet(editorStylesheet);
+#ifdef USE_OPEN_EXR
+    initTools();
+#endif // USE_OPEN_EXR
 }
 
 void MainWindow::getBufferSize(int w, int h, int& bufferSizeX, int& bufferSizeY, bool& fitWindow) {
