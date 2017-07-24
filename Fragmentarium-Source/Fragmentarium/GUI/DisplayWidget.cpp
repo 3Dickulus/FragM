@@ -518,11 +518,22 @@ void DisplayWidget::setupFragmentShader() {
         bool loaded = false;
         int l = shaderProgram->uniformLocation ( textureName );
         if ( l != -1 ) { // found named texture in shader program
+            
+            // 2D or Cube ?
+            GLsizei bufSize = 256;
+            GLsizei length;
+            GLint size;
+            GLenum type;
+            GLchar name[bufSize];
+
+            GLuint index = shaderProgram->uniformLocation ( textureName );
+            glGetActiveUniform( shaderProgram->programId(), index, bufSize, &length, &size, &type, name);
+            
             // check cache first
             if ( TextureCache.contains ( texturePath ) ) {
                 textureID = TextureCache[texturePath];
                 textureCacheUsed[texturePath] = true;
-                glBindTexture ( GL_TEXTURE_2D,textureID );
+                glBindTexture ((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
                 loaded = true;
             } else { // if not in cache then create one and try to load and add to cache
                 // set current texture
@@ -531,12 +542,20 @@ void DisplayWidget::setupFragmentShader() {
                 // allocate a texture id
                 glGenTextures ( 1, &textureID );
 //                 INFO ( QString ( "Allocated texture ID: %1" ).arg ( textureID ) );
-                glBindTexture ( GL_TEXTURE_2D, textureID );
+                glBindTexture ( (type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
 
                 if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
                     HDRLoaderResult result;
                     if ( HDRLoader::load ( texturePath.toLatin1().data(), result ) ) {
-                        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
+                        if(type == GL_SAMPLER_CUBE) {
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*2*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*3*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
+                        } else
+                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
                         loaded = true;
                     }
                 }
@@ -591,8 +610,19 @@ void DisplayWidget::setupFragmentShader() {
 #endif
 #endif
                 else if ( im.load ( texturePath ) ) { // Qt format image, Qt 5+ loads EXR format on linux
-                    QImage t = convertToGLFormat ( im );
-                    glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+                    QImage t = convertToGLFormat ( im.mirrored(true,true) );
+                    
+                    if(type == GL_SAMPLER_CUBE) {
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*2) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*3) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
+                    } else {
+                      glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+                    }
+                    
                     loaded = true;
                 }
                 // add to cache
@@ -602,7 +632,22 @@ void DisplayWidget::setupFragmentShader() {
                 }
             }
             if ( loaded ) {
-                if ( fragmentSource.textureParams.contains ( textureName ) ) { // set texparms
+/*
+#define providesBackground
+#group Skybox
+uniform samplerCube skybox; file[cubemap.png]
+vec3  backgroundColor(vec3 dir) {
+    return textureCube(skybox, dir).rgb;
+}
+*/
+                if(type == GL_SAMPLER_CUBE) {
+                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+
+                } else if ( fragmentSource.textureParams.contains ( textureName ) ) { // set texparms
                     setGlTexParameter ( fragmentSource.textureParams[textureName] );
                 } else { // User did not set texparms Disable mip-mapping per default.
                     QMap<QString, QString> map;
@@ -614,7 +659,8 @@ void DisplayWidget::setupFragmentShader() {
                 shaderProgram->setUniformValue ( l, ( GLuint ) u );
                 u++;
             } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
-        } else WARNING ( tr("Unused sampler2D uniform: ") + textureName );
+        } else WARNING ( tr("Unused sampler uniform: ") + textureName );
+        
     }
     clearTextureCache ( &textureCacheUsed );
 }
@@ -1090,7 +1136,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
     for (int i = 0; i < count; i++) {
 
-        GLsizei bufSize = 64;
+        GLsizei bufSize = 256;
         GLsizei length;
         GLint size;
         GLenum type;
@@ -1103,7 +1149,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         QString uniformName = (char *)name;
         QString uniformValue;
         
-        // find a value to go with the name
+        // find a value to go with the name index in the program may not be the same as index in our list
         for( int n=0; n < vw.count(); n++) {
             if(uniformName == vw[n]->getName()) {
                 uniformValue = vw[n]->getValueAsText();
