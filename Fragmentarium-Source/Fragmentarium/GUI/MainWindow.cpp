@@ -61,7 +61,9 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     lastStoredTime = 0;
     bufferSizeMultiplier = 1;
     exrMode = false;
+#ifdef USE_OPEN_EXR
     exrToolsMenu = 0;
+#endif
     // M Benesi "Spray gun" MainWindow
     fragHasFeedbackVars = false;
     feedbackindex = 0;
