@@ -1,4 +1,36 @@
-Fragmentarium 2.0 beta
+Version 2.0.b ("beta"). 
+
+Fragmentarium is a cross-platform application for exploring pixel based graphics on the GPU.
+
+Originally created by Mikael Hvidtfeldt Christensen.
+
+It is similar to Adobe's Pixel Bender, but uses pure GLSL.
+
+Features:
+* Multi-tabbed IDE, with GLSL syntax highlighting
+* User widgets to manipulate parameter settings.
+* Different 'mouse to GLSL' mapping schemes
+* Modular GLSL programming - include other fragments
+* Includes simple raytracer for distance estimated systems
+* Many examples including Mandelbulb, Mandelbox, Kaleidoscopic IFS, and Julia Quaternion.
+
+Licensed and distributed under the LPGL or GPL license.
+
+Notice: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.
+
+Acknowledgement
+
+Much of the inspiration and formulas for Fragmentarium came from the community at FractalForums.com, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.
+
+The icons used are part of the Everaldo: Crystal project. 
+
+Fragmentarium is built using the Qt cross-platform GUI framework. 
+
+Translations by Fractal Forums users:
+* Russian SCORPION
+* Russian Crist-JRoger
+* German Sabine
+* Dutch Sabine
 
 Please read the FAQ, before asking questions: 
 http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/
@@ -6,14 +38,18 @@ http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/
 For examples of images take a look at the Flickr Fragmentarium stream:
 http://www.flickr.com/groups/fragmentarium/
 
+More information can be found at:
+http://www.fractalforums.com/fragmentarium/
+
 Simple examples of the major differences between this version and 1.0:
-3Dickulus-HOW-TO.txt
+file -> 3Dickulus-HOW-TO.txt
 
 All changes since v0.95:
-3Dickulus.changes
+file -> 3Dickulus.changes
 
-Testing double types:
-(GL => 4.0 required)
-Examples/Experimental/DoubleTest.frag
-Examples/Include/Progressive2D-4.frag
-Examples/Include/BufferShader-4.frag
+2.0.b testing double types: (GL => 4.0 required)
+* Examples/Experimental/DoubleTest.frag
+* Examples/Include/Progressive2D-4.frag
+* Examples/Include/BufferShader-4.frag
+
+
