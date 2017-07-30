@@ -63,7 +63,7 @@ namespace Fragmentarium {
                 spinner->setValue(defaultValue);
                 l->addWidget(spinner);
 
-                connect(spinner, SIGNAL(valueChanged(double)), this, SLOT(spinnerChanged(double)));
+                connect(spinner, SIGNAL(editingFinished()), this, SLOT(spinnerChanged()));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
 
                 m_anim = new QPropertyAnimation(this,"value");
@@ -113,21 +113,19 @@ namespace Fragmentarium {
             void changed();
 
         protected slots:
-            void spinnerChanged(double d) {
+            void spinnerChanged() {
                 // our value comes from the spin box
-                // double val = (d-minimum)/(maximum-minimum);
                 // the slider must be kept quiet while adjusting from spinner
                 slider->blockSignals(true);
-                slider->setValue(d*scale);
+                slider->setValue(spinner->value()*scale);
                 slider->blockSignals(false);
                 // let the main gui thread know something happened
                 emit changed();
               
             }
-
             void sliderChanged(int i) {
                 // our value is calculated from the slider position
-                double val = (i/scale);//*(maximum-minimum)+minimum;
+                double val = (i/scale);
                 // the spinner must be kept quiet while adjusting from slider
                 spinner->blockSignals(true);
                 spinner->setValue(val);
@@ -186,8 +184,6 @@ namespace Fragmentarium {
         };
 
 
-
-
         // A helper class (combined int slider+spinner)
         class IntComboSlider : public QWidget {
             Q_OBJECT
@@ -210,7 +206,7 @@ namespace Fragmentarium {
                 spinner->setValue(defaultValue);
                 l->addWidget(spinner);
 
-                connect(spinner, SIGNAL(valueChanged(int)), this, SLOT(spinnerChanged(int)));
+                connect(spinner, SIGNAL(editingFinished()), this, SLOT(spinnerChanged()));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
             }
 
@@ -221,7 +217,7 @@ namespace Fragmentarium {
             void changed();
 
         protected slots:
-            void spinnerChanged(int) {
+            void spinnerChanged() {
                 int val = spinner->value();
                 slider->blockSignals(true);
                 slider->setValue(val);
@@ -231,9 +227,9 @@ namespace Fragmentarium {
 
             void sliderChanged(int) {
                 int val = slider->value();
-		spinner->blockSignals(true);
+                spinner->blockSignals(true);
                 spinner->setValue(val);
-		spinner->blockSignals(false);
+                spinner->blockSignals(false);
                 emit changed();
             }
 
@@ -342,7 +338,6 @@ namespace Fragmentarium {
             QComboBox* comboBox;
             QPushButton* pushButton;
             FileManager* fileManager;
-	    // defaultValue after fileManager prevents "initialized after reorder" warning
             QString defaultValue;
         };
 
@@ -380,7 +375,7 @@ namespace Fragmentarium {
             double max;
         };
 
-        /// A widget editor for a float variable.
+        /// A widget editor for a float2 variable.
         class Float2Widget : public VariableWidget {
         public:
             Float2Widget(QWidget* parent, QWidget* variableEditor, QString name, QVector2D defaultValue, QVector2D min, QVector2D max);
@@ -428,7 +423,7 @@ namespace Fragmentarium {
         };
 
 
-        /// A widget editor for a float variable.
+        /// A widget editor for a float3 variable.
         class Float3Widget : public VariableWidget {
             Q_OBJECT
         public:
@@ -477,7 +472,7 @@ namespace Fragmentarium {
             QVector3D max;
         };
 
-        /// A widget editor for a float variable.
+        /// A widget editor for a float4 variable.
         class Float4Widget : public VariableWidget {
             Q_OBJECT
         public:
