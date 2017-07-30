@@ -312,8 +312,8 @@ void Float3Widget::n3Changed() {
         double y = comboSlider2->getValue();
         double z = comboSlider3->getValue();
         double a = sqrt((1.0-z*z)/(y*y+x*x));
-        //if (y*y+x*x == 0) {
-        if (fabs(y*y+x*x)<1E-8) {
+        if (y*y+x*x == 0) {
+//         if (fabs(y*y+x*x)<1E-8) {
             a = 0;
             comboSlider3->blockSignals(true);
             comboSlider3->setValue((z>0) ? 1.0 : -1.0);
