@@ -106,7 +106,7 @@ macx {
     RC_ICONS = $$PWD/./Icons/fileicons/Fragmentarium.icns
     MediaFiles.files = Examples
     MediaFiles.files += fqScript
-    MediaFiles.files += misc
+    MediaFiles.files += Misc
     MediaFiles.path = Contents/MacOS
     QMAKE_BUNDLE_DATA += MediaFiles
 }
