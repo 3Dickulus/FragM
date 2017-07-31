@@ -61,9 +61,10 @@ namespace Fragmentarium {
                 spinner->setMaximum(maximum);
                 spinner->setMinimum(minimum);
                 spinner->setValue(defaultValue);
+                spinner->setKeyboardTracking(false);
                 l->addWidget(spinner);
 
-                connect(spinner, SIGNAL(editingFinished()), this, SLOT(spinnerChanged()));
+                connect(spinner, SIGNAL(valueChanged(double)), this, SLOT(spinnerChanged(double)));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
 
                 m_anim = new QPropertyAnimation(this,"value");
@@ -83,18 +84,10 @@ namespace Fragmentarium {
               }
             }
             
-            void setValue(double d) {
-                // the parts of the combo widget must be quiet when we set them
-                spinner->blockSignals(true);
-                slider->blockSignals(true);
-                spinner->setValue(d);
-                // double val = (d-minimum)/(maximum-minimum);
-                slider->setValue(d*scale);
-                spinner->blockSignals(false);
-                slider->blockSignals(false);
-                // let the main gui thread know something happened
-                emit changed();
-            }
+            QPropertyAnimation *m_anim;
+            int m_framestart, m_framefin; // firstframe lastframe
+            int m_loops;
+            int m_pong;
             
             double getMin() { return minimum; }
             double getMax() { return maximum; }
@@ -104,23 +97,21 @@ namespace Fragmentarium {
             int getLoops() { return m_loops; }
             int getPong() { return m_pong; }
 
-            QPropertyAnimation *m_anim;
-            int m_framestart, m_framefin; // firstframe lastframe
-            int m_loops;
-            int m_pong;
+        public slots:
+            void setValue(double d) { spinner->setValue(d); }
 
         signals:
             void changed();
 
         protected slots:
-            void spinnerChanged() {
+            void spinnerChanged(double d) {
                 // our value comes from the spin box
                 // the slider must be kept quiet while adjusting from spinner
                 slider->blockSignals(true);
-                slider->setValue(spinner->value()*scale);
+                slider->setValue(d*scale);
                 slider->blockSignals(false);
                 // let the main gui thread know something happened
-                emit changed();
+                 emit changed();
               
             }
             void sliderChanged(int i) {
@@ -204,29 +195,29 @@ namespace Fragmentarium {
                 spinner->setMaximum(maximum);
                 spinner->setMinimum(minimum);
                 spinner->setValue(defaultValue);
+                spinner->setKeyboardTracking(false);
                 l->addWidget(spinner);
 
-                connect(spinner, SIGNAL(editingFinished()), this, SLOT(spinnerChanged()));
+                connect(spinner, SIGNAL(valueChanged(int)), this, SLOT(spinnerChanged(int)));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
             }
 
             int getValue() { return spinner->value(); }
+        public slots:
             void setValue(int i) { spinner->setValue(i<min?min:i>max?max:i); }
 
 	signals:
             void changed();
 
         protected slots:
-            void spinnerChanged() {
-                int val = spinner->value();
+            void spinnerChanged(int val) {
                 slider->blockSignals(true);
                 slider->setValue(val);
                 slider->blockSignals(false);
                 emit changed();
             }
 
-            void sliderChanged(int) {
-                int val = slider->value();
+            void sliderChanged(int val) {
                 spinner->blockSignals(true);
                 spinner->setValue(val);
                 spinner->blockSignals(false);
