@@ -395,7 +395,7 @@ void Float4Widget::setValue(QVector4D v) {
     comboSlider1->setValue(v.x());
     comboSlider2->setValue(v.y());
     comboSlider3->setValue(v.z());
-    comboSlider3->setValue(v.w());
+    comboSlider4->setValue(v.w());
 }
 
 QString Float4Widget::getUniqueName() {
