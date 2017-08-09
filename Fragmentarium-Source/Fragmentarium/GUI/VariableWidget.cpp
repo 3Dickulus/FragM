@@ -329,13 +329,13 @@ void Float3Widget::n3Changed() {
 
 QString Float3Widget::getUniqueName() {
     if (normalize) {
-        return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg("[0 0 0]").arg("[0 0 0]");
+        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg("[0 0 0]").arg("[0 0 0]");
     } else {
 
         QString f = QString("[%1 %2 %3]").arg(min.x()).arg(min.y()).arg(min.z());
         QString t = QString("[%1 %2 %3]").arg(max.x()).arg(max.y()).arg(max.z());
 
-        return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
     }
 }
 
@@ -401,7 +401,7 @@ void Float4Widget::setValue(QVector4D v) {
 QString Float4Widget::getUniqueName() {
                 QString f = QString("[%1 %2 %3 %4]").arg(min.x()).arg(min.y()).arg(min.z()).arg(min.w());
                 QString t = QString("[%1 %2 %3 %4]").arg(max.x()).arg(max.y()).arg(max.z()).arg(max.w());
-                return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+                return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
 }
 
 QString Float4Widget::toString() {
