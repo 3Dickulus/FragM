@@ -307,7 +307,7 @@ namespace Fragmentarium {
             virtual void updateTextures(FragmentSource* fs, FileManager* fileManager);
             virtual void setLockType(LockType /*lt*/) { lockType = AlwaysLocked; } // cannot change this
             QString getValue() ;
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()); }
             void reset() { comboBox->setEditText(defaultValue); }
             QString getLockedSubstitution() { return QString(); }
             QString getLockedSubstitution2() { return QString(); }
@@ -338,7 +338,7 @@ namespace Fragmentarium {
         public:
             /// FloatVariable constructor.
             FloatWidget(QWidget* parent, QWidget* variableEditor, QString name, double defaultValue, double min, double max);
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(min).arg(max); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(min).arg(max); }
             virtual QString getValueAsText() {
                 int p = FDEC;
                 if(isDouble()) p = DDEC;
@@ -374,7 +374,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() {
                 QString f = QString("[%1 %2]").arg(min.x()).arg(min.y());
                 QString t = QString("[%1 %2]").arg(max.x()).arg(max.y());
-                return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+                return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
             }
 
             virtual QString getValueAsText() {
@@ -515,7 +515,7 @@ namespace Fragmentarium {
         public:
             /// FloatVariable constructor.
             ColorWidget(QWidget* parent, QWidget* variableEditor, QString name, QVector3D defaultValue);
-            virtual QString getUniqueName() { return QString("%0:%1").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2").arg(group).arg(getName()); }
             virtual QString getValueAsText() {
                 QVector3D t = colorChooser->getValue();
                 int p = FDEC;
@@ -548,7 +548,7 @@ namespace Fragmentarium {
         public:
             /// FloatVariable constructor.
             FloatColorWidget(QWidget* parent, QWidget* variableEditor, QString name, double defaultValue, double min, double max, QVector3D defaultColorValue);
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(min).arg(max); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(min).arg(max); }
             virtual QString getValueAsText() {
                 QVector3D t = colorChooser->getValue();
                 int p = FDEC;
@@ -585,7 +585,7 @@ namespace Fragmentarium {
         public:
             /// IntVariable constructor.
             IntWidget(QWidget* parent, QWidget* variableEditor, QString name, int defaultValue, int min, int max);
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(min).arg(max); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(min).arg(max); }
             virtual QString getValueAsText() { return QString::number(comboSlider->getValue()); };
             virtual QString toString();
             virtual void fromString(QString string);
@@ -609,7 +609,7 @@ namespace Fragmentarium {
         public:
             /// BoolVariable constructor.
             BoolWidget(QWidget* parent, QWidget* variableEditor, QString name, bool defaultValue);
-            virtual QString getUniqueName() { return QString("%0:%1").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2").arg(group).arg(getName()); }
             virtual QString getValueAsText() { return (checkBox->isChecked()?"true":"false"); }
             virtual QString toString();
             virtual void fromString(QString string);
