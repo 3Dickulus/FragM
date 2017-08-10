@@ -97,7 +97,7 @@ namespace Fragmentarium {
             FloatParameter(QString group, QString name,QString tooltip,  double from, double to, double defaultValue) :
                 GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(from).arg(to); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to); }
             double getFrom() { return from; }
             double getTo() { return to; }
             double getDefaultValue() { return defaultValue; }
@@ -112,7 +112,7 @@ namespace Fragmentarium {
             SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue) :
                 GuiParameter(group, name, tooltip), defaultValue(defaultValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()); }
             QString getDefaultValue() { return defaultValue; }
         private:
             QString defaultValue;
@@ -126,7 +126,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() {
                 QString f = QString("[%1 %2]").arg(from.x()).arg(from.y());
                 QString t = QString("[%1 %2]").arg(to.x()).arg(to.y());
-                return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+                return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
             }
             QVector2D getFrom() { return from; }
             QVector2D getTo() { return to; }
@@ -145,7 +145,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() {
                 QString f = QString("[%1 %2 %3]").arg(from.x()).arg(from.y()).arg(from.z());
                 QString t = QString("[%1 %2 %3]").arg(to.x()).arg(to.y()).arg(to.z());
-                return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+                return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
             }
             QVector3D getFrom() { return from; }
             QVector3D getTo() { return to; }
@@ -164,7 +164,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() {
                 QString f = QString("[%1 %2 %3 %4]").arg(from.x()).arg(from.y()).arg(from.z()).arg(from.w());
                 QString t = QString("[%1 %2 %3 %4]").arg(to.x()).arg(to.y()).arg(to.z()).arg(to.w());
-                return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(f).arg(t);
+                return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
             }
             QVector4D getFrom() { return from; }
             QVector4D getTo() { return to; }
@@ -180,7 +180,7 @@ namespace Fragmentarium {
             ColorParameter(QString group, QString name,QString tooltip, QVector3D defaultValue) :
                 GuiParameter(group,name, tooltip), defaultValue(defaultValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2").arg(group).arg(getName()); }
             QVector3D getDefaultValue() { return defaultValue; }
         private:
             QVector3D defaultValue;
@@ -192,7 +192,7 @@ namespace Fragmentarium {
             FloatColorParameter(QString group, QString name,QString tooltip, float defaultValue, float from, float to, QVector3D defaultColorValue) :
                 GuiParameter(group,name, tooltip), defaultValue(defaultValue), from(from), to(to), defaultColorValue(defaultColorValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(from).arg(to); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to); }
             QVector3D getDefaultColorValue() { return defaultColorValue; }
             double getFrom() { return from; }
             double getTo() { return to; }
@@ -209,7 +209,7 @@ namespace Fragmentarium {
             BoolParameter(QString group, QString name, QString tooltip,bool defaultValue) :
                 GuiParameter(group, name, tooltip), defaultValue(defaultValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1").arg(group).arg(getName()); }
+            virtual QString getUniqueName() { return QString("%1:%2").arg(group).arg(getName()); }
             bool getDefaultValue() { return defaultValue; }
         private:
             bool defaultValue;
@@ -221,7 +221,7 @@ namespace Fragmentarium {
             IntParameter(QString group, QString name, QString tooltip, int from, int to, int defaultValue) :
                 GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
-            virtual QString getUniqueName() { return QString("%0:%1:%2:%3").arg(group).arg(getName()).arg(from).arg(to); }
+            virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to); }
             int getFrom() { return from; }
             int getTo() { return to; }
             int getDefaultValue() { return defaultValue; }
