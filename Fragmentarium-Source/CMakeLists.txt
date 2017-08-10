@@ -7,6 +7,7 @@ set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
+find_package ( OpenGL REQUIRED )
 find_package ( Qt5Core REQUIRED )
 find_package ( Qt5OpenGL REQUIRED )
 find_package ( Qt5Widgets REQUIRED )
@@ -14,6 +15,7 @@ find_package ( Qt5Gui REQUIRED )
 find_package ( Qt5Xml REQUIRED )
 find_package ( Qt5Script REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
+
 
 SET ( CMAKE_CXX_FLAGS "-std=c++11" )
 
@@ -28,9 +30,6 @@ IF( NVIDIAGL4PLUS )
   ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
 ENDIF ()
 
-FIND_LIBRARY(OpenGL_LIBRARY GL )
-
-MARK_AS_ADVANCED (OpenGL_LIBRARY)
 
 IF ( USE_OPEN_EXR )
 
@@ -62,6 +61,7 @@ ENDIF (USE_OPEN_EXR)
 add_definitions ( -Wall )
 
 include_directories (
+    ${OPENGL_INCLUDE_DIR}
 	${OpenEXR_INCLUDE_DIR}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
@@ -172,7 +172,7 @@ ENDIF(Qt5LinguistTools_FOUND)
 
 add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 
-target_link_libraries ( Fragmentarium-2.0.b ${OpenGL_LIBRARY} ${OpenEXR_LIBRARIES} )
+target_link_libraries ( Fragmentarium-2.0.b ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
 
 qt5_use_modules(Fragmentarium-2.0.b OpenGL Widgets Gui Xml Script)
 
