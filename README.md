@@ -72,7 +72,7 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + Anisotropic filtering for textures
 + Mipmaps for textures
 + mklinux.sh and mkmingw.bat will compile OpenEXR static libs and Fragmentarium and install exe + Examples/* + Misc/* to a working folder.
-+ mklinux.sh should also work for OSX ( thanks visual.bermarte @ fractalforums.com :D )
++ mklinux.sh should also work for OSX ( thanks visual.bermarte @ fractalforums.com :D and valera-rozuvan@FF )
 + Tool bars remain as user set them when switching to/from fullscreen
 + Textures are persistent when switching to/from fullscreen and when switching textures
 + LoopPlay only loops in "Play" mode
@@ -104,7 +104,7 @@ This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representi
 + Qt5.4 loads EXR format but doesn't save this format so still need OpenEXR static libs for that
 + hide unused widgets unless they are locked
 + added VariableEditor::getWidgetNames(), returns a QStringList of all variable widget names
-+ fixed broken cmdline option -s (Thanks visual.bermarte@FF )
++ fixed broken cmdline option -s (Thanks visual.bermarte@FF)
 + added ETA to progress dialog
 + changed "F9" behavior: if keyframes exist highlight the current keyframe preset in the text editor, if no keyframes highlight the current preset
 + added "Save" feature to image preview dialog
