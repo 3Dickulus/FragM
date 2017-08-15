@@ -14,13 +14,15 @@ namespace SyntopiaCore {
         }
 
         ListWidgetLogger::~ListWidgetLogger() {
+            listWidget->clear();
+            delete [] listWidget;
+            listWidget = 0;
         }
 
         void ListWidgetLogger::log(QString message, LogLevel priority) {
             if (listWidget->count() > 120) {
                 listWidget->setUpdatesEnabled(false);
                 while (listWidget->count() > 130) {
-//                      delete(listWidget->takeItem(0));
                      listWidget->removeItemWidget(listWidget->item(0));
                 }
                 listWidget->setUpdatesEnabled(true);
