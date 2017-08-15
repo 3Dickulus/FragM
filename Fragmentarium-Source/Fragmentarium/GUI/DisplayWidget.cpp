@@ -196,7 +196,6 @@ void DisplayWidget::setFragmentShader ( FragmentSource fs ) {
 
     requireRedraw ( true );
     setupFragmentShader();    
-    setupBufferShader();
 }
 
 void DisplayWidget::requireRedraw ( bool clear ) {
@@ -662,6 +661,7 @@ vec3  backgroundColor(vec3 dir) {
         } else WARNING ( tr("Unused sampler uniform: ") + textureName );
         
     }
+    setupBufferShader();
     clearTextureCache ( &textureCacheUsed );
 }
 
@@ -1373,8 +1373,11 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
         }
     }
     /// copy the depth value @ mouse XY
-    if(!zapLocked)
-      glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &ZAtMXY );
+    if(!zapLocked) {
+      float zatmxy;
+      glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
+      ZAtMXY = zatmxy;
+    }
     // restore state
     glPopAttrib();
    
@@ -1909,7 +1912,6 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
     buttonDown=false;
     resetZappaStatus();
     if( zapLocked ) return;
-
     // if the user just clicked and didn't drag update the statusbar
     if ( ev->pos() == mouseXY ) {
         QVector3D mXYZ = cameraControl->screenTo3D( mouseXY.x(), mouseXY.y(), ZAtMXY );
