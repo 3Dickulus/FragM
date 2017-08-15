@@ -180,12 +180,12 @@ void MainWindow::newFile()
 }
 
 void MainWindow::insertPreset() {
-    bool ok;
+    bool ok = false;
     QString newPreset;
     QTextCursor tc = getTextEdit()->textCursor();
 
     if(tc.hasSelection() &&
-            tc.selectedText().contains("#Preset", Qt::CaseInsensitive) &&
+            tc.selectedText().contains("#preset", Qt::CaseInsensitive) &&
             tc.selectedText().contains("#endpreset", Qt::CaseInsensitive)
       ) { /// if we have selected text try to extract name
         newPreset = tc.selection().toPlainText();
@@ -212,7 +212,7 @@ void MainWindow::insertPreset() {
         if(newPresetName.contains("KeyFrame.")) { /// adding keyframe
             getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getCameraSettings() + "\n#endpreset\n");
             addKeyFrame(newPresetName);
-        } else if(newPresetName.contains("Range")) { /// adding parameter easing range
+        } else if(newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
             if(variableEditor->hasEasing()) {
                 getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getEngine()->getCurveSettings().join("\n") + "\n#endpreset\n");
                 addKeyFrame(newPresetName);
@@ -2737,6 +2737,24 @@ TextEdit* MainWindow::insertTabPage(QString filename) {
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
     QString s = tr("// Write fragment code here...\r\n");
+    s = "#include \"DE-Raytracer.frag\" \r\n\
+\r\n\
+float DE(vec3 pos) {\r\n\
+	return abs(length(abs(pos)+vec3(-1.0))-1.2);\r\n\
+}\r\n\
+\r\n\
+#preset Default\r\n\
+FudgeFactor = 0.9\r\n\
+BoundingSphere = 5\r\n\
+Detail = -0.8\r\n\
+Specular = 2.25\r\n\
+SpecularExp = 33.332\r\n\
+SpotLight = 1,1,1,0.02174\r\n\
+SpotLightDir = -0.5619,0.06666\r\n\
+Glow = 1,1,1,0.21053\r\n\
+OrbitStrength = 0\r\n\
+#endpreset\r\n";
+
     textEdit->setPlainText(s);
 
     bool loadingSucceded = false;
