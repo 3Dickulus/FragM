@@ -14,8 +14,6 @@
 #include "../GUI/FileManager.h"
 
 #include "../../SyntopiaCore/Exceptions/Exception.h"
-// #include "../../SyntopiaCore/Math/Vector3.h"
-// #include "../../SyntopiaCore/Math/Vector4.h"
 #include "../../SyntopiaCore/Logging/Logging.h"
 
 namespace Fragmentarium {
