@@ -25,8 +25,8 @@ namespace Parser {
     clearOnChange ( true ),
     iterationsBetweenRedraws ( 0 ),
     subframeMax ( -1 ),
-    depthToAlpha ( true ),
-    autoFocus ( true ) {
+    depthToAlpha ( false ),
+    autoFocus ( false ) {
 }
 
 // Helpers:
@@ -165,15 +165,15 @@ FragmentSource Preprocessor::createAutosaveFragment ( QString input, QString fil
     // And remove any presets...
     for ( int i = 0; i < fs.source.count(); i++ ) {
         QString s = fs.source[i];
-        if ( s.trimmed().startsWith ( "#preset" ) && !s.right ( 12 ).startsWith ( "KeyFrame" ) ) {
-            s = s.remove ( "#preset" ).trimmed();
+        if ( s.trimmed().startsWith ( "#preset", Qt::CaseInsensitive ) && !s.right ( 12 ).startsWith ( "KeyFrame", Qt::CaseInsensitive ) ) {
+            s = s.remove ( "#preset", Qt::CaseInsensitive ).trimmed();
             QString name = s;
             fs.source.removeAt ( i );
             fs.lines.removeAt ( i );
             int j = i;
             bool foundEnd = false;
             while ( j< fs.source.count() ) {
-                if ( fs.source[j].trimmed().startsWith ( "#endpreset" ) ) {
+                if ( fs.source[j].trimmed().startsWith ( "#endpreset", Qt::CaseInsensitive ) ) {
                     fs.source.removeAt ( j );
                     fs.lines.removeAt ( j );
                     foundEnd = true;
@@ -239,8 +239,8 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
     bool inVertex = false;
     for ( int i = 0; i < fs.source.count(); i++ ) {
         QString s = fs.source[i];
-        if ( s.trimmed().startsWith ( "#preset" ) ) {
-            s = s.remove ( "#preset" ).trimmed();
+        if ( s.trimmed().startsWith ( "#preset", Qt::CaseInsensitive ) ) {
+            s = s.remove ( "#preset", Qt::CaseInsensitive ).trimmed();
             QString name = s;
             QStringList preset;
             fs.source.removeAt ( i );
@@ -248,7 +248,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             int j = i;
             bool foundEnd = false;
             while ( j< fs.source.count() ) {
-                if ( fs.source[j].trimmed().startsWith ( "#endpreset" ) ) {
+                if ( fs.source[j].trimmed().startsWith ( "#endpreset", Qt::CaseInsensitive ) ) {
                     fs.source.removeAt ( j );
                     fs.lines.removeAt ( j );
                     foundEnd = true;
@@ -265,7 +265,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             s = fs.source[i];
         }
 
-        if ( !s.contains ( "#replace" ) ) {
+        if ( !s.contains ( "#replace", Qt::CaseInsensitive ) ) {
             for ( QMap<QString, QString>::const_iterator it = replaceMap.constBegin(); it != replaceMap.constEnd(); ++it ) {
                 if ( s.contains ( it.key() ) ) {
                     fs.source[i] = s.replace ( it.key(),replaceMap[it.key()] );
@@ -275,13 +275,13 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             }
         }
 
-        if ( s.trimmed().startsWith ( "#camera" ) ) {
+        if ( s.trimmed().startsWith ( "#camera", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
-            QString c = s.remove ( "#camera" );
+            QString c = s.remove ( "#camera", Qt::CaseInsensitive );
             fs.camera = c.trimmed();
-        } else if ( s.trimmed().startsWith ( "#TexParameter" ) ) {
+        } else if ( s.trimmed().startsWith ( "#TexParameter" , Qt::CaseInsensitive) ) {
             fs.source[i] = "// " + s;
-            QString c = s.remove ( "#TexParameter" ).trimmed();
+            QString c = s.remove ( "#TexParameter", Qt::CaseInsensitive ).trimmed();
             QStringList l = c.split ( " ", QString::SkipEmptyParts );
             if ( l.count() !=3 ) {
                 WARNING ( "#TexParameter expects three arguments! Found: "+ l.join ( "," ) );
@@ -290,23 +290,23 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             }
         } else if ( s.trimmed().split(" ").at(0) == ( "#buffer" ) ) {
             fs.source[i] = "// " + s;
-            QString c = s.remove ( "#buffer" );
+            QString c = s.remove ( "#buffer", Qt::CaseInsensitive );
             fs.buffer = c.trimmed();
-        } else if ( s.trimmed().startsWith ( "#donotrun" ) ) {
+        } else if ( s.trimmed().startsWith ( "#donotrun", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
-        } else if ( s.trimmed().startsWith ( "#group" ) ) {
+        } else if ( s.trimmed().startsWith ( "#group", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
-            QString c = s.remove ( "#group" );
+            QString c = s.remove ( "#group", Qt::CaseInsensitive );
             currentGroup = c.trimmed();
-        } else if ( s.trimmed().startsWith ( "#vertex" ) ) {
+        } else if ( s.trimmed().startsWith ( "#vertex", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
             inVertex = true;
-        } else if ( s.contains ( "#endvertex" ) ) {
+        } else if ( s.contains ( "#endvertex", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
             inVertex = false;
-        } else if ( s.trimmed().startsWith ( "#info" ) ) {
+        } else if ( s.trimmed().startsWith ( "#info", Qt::CaseInsensitive ) ) {
             fs.source[i] = "// " + s;
-            QString c = s.remove ( "#info" ).trimmed();
+            QString c = s.remove ( "#info", Qt::CaseInsensitive ).trimmed();
             SCRIPTINFO ( c );
         } else if ( !inVertex && moveMain && main.indexIn ( s ) != -1 ) {
             //INFO("Found main: " + s );
