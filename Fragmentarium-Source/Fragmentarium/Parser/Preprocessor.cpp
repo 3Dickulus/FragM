@@ -527,6 +527,19 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
         fs.source.append ( "" );
     }
 
+    if(fs.source.count() > 1 && fs.vertexSource.count() > 1) {
+        // To ensure that all parts have the same #version
+        if(fs.source.at(0).startsWith("#version")) {
+            if(!fs.vertexSource.at(0).startsWith("#version")) {
+                fs.vertexSource.insert(0,fs.source.at(0));
+            }
+            if(!(fs.vertexSource.at(0) == fs.source.at(0))) {
+                WARNING("Fragment and Vertex do not have the same #version");
+                WARNING(QString("Vertex: %1 Fragment: %2").arg(fs.vertexSource.at(0)).arg(fs.source.at(0)));
+            }
+        }
+    }
+    
     return fs;
 }
 }
