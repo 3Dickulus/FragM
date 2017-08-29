@@ -77,7 +77,7 @@ namespace Fragmentarium {
              
               bool ok;
               int i = QInputDialog::getInt(this, objectName(),
-                                           tr("Slider Step Multiplier"), slider->singleStep(), 1, 10000, 1, &ok);
+                                           tr("Slider Step Multiplier"), slider->singleStep(), 1, 100000000, 1, &ok);
               if (ok){
                 slider->setSingleStep(i);
                 slider->setPageStep(i*10);
