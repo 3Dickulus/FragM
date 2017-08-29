@@ -74,7 +74,8 @@ vec2 wang_hash_fp(vec2 v)
 {
         uint ix = floatBitsToUint(v.x);
         uint iy = floatBitsToUint(v.y);
-        return vec2(wang_hash(ix),wang_hash(iy)) / 4294967296.0;
+        // I use two hash calls to untangle pos.x and pos.y
+        return vec2(float(wang_hash(wang_hash(ix)+iy)), float(wang_hash(wang_hash(iy)+ix))) / 4294967296.0;
 }
 
 vec3 wang_hash_fp(vec3 v)
@@ -82,7 +83,7 @@ vec3 wang_hash_fp(vec3 v)
         uint ix = floatBitsToUint(v.x);
         uint iy = floatBitsToUint(v.y);
         uint iz = floatBitsToUint(v.z);
-        return vec3(wang_hash(ix),wang_hash(iy),wang_hash(iz)) / 4294967296.0;
+        return vec3(float(wang_hash(wang_hash(wang_hash(ix)+iy)+iz)),float(wang_hash(wang_hash(wang_hash(iy)+ix)+iz)),float(wang_hash(wang_hash(wang_hash(iz)+ix)+iy))) / 4294967296.0;
 }
 
 #endif
