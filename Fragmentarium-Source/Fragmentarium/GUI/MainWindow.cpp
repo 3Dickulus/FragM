@@ -92,8 +92,6 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     preprocessorMenu->addAction("#define DontClearOnChange", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#define IterationsBetweenRedraws 10", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#define SubframeMax 20", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#define AUTO_FOCUS", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#define DEPTH_TO_ALPHA", textEdit , SLOT(insertText()));
 
     QMenu *textureFlagsMenu = new QMenu(tr("2D Texture Options"), 0);
     textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit , SLOT(insertText()));
@@ -123,12 +121,11 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     uniformMenu->addAction("uniform samplerCube cubetex; file[cubetex.jpg]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec3 color; color[0.0,0.0,0.0]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec4 color; color[0.0,1.0,0.0,0.0,0.0,0.0]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform bool DepthToAlpha; checkbox[true]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform bool AutoFocus; checkbox[true]", textEdit , SLOT(insertText()));
 
     uniformMenu->insertMenu(0, textureFlagsMenu);
     
-    QMenu *presetMenu = new QMenu(tr("Presets"), 0);
-    presetMenu->addAction(tr("Insert Preset from Current Settings"),mainWindow, SLOT(insertPreset()));
-
     QMenu *includeMenu = new QMenu(tr("Include (from Preferences Paths)"), 0);
 
     QStringList filter;
@@ -143,10 +140,10 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     if (menu->actions().count() > 0) before = menu->actions()[0];
     menu->insertMenu(before, preprocessorMenu);
     menu->insertMenu(before, uniformMenu);
-    menu->insertMenu(before, presetMenu);
     menu->insertMenu(before, includeMenu);
 
     menu->insertSeparator(before);
+    menu->addAction(tr("Insert Preset from Current Settings"),mainWindow, SLOT(insertPreset()));
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
@@ -2526,6 +2523,7 @@ QString MainWindow::strippedName(const QString &fullFileName)
 }
 
 void MainWindow::showDebug() {
+
     logger->getListWidget()->clear();
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
@@ -2737,6 +2735,7 @@ TextEdit* MainWindow::insertTabPage(QString filename) {
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
     QString s = tr("// Write fragment code here...\r\n");
+/*    
     s = "#include \"DE-Raytracer.frag\" \r\n\
 \r\n\
 float DE(vec3 pos) {\r\n\
@@ -2754,7 +2753,7 @@ SpotLightDir = -0.5619,0.06666\r\n\
 Glow = 1,1,1,0.21053\r\n\
 OrbitStrength = 0\r\n\
 #endpreset\r\n";
-
+*/
     textEdit->setPlainText(s);
 
     bool loadingSucceded = false;
