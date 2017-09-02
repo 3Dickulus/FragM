@@ -115,6 +115,24 @@ void main(void){
 }
 #endvertex
 
+#group Camera
+uniform bool EquiRectangular; checkbox[false]
+// Sets focal plane to Target location
+uniform bool AutoFocus; checkbox[false]
+
+//Distance from camera to in focus zone
+uniform float FocalPlane; slider[0.01,1,50]
+uniform float Aperture; slider[0,0.00,0.5]
+//Width of the in focus zone. this value is relative to FocalPlane
+uniform float InFocusAWidth; slider[0,0,1]
+uniform bool DofCorrect; checkbox[true]
+//Number of sides for the diaphragm. 2->circular
+uniform int ApertureNbrSides; slider[2,5,10] Locked
+//Rotation of the diaphragm
+uniform float ApertureRot; slider[0,0,360]
+//For star shaped diphragms. Very limited
+uniform bool ApStarShaped; checkbox[false] Locked
+
 #group Raytracer
 
 #define PI  3.14159265358979323846264
@@ -140,21 +158,6 @@ varying vec3 Dir;
 varying vec3 UpOrtho;
 varying vec3 Right;
 
-// Sets focal plane to Target location
-uniform bool AutoFocus; checkbox[false]
-
-//Distance from camera to in focus zone
-uniform float FocalPlane; slider[0.01,1,50]
-uniform float Aperture; slider[0,0.00,0.5]
-//Width of the in focus zone. this value is relative to FocalPlane
-uniform float InFocusAWidth; slider[0,0,1]
-uniform bool DofCorrect; checkbox[true]
-//Number of sides for the diaphragm. 2->circular
-uniform int ApertureNbrSides; slider[2,5,10] Locked
-//Rotation of the diaphragm
-uniform float ApertureRot; slider[0,0,360]
-//For star shaped diphragms. Very limited
-uniform bool ApStarShaped; checkbox[false] Locked
 
 vec2 rand2(vec2 co){
 #ifdef WANG_HASH
@@ -285,12 +288,21 @@ void main() {
 
 	//jitter for multisampling
 	vec2 disc = uniformDisc(coord*float(1+subframe)); // subsample jitter
-	vec2 jitteredCoord = coord + AntiAliasScale*PixelScale.y*FOV*disc;
+	vec2 jitteredCoord;
 
+        if (EquiRectangular) {
+          jitteredCoord = AntiAliasScale*PixelScale*disc;
+        }
+        else {
+          jitteredCoord = coord + AntiAliasScale*PixelScale*FOV*disc;
+        }
 	// Offset for DoF
 	vec3 lensOffset =  r.x*Right + r.y*UpOrtho;
 	//"principal" ray direction
 	vec3 rayDir = (Dir+ jitteredCoord.x * Right + jitteredCoord.y * UpOrtho);
+        if (EquiRectangular) {
+          rayDir = equiRectangularDirection(viewCoord2, rayDir, UpOrtho, Right);
+        }
 	float rayDirLength=length(rayDir);
 	float FPO1= length( rayDir+lensOffset*( 1. - 1./FocalPlane + clamp( 1./FocalPlane-1., -InFocusAWidth, InFocusAWidth)));
 

@@ -65,6 +65,8 @@ void main(void)
 
 #group Camera
 uniform bool EquiRectangular; checkbox[false]
+// Sets focal plane to Target location
+uniform bool AutoFocus; checkbox[false]
 
 
 #group Raytracer
@@ -87,8 +89,6 @@ varying vec3 Dir;
 varying vec3 UpOrtho;
 varying vec3 Right;
 
-// Sets focal plane to Target location
-uniform bool AutoFocus; checkbox[false]
 
 #ifdef providesInit
 void init(); // forward declare

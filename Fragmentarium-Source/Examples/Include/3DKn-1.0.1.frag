@@ -79,6 +79,17 @@ void main(void)
 
 #group Camera
 uniform bool EquiRectangular; checkbox[false]
+//Distance from camera to in focus zone
+uniform float FocalPlane; slider[0.01,1,50]
+uniform float Aperture; slider[0,0.00,0.5]
+//Width of the in focus zone. this value is relative to FocalPlane
+uniform float InFocusAWidth; slider[0,0,1]
+//Number of sides for the diaphragm. 2->circular
+uniform int ApertureNbrSides; slider[2,5,10] Locked
+//Rotation of the diaphragm
+uniform float ApertureRot; slider[0,0,360]
+//For star shaped diphragms. Very limited
+uniform bool ApStarShaped; checkbox[false] Locked
 
 #group Raytracer
 
@@ -106,17 +117,6 @@ varying vec3 Dir;
 varying vec3 UpOrtho;
 varying vec3 Right;
 
-//Distance from camera to in focus zone
-uniform float FocalPlane; slider[0.01,1,50]
-uniform float Aperture; slider[0,0.00,0.5]
-//Width of the in focus zone. this value is relative to FocalPlane
-uniform float InFocusAWidth; slider[0,0,1]
-//Number of sides for the diaphragm. 2->circular
-uniform int ApertureNbrSides; slider[2,5,10] Locked
-//Rotation of the diaphragm
-uniform float ApertureRot; slider[0,0,360]
-//For star shaped diphragms. Very limited
-uniform bool ApStarShaped; checkbox[false] Locked
 
 vec2 rand2(vec2 co){
 #ifdef WANG_HASH
