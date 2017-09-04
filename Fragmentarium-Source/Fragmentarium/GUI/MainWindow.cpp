@@ -962,8 +962,8 @@ void MainWindow::enableZappaTools( bool doZap )
 }
 
 void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
-
-    if (!variableEditor || !shaderProgram) return;
+    
+    if (!variableEditor || !shaderProgram) return;    
     variableEditor->setUserUniforms(shaderProgram);
     setFeedbackUniforms(shaderProgram);
 }
@@ -3187,7 +3187,7 @@ void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u) {
         BoolWidget *btest = dynamic_cast<BoolWidget*>(variableEditor->getWidgetFromName("AutoFocus"));
         if(btest != NULL)
             if(btest->isChecked()) {
-                double d = e.distanceToLine(t,QVector3D());
+                double d = e.distanceToPoint(t);
                 r += QString("FocalPlane = %1\n").arg(d);
             }
     }
