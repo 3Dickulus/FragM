@@ -5,13 +5,13 @@
 // from an accumulated buffer.
 
 #vertex
-#version 400 compatibility
+
 out vec2 coord;
 
 void main(void)
 {
 	gl_Position =  gl_Vertex;
-	coord = gl_Vertex.xy;
+	coord = (gl_ProjectionMatrix*gl_Vertex).xy;
 }
 
 #endvertex

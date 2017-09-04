@@ -6,7 +6,6 @@
 // up anti-aliased 2D rendering.
 
 #vertex
-#version 400 compatibility
 
 #group Camera
 
@@ -26,8 +25,8 @@ void main(void)
 	double ar = pixelSize.y/pixelSize.x;
 	gl_Position =  gl_Vertex;
 	viewCoord = gl_Vertex.xy;
-	coord = (gl_Vertex.xy*vec2(ar,1.0))/vec2(Zoom)+vec2(Center);
-	aaScale = pixelSize/vec2(Zoom);
+	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom)+  vec2(Center));
+	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/float(Zoom);
 }
 
 #endvertex
