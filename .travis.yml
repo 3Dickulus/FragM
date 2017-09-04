@@ -1,0 +1,31 @@
+ 
+language: cpp
+dist: trusty
+
+os:
+  - linux
+ 
+branches:
+  only:
+    - master
+
+env:
+  matrix:
+    - CONFIG=Release
+
+compiler:
+  - gcc
+
+install:
+ - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+ - sudo apt-get update -qq
+ - sudo apt-get install qtbase5-dev qtdeclarative5-dev
+ - sudo apt-get install qt5-default qtbase5-dev-tools
+
+before_script:
+  - source /opt/qt56/bin/qt56-env.sh
+  - mkdir Fragmentarium-Source/build
+  - cd Fragmentarium-Source/build
+  - cmake ..
+
+script: make
