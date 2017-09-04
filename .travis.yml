@@ -18,12 +18,12 @@ before_install:
  - sudo apt-get -qq install g++-4.8 libc6-i386
 
 install:
- - sudo apt-add-repository -y ppa:beineri/opt-qt551-trusty
+ - sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
  - sudo apt-get -qq update
  - sudo apt-get install qt-latest qtcreator-latest
  
 before_script:
-  - source /opt/qt55/bin/qt55-env.sh
+  - source /opt/qt57/bin/qt57-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
   - cmake ..
