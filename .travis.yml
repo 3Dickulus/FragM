@@ -28,8 +28,7 @@ before_install:
 install:
  - sudo apt-add-repository ppa:beineri/opt-qt551-trusty
  - sudo apt-get -qq update
- - sudo apt-get -qq install qt55-meta
- - source /opt/qt55/bin/qt55-env.sh
+ - sudo apt-get -qq -y install qt55-meta
 # - sudo apt-get install qtbase55-dev
 # - sudo apt-get install qtbase55-dev-tools
 # - sudo apt-get install qtscript55-dev
@@ -38,6 +37,7 @@ install:
 # - sudo apt-get install qt55-default
  
 before_script:
+  - source /opt/qt55/bin/qt55-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
   - cmake ..
