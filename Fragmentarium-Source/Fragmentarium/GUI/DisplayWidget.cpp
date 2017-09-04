@@ -1005,13 +1005,13 @@ void DisplayWidget::setViewPort ( int w, int h ) {
 //   
 // 
 //   QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
-//   float fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toFloat();
+//   float fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
 //   QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D eye = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+//   QVector3D eye = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D target = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+//   QVector3D target = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D up = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+//   QVector3D up = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   
 //   float ascpectRatio = float( ( float ) width() / ( float ) height() );
 //   float zNear = 0.00001;
@@ -1115,9 +1115,10 @@ void DisplayWidget::setViewPort ( int w, int h ) {
 /// END 3DTexture
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
-    
+
     // this should speed things up a litte because we are only setting uniforms on the first subframe
     if(subframeCounter > 1) return;
+    
     // contains ALL uniforms in buffershader and shader program
     QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
 
@@ -1142,10 +1143,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         GLenum type;
         GLchar name[bufSize];
 
-        double x,y,z,w;
 
         glGetActiveUniform( programID, (GLuint)i, bufSize, &length, &size, &type, name);        
-        GLuint index = glGetUniformLocation(programID, name);
         QString uniformName = (char *)name;
         QString uniformValue;
         
@@ -1161,7 +1160,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         bool found = false;
         if (!uniformValue.isEmpty()) {
 
-            switch(type) {
+ #ifdef NVIDIAGL4PLUS
+          double x,y,z,w;
+          GLuint index = glGetUniformLocation(programID, name);
+          switch(type) {
 
                 case GL_BYTE:           tp = "BYTE "; found = false; break;
                 case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; found = false; break;
@@ -1186,7 +1188,6 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                 case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; found = false; break;
                 case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; found = false; break;
                 case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; found = false; break;
-                           
                 case GL_DOUBLE:         tp = "DOUBLE"; found = true;
                 glUniform1d(index, uniformValue.toDouble());
                 break;
@@ -1220,6 +1221,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                 default:
                 break;
             }
+#endif // NVIDIAGL4PLUS
 
             // type name and value to console
             qDebug() << tp << "\t" << uniformName << uniformValue;
@@ -1239,7 +1241,6 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         if(found) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
     qDebug() << " ";
-
     
 }
 
@@ -1273,11 +1274,12 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     if ( getState() == DisplayWidget::Tiled ) {
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
-
+        
         glLoadIdentity();
 
         glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
         glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
+        
     }
 
     cameraControl->transform ( pixelWidth(), pixelHeight() ); // -- Modelview + loadIdentity
@@ -1352,31 +1354,26 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     // finished with the shader
     shaderProgram->release();
     
-    // draw splines using depth buffer for occlusion... or not
-    if ( mainWindow->wantPaths() && cameraControl->getID() == "3D") {
-        if ( eyeSpline!=NULL && drawingState != Animation && !isContinuous() && drawingState != Tiled ) {
-            if ( mainWindow->wantSplineOcc() ) {
-              // this lets splines be visible when DEPTH_TO_ALPHA mode is active
-              if(depthToAlpha )
-                    glDepthFunc ( GL_ALWAYS );
-                else {
-                    glDepthFunc ( GL_LESS );    // closer to eye passes test
-                    glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
+    if (cameraControl->getID() == "3D") {
+        // draw splines using depth buffer for occlusion... or not
+        if ( mainWindow->wantPaths() ) {
+            if ( eyeSpline!=NULL && drawingState != Animation && !isContinuous() && drawingState != Tiled ) {
+                if ( mainWindow->wantSplineOcc() ) {
+                    glEnable ( GL_DEPTH_TEST ); // only testing
+                } else {
+                    glDisable ( GL_DEPTH_TEST );  // disable depth testing
                 }
-                glEnable ( GL_DEPTH_TEST ); // only testing
-            } else {
-                glDisable ( GL_DEPTH_TEST );  // disable depth testing
+                setPerspective();
+                drawSplines();
+                drawLookatVector();
             }
-            setPerspective();
-            drawSplines();
-            drawLookatVector();
         }
-    }
-    /// copy the depth value @ mouse XY
-    if(!zapLocked) {
-      float zatmxy;
-      glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
-      ZAtMXY = zatmxy;
+        /// copy the depth value @ mouse XY
+        if(!zapLocked && subframeCounter == 1) {
+        float zatmxy;
+        glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
+        ZAtMXY = zatmxy;
+        }
     }
     // restore state
     glPopAttrib();
@@ -1503,9 +1500,11 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glPopAttrib();
 
     if ( bufferShaderProgram ) bufferShaderProgram->release();
+    
     if ( buffer && !buffer->release() ) {
         WARNING ( tr("Failed to release target buffer") );
     }
+
 }
 
 /**
@@ -1772,7 +1771,7 @@ void DisplayWidget::timerSignal() {
 
             // If the render takes more than 0.5 seconds, we will directly measure fps from one frame.
             if ( ms>500 ) {
-                fps = 1000.0f/ ( ( double ) ms );
+                fps = 1000.0 / ( ( double ) ms );
                 mainWindow->setFPS ( fps );
             } else {
                 if ( drawingState == Animation ) {
@@ -1863,7 +1862,7 @@ void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
     if( zapLocked ) {
         QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
         QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-        QVector3D eye = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+        QVector3D eye = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
         ZAtMXY += (cameraControl->StepSize() * (ev->delta()/120.0) );
         QVector3D target = cameraControl->screenTo3D( ev->x(), ev->y(), ZAtMXY );
         QVector3D direction = (target-eye);
@@ -1920,12 +1919,30 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
         if(ev->button() == Qt::MiddleButton) {
           // SpotLightDir = polar coords vec2 DE-Raytracer.frag
           // LightPos = vec3 DE-Kn2.frag
-          if(ev->modifiers() == Qt::ControlModifier)
+          if(ev->modifiers() == Qt::ControlModifier) {
             // placement of light in DE-Kn2.frag
             mainWindow->setParameter( QString("LightPos = %1,%2,%3").arg(mXYZ.x()).arg(mXYZ.y()).arg(mXYZ.z()) );
-          else
+          } else {
             // placement of target
             mainWindow->setParameter( QString("Target = %1,%2,%3").arg(mXYZ.x()).arg(mXYZ.y()).arg(mXYZ.z()) );
+          }
+            // do we have autofocus widget
+            if(getFragmentSource()->autoFocus) {
+                // test the widget state
+                if( mainWindow->getParameter("AutoFocus") == "true") {
+                    // only do this for 3D scenes
+                    if(cameraID() == "3D" ) {
+                        // get the eye pos
+                        QStringList in = mainWindow->getParameter("Eye").split(",");
+                        // convert parameter to 3d vector
+                        QVector3D e = QVector3D(in.at(0).toDouble(),in.at(1).toDouble(),in.at(2).toDouble());
+                        // calculate distance between camera and target                    
+                        double d = e.distanceToPoint(mXYZ);
+                        // set the focal plane to this distance
+                        mainWindow->setParameter( "FocalPlane", d );
+                    }
+                }
+            }
         }
     }
     // normal process when mouse is released after moving
@@ -1934,6 +1951,7 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
         requireRedraw ( clearOnChange );
         ev->accept();
     }
+        
 }
 
 void DisplayWidget::mousePressEvent ( QMouseEvent* ev )  {
@@ -2092,13 +2110,13 @@ void DisplayWidget::drawLookatVector() {
 void DisplayWidget::setPerspective() {
 
     QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
-    double fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toFloat();
+    double fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
     QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D eye = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+    QVector3D eye = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
     cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D target = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+    QVector3D target = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
     cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D up = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+    QVector3D up = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
     
     double ascpectRatio = double( ( double ) width() / ( double ) height() );
     double zNear = 0.00001;
@@ -2130,6 +2148,14 @@ void DisplayWidget::drawSplines() {
     // control point to highlight = currently selected preset keyframe
     int p = mainWindow->getCurrentCtrlPoint();
 
+    // this lets splines be visible when DEPTH_TO_ALPHA mode is active
+    if(depthToAlpha )
+        glDepthFunc ( GL_ALWAYS );
+    else {
+        glDepthFunc ( GL_LESS );    // closer to eye passes test
+        glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
+    }
+
     targetSpline->drawSplinePoints();
     targetSpline->drawControlPoints ( p );
 
@@ -2158,4 +2184,5 @@ void DisplayWidget::clearControlPoints() {
 }
 }
 }
+
 
