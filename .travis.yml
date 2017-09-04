@@ -18,8 +18,16 @@ compiler:
 install:
  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq
- - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5opengl5-dev libqt5svg5-dev libgl1-mesa-dev libqt5gui5 libqt5script5 libqt5widgets5
- - sudo apt-get install qt5-default qtbase5-dev-tools
+ - sudo apt-get install qtbase5-dev
+ - sudo apt-get install qtdeclarative5-dev
+ - sudo apt-get install libqt5opengl5-dev
+ - sudo apt-get install libqt5svg5-dev
+ - sudo apt-get install libgl1-mesa-dev
+ - sudo apt-get install libqt5gui5-dev
+ - sudo apt-get install libqt5script5-dev
+ - sudo apt-get install libqt5widgets5-dev
+ - sudo apt-get install qt5-default
+ - sudo apt-get install qtbase5-dev-tools
  - sudo apt-get install extra-cmake-modules
 
 before_script:
