@@ -22,7 +22,6 @@ install:
  - sudo apt-get install qt5-default qtbase5-dev-tools
 
 before_script:
-  - source /opt/qt56/bin/qt56-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
   - cmake ..
