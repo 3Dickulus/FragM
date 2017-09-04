@@ -1,10 +1,10 @@
- 
 language: cpp
 dist: trusty
 
 os:
   - linux
- 
+  - osx
+
 branches:
   only:
     - master
