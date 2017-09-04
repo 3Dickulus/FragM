@@ -15,20 +15,29 @@ env:
 compiler:
   - gcc
 
-install:
- - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+before_install:
+# - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
+ - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq
- - sudo apt-get install qtbase5-dev
- - sudo apt-get install qtbase5-dev-tools
- - sudo apt-get install qtscript5-dev
- - sudo apt-get install libqt5opengl5-dev
- - sudo apt-get install libqt5svg5-dev
- - sudo apt-get install libgl1-mesa-dev
- - sudo apt-get install libglu1-mesa-dev
- - sudo apt-get install qt5-default
+ - sudo apt-get -qq install g++-4.8 libc6-i386
  - sudo apt-get install extra-cmake-modules
  - sudo apt-get install cmake-data
  - sudo apt-get install openexr
+ - sudo apt-get install libgl1-mesa-dev
+ - sudo apt-get install libglu1-mesa-dev
+ - export CXX="g++-4.8"
+ - export CC="gcc-4.8"
+
+install:
+ - sudo apt-add-repository ppa:beineri/opt-qt551-trusty
+ - sudo apt-get update -qq
+ - sudo apt-get install qt55-meta
+# - sudo apt-get install qtbase55-dev
+# - sudo apt-get install qtbase55-dev-tools
+# - sudo apt-get install qtscript55-dev
+# - sudo apt-get install libqt55opengl5-dev
+# - sudo apt-get install libqt55svg5-dev
+# - sudo apt-get install qt55-default
  
 before_script:
   - mkdir Fragmentarium-Source/build
