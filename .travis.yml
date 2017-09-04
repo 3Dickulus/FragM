@@ -28,6 +28,7 @@ install:
  - sudo apt-get install qt5-default
  - sudo apt-get install extra-cmake-modules
  - sudo apt-get install cmake-data
+ - sudo apt-get install openexr
  
 before_script:
   - mkdir Fragmentarium-Source/build
