@@ -241,7 +241,7 @@ namespace Fragmentarium {
       };
       QString getParameter(QString name) {
         QStringList s = getSettings().split("\n");
-        return s.filter(name).at(0).split("=").at(1);
+        return s.filter(name).at(0).split("=").at(1).trimmed();
       };
       void setAnimationLength(int m) {
         timeMaxSpinBox->setValue(m);
