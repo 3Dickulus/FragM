@@ -28,7 +28,7 @@ before_install:
 install:
  - sudo apt-add-repository -y ppa:beineri/opt-qt551-trusty
  - sudo apt-get -qq update
- - sudo apt-get -qq -y --ignore-hold install qt55-meta
+ - sudo apt-get -qq install qt55-meta
 # - sudo apt-get install qtbase55-dev
 # - sudo apt-get install qtbase55-dev-tools
 # - sudo apt-get install qtscript55-dev
