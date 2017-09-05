@@ -20,7 +20,7 @@ before_install:
 install:
  - sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
  - sudo apt-get -qq update
- - sudo apt-get install qt-latest qtcreator-latest
+ - sudo apt-get -qq install qt-latest qtcreator-latest
  
 before_script:
   - source /opt/qt57/bin/qt57-env.sh

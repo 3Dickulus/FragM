@@ -1,3 +1,16 @@
+#Continuous integration
+----------------------
+[![Release][release-image]][releases]
+[![License][license-image]][license]
+
+[release-image]: https://img.shields.io/badge/release-2.0.b-green.svg?style=flat
+[releases]: https://github.com/3Dickulus/FragM/releases
+
+[license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat
+[license]: https://github.com/3Dickulus/FragM/blob/master/LICENSEt
+
+[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
+
 # FragM
 This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representing a compilation of features and fixes contibuted by many users at FractalForums.com over 3-4 years.
 # Changes since v0.9.5
