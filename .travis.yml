@@ -20,12 +20,25 @@ before_install:
 install:
  - sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
  - sudo apt-get -qq update
- - sudo apt-get -qq install qt-latest qtcreator-latest
+ - sudo apt-get -qq install qtcreator-latest
  
 before_script:
   - source /opt/qt57/bin/qt57-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
-  - cmake ..
 
-script: make
+script: 
+ - cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
+ - make
+ - make package
+ 
+deploy:
+  provider: releases
+  api_key:
+    secure: X95AlCkKm1OgVft08CGD1QEtorAdwIKdbKFE08088GajP9eE4cQn+NAs7Nicyvm40XBSV5UoUMEBiyd5yfVRQVCIH0OZmpHVYrHyMX9ar4vRx5tvUVnF8psOR7AR/KmOuVoNaZKFa0kTOYZEsbP/K6BhWlTKGWab7X0o2tPX0zsgt6XsTek017ZwOtc7xHKFb9UW7If3necYtwF4sOW32+9w8y15ExbIa29Wn+P2QXvZWYtOmrjMY8xaAF8qMG5RVEK8K6QP35MMTMyV4rafPY7TzPOJnHCGSOM7jtwha3JHtg+M8T4JFHy5HsMZguKPhUbqOM7QGdFsir03BiV226OgNol74u1wXncQ1sL5xb8kmgpttygXnIF82GduEgRUZG+H78//EDAri84QPd0uGrJ0XJrIGSZAgSy6SvmxfUwIa3+wc+gpBHkGJ2qVmu+tCTqDeUPOmH1ZPhT127dQl908Sxb+Df9JDfNJk599uSG7KB4A7r/bkJntZtt0b2xBIfVX3niHupUhrFf6JYGbPNSqVgip3EUvim3oT+nJPivMJd6zHE5qJfZKlmPp2nN+OcR/6e5IPmEMn6CunjomdMJnutCpT+b4iptko0cjX6fKGlJKci72Cn79WQ0WJi5XrdF3JnYQ3fBTGlHPl2z3i7pnzAtT01ZaLZOHI6L6Vxs=
+  file:
+    - Fragmentarium-2.0.b-0.1.1-Linux.deb
+    - Fragmentarium-2.0.b-0.1.1-Linux.rpm
+  skip_cleanup: true
+  on:
+    repo: 3Dickulus/FragM
