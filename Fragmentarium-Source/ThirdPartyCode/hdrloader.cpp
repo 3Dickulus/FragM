@@ -38,8 +38,8 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 	if (!file)
 		return false;
 
-	fread(str, 10, 1, file);
-	if (memcmp(str, "#?RADIANCE", 10)) {
+    size_t sz=fread(str, 10, 1, file);
+	if (memcmp(str, "#?RADIANCE", 10) || !sz) {
 		fclose(file);
 		return false;
 	}
