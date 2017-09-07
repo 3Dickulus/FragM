@@ -32,36 +32,38 @@ script:
 - make package_source
 - ls -l Fragmentarium-2.0.b-0.1.1*
 
-before_deploy:
-  - export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-  # create debian package for linux and a disk image for OSX
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-2.0.b-$TRAVIS_COMMIT.deb
-      cp Fragmentarium-2.0.b-0.1.1-Linux.rpm Fragmentarium-2.0.b-$TRAVIS_COMMIT.rpm
-      cp Fragmentarium-2.0.b-0.1.1-Source.tar.bz2 Fragmentarium-2.0.b-$TRAVIS_COMMIT-Source.tar.bz2
-    fi
-  #
-  # add a tag
-  #
-  - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG=linux-b$TRAVIS_BUILD_NUMBER-$TIME_STRING
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-  - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-deploy:
-    # Linux master release
-  - provider: releases
-    file:
-    - Fragmentarium-2.0.b-$TRAVIS_COMMIT.deb
-    - Fragmentarium-2.0.b-$TRAVIS_COMMIT.rpm
-    - Fragmentarium-2.0.b-$TRAVIS_COMMIT-Source.tar.bz2
+
+#before_deploy:
+  #- export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+  ## create debian package for linux and a disk image for OSX
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-2.0.b-$TRAVIS_COMMIT.deb
+      #cp Fragmentarium-2.0.b-0.1.1-Linux.rpm Fragmentarium-2.0.b-$TRAVIS_COMMIT.rpm
+      #cp Fragmentarium-2.0.b-0.1.1-Source.tar.bz2 Fragmentarium-2.0.b-$TRAVIS_COMMIT-Source.tar.bz2
+    #fi
+  ##
+  ## add a tag
+  ##
+  #- TIME_STRING=`date +%H%M%S`
+  #- export GIT_TAG=linux-b$TRAVIS_BUILD_NUMBER-$TIME_STRING
+  #- git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
+
+#deploy:
+    ## Linux master release
+  #- provider: releases
+    #file:
+    #- Fragmentarium-2.0.b-$TRAVIS_COMMIT.deb
+    #- Fragmentarium-2.0.b-$TRAVIS_COMMIT.rpm
+    #- Fragmentarium-2.0.b-$TRAVIS_COMMIT-Source.tar.bz2
     
-    skip_cleanup: true
-    on:
-        repo: $USERNAME/FragM
-        branch: master
-        tags: false
-        condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
+    #skip_cleanup: true
+    #on:
+        #repo: $USERNAME/FragM
+        #branch: master
+        #tags: false
+        #condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
 
