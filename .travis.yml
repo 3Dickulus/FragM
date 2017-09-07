@@ -1,34 +1,46 @@
 language: cpp
 dist: trusty
-
 os:
-  - linux
-
+- linux
 branches:
   only:
-    - master
-
+  - master
+env:
+  global:
+  - secure: hJyZ1DjEzlboIQzjL3R1kmlBffrsJ6TBIxGEvkdCYqlynJr6cb3GfTCX3wvQ10HQphUir0kGnNqt6HFSlpYbKUtP87ganau1XVhBDLxWO3WGZ7spceuv2xYSblvlV12X1mzbIZCbK47u7NXzBNZum6ZsomAN9EQE+O1G8A1nXb8tXaRmn0Yposxp+tkhwC/FBaWlLk3g++h0JJnDCz6TnE29azZFqenTGzcm7VU95d0Wkl6HlUctV7krit4NlwSPKXlV7s1iZ/gkyNbOYLgv+X/0LCbR+dFraHVOnrejxBMGunmf+gSG9om6UzDIHi2TwBIt4y21VVYPRqlvMc6e/JZ1ciGzqxwQQ5XFWao2+4m4KwU+pg5GMq6APkFSZ7BcXpJPh+Ff6gmFsPexFm3JEBTH3rRUxC/pyydSgStkTUeFPG5J7rNVegGHiI3rhZpHIvoW9tXySgcquFn4fJzTiG/cKrXoSK8HWx7rAxZGRZQ31cbQjuPGZYV+fdqT7gtCmB1B+bVSYWn/Yt7lb0dMFJrJNolS3+dWzRzeMUEPfHEQQCuuuAzxlFZ3FpKfMHU8aB9cukypyRO7WOp0Zjxx05zfJrX+/lhJ69EANQd0b9X1+ubJfmI8Cvt8EHz3/7/Es8FeqPZiLMDPB+86H8in7TLE1F4HAf0Cr56UTSUNw1Y=
+  - secure: IWsIp9Q4bQuAjOIfWtErXpMkMoNooUl/upHXRUHj3jb4vwZg1mf0VMYddvcXqAySQ1U/OiU1bqyGxuHVt/RelAyGjVLXFTQ3nlNhZ12cwmUKdeh1CdgeNnOc4Bx/N6DTlzsGXcaYpUulYNBfh7aI3HcRgKXx1uiMKbOoMOikF6MeSZi5JeDy2WEi31rInIirVx2vypJXj4VnHnblo2h/uH9HCY/t8trYvqrY/8lrXNIBsXuw0b/RMHPiDDmg3vnoSmvDCleQAWRVXsrIkgXcodQs3IqcwFA0ZshZ2pULvul88ENC8z7H/Ik2KUtMreu8xUE7BclWe6VmlUYb3qj27t+Gl9VXVN/tPB1uaAid0Dlp8QO6OVVgOwhtDatNNtqElB5Lk0+R/H63EOYjBJPYNSucspx3Jw9o3YZa8+SZlpjgE25C0xMfiy3BS4B/usu8wk1JIYLy14ZFGDA3RySwj4apibbsrQLQfmoo7qLLxmgzgx8pSSdLk1js7ubKvCiLgtsPXshaHogP8XZD4RPXOR5CLhDdpi1eqFc2e1zxNGr8ZwgGcRzhCtfl2pvFTLwDlqT26V9HjdLg2h0/cPacWJtgU+xMaBynAfegDPspO2Z5d6D8qTZS12itzgW+PlrsIUBnF2zRqH/LQw/XOyjLuu1e8WNSFN3CkzhVDby3dAM=
+  - secure: iezXZec3P201MaqlXZKYKJ0Blo8Rk3mvC9qyb5TX9DJ+0oEvXsSwH+JpJOhtnDiWdGnlDT70smJK1fkauktH5qLxEHq5r+9Xe35kyyj9Tu3xA+z26pwHVA+ezIrHYebTUphlZSkKvqd8bJ2ecYO7VaoHrOkjg8YhrfPwOFmC/pJoatJKGAoM5IqPMhYvEkossvso6brkBrcYF6MJ7y/Qtg6tqhtE7yMalj76ooYdCu0sc8Apt6t3ittGP06Y/5dlNV/L+ZtTnsAR4/YJOxcRBqDWiD1pQG1qEixSpYlYL7VH1DMxOsXWCFgc6KXgeNKEjzKTW+X0g/ymW5x0Mzn2+aG1wNo1cFptQsFmXWR0yEDZZaX2uCLSgh1Y6uMhfHjM1XP/b/0UReh2cstI+DwP7l+EbP8vVUfIXeNtZiKbsUjXPX6GV4McLQ+wKUHOClo3/Zs95VGzmT0ijPldgtme0fkVy0NanZsLP8oCFknA3LCCcEVtrxOugVOKml1JVNoSQGBh2f7i0hrqYEZFWK7CxUabD45rt2KBLa/tvm0xvTvbS1xyDEzUW4lvGh+8D2sX0wMC0RGekF4c37vOQjV0biMemZddm9l0og0eSMm63e1RSUf+qpv4YwpAmcVwa3YRKbJlcpyi5ErytXDd7Xfv+b+OkSaL0iBscurlz/HLO+w=
 compiler:
-  - gcc
-
+- gcc
 before_install:
-# - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
- - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
- - sudo apt-get update -qq
- - sudo apt-get -qq install g++-4.8 libc6-i386
-
+- sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
+- sudo apt-get update -qq
+- sudo apt-get -qq install g++-4.8 libc6-i386
 install:
- - sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
- - sudo apt-get -qq update
- - sudo apt-get -qq install qtcreator-latest
- 
+- sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+- sudo apt-get -qq update
+- sudo apt-get -qq install qtcreator-latest
 before_script:
-  - source /opt/qt57/bin/qt57-env.sh
-  - mkdir Fragmentarium-Source/build
-  - cd Fragmentarium-Source/build
+- source /opt/qt57/bin/qt57-env.sh
+- mkdir Fragmentarium-Source/build
+- cd Fragmentarium-Source/build
+script:
+- cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
+- make
+- make package
+- make package_source
+- ls Fragmentarium-2.0.b*
 
-script: 
- - cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
- - make
- - make package
- 
+before_deploy: "echo 'ready?'"
+deploy:
+  provider: releases
+  user: $USERNAME
+  password: $PASSWORD
+  file_glob: true
+  file:
+  - Fragmentarium-2.0.b*.deb
+  - Fragmentarium-2.0.b*.rpm
+  - Fragmentarium-2.0.b*.bz2
+  skip_cleanup: true
+  on:
+    tags: true
