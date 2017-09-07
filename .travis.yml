@@ -46,13 +46,7 @@ before_deploy:
   # add a tag
   #
   - TIME_STRING=`date +%H%M%S`
-  - git config --global user.email "builds@travis-ci.com"
-  - git config --global user.name "Travis CI"
-        if [ "${TRAVIS_BRANCH}" == "master" ]; then
-            export GIT_TAG=linux-b$TRAVIS_BUILD_NUMBER-$TIME_STRING
-            ;
-        fi
-        ;
+  - export GIT_TAG=linux-b$TRAVIS_BUILD_NUMBER-$TIME_STRING
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
