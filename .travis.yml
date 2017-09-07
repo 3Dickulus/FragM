@@ -30,7 +30,7 @@ script:
 - make
 - make package
 - make package_source
-- l Fragmentarium-2.0.b-0.1.1*
+- ls -l Fragmentarium-2.0.b-0.1.1*
 
 before_deploy:
   - export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
