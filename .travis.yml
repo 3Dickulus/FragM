@@ -2,7 +2,9 @@ language: cpp
 dist: trusty
 os:
 - linux
-all_branches: true
+branches:
+  only:
+  - master
 env:
   global:
     - secure: hJyZ1DjEzlboIQzjL3R1kmlBffrsJ6TBIxGEvkdCYqlynJr6cb3GfTCX3wvQ10HQphUir0kGnNqt6HFSlpYbKUtP87ganau1XVhBDLxWO3WGZ7spceuv2xYSblvlV12X1mzbIZCbK47u7NXzBNZum6ZsomAN9EQE+O1G8A1nXb8tXaRmn0Yposxp+tkhwC/FBaWlLk3g++h0JJnDCz6TnE29azZFqenTGzcm7VU95d0Wkl6HlUctV7krit4NlwSPKXlV7s1iZ/gkyNbOYLgv+X/0LCbR+dFraHVOnrejxBMGunmf+gSG9om6UzDIHi2TwBIt4y21VVYPRqlvMc6e/JZ1ciGzqxwQQ5XFWao2+4m4KwU+pg5GMq6APkFSZ7BcXpJPh+Ff6gmFsPexFm3JEBTH3rRUxC/pyydSgStkTUeFPG5J7rNVegGHiI3rhZpHIvoW9tXySgcquFn4fJzTiG/cKrXoSK8HWx7rAxZGRZQ31cbQjuPGZYV+fdqT7gtCmB1B+bVSYWn/Yt7lb0dMFJrJNolS3+dWzRzeMUEPfHEQQCuuuAzxlFZ3FpKfMHU8aB9cukypyRO7WOp0Zjxx05zfJrX+/lhJ69EANQd0b9X1+ubJfmI8Cvt8EHz3/7/Es8FeqPZiLMDPB+86H8in7TLE1F4HAf0Cr56UTSUNw1Y=
