@@ -67,19 +67,22 @@ before_script:
     fi
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-  -    cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
-  -    make
-  -    make package
-  -    make package_source
-  -    ls -l Fragmentarium-2.0.b-0.1.1*
-  -  fi
-
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  -    cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
-  -    make
-  -    ls -l Fragmentarium-*
-  -  fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
+       make
+       make package
+       make package_source
+       ls -l Fragmentarium-2.0.b-0.1.1*
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then
+       cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
+       make
+       ls -l Fragmentarium-*
+    fi
 
 before_deploy:
   - export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
@@ -94,7 +97,8 @@ before_deploy:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       ../travis/create-dmg.sh
-      cp QOwnNotes-$VERSION_NUMBER.dmg QOwnNotesDev-$TRAVIS_COMMIT.dmg
+      ls -l *.dmg
+      #cp QOwnNotes-$VERSION_NUMBER.dmg QOwnNotesDev-$TRAVIS_COMMIT.dmg
     fi
   #
   # add a tag
