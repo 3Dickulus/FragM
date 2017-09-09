@@ -349,9 +349,12 @@ namespace Fragmentarium {
 
           QVector3D ret = eye2 + dir2 / sz;
 #ifndef WIN32
-          if( std::isinf(ret.x()) != 0 || std::isnan(ret.x()) ) ret.setX(0);
-          if( std::isinf(ret.y()) != 0 || std::isnan(ret.y()) ) ret.setY(0);
-          if( std::isinf(ret.z()) != 0 || std::isnan(ret.z()) ) ret.setZ(0);
+          if( std::isinf(ret.x()) != 0 ) { ret.setX(1000.0); }
+          if( std::isinf(ret.y()) != 0 ) { ret.setY(1000.0); }
+          if( std::isinf(ret.z()) != 0 ) { ret.setZ(1000.0); }
+          if( std::isnan(ret.x()) != 0 ) { ret.setX(0.00001); }
+          if( std::isnan(ret.y()) != 0 ) { ret.setY(0.00001); }
+          if( std::isnan(ret.z()) != 0 ) { ret.setZ(0.00001); }
 #endif          
           return ret;
         }

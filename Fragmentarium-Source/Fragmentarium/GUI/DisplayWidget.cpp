@@ -1937,9 +1937,10 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
                         // convert parameter to 3d vector
                         QVector3D e = QVector3D(in.at(0).toDouble(),in.at(1).toDouble(),in.at(2).toDouble());
                         // calculate distance between camera and target                    
-                        double d = e.distanceToPoint(mXYZ);
+                        double d = mXYZ.distanceToPoint(e);
                         // set the focal plane to this distance
                         mainWindow->setParameter( "FocalPlane", d );
+                        mainWindow->statusBar()->showMessage ( QString ( "X:%1 Y:%2 Z:%3 Dist:%4" ).arg ( mXYZ.x() ).arg ( mXYZ.y() ).arg ( mXYZ.z() ).arg(d) );
                     }
                 }
             }
