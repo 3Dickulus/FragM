@@ -58,25 +58,19 @@ before_script:
       CPPFLAGS=-I$QTDIR/include
     fi
 script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
-      make
-      make package
-      make package_source
-      ls -l Fragmentarium-2.0.b-0.1.1*
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then
-      cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
-      make
-      ls -l Fragmentarium-*
-#      make package
-#      make package_source
-#      ls -l Fragmentarium-2.0.b-0.1.1*
-    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  -    cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
+  -    make
+  -    make package
+  -    make package_source
+  -    ls -l Fragmentarium-2.0.b-0.1.1*
+  -  fi
+
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  -    cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
+  -    make
+  -    ls -l Fragmentarium-*
+  -  fi
 
 
 
