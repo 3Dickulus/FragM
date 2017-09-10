@@ -1,6 +1,6 @@
 
 # FragM
-This is a derivative of Mikael Hvidtfeldt Christensen's Fragmentarium representing a compilation of features and fixes contibuted by many users at FractalForums.com over 3-4 years.
+This is derived from Mikael Hvidtfeldt Christensen's Fragmentarium representing a compilation of features and fixes contibuted by many users at FractalForums.com over 3-4 years.
 
 Continuous integration
 ----------------------
