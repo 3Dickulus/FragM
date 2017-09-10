@@ -65,6 +65,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+      . /etc/profile
       PATH="$QTDIR/bin:$PATH"
       LDFLAGS=-L$QTDIR/lib
       CPPFLAGS=-I$QTDIR/include
@@ -88,7 +89,7 @@ script:
     then
        cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
        make
-       ls -l Fragmentarium-*
+       /bin/ls -l Fragmentarium-*
     fi
 
 before_deploy:
@@ -104,7 +105,7 @@ before_deploy:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       ../travis/create-dmg.sh
-      ls -l *.dmg
+      /bin/ls -l *.dmg
       #cp QOwnNotes-$VERSION_NUMBER.dmg QOwnNotesDev-$TRAVIS_COMMIT.dmg
     fi
   #
