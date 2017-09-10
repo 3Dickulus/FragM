@@ -16,7 +16,6 @@ find_package ( Qt5Xml REQUIRED )
 find_package ( Qt5Script REQUIRED )
 find_package ( Qt5LinguistTools )
 
-
 SET ( CMAKE_CXX_FLAGS "-std=c++11" )
 
 # ON to compile with AsmBrowser enabled requires nVidia + GL > 4.0
@@ -24,38 +23,76 @@ OPTION ( NVIDIAGL4PLUS "Build for nVidia GL v4+" ON)
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" OFF)
 
+# set to the mingw lib path
+IF ( MINGW )
+  set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
+ENDIF ()
+
 set (OpenEXR_LIBRARIES "")
 
 IF( NVIDIAGL4PLUS )
   ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
 ENDIF ()
 
+IF(OPENGL_LIBRARIES_NOTFOUND)
+    IF(UNIX)
+        FIND_LIBRARY(OPENGL_LIBRARIES GL )
+    ELSEIF(APPLE)
+        FIND_LIBRARY(OPENGL_LIBRARIES OpenGL )
+    ELSEIF(WIN32)
+        set(OPENGL_LIBRARIES "-lopengl32" )
+    ENDIF ()
+ENDIF ()
+
+MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
 IF ( USE_OPEN_EXR )
 
-    FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
-    FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
+    ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
-    if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+    IF ( MINGW )
+        set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
+    
+        set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
         set( OpenEXR_LIBS
-            IlmImf
-            Half
-            Imath
-            Iex
-            IexMath
-            IlmThread
+            IlmImf-2_1
+            Half Imath-2_1
+            Iex-2_1
+            IexMath-2_1
+            IlmThread-2_1
         )
-        
-        set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
-        set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
 
-        ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 -pthread )
+        MESSAGE("Using MinGW threads")
+        ADD_DEFINITIONS(-mthreads)
+        set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
-        set(OpenEXR_LIBRARIES -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+    ELSE ()
+        FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
+        FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
 
-    endif(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+        if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
 
+            set( OpenEXR_LIBS
+                IlmImf
+                Half
+                Imath
+                Iex
+                IexMath
+                IlmThread
+            )
+            
+            set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
+            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
+
+            ADD_DEFINITIONS ( -pthread )
+
+            set(OpenEXR_LIBRARIES -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+
+        endif(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+  
+  ENDIF ()
+  
 ENDIF (USE_OPEN_EXR)
 
 add_definitions ( -Wall )
@@ -171,7 +208,12 @@ IF(Qt5LinguistTools_FOUND)
 
 ENDIF(Qt5LinguistTools_FOUND)
 
-add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+IF ( UNIX OR APPLE )
+  add_executable ( Fragmentarium-1.0.31 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+ELSEIF ( WIN32 )
+  set ( WIN32_EXECUTABLE ON )
+  add_executable ( Fragmentarium-1.0.31 WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+ENDIF ()
 
 target_link_libraries ( Fragmentarium-2.0.b ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
 
