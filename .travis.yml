@@ -116,7 +116,7 @@ before_deploy:
   #- git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
   #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-#deploy:
+deploy:
   ## Linux master release
   #- provider: releases
     #api_key:
