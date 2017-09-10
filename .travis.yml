@@ -34,8 +34,6 @@ before_install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew update
-      brew unlink cmake
-      brew install cmake
     fi
 
 install:
@@ -54,6 +52,8 @@ install:
       brew install qt5
       brew install openexr
       export QTDIR="/usr/local/opt/qt5"
+      brew unlink cmake
+      brew install cmake
     fi
 
 before_script:
@@ -87,7 +87,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
+       cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        /bin/ls -l Fragmentarium-*
     fi
@@ -104,9 +104,9 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      cd ../Fragmentarium
+      cd ../../Fragmentarium
       #../travis/create-dmg.sh
-      /bin/ls -l *.app
+      /bin/ls -l
       #$QTDIR/bin/macdeployqt ./$APP.app
 
     fi

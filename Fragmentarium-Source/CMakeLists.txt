@@ -209,10 +209,10 @@ IF(Qt5LinguistTools_FOUND)
 ENDIF(Qt5LinguistTools_FOUND)
 
 IF ( UNIX OR APPLE )
-  add_executable ( Fragmentarium-1.0.31 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
   set ( WIN32_EXECUTABLE ON )
-  add_executable ( Fragmentarium-1.0.31 WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( Fragmentarium-2.0.b WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
 target_link_libraries ( Fragmentarium-2.0.b ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
