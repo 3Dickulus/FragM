@@ -88,7 +88,7 @@ script:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
        cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON ..
-       make
+       make install
        /bin/ls -l Fragmentarium-*
     fi
 
@@ -104,9 +104,11 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      ../travis/create-dmg.sh
-      /bin/ls -l *.dmg
-      #cp QOwnNotes-$VERSION_NUMBER.dmg QOwnNotesDev-$TRAVIS_COMMIT.dmg
+      cd ../Fragmentarium
+      #../travis/create-dmg.sh
+      /bin/ls -l *.app
+      #$QTDIR/bin/macdeployqt ./$APP.app
+
     fi
   #
   # add a tag
@@ -117,6 +119,7 @@ before_deploy:
   #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
+     - /bin/ls -l
   ## Linux master release
   #- provider: releases
     #api_key:
