@@ -52,7 +52,7 @@ install:
       brew install qt5
       brew install openexr
       export QTDIR="/usr/local/opt/qt"
-      export EXRDIR="/usr/local/opt/openexr"
+      export EXRDIR="/usr/local"
       brew unlink cmake
       brew install cmake
     fi
@@ -67,8 +67,8 @@ before_script:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       PATH="$QTDIR/bin:$PATH"
-      LDFLAGS=-L$QTDIR/lib -L$EXRDIR/lib
-      CPPFLAGS=-I$QTDIR/include -I$EXRDIR/include
+      LDFLAGS="-L$QTDIR/lib -L$EXRDIR/lib"
+      CPPFLAGS="-I$QTDIR/include -I$EXRDIR/include"
     fi
 
   - mkdir Fragmentarium-Source/build
