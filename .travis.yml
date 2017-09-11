@@ -107,8 +107,8 @@ before_deploy:
 
       cd ../../Fragmentarium-2.0.b
       $QTDIR/bin/macdeployqt ./Fragmentarium-2.0.b.app -dmg
-      mv ./Fragmentarium-2.0.b.dmg ../../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
-      cd ../../Fragmentarium-Source/build
+      mv ./Fragmentarium-2.0.b.dmg ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
+      cd ../Fragmentarium-Source/build
       /bin/ls -l
     fi
   #
