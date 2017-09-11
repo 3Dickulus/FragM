@@ -50,9 +50,9 @@ install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew install qt5
-      brew install openexr
+      brew install --verbose openexr
       export QTDIR="/usr/local/opt/qt"
-      export EXRDIR="/usr/local/openexr/2.2.0"
+      export EXRDIR="/usr/local/opt/openexr/2.2.0"
       brew unlink cmake
       brew install cmake
     fi
@@ -87,7 +87,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        /bin/ls -l
     fi
