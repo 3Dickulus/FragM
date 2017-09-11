@@ -68,8 +68,8 @@ IF ( USE_OPEN_EXR )
         set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
     ELSE ()
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
-        FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
+        FIND_PATH(OpenEXR_LIB_DIR NAMES libIlmImf.so)
+        FIND_PATH(OpenEXR_INCLUDE_DIR NAMES half.h )
 
         if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
 
