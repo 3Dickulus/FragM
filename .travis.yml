@@ -51,7 +51,8 @@ install:
     then
       brew install qt5
       brew install openexr
-      export QTDIR="/usr/local/opt/qt5"
+      export QTDIR="/usr/local/opt/qt"
+      export EXRDIR="/usr/local/opt/openexr"
       brew unlink cmake
       brew install cmake
     fi
@@ -65,10 +66,9 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      . /etc/profile
       PATH="$QTDIR/bin:$PATH"
-      LDFLAGS=-L$QTDIR/lib
-      CPPFLAGS=-I$QTDIR/include
+      LDFLAGS=-L$QTDIR/lib -L$EXRDIR/lib
+      CPPFLAGS=-I$QTDIR/include -I$EXRDIR/include
     fi
 
   - mkdir Fragmentarium-Source/build
@@ -89,7 +89,7 @@ script:
     then
        cmake -DNVIDIAGL4PLUS=OFF -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
-       /bin/ls -l Fragmentarium-*
+       /bin/ls -l
     fi
 
 before_deploy:
