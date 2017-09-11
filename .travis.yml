@@ -104,11 +104,11 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      cd ../../Fragmentarium
-      #../travis/create-dmg.sh
+      $QTDIR/bin/macdeployqt ./Fragmentarium-2.0.b.app
+      /bin/ls -lR ./Fragmentarium-2.0.b.app
+      $QTDIR/bin/macdeployqt ./Fragmentarium-2.0.b.app -dmg
       /bin/ls -l
-      #$QTDIR/bin/macdeployqt ./$APP.app
-
+      
     fi
   #
   # add a tag

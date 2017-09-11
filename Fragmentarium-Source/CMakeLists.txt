@@ -208,16 +208,18 @@ IF(Qt5LinguistTools_FOUND)
 
 ENDIF(Qt5LinguistTools_FOUND)
 
-IF ( UNIX OR APPLE )
-  add_executable ( Fragmentarium-2.0.b ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+IF ( APPLE )
+  add_executable ( ${PROJECT_NAME} MACOSX_BUNDLE ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+ELSEIF ( UNIX )
+  add_executable ( ${PROJECT_NAME} ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
   set ( WIN32_EXECUTABLE ON )
-  add_executable ( Fragmentarium-2.0.b WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME} WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
-target_link_libraries ( Fragmentarium-2.0.b ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
 
-qt5_use_modules(Fragmentarium-2.0.b OpenGL Widgets Gui Xml Script)
+qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
 
 # Installation
 
@@ -226,7 +228,7 @@ INSTALL ( DIRECTORY
   fqScript
   Misc
   DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/Fragmentarium
+  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
 )
 
 INSTALL ( FILES
@@ -240,7 +242,7 @@ INSTALL ( FILES
   ../EULA_ru.txt
   ../EULA_nl.txt
   DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/Fragmentarium
+  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
 )
 
 INSTALL ( FILES
@@ -249,13 +251,13 @@ INSTALL ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
     ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
   DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/Fragmentarium/Languages
+  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/Languages
 )
 
 INSTALL ( TARGETS
-  Fragmentarium-2.0.b
+  ${PROJECT_NAME}
   DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/Fragmentarium
+  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
 )
 
 SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
