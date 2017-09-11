@@ -223,42 +223,78 @@ qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
 
 # Installation
 
-INSTALL ( DIRECTORY
-  Examples
-  fqScript
-  Misc
-  DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
-)
-
-INSTALL ( FILES
-  3Dickulus-HOW-TO.txt
-  3Dickulus.changes
-  LICENSE.GPL3
-  LICENSE.LGPL
-  LICENSE.README
-  ../EULA.txt
-  ../EULA_de.txt
-  ../EULA_ru.txt
-  ../EULA_nl.txt
-  DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
-)
-
-INSTALL ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
-  DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/Languages
-)
-
 INSTALL ( TARGETS
   ${PROJECT_NAME}
   DESTINATION
   ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
 )
+
+IF(APPLE)
+    INSTALL ( DIRECTORY
+    Examples
+    fqScript
+    Misc
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS
+    )
+
+    INSTALL ( FILES
+    3Dickulus-HOW-TO.txt
+    3Dickulus.changes
+    LICENSE.GPL3
+    LICENSE.LGPL
+    LICENSE.README
+    ../EULA.txt
+    ../EULA_de.txt
+    ../EULA_ru.txt
+    ../EULA_nl.txt
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS
+    )
+
+    INSTALL ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS/Languages
+    )
+
+ELSE()
+
+    INSTALL ( DIRECTORY
+    Examples
+    fqScript
+    Misc
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+    )
+
+    INSTALL ( FILES
+    3Dickulus-HOW-TO.txt
+    3Dickulus.changes
+    LICENSE.GPL3
+    LICENSE.LGPL
+    LICENSE.README
+    ../EULA.txt
+    ../EULA_de.txt
+    ../EULA_ru.txt
+    ../EULA_nl.txt
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+    )
+
+    INSTALL ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
+        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/Languages
+    )
+
+ENDIF()
 
 SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
