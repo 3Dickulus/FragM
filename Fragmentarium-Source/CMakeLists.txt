@@ -68,7 +68,11 @@ IF ( USE_OPEN_EXR )
         set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
     ELSE ()
+      if(APPLE)
+        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.so)
+      else()
         FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
+      endif()
         FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
 
         if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
@@ -83,7 +87,11 @@ IF ( USE_OPEN_EXR )
             )
             
             set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
+      if(APPLE)
+            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
+      else()
             set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
+      endif()
 
             ADD_DEFINITIONS ( -pthread )
 

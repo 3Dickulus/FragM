@@ -50,9 +50,13 @@ install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew install qt5
-      brew install openexr
       export QTDIR="/usr/local/opt/qt"
+      
+      brew install ilmbase
+      export ILMDIR="/usr/local/opt/ilmbase/2.2.0"
+      brew install openexr
       export EXRDIR="/usr/local/opt/openexr/2.2.0"
+
       brew unlink cmake
       brew install cmake
     fi
@@ -67,8 +71,8 @@ before_script:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       PATH="$QTDIR/bin:$PATH"
-      LDFLAGS="-L$QTDIR/lib -L$EXRDIR/lib"
-      CPPFLAGS="-I$QTDIR/include -I$EXRDIR/include/OpenEXR"
+      LDFLAGS="-L$QTDIR/lib -L$ILMDIR/lib -L$EXRDIR/lib"
+      CPPFLAGS="-I$QTDIR/include -I$ILMDIR/include/OpenEXR -I$EXRDIR/include/OpenEXR"
     fi
 
   - mkdir Fragmentarium-Source/build
