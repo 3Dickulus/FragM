@@ -32,6 +32,14 @@
 #include "QtSpline.h"
 
 #ifdef USE_OPEN_EXR
+
+#ifdef __APPLE__
+#ifdef register
+#undef register
+#define register
+#endif
+#endif
+
 #include <half.h>
 #include <ImfTileDescription.h>
 #include <ImfTiledOutputFile.h>
@@ -60,8 +68,8 @@ namespace Fragmentarium {
     #define DBOUT   qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
     
     #ifdef USE_OPEN_EXR
-    using namespace Imf_2_1;
-    using namespace Imath_2_1;
+    using namespace Imf;
+    using namespace Imath;
     #endif
     using namespace Parser;
     class MainWindow;
@@ -211,7 +219,7 @@ namespace Fragmentarium {
         exrMode = m;
       }
 
-      void getRGBAFtile(Imf_2_1::Array2D< Imf_2_1::Rgba >& array, int w, int h);
+      void getRGBAFtile(Imf::Array2D< Imf::Rgba >& array, int w, int h);
       #endif
     public slots:
       void updateBuffers();

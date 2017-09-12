@@ -41,8 +41,8 @@
 #include <iostream>
 
 #ifdef USE_OPEN_EXR
-using namespace Imf_2_1;
-using namespace Imath_2_1;
+using namespace Imf;
+using namespace Imath;
 #endif
 
 using namespace SyntopiaCore::Misc;
@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 170707, " (\"beta\")");
+    version = Version(2, 0, 0, 170908, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);

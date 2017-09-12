@@ -19,8 +19,8 @@
 #include "../../ThirdPartyCode/hdrloader.h"
 
 #ifdef USE_OPEN_EXR
-using namespace Imf_2_1;
-using namespace Imath_2_1;
+using namespace Imf;
+using namespace Imath;
 #endif
 
 using namespace SyntopiaCore::Logging;
