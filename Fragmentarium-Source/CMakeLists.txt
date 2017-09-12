@@ -68,14 +68,18 @@ IF ( USE_OPEN_EXR )
         set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
     ELSE ()
+      FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
+      FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
+
       if(APPLE)
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.so)
+        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
+        FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
       else()
         FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
+        FIND_PATH(Ilmbase_LIB_DIR NAMES lib64/libHalf.so)
       endif()
-        FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/half.h )
 
-        if(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+        if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
 
             set( OpenEXR_LIBS
                 IlmImf
@@ -86,18 +90,22 @@ IF ( USE_OPEN_EXR )
                 IlmThread
             )
             
+            if(APPLE)
+                    set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
+                    set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
+            else()
+                    set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
+                    set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib64 )
+            endif()
+
             set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
-      if(APPLE)
-            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
-      else()
-            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
-      endif()
+            set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR )
+
+            set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
 
             ADD_DEFINITIONS ( -pthread )
 
-            set(OpenEXR_LIBRARIES -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
-
-        endif(OpenEXR_LIB_DIR AND OpenEXR_INCLUDE_DIR)
+        endif()
   
   ENDIF ()
   
@@ -107,6 +115,7 @@ add_definitions ( -Wall )
 
 include_directories (
     ${OPENGL_INCLUDE_DIR}
+	${Ilmbase_INCLUDE_DIR}
 	${OpenEXR_INCLUDE_DIR}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
