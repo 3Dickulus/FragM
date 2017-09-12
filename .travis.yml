@@ -4,7 +4,7 @@ language: cpp
 dist: trusty
 
 os:
-  #- linux
+  - linux
   - osx
 
 branches:
@@ -52,13 +52,13 @@ install:
       brew install qt5
       export QTDIR="/usr/local/opt/qt"
       
-      brew install ilmbase
-      export ILMDIR="/usr/local/opt/ilmbase/2.2.0"
-      brew install openexr
-      export EXRDIR="/usr/local/opt/openexr/2.2.0"
+      #brew install ilmbase
+      #export ILMDIR="/usr/local/opt/ilmbase/2.2.0"
+      #brew install openexr
+      #export EXRDIR="/usr/local/opt/openexr/2.2.0"
 
-      brew link --overwrite openexr
-      brew link --overwrite ilmbase
+      #brew link --overwrite openexr
+      #brew link --overwrite ilmbase
 
       brew unlink cmake
       brew install cmake
@@ -74,8 +74,10 @@ before_script:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       export PATH="$QTDIR/bin:$PATH"
-      export LDFLAGS="-L$QTDIR/lib -L$ILMDIR/lib -L$EXRDIR/lib"
-      export CPPFLAGS="-I$QTDIR/include -I$ILMDIR/include/OpenEXR -I$EXRDIR/include/OpenEXR"
+      #export LDFLAGS="-L$QTDIR/lib -L$ILMDIR/lib -L$EXRDIR/lib"
+      #export CPPFLAGS="-I$QTDIR/include -I$ILMDIR/include/OpenEXR -I$EXRDIR/include/OpenEXR"
+      export LDFLAGS="-L$QTDIR/lib"
+      export CPPFLAGS="-I$QTDIR/include"
     fi
 
   - mkdir Fragmentarium-Source/build
@@ -94,7 +96,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        /bin/ls -l
     fi

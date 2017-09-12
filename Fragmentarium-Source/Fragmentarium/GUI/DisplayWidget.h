@@ -32,14 +32,6 @@
 #include "QtSpline.h"
 
 #ifdef USE_OPEN_EXR
-
-#ifdef __APPLE__
-#ifdef register
-#undef register
-#define register
-#endif
-#endif
-
 #include <half.h>
 #include <ImfTileDescription.h>
 #include <ImfTiledOutputFile.h>
