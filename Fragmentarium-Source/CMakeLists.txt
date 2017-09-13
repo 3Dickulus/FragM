@@ -29,6 +29,8 @@ IF ( MINGW )
 ENDIF ()
 
 set (OpenEXR_LIBRARIES "")
+set (OpenEXR_INCLUDE_DIR "")
+set (Ilmbase_INCLUDE_DIR "")
 
 IF( NVIDIAGL4PLUS )
   ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
@@ -46,9 +48,9 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-# IF ( USE_OPEN_EXR )
+IF ( USE_OPEN_EXR )
 
-#     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
+    ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
     IF ( MINGW )
         set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
@@ -101,12 +103,10 @@ MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
         MESSAGE( "OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}")
         MESSAGE("Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}")
-
-        set (OpenEXR_LIBRARIES "")
-
+  
   ENDIF ()
   
-# ENDIF (USE_OPEN_EXR)
+ENDIF (USE_OPEN_EXR)
 
 add_definitions ( -Wall )
 
