@@ -29,8 +29,6 @@ before_install:
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
       sudo apt-get -qq install g++-4.8 libc6-i386
-      sudo apt-get -qq install openexr
-      sudo apt-get -qq install libopenexr-dev
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -45,6 +43,8 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
+      sudo apt-get -v install libopenexr-dev
+      sudo apt-get -v install libilmbase-dev
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
@@ -89,7 +89,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=OFF ..
        make
        make package
        make package_source
