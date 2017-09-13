@@ -43,7 +43,7 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
-      sudo apt-get -qq openexr
+      sudo apt-get -qq install openexr
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
