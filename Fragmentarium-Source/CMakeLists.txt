@@ -70,18 +70,14 @@ IF ( USE_OPEN_EXR )
     ELSE ()
       FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
       FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
-        MESSAGE( "OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}")
-        MESSAGE("Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}")
 
       if(APPLE)
         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
       else()
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES lib64/libHalf.so)
+        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.so)
+        FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.so)
       endif()
-        MESSAGE( "OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}")
-        MESSAGE("Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}")
 
         if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
 
@@ -94,13 +90,8 @@ IF ( USE_OPEN_EXR )
                 IlmThread
             )
             
-            if(APPLE)
-                    set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
-                    set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
-            else()
-                    set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
-                    set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib64 )
-            endif()
+            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
+            set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
 
             set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
             set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR )
@@ -110,6 +101,12 @@ IF ( USE_OPEN_EXR )
             ADD_DEFINITIONS ( -pthread )
 
         endif()
+
+        MESSAGE( "OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}")
+        MESSAGE("Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}")
+
+        MESSAGE( "OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}")
+        MESSAGE("Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}")
   
   ENDIF ()
   
