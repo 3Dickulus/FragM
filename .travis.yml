@@ -89,7 +89,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=OFF ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make
        make package
        make package_source
