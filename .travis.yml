@@ -5,7 +5,7 @@ dist: trusty
 
 os:
   - linux
-  #- osx
+  - osx
 
 branches:
   only:
