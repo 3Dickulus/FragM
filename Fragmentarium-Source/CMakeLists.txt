@@ -46,9 +46,9 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-IF ( USE_OPEN_EXR )
+# IF ( USE_OPEN_EXR )
 
-    ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
+#     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
     IF ( MINGW )
         set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
@@ -72,11 +72,11 @@ IF ( USE_OPEN_EXR )
       FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
 
       if(APPLE)
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
+        FIND_PATH(OpenEXR_LIB_DIR NAMES libIlmImf.dylib)
+        FIND_PATH(Ilmbase_LIB_DIR NAMES libHalf.dylib)
       else()
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.so)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.so)
+        FIND_PATH(OpenEXR_LIB_DIR NAMES libIlmImf.so)
+        FIND_PATH(Ilmbase_LIB_DIR NAMES libHalf.so)
       endif()
 
         if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
@@ -90,27 +90,23 @@ IF ( USE_OPEN_EXR )
                 IlmThread
             )
             
-            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
-            set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
-
-            set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
-            set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR )
-
             set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
 
-            ADD_DEFINITIONS ( -pthread )
-
         endif()
+
+        ADD_DEFINITIONS ( -pthread )
 
         MESSAGE( "OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}")
         MESSAGE("Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}")
 
         MESSAGE( "OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}")
         MESSAGE("Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}")
-  
+
+        set (OpenEXR_LIBRARIES "")
+
   ENDIF ()
   
-ENDIF (USE_OPEN_EXR)
+# ENDIF (USE_OPEN_EXR)
 
 add_definitions ( -Wall )
 
