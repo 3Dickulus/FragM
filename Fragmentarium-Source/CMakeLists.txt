@@ -3,6 +3,12 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 cmake_policy(SET CMP0043 OLD)
 
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH}
+    ${ECM_MODULE_PATH}
+    )
+
 set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
@@ -28,10 +34,6 @@ IF ( MINGW )
   set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
-set (OpenEXR_LIBRARIES "")
-set (OpenEXR_INCLUDE_DIR "")
-set (Ilmbase_INCLUDE_DIR "")
-
 IF( NVIDIAGL4PLUS )
   ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
 ENDIF ()
@@ -48,63 +50,72 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
+set (OpenEXR_LIBRARIES "")
+
 IF ( USE_OPEN_EXR )
+
+    find_package ( OpenEXR REQUIRED )
 
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
-    IF ( MINGW )
-        set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
-    
-        set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
-
-        set( OpenEXR_LIBS
-            IlmImf-2_1
-            Half Imath-2_1
-            Iex-2_1
-            IexMath-2_1
-            IlmThread-2_1
-        )
-
-        MESSAGE("Using MinGW threads")
-        ADD_DEFINITIONS(-mthreads)
-        set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
-
-    ELSE ()
-      FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
-      FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
-
-      if(APPLE)
-        FIND_PATH(OpenEXR_LIB_DIR NAMES libIlmImf.dylib)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES libHalf.dylib)
-      else()
-        FIND_PATH(OpenEXR_LIB_DIR NAMES libIlmImf.so)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES libHalf.so)
-      endif()
-
-        if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
-
-            set( OpenEXR_LIBS
-                IlmImf
-                Half
-                Imath
-                Iex
-                IexMath
-                IlmThread
-            )
-            
-            set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
-
-        endif()
-
-        ADD_DEFINITIONS ( -pthread )
-
-        MESSAGE( "OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}")
-        MESSAGE("Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}")
-
-        MESSAGE( "OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}")
-        MESSAGE("Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}")
-  
-  ENDIF ()
+#     IF ( MINGW )
+#         set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
+#     
+#         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
+# 
+#         set( OpenEXR_LIBS
+#             IlmImf-2_1
+#             Half Imath-2_1
+#             Iex-2_1
+#             IexMath-2_1
+#             IlmThread-2_1
+#         )
+# 
+#         MESSAGE("Using MinGW threads")
+#         ADD_DEFINITIONS(-mthreads)
+#         set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
+# 
+#     ELSE ()
+#       FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
+#       FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
+# 
+#       if(APPLE)
+#         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
+#         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
+#       else()
+#         FIND_PATH(OpenEXR_LIB_DIR NAMES lib64/libIlmImf.so)
+#         FIND_PATH(Ilmbase_LIB_DIR NAMES lib64/libHalf.so)
+#       endif()
+# 
+#         if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
+# 
+#             set( OpenEXR_LIBS
+#                 IlmImf
+#                 Half
+#                 Imath
+#                 Iex
+#                 IexMath
+#                 IlmThread
+#             )
+#             
+#             if(APPLE)
+#                     set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
+#                     set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
+#             else()
+#                     set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib64 )
+#                     set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib64 )
+#             endif()
+# 
+#             set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR )
+#             set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR )
+# 
+#             set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+# 
+#             ADD_DEFINITIONS ( -pthread )
+# 
+#         endif()
+#   
+#   ENDIF ()
   
 ENDIF (USE_OPEN_EXR)
 
@@ -112,8 +123,7 @@ add_definitions ( -Wall )
 
 include_directories (
     ${OPENGL_INCLUDE_DIR}
-	${Ilmbase_INCLUDE_DIR}
-	${OpenEXR_INCLUDE_DIR}
+	${OpenEXR_INCLUDE_DIRS}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
 	${Qt5Widgets_INCLUDE_DIRS}
