@@ -57,7 +57,7 @@ install:
     then
       brew install qt5
       export QTDIR="/usr/local/opt/qt"
-      brew install openexr
+      brew install ilmbase openexr
 
       brew link --overwrite openexr
       brew link --overwrite ilmbase
@@ -90,7 +90,7 @@ script:
        make
        make package
        make package_source
-       ls -l Fragmentarium-2.0.b-0.1.1*
+       ls -l Fragmentarium-2.0.b*
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
