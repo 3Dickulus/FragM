@@ -43,8 +43,9 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
-      sudo apt-get -qq install openexr
       sudo apt-get -qq install libopenexr-dev
+      sudo apt-get -qq install libilmbase-dev
+      #sudo apt-get -qq install openexr
       sudo apt-get -qq install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5
@@ -56,8 +57,8 @@ install:
       export QTDIR="/usr/local/opt/qt"
       brew install openexr
 
-      #brew link --overwrite openexr
-      #brew link --overwrite ilmbase
+      brew link --overwrite openexr
+      brew link --overwrite ilmbase
 
       brew unlink cmake
       brew install cmake
@@ -97,25 +98,25 @@ script:
        /bin/ls -l
     fi
 
-before_deploy:
-  - export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-  - export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-  # create debian package for linux and a disk image for OSX
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then
+#before_deploy:
+  #- export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+  #- export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+  ## create debian package for linux and a disk image for OSX
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
+    #fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    #then
 
-      cd ../../Fragmentarium-2.0.b
-      macdeployqt ./Fragmentarium-2.0.b.app -dmg
-      mv ./Fragmentarium-2.0.b.dmg ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
-      cd ../Fragmentarium-Source/build
-      /bin/ls -l
-    fi
+      #cd ../../Fragmentarium-2.0.b
+      #macdeployqt ./Fragmentarium-2.0.b.app -dmg
+      #mv ./Fragmentarium-2.0.b.dmg ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
+      #cd ../Fragmentarium-Source/build
+      #/bin/ls -l
+    #fi
   #
   # add a tag
   #
