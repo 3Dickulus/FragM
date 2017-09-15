@@ -47,7 +47,7 @@ install:
       sudo apt-get -qq install qtcreator-latest
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      #sudo apt-get -qq install openexr
+      sudo apt-get -qq install openexr
       sudo apt-get -qq install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5

@@ -32,23 +32,23 @@
 #include "QtSpline.h"
 
 #ifdef USE_OPEN_EXR
-#include <OpenEXR/half.h>
-#include <OpenEXR/ImfTileDescription.h>
-#include <OpenEXR/ImfTiledOutputFile.h>
-#include <OpenEXR/ImfChannelList.h>
-#include <OpenEXR/ImfRgba.h>
-#include <OpenEXR/ImfRgbaFile.h>
-#include <OpenEXR/ImfTiledRgbaFile.h>
-#include <OpenEXR/ImfArray.h>
-#include <OpenEXR/ImfNamespace.h>
+#include <half.h>
+#include <ImfTileDescription.h>
+#include <ImfTiledOutputFile.h>
+#include <ImfChannelList.h>
+#include <ImfRgba.h>
+#include <ImfRgbaFile.h>
+#include <ImfTiledRgbaFile.h>
+#include <ImfArray.h>
+#include <ImfNamespace.h>
 
-#include <OpenEXR/ImfMultiPartInputFile.h>
-#include <OpenEXR/ImfTiledInputPart.h>
-#include <OpenEXR/ImfPartHelper.h>
-#include <OpenEXR/ImfPartType.h>
+#include <ImfMultiPartInputFile.h>
+#include <ImfTiledInputPart.h>
+#include <ImfPartHelper.h>
+#include <ImfPartType.h>
 
-#include <OpenEXR/OpenEXRConfig.h>
-#include <OpenEXR/Iex.h>
+#include <OpenEXRConfig.h>
+#include <Iex.h>
 
 #endif
 

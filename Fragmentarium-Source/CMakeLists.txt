@@ -22,7 +22,6 @@ find_package ( Qt5Xml REQUIRED )
 find_package ( Qt5Script REQUIRED )
 find_package ( Qt5LinguistTools )
 
-SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-deprecated-register" )
 
 # ON to compile with AsmBrowser enabled requires nVidia + GL > 4.0
 OPTION ( NVIDIAGL4PLUS "Build for nVidia GL v4+" ON)
@@ -65,7 +64,7 @@ IF ( USE_OPEN_EXR )
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
     IF ( MINGW )
-        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
+        set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
     
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
@@ -84,8 +83,8 @@ IF ( USE_OPEN_EXR )
     ENDIF ()
 
     IF(APPLE)
-      FIND_PATH(OpenEXR_INCLUDE_DIRS NAMES OpenEXR/ImfVersion.h )
-      FIND_PATH(Ilmbase_INCLUDE_DIRS NAMES OpenEXR/half.h )
+      FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
+      FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
 
         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
@@ -104,10 +103,10 @@ IF ( USE_OPEN_EXR )
             set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib/ )
             set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib/ )
 
-            set ( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIRS}/ )
-            set ( Ilmbase_INCLUDE_DIRS ${Ilmbase_INCLUDE_DIRS}/ )
+            set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR/ )
+            set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR/ )
 
-            set(OpenEXR_LIBRARIES -I${OpenEXR_INCLUDE_DIRS} -I${Ilmbase_INCLUDE_DIRS} -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+            set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
 
             ADD_DEFINITIONS ( -pthread )
 
@@ -117,11 +116,13 @@ IF ( USE_OPEN_EXR )
   
 ENDIF (USE_OPEN_EXR)
 
+SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-deprecated-register" )
+
 add_definitions ( -Wall )
 
 include_directories (
     ${OPENGL_INCLUDE_DIR}
-	${OpenEXR_INCLUDE_DIRS}
+	${OpenEXR_INCLUDE_DIR}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
 	${Qt5Widgets_INCLUDE_DIRS}
