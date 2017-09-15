@@ -29,6 +29,10 @@ OPTION ( NVIDIAGL4PLUS "Build for nVidia GL v4+" ON)
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" OFF)
 
+OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
+OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
+OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
+
 # set to the mingw lib path
 IF ( MINGW )
   set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
@@ -97,13 +101,13 @@ IF ( USE_OPEN_EXR )
                 IlmThread
             )
             
-            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib )
-            set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib )
+            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib/ )
+            set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib/ )
 
-            set ( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIRS}/OpenEXR )
-            set ( Ilmbase_INCLUDE_DIRS ${Ilmbase_INCLUDE_DIRS}/OpenEXR )
+            set ( OpenEXR_INCLUDE_DIRS ${OpenEXR_INCLUDE_DIRS}/ )
+            set ( Ilmbase_INCLUDE_DIRS ${Ilmbase_INCLUDE_DIRS}/ )
 
-            set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+            set(OpenEXR_LIBRARIES -I${OpenEXR_INCLUDE_DIRS} -I${Ilmbase_INCLUDE_DIRS} -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
 
             ADD_DEFINITIONS ( -pthread )
 
@@ -316,38 +320,48 @@ ENDIF()
 
 SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-# SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
-# SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
-# SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-# SET(CPACK_RPM_PACKAGE_RELEASE "1")
-# SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
-# SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
-# SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
-# SET(CPACK_RPM_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
-# SET(CPACK_TBZ2_SOURCE_PACKAGE_REQUIRES "OpenEXR-devel >= 2.1.0, libQt5OpenGL5-devel >= 5.7.1")
 
-SET(CPACK_DEB_PACKAGE_NAME "Fragmentarium")
-SET(CPACK_DEB_PACKAGE_VERSION "2.0.0")
-SET(CPACK_DEB_PACKAGE_ARCHITECTURE "x86_64")
-SET(CPACK_DEB_PACKAGE_RELEASE "1")
-SET(CPACK_DEB_PACKAGE_LICENSE "LPGL,GPL")
-SET(CPACK_DEB_PACKAGE_GROUP "Graphics")
-SET(CPACK_DEB_PACKAGE_VENDOR "Digilantism")
-SET(CPACK_DEB_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
+IF(BUILD_LINUX_RPM)
+    SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
+    SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
+    SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+    SET(CPACK_RPM_PACKAGE_RELEASE "1")
+    SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
+    SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
+    SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
+    SET(CPACK_RPM_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.6.1")
+    SET(CPACK_GENERATOR "RPM")
+ENDIF()
+
+IF(BUILD_LINUX_DEB)
+    SET(CPACK_DEB_PACKAGE_NAME "Fragmentarium")
+    SET(CPACK_DEB_PACKAGE_VERSION "2.0.0")
+    SET(CPACK_DEB_PACKAGE_ARCHITECTURE "x86_64")
+    SET(CPACK_DEB_PACKAGE_RELEASE "1")
+    SET(CPACK_DEB_PACKAGE_LICENSE "LPGL,GPL")
+    SET(CPACK_DEB_PACKAGE_GROUP "Graphics")
+    SET(CPACK_DEB_PACKAGE_VENDOR "Digilantism")
+    SET(CPACK_DEB_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
+    SET(CPACK_GENERATOR "DEB")
+ENDIF()
+
+SET(CPACK_TBZ2_SOURCE_PACKAGE_REQUIRES "OpenEXR-devel >= 2.1.0, libQt5OpenGL5-devel >= 5.4.1")
 
 SET(CPACK_PACKAGE_RELOCATABLE "YES")
 SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
-
 SET(CPACK_PACKAGE_CONTACT "3dickulus@gmail.com")
 SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
-if(WIN32)
+
+IF(WIN32)
         set(CPACK_GENERATOR "ZIP")
-else()
-        set(CPACK_GENERATOR "DEB")
-endif() 
+ENDIF()
+
+IF(UNIX)
+ENDIF()
 
 SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
 SET(CPACK_SOURCE_GENERATOR "TBZ2")
 
-INCLUDE(CPack)
- 
+IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
+    INCLUDE(CPack)
+ENDIF()

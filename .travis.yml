@@ -7,6 +7,8 @@ os:
   - linux
   - osx
 
+sudo: required
+
 branches:
   only:
   - master
@@ -62,7 +64,7 @@ install:
 
       brew unlink cmake
       brew install cmake
-      brew install extra-cmake-modules
+      #brew install extra-cmake-modules
     fi
 
 before_script:
