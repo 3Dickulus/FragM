@@ -5,8 +5,10 @@
 #include <QVector>
 #include <QtOpenGL>
 #ifdef __APPLE__
+#include <openGL/gl.h>
 #include <openGL/glext.h>
 #else
+#include <GL/gl.h>
 #include <GL/glext.h>
 #endif
 #include <QGLFormat>
