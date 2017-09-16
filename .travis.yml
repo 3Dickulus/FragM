@@ -63,6 +63,9 @@ install:
     then
       brew install qt5
       export QTDIR="/usr/local/opt/qt"
+      export LDFLAGS "-L/usr/local/opt/qt/lib"
+      export CPPFLAGS "-I/usr/local/opt/qt/include"
+    
       brew install ilmbase openexr
 
       brew unlink openexr

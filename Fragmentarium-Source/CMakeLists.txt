@@ -3,7 +3,7 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 cmake_policy(SET CMP0043 OLD)
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
     # for find_package ( OpenEXR REQUIRED )
     find_package(ECM REQUIRED NO_MODULE)
 
@@ -46,10 +46,10 @@ IF( NVIDIAGL4PLUS )
 ENDIF ()
 
 IF(OPENGL_LIBRARIES_NOTFOUND)
-    IF(UNIX)
-        FIND_LIBRARY(OPENGL_LIBRARIES GL )
-    ELSEIF(APPLE)
+    IF(APPLE)
         FIND_LIBRARY(OPENGL_LIBRARIES OpenGL )
+    ELSEIF(UNIX)
+        FIND_LIBRARY(OPENGL_LIBRARIES GL )
     ELSEIF(WIN32)
         set(OPENGL_LIBRARIES "-lopengl32" )
     ENDIF ()
@@ -67,7 +67,7 @@ MARK_AS_ADVANCED (Ilmbase_INCLUDE_DIRS)
 
 IF ( USE_OPEN_EXR )
 
-    IF(UNIX)
+    IF(UNIX AND NOT APPLE)
         find_package ( OpenEXR REQUIRED )
     ENDIF ()
 
@@ -114,7 +114,7 @@ IF ( USE_OPEN_EXR )
             IlmThread
         )
         
-        set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+        set(OpenEXR_LIBRARIES -Bstatic -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread -Bdynamic)
 
         ADD_DEFINITIONS ( -pthread )
 
