@@ -106,7 +106,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        /bin/ls -l
     fi
