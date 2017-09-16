@@ -3,11 +3,15 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 cmake_policy(SET CMP0043 OLD)
 
-find_package(ECM REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH}
-    ${ECM_MODULE_PATH}
-    )
+IF(UNIX)
+    # for find_package ( OpenEXR REQUIRED )
+    find_package(ECM REQUIRED NO_MODULE)
+
+    set(CMAKE_MODULE_PATH
+        ${CMAKE_MODULE_PATH}
+        ${ECM_MODULE_PATH}
+        )
+ENDIF ()
 
 set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )
@@ -54,6 +58,12 @@ ENDIF ()
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
 set (OpenEXR_LIBRARIES "")
+set (OpenEXR_INCLUDE_DIRS "")
+set (Ilmbase_INCLUDE_DIRS "")
+
+MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
+MARK_AS_ADVANCED (OpenEXR_INCLUDE_DIRS)
+MARK_AS_ADVANCED (Ilmbase_INCLUDE_DIRS)
 
 IF ( USE_OPEN_EXR )
 
@@ -64,7 +74,7 @@ IF ( USE_OPEN_EXR )
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
     IF ( MINGW )
-        set ( OpenEXR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
+        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
     
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
@@ -83,35 +93,31 @@ IF ( USE_OPEN_EXR )
     ENDIF ()
 
     IF(APPLE)
-      FIND_PATH(OpenEXR_INCLUDE_DIR NAMES OpenEXR/ImfVersion.h )
-      FIND_PATH(Ilmbase_INCLUDE_DIR NAMES OpenEXR/half.h )
+#       FIND_PATH(OpenEXR_INCLUDE_DIRS NAMES OpenEXR/ImfVersion.h )
+#       FIND_PATH(Ilmbase_INCLUDE_DIRS NAMES OpenEXR/half.h )
 
-        FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
-        FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
+#         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
+#         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
 
-        if(OpenEXR_LIB_DIR AND Ilmbase_LIB_DIR)
+        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.2.0/lib )
+        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.2.0/lib )
 
-            set( OpenEXR_LIBS
-                IlmImf
-                Half
-                Imath
-                Iex
-                IexMath
-                IlmThread
-            )
-            
-            set ( OpenEXR_LIB_DIR ${OpenEXR_LIB_DIR}/lib/ )
-            set ( Ilmbase_LIB_DIR ${Ilmbase_LIB_DIR}/lib/ )
+        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.2.0/include/OpenEXR )
+        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.2.0/include/OpenEXR )
 
-            set ( OpenEXR_INCLUDE_DIR ${OpenEXR_INCLUDE_DIR}/OpenEXR/ )
-            set ( Ilmbase_INCLUDE_DIR ${Ilmbase_INCLUDE_DIR}/OpenEXR/ )
+        set( OpenEXR_LIBS
+            IlmImf
+            Half
+            Imath
+            Iex
+            IexMath
+            IlmThread
+        )
+        
+        set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
 
-            set(OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread)
+        ADD_DEFINITIONS ( -pthread )
 
-            ADD_DEFINITIONS ( -pthread )
-
-        endif()
-  
     ENDIF ()
   
 ENDIF (USE_OPEN_EXR)
@@ -122,7 +128,8 @@ add_definitions ( -Wall )
 
 include_directories (
     ${OPENGL_INCLUDE_DIR}
-	${OpenEXR_INCLUDE_DIR}
+	${OpenEXR_INCLUDE_DIRS}
+	${Ilmbase_INCLUDE_DIRS}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
 	${Qt5Widgets_INCLUDE_DIRS}
@@ -245,56 +252,28 @@ target_link_libraries ( ${PROJECT_NAME} ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES}
 qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
 
 # Installation
-
 INSTALL ( TARGETS
   ${PROJECT_NAME}
   DESTINATION
   ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
 )
 
+# Runtime support files
 IF(APPLE)
-    INSTALL ( DIRECTORY
-    Examples
-    fqScript
-    Misc
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS
-    )
-
-    INSTALL ( FILES
-    3Dickulus-HOW-TO.txt
-    3Dickulus.changes
-    LICENSE.GPL3
-    LICENSE.LGPL
-    LICENSE.README
-    ../EULA.txt
-    ../EULA_de.txt
-    ../EULA_ru.txt
-    ../EULA_nl.txt
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS
-    )
-
-    INSTALL ( FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS/Languages
-    )
-
+    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS )
 ELSE()
+    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} )
+ENDIF()
 
-    INSTALL ( DIRECTORY
+INSTALL ( DIRECTORY
     Examples
     fqScript
     Misc
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+DESTINATION
+    ${DESTINATION_NAME}
     )
 
-    INSTALL ( FILES
+INSTALL ( FILES
     3Dickulus-HOW-TO.txt
     3Dickulus.changes
     LICENSE.GPL3
@@ -304,65 +283,67 @@ ELSE()
     ../EULA_de.txt
     ../EULA_ru.txt
     ../EULA_nl.txt
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
-    )
+DESTINATION
+    ${DESTINATION_NAME}
+)
 
-    INSTALL ( FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
-        ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/Languages
-    )
+INSTALL ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
+    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
+    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
+    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
+DESTINATION
+    ${DESTINATION_NAME}/Languages
+)
 
-ENDIF()
-
-SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-
-IF(BUILD_LINUX_RPM)
-    SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
-    SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
-    SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-    SET(CPACK_RPM_PACKAGE_RELEASE "1")
-    SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
-    SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
-    SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
-    SET(CPACK_RPM_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.6.1")
-    SET(CPACK_GENERATOR "RPM")
-ENDIF()
-
-IF(BUILD_LINUX_DEB)
-    SET(CPACK_DEB_PACKAGE_NAME "Fragmentarium")
-    SET(CPACK_DEB_PACKAGE_VERSION "2.0.0")
-    SET(CPACK_DEB_PACKAGE_ARCHITECTURE "x86_64")
-    SET(CPACK_DEB_PACKAGE_RELEASE "1")
-    SET(CPACK_DEB_PACKAGE_LICENSE "LPGL,GPL")
-    SET(CPACK_DEB_PACKAGE_GROUP "Graphics")
-    SET(CPACK_DEB_PACKAGE_VENDOR "Digilantism")
-    SET(CPACK_DEB_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
-    SET(CPACK_GENERATOR "DEB")
-ENDIF()
-
-SET(CPACK_TBZ2_SOURCE_PACKAGE_REQUIRES "OpenEXR-devel >= 2.1.0, libQt5OpenGL5-devel >= 5.4.1")
-
-SET(CPACK_PACKAGE_RELOCATABLE "YES")
-SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
-SET(CPACK_PACKAGE_CONTACT "3dickulus@gmail.com")
-SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
-
-IF(WIN32)
-        set(CPACK_GENERATOR "ZIP")
-ENDIF()
-
-IF(UNIX)
-ENDIF()
-
-SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
-SET(CPACK_SOURCE_GENERATOR "TBZ2")
 
 IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
+
+    SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
+    SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
+
+    IF(UNIX)
+
+    IF(BUILD_LINUX_RPM)
+        SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
+        SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
+        SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+        SET(CPACK_RPM_PACKAGE_RELEASE "1")
+        SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
+        SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
+        SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
+        SET(CPACK_RPM_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.6.1")
+        SET(CPACK_GENERATOR "RPM")
+    ENDIF()
+
+    IF(BUILD_LINUX_DEB)
+        SET(CPACK_DEB_PACKAGE_NAME "Fragmentarium")
+        SET(CPACK_DEB_PACKAGE_VERSION "2.0.0")
+        SET(CPACK_DEB_PACKAGE_ARCHITECTURE "x86_64")
+        SET(CPACK_DEB_PACKAGE_RELEASE "1")
+        SET(CPACK_DEB_PACKAGE_LICENSE "LPGL,GPL")
+        SET(CPACK_DEB_PACKAGE_GROUP "Graphics")
+        SET(CPACK_DEB_PACKAGE_VENDOR "Digilantism")
+        SET(CPACK_DEB_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
+        SET(CPACK_GENERATOR "DEB")
+    ENDIF()
+
+    SET(CPACK_TBZ2_SOURCE_PACKAGE_REQUIRES "OpenEXR-devel >= 2.1.0, libQt5OpenGL5-devel >= 5.4.1")
+
+    ENDIF()
+
+    SET(CPACK_PACKAGE_RELOCATABLE "YES")
+    SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
+    SET(CPACK_PACKAGE_CONTACT "3dickulus@gmail.com")
+    SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
+
+    IF(WIN32)
+            set(CPACK_GENERATOR "ZIP")
+    ENDIF()
+
+
+    SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
+    SET(CPACK_SOURCE_GENERATOR "TBZ2")
+
     INCLUDE(CPack)
 ENDIF()

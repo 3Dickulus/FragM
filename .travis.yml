@@ -5,9 +5,9 @@ dist: trusty
 
 os:
   - linux
-  - osx
+  #- osx
 
-sudo: required
+sudo: false
 
 branches:
   only:
@@ -45,9 +45,10 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
-      sudo apt-get -qq install libopenexr-dev
-      sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install openexr
+      sudo apt-add-repository -y ppa:thomas-schiex/blender
+      sudo apt-get -qq update
+      sudo apt-get -qq install ilmbase-dev=2.2.0-0thomas~trusty0
+      sudo apt-get -qq install openexr-dev=2.2.0-0thomas~trusty0
       sudo apt-get -qq install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5
@@ -59,7 +60,9 @@ install:
       export QTDIR="/usr/local/opt/qt"
       brew install ilmbase openexr
 
+      brew unlink openexr
       brew link --overwrite openexr
+      brew unlink ilmbase
       brew link --overwrite ilmbase
 
       brew unlink cmake
@@ -86,7 +89,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make
        make package
        make package_source
