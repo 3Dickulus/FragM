@@ -45,6 +45,7 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
+      
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qq update
 
@@ -53,7 +54,6 @@ install:
       sudo apt-get -qq install libilmbase12
       sudo apt-get -qq install libopenexr22
 
-      sudo apt-get -qq install openexr
       sudo apt-get -qq install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5

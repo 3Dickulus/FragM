@@ -40,7 +40,7 @@
 #include <ImfRgbaFile.h>
 #include <ImfTiledRgbaFile.h>
 #include <ImfArray.h>
-// #include <ImfNamespace.h>
+#include <ImfNamespace.h>
 
 #include <ImfMultiPartInputFile.h>
 #include <ImfTiledInputPart.h>

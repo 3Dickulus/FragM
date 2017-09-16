@@ -122,7 +122,11 @@ IF ( USE_OPEN_EXR )
   
 ENDIF (USE_OPEN_EXR)
 
-SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-deprecated-register" )
+    IF(APPLE)
+        SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-deprecated-register -Wno-unused-result" )
+    ELSE ()
+        SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-unused-result" )
+    ENDIF ()
 
 add_definitions ( -Wall )
 
