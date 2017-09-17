@@ -35,7 +35,7 @@ before_install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      brew -qq update
+      brew update
       brew install gcc48
       gcc --version
     fi
