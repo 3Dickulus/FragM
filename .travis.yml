@@ -4,8 +4,8 @@ language: cpp
 dist: trusty
 
 os:
-  #- linux
-  - osx
+  - linux
+  #- osx
 
 sudo: false
 
