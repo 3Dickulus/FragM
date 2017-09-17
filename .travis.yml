@@ -22,7 +22,7 @@ env:
     - CONFIG=release
 
 compiler:
-  - gcc-4.8
+  - gcc
 
 before_install:
   - |
@@ -37,9 +37,11 @@ before_install:
     then
       brew update
       brew tab homebrew/versions
+      brew unlink gcc
       brew install gcc48
-      export CC=/usr/local/Cellar/gcc@48/4.8.5/bin/gcc-4.8
-      export CXX=/usr/local/Cellar/gcc@48/4.8.5/bin/g++-4.8
+      export PATH=/usr/local/Cellar/gcc@4.8/4.8.5/bin:$PATH
+      export CC=/usr/local/Cellar/gcc@4.8/4.8.5/bin/gcc-4.8
+      export CXX=/usr/local/Cellar/gcc@4.8/4.8.5/bin/g++-4.8
     fi
 
 install:
