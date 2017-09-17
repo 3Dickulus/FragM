@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 170908, " (\"beta\")");
+    version = Version(2, 0, 0, 170917, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -696,7 +696,9 @@ void MainWindow::init()
 #endif // NVIDIAGL4PLUS
 
 #ifdef USE_OPEN_EXR
+#ifndef WIN32
 initTools();
+#endif // UNIX
 #endif // USE_OPEN_EXR
 
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
