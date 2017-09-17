@@ -20,9 +20,11 @@ env:
     - secure: iezXZec3P201MaqlXZKYKJ0Blo8Rk3mvC9qyb5TX9DJ+0oEvXsSwH+JpJOhtnDiWdGnlDT70smJK1fkauktH5qLxEHq5r+9Xe35kyyj9Tu3xA+z26pwHVA+ezIrHYebTUphlZSkKvqd8bJ2ecYO7VaoHrOkjg8YhrfPwOFmC/pJoatJKGAoM5IqPMhYvEkossvso6brkBrcYF6MJ7y/Qtg6tqhtE7yMalj76ooYdCu0sc8Apt6t3ittGP06Y/5dlNV/L+ZtTnsAR4/YJOxcRBqDWiD1pQG1qEixSpYlYL7VH1DMxOsXWCFgc6KXgeNKEjzKTW+X0g/ymW5x0Mzn2+aG1wNo1cFptQsFmXWR0yEDZZaX2uCLSgh1Y6uMhfHjM1XP/b/0UReh2cstI+DwP7l+EbP8vVUfIXeNtZiKbsUjXPX6GV4McLQ+wKUHOClo3/Zs95VGzmT0ijPldgtme0fkVy0NanZsLP8oCFknA3LCCcEVtrxOugVOKml1JVNoSQGBh2f7i0hrqYEZFWK7CxUabD45rt2KBLa/tvm0xvTvbS1xyDEzUW4lvGh+8D2sX0wMC0RGekF4c37vOQjV0biMemZddm9l0og0eSMm63e1RSUf+qpv4YwpAmcVwa3YRKbJlcpyi5ErytXDd7Xfv+b+OkSaL0iBscurlz/HLO+w=
   matrix:
     - CONFIG=release
+    - CXX=gcc@48
+    - CC=gcc@48
 
 compiler:
-  - gcc48
+  - gcc
 
 before_install:
   - |
