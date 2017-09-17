@@ -39,7 +39,9 @@ before_install:
       brew tap homebrew/versions
       brew install gcc48
       export PATH="/usr/local/bin:$PATH"
-      gcc --version      
+      /usr/local/bin/gcc --version      
+      export CXX=/usr/local/bin/g++
+      export CC=/usr/local/bin/gcc
     fi
 
 install:
@@ -67,9 +69,9 @@ install:
     then
       brew install qt5
       export QTDIR="/usr/local/opt/qt"
-      export LDFLAGS "-L/usr/local/opt/qt/lib"
-      export CPPFLAGS "-I/usr/local/opt/qt/include"
-    
+      export LDFLAGS="-L/usr/local/opt/qt/lib"
+      export CPPFLAGS="-I/usr/local/opt/qt/include"
+      export CXX_COMPILER="/usr/local/bin/g++"
       brew install ilmbase openexr
 
       brew unlink openexr
