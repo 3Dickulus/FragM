@@ -93,8 +93,6 @@ IF ( USE_OPEN_EXR )
     ENDIF ()
 
     IF(APPLE)
-        set ( CMAKE_C_COMPILER /usr/local/Cellar/gcc/4.8.5/bin/gcc)
-        set ( CMAKE_CXX_COMPILER /usr/local/Cellar/gcc/4.8.5/bin/g++)
 #       FIND_PATH(OpenEXR_INCLUDE_DIRS NAMES OpenEXR/ImfVersion.h )
 #       FIND_PATH(Ilmbase_INCLUDE_DIRS NAMES OpenEXR/half.h )
 

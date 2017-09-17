@@ -36,8 +36,11 @@ before_install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew update
+      brew tab homebrew/versions
       brew install gcc48
-      gcc --version
+      export CC=/usr/local/Cellar/gcc@48/4.8.5/bin/gcc
+      export CXX=/usr/local/Cellar/gcc@48/4.8.5/bin/g++
+      $CXX --version
     fi
 
 install:
