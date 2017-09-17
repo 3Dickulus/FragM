@@ -36,8 +36,8 @@ before_install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew update
-      export CXX=gcc@48
-      export CC=gcc@48
+      export CXX=gcc48
+      export CC=gcc48
     fi
 
 install:
