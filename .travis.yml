@@ -140,7 +140,7 @@ before_deploy:
   #add a tag
   - TIME_STRING=`date +%H%M%S`
   - |
-  if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       export GIT_TAG=linux-b$TRAVIS_BUILD_NUMBER-$TIME_STRING
     fi
