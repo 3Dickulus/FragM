@@ -22,7 +22,7 @@ env:
     - CONFIG=release
 
 compiler:
-  - gcc
+  - gcc48
 
 before_install:
   - |
@@ -36,12 +36,6 @@ before_install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew update
-      brew tap homebrew/versions
-      brew install gcc48
-      export PATH="/usr/local/bin:$PATH"
-      /usr/local/bin/gcc --version      
-      export CXX=/usr/local/bin/g++
-      export CC=/usr/local/bin/gcc
     fi
 
 install:
@@ -71,7 +65,7 @@ install:
       export QTDIR="/usr/local/opt/qt"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
       export CPPFLAGS="-I/usr/local/opt/qt/include"
-      export CXX_COMPILER="/usr/local/bin/g++"
+
       brew install ilmbase openexr
 
       brew unlink openexr
