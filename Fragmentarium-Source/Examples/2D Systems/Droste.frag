@@ -30,7 +30,7 @@ vec3 color(vec2 z) {
 	// ArKano22 code below (http://www.gamedev.net/topic/590070-glsl-droste/)
 	float branches = 1.0;
 	float factor = pow(1.0/scale,Branches);
-	z = cPower2(z, cDiv(vec2( log(factor) ,2.0*PI), vec2(0.0,2.0*PI) ) );
+	z = cPow(z, cDiv(vec2( log(factor) ,2.0*PI), vec2(0.0,2.0*PI) ) );
 	float s = fract(time);
 	s = log(s+1.)/log(2.);  // <-- I found this works better for linear animation
 	z *= 1.0+s*(scale-1.0);
