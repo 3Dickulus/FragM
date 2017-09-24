@@ -24,8 +24,6 @@ uniform vec3 Eye; slider[(-50,-50,-50),(0,0,-10),(50,50,50)] NotLockable
 uniform vec3 Target; slider[(-50,-50,-50),(0,0,0),(50,50,50)] NotLockable
 uniform vec3 Up; slider[(0,0,0),(0,1,0),(0,0,0)] NotLockable
 
-
-
 varying vec3 from;
 uniform vec2 pixelSize;
 varying vec2 coord;
@@ -75,8 +73,10 @@ void main(void)
 uniform bool EquiRectangular; checkbox[false]
 // Sets focal plane to Target location
 uniform bool AutoFocus; checkbox[false]
+
 uniform float FocalPlane; slider[0,1,50]
 uniform float Aperture; slider[0,0.00,0.2]
+
 
 #group Raytracer
 
