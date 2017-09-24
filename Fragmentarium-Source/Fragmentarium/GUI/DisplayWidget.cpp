@@ -696,9 +696,9 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
 void DisplayWidget::setupBufferShader() {
     if ( bufferShaderProgram ) {
         bufferShaderProgram->release();
+        delete ( bufferShaderProgram );
+        bufferShaderProgram = 0;
     }
-    delete ( bufferShaderProgram );
-    bufferShaderProgram = 0;
 
     if ( !fragmentSource.bufferShaderSource ) return;
 
@@ -1132,8 +1132,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     if(programID == shaderProgram->programId()) {
         qDebug() << "shaderProgram";
     }
-
-    if(programID == bufferShaderProgram->programId()) {
+    
+    if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
         qDebug() << "bufferShaderProgram";
     }
 
