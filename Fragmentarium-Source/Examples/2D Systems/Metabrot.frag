@@ -1,11 +1,9 @@
-#version 400
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
-#extension GL_ARB_gpu_shader_fp64 : enable
+#version 400 compatibility
 
 #include "Progressive2D-4.frag"
-
+#info MetaBrot inspired by the good folks at FractalForums.com 2013-2017
 #group Metabrot
+
 uniform float R; slider[0,0,1]
 uniform float G; slider[0,0.4,1]
 uniform float B; slider[0,0.7,1]
@@ -26,7 +24,7 @@ dvec2 csqr( dvec2 a ) {
  if(Type==2) return dvec2(a.x*a.x-a.y*a.y, 2.0*a.x*a.y) - a;
 }
 
-vec3 color(vec2 p)
+dvec3 color(dvec2 p)
 {
    //z from current pixel
 	dvec2 z = p;
@@ -49,10 +47,10 @@ vec3 color(vec2 p)
       // The color scheme here is based on one from Inigo Quilez's Shader Toy:
       float co =  float(i) + 1. - (log(.5*log(float(dist)))- log(.5*log(bailout))) / log(bailout);
       co = 6.2831*sqrt(co/float(ColDiv));
-      return .5+.5*vec3( cos(co+R), cos(co+G), cos(co+B) );
+      return .5+.5*dvec3( cos(co+R), cos(co+G), cos(co+B) );
    }  else {
       float ld = log(log(float(6.2831*dist)))-log(length(vec2(z)));
-      return vec3(ld+R,ld+G,ld+B)*(float(dist));
+      return dvec3(ld+R,ld+G,ld+B)*(double(dist));
    }
 }
 
