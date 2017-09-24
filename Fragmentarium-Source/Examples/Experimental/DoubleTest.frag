@@ -5,6 +5,9 @@
 #info BurningShirp inspired by the good folks at FractalForums.com 2013-2017
 #group BurningShirp
 
+uniform int  RetryMax; slider[0,0,64]
+uniform double RetryEntry; slider[0,0,64]
+uniform double RetryBias; slider[0,0,64]
 // Number of iterations
 uniform int  Iterations; slider[10,200,10000]
 uniform int  PreIter; slider[0,0,1000]
@@ -98,7 +101,7 @@ dvec3 StalkColor( double i,dvec2 zmin) {
 }
 
 dvec3 color(dvec2 c) {
-	
+	int retry = 0;
 	if(Invert) c = domainMap(-c);
 	
 	dvec2 z = Julia ?  c : dvec2(0.0,0.0);
@@ -116,6 +119,7 @@ dvec3 color(dvec2 c) {
 	}
 
 	for (i = 0; i < Iterations; i++) {
+
 		
 		if(Formula == 0) z=abs(z);// Burning Ship
 		else if(Formula == 1) z.y=abs(z.y); // Perpendicular Burning Ship
@@ -127,10 +131,23 @@ dvec3 color(dvec2 c) {
 		else if(Meta&&!Sin) z = Plot( Plot(z)+c ) + Plot(c) + z;
 		else if(!Meta&&Sin) z = cSin( vec2(Plot(z)) )+c;
 		else z = Plot(z) + c;
+    // Chris Thomasson
+    // http://www.fractalforums.com/index.php?action=gallery;sa=view;id=20565
+    if (z.x * z.x + z.y * z.y > RetryEntry)
+    {
+        if (retry < RetryMax)
+        {
+            z = z * (1./RetryBias);
+            --i;
+            ++retry;
+            continue;
+        }
+    }
 
 		dist = dot(z,z);
 		zmin = min(zmin, abs(z));
 		if (dist> Bailout) break;
+
 	}
 	
 	dvec3 rColor;
@@ -173,69 +190,11 @@ StalksInside = false
 StalksOutside = false
 Invert = false
 InvertC = 0,0
+RetryEntry = 0
+RetryBias = 0
+RetryMax = 0
 #endpreset
 
-#preset Meta1
-Gamma = 2
-Brightness = 1
-Contrast = 1
-Saturation = 1
-Center = -0.1401168,0.0165878
-Zoom = 0.8575215
-ToneMapping = 1
-Exposure = 1
-AARange = 1
-AAExp = 2
-GaussianAA = true
-Iterations = 1000
-R = 0.25
-G = 0.5
-B = 0.75
-Power = 2
-Bailout = 384
-ColDiv = 10
-Formula = 1
-Meta = true
-Sin = false
-PreIter = 0
-Julia = true
-JuliaXY = -0.2981256,0
-StalksInside = false
-StalksOutside = false
-Invert = false
-InvertC = 0,0
-#endpreset
-
-#preset Default-PBS
-Gamma = 2
-Brightness = 1
-Contrast = 1
-Saturation = 1
-Center = -0.4048052,0.0733156
-Zoom = 0.64841
-ToneMapping = 1
-Exposure = 1
-AARange = 1
-AAExp = 2
-GaussianAA = true
-Iterations = 1000
-PreIter = 0
-R = 0.25
-G = 0.5
-B = 0.75
-ColDiv = 2
-Power = 2
-Bailout = 55
-Formula = 1
-Julia = false
-JuliaXY = -0.2222222,0
-Meta = false
-Sin = false
-StalksInside = false
-StalksOutside = false
-Invert = false
-InvertC = 0,0
-#endpreset
 
 #preset Meta2
 Gamma = 2
@@ -328,6 +287,9 @@ StalksInside = false
 StalksOutside = false
 Invert = false
 InvertC = 0,0
+RetryEntry = 16
+RetryBias = 5
+RetryMax = 4
 #endpreset
 
 #preset PBS-Sin2
@@ -979,6 +941,8 @@ StalksInside = false
 StalksOutside = false
 Invert = false
 InvertC = 0,0
+RetryEntry = 32
+RetryBias = 10
 #endpreset
 
 #preset PM-M
