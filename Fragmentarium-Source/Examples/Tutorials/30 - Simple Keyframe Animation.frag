@@ -1,5 +1,5 @@
 #info Mandelbulb Anim Fragment
-#info Use with 3Dickulus SplinePath Hack http://www.fractalforums.com/index.php?topic=16405.0
+#info http://www.fractalforums.com/index.php?topic=16405.0
 #define providesInit
 #include "MathUtils.frag"
 #include "DE-Raytracer.frag"

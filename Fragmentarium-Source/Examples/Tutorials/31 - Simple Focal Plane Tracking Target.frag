@@ -1,5 +1,4 @@
 #info Mandelbulb Anim Fragment
-#info Use with 3Dickulus SplinePath Hack
 #info http://www.fractalforums.com/index.php?topic=16405.0
 #define providesInit
 

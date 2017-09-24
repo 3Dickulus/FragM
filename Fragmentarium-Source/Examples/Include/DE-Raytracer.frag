@@ -221,9 +221,11 @@ float shadow(vec3 pos, vec3 sdir, float eps) {
 	return 1.0-s;
 }
 
+float piOverTwo = PI/2.0;
+
 vec3 lighting(vec3 n, vec3 color, vec3 pos, vec3 dir, float eps, out float shadowStrength) {
 	shadowStrength = 0.0;
-	vec3 spotDir = vec3(sin(SpotLightDir.x*3.1415)*cos(SpotLightDir.y*3.1415/2.0), sin(SpotLightDir.y*3.1415/2.0)*sin(SpotLightDir.x*3.1415), cos(SpotLightDir.x*3.1415));
+	vec3 spotDir = vec3(sin(SpotLightDir.x*PI)*cos(SpotLightDir.y*piOverTwo), sin(SpotLightDir.y*piOverTwo)*sin(SpotLightDir.x*PI), cos(SpotLightDir.x*PI));
 	spotDir = normalize(spotDir);
 
 	float nDotL = max(0.0,dot(n,spotDir));
@@ -396,7 +398,7 @@ vec3 trace(vec3 from, vec3 dir, inout vec3 hit, inout vec3 hitNormal) {
 		hitColor +=Glow.xyz*stepFactor* Glow.w*(1.0-shadowStrength);
 		hitNormal = vec3(0.0);
 		if (DebugSun) {
-			vec3 spotDir = vec3(sin(SpotLightDir.x*3.1415)*cos(SpotLightDir.y*3.1415/2.0), sin(SpotLightDir.y*3.1415/2.0)*sin(SpotLightDir.x*3.1415), cos(SpotLightDir.x*3.1415));
+			vec3 spotDir = vec3(sin(SpotLightDir.x*PI)*cos(SpotLightDir.y*piOverTwo), sin(SpotLightDir.y*piOverTwo)*sin(SpotLightDir.x*PI), cos(SpotLightDir.x*PI));
 			spotDir = normalize(spotDir);
 			if (dot(spotDir,normalize(dir))>0.9) hitColor= vec3(100.,0.,0.);
 		}
@@ -422,12 +424,12 @@ vec3 trace(vec3 from, vec3 dir, inout vec3 hit, inout vec3 hitNormal) {
 vec3 color(vec3 from, vec3 dir) {
 	vec3 hit = vec3(0.0);
 	vec3 hitNormal = vec3(0.0);
-        depthFlag=true; // do depth on the first hit not on reflections
-	if (Reflection==0.) {
-		return  trace(from,dir,hit,hitNormal);
+    depthFlag=true; // do depth on the first hit not on reflections
+	vec3 first =  trace(from,dir,hit,hitNormal);
+
+	if (Reflection==0. || hitNormal == vec3(0.0)) {
+		return first;
 	} else {
-		vec3 first =  trace(from,dir,hit,hitNormal);
-		if (hitNormal == vec3(0.0)) return first;
 		vec3 d = reflect(dir, hitNormal);
 		return mix(first,trace(hit+d*minDist,d,hit, hitNormal),Reflection);
 	}
