@@ -15,7 +15,7 @@ QStringList FileManager::getImageFiles() {
     QList<QByteArray> a;
     a << "hdr";
 #ifdef USE_OPEN_EXR
-  #ifdef WIN32
+  #ifdef Q_OS_WIN
     a << "exr";
   #endif
 #endif

@@ -876,7 +876,7 @@ void qRangeSlider::mouseReleaseEvent(QMouseEvent*)
 /*!
   \reimp
 */
-#ifndef __APPLE__
+#ifndef Q_OS_MAC
 QSize qRangeSlider::sizeHint() const
 {
   //Q_D(const qRangeSlider);

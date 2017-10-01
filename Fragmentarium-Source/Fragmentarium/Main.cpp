@@ -8,14 +8,14 @@
 #include "Fragmentarium/GUI/MainWindow.h"
 
 // Needed for unicode commandline below.
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 #endif
 
 int main(int argc, char *argv[])
 {
-  #ifdef WIN32
+  #ifdef Q_OS_WIN
   qApp->addLibraryPath("./");
   qApp->addLibraryPath("./plugins");
   qApp->addLibraryPath("platforms");

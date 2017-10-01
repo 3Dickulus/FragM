@@ -180,7 +180,7 @@ public:
 
   ~qRangeSlider();
 
-#ifndef __APPLE__
+#ifndef Q_OS_MAC
   QSize sizeHint() const;
 #endif
   QSize minimumSizeHint() const;

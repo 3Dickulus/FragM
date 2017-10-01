@@ -1,6 +1,6 @@
 #include "Logging.h"
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #include "windows.h"
 #endif
 
@@ -12,7 +12,7 @@ namespace SyntopiaCore {
 
         void LOG(QString message, LogLevel priority) {
             // On Windows this allows us to see debug in the Output::Debug window while running.
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #ifdef DEBUG
             OutputDebugString((LPCWSTR) (message+"\r\n").utf16());
 #endif

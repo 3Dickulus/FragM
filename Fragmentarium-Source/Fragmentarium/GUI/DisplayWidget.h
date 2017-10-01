@@ -4,7 +4,7 @@
 #include <QAnimationGroup>
 #include <QVector>
 #include <QtOpenGL>
-#ifdef __APPLE__
+#ifdef Q_OS_MAC
 #include <openGL/gl.h>
 #include <openGL/glext.h>
 #else
@@ -276,7 +276,7 @@ namespace Fragmentarium {
       void mouseReleaseEvent ( QMouseEvent * ev) Q_DECL_OVERRIDE;
       void mousePressEvent ( QMouseEvent * ev) Q_DECL_OVERRIDE;
 //       void initializeGL() Q_DECL_OVERRIDE;
-//       void paintEvent(QPaintEvent * ev) Q_DECL_OVERRIDE;
+      void paintEvent(QPaintEvent * ev) Q_DECL_OVERRIDE;
       void showEvent(QShowEvent * event) Q_DECL_OVERRIDE;
       
       int pixelWidth() {

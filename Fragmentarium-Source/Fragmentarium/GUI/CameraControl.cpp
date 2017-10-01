@@ -348,7 +348,7 @@ namespace Fragmentarium {
           dir2 = (coordX*right2 + coordY*up3 )*fov->getValue()+dir2;   //.4 = FOV
 
           QVector3D ret = eye2 + dir2 / sz;
-#ifndef WIN32
+#ifndef Q_OS_WIN
           if( std::isinf(ret.x()) != 0 ) { ret.setX(1000.0); }
           if( std::isinf(ret.y()) != 0 ) { ret.setY(1000.0); }
           if( std::isinf(ret.z()) != 0 ) { ret.setZ(1000.0); }
