@@ -9,7 +9,7 @@
 #include <QVector3D>
 
 #include "DisplayWidget.h"
-#ifdef __APPLE__
+#ifdef Q_OS_MAC
 #include <openGL/gl.h>
 #include <openGL/glext.h>
 #else
@@ -129,10 +129,21 @@ void DisplayWidget::updateRefreshRate() {
 
 }
 
-// let the system handle paint events,
-// void DisplayWidget::paintEvent(QPaintEvent * ev) {
-//     QGLWidget::paintEvent(ev);
-// }
+// let the system handle widget paint events,with out shaders
+void DisplayWidget::paintEvent(QPaintEvent * ev) {
+
+    if ( drawingState == Tiled ) {
+        ev->accept();
+        return;
+    }
+    if ( bufferShaderProgram ) {
+        bufferShaderProgram->release();
+    }
+    if ( shaderProgram ) {
+        shaderProgram->release();
+    }
+    QGLWidget::paintEvent(ev);
+}
 
 DisplayWidget::~DisplayWidget() {
 }
@@ -561,7 +572,7 @@ void DisplayWidget::setupFragmentShader() {
                     }
                 }
 #ifdef USE_OPEN_EXR
-#ifdef WIN32
+#ifdef Q_OS_WIN
                 else if ( texturePath.endsWith ( ".exr", Qt::CaseInsensitive ) ) { // is EXR format image ?
                     //
                     // Read an RGBA image using class RgbaInputFile:
@@ -696,9 +707,10 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
 void DisplayWidget::setupBufferShader() {
     if ( bufferShaderProgram ) {
         bufferShaderProgram->release();
-        delete ( bufferShaderProgram );
-        bufferShaderProgram = 0;
     }
+
+    delete ( bufferShaderProgram );
+    bufferShaderProgram = 0;
 
     if ( !fragmentSource.bufferShaderSource ) return;
 
@@ -1129,10 +1141,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
+    if(subframeCounter == 1)
     if(programID == shaderProgram->programId()) {
         qDebug() << "shaderProgram";
     }
     
+    if(subframeCounter == 1)
     if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
         qDebug() << "bufferShaderProgram";
     }
@@ -1226,7 +1240,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 #endif // NVIDIAGL4PLUS
 
             // type name and value to console
-            qDebug() << tp << "\t" << uniformName << uniformValue;
+            if(subframeCounter == 1) qDebug() << tp << "\t" << uniformName << uniformValue;
             // this sets User (32 bit) uniforms not handled above
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName() && !found) {
@@ -1237,12 +1251,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             }
         } else {
             tp.sprintf("%x",type);
-            qDebug() << tp << uniformName;
+            if(subframeCounter == 1) qDebug() << tp << uniformName;
         }
         
         if(found) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
-    qDebug() << " ";
+    if(subframeCounter == 1) qDebug() << " ";
     
 }
 
@@ -1353,13 +1367,15 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
+
+    glFinish(); // wait for GPU to return control
     // finished with the shader
     shaderProgram->release();
     
     if (cameraControl->getID() == "3D") {
         // draw splines using depth buffer for occlusion... or not
-        if ( mainWindow->wantPaths() ) {
-            if ( eyeSpline!=NULL && drawingState != Animation && !isContinuous() && drawingState != Tiled ) {
+        if ( mainWindow->wantPaths()  && !isContinuous()) {
+            if ( eyeSpline!=NULL && drawingState != Animation && drawingState != Tiled ) {
                 if ( mainWindow->wantSplineOcc() ) {
                     glEnable ( GL_DEPTH_TEST ); // only testing
                 } else {
@@ -1434,7 +1450,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         }
     }
 
-    mainWindow->setSubFrameDisplay ( subframeCounter );
+    if(drawingState != Tiled) mainWindow->setSubFrameDisplay ( subframeCounter );
 
     if ( buffer && !buffer->bind() ) {
       WARNING ( tr("Failed to bind target buffer") );
@@ -1501,6 +1517,8 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glEnd();
     glPopAttrib();
 
+    glFinish(); // wait for GPU to return control
+    
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
     if ( buffer && !buffer->release() ) {
@@ -1530,7 +1548,7 @@ void DisplayWidget::clearGL() {
     glColorMask ( GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE );
     glDepthMask ( GL_TRUE );
     glStencilMask ( 0xFFFFFFFF );
-    glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT );
+    glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 }
 
 #ifdef USE_OPEN_EXR
@@ -1617,20 +1635,22 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
         if ( !progress->wasCanceled() ) {
 
-        progress->setValue ( *steps );
-        progress->setLabelText ( tr( "Frame:%1/%2 Time:%3\nTile:%4.%5/%6 Size:%7\n avg sec/tile:%8 ETA:%9" )
-                                 .arg ( ( int ) ( time*renderFPS ) ).arg ( framesToRender )
-                                 .arg ( time, 8, 'g', 3, QChar ( ' ' )  )
-                                 .arg ( tile,tileField,10, QChar ( '0' ) )
-                                 .arg ( i,subField,10,QChar ( '0' ) )
-                                 .arg ( frametile )
-                                 .arg ( framesize ) 
-                                 .arg ( (tileAVG/(tile+1))/1000.0, 8, 'g', 3, QChar ( ' ' ) )
-                                 .arg ( renderETA ) );
+            progress->setValue ( *steps );
+            progress->setLabelText ( tr( "Frame:%1/%2 Time:%3\nTile:%4.%5/%6 Size:%7\n avg sec/tile:%8 ETA:%9" )
+                                    .arg ( ( int ) ( time*renderFPS ) ).arg ( framesToRender )
+                                    .arg ( time, 8, 'g', 3, QChar ( ' ' )  )
+                                    .arg ( tile,tileField,10, QChar ( '0' ) )
+                                    .arg ( i,subField,10,QChar ( '0' ) )
+                                    .arg ( frametile )
+                                    .arg ( framesize ) 
+                                    .arg ( (tileAVG/(tile+1))/1000.0, 8, 'g', 3, QChar ( ' ' ) )
+                                    .arg ( renderETA ) );
 
-        ( *steps ) ++;
+            ( *steps ) ++;
 
-        drawToFrameBufferObject ( hiresBuffer, false );
+            mainWindow->processGuiEvents();
+
+            drawToFrameBufferObject ( hiresBuffer, false );
 
         }
     }
@@ -1857,8 +1877,7 @@ void DisplayWidget::resetZappaStatus() {
 };
 
 void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
-
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
     // M Benesi "Spray gun" wheelEvent
     if( zapLocked ) {
@@ -1883,7 +1902,7 @@ void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
 }
 
 void DisplayWidget::mouseMoveEvent ( QMouseEvent *ev ) {
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
     // M Benesi "Spray gun" mouseMoveEvent
     mouseXY=ev->pos();
@@ -1907,7 +1926,7 @@ void DisplayWidget::mouseMoveEvent ( QMouseEvent *ev ) {
 }
 
 void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) return;
 
     // M Benesi "Spray gun" mouseReleaseEvent
     buttonDown=false;
@@ -1959,7 +1978,7 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
 
 void DisplayWidget::mousePressEvent ( QMouseEvent* ev )  {
     buttonDown=true;
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
     // M Benesi "Spray gun" mousePressEvent
     if( zapLocked ) // this is where ZAtMXY needs to be set to current zappa dist from camera
@@ -1980,7 +1999,7 @@ void DisplayWidget::mousePressEvent ( QMouseEvent* ev )  {
 }
 
 void DisplayWidget::keyPressEvent ( QKeyEvent* ev ) {
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
     if( zapLocked ) {
         QGLWidget::keyPressEvent ( ev );
@@ -1997,7 +2016,7 @@ void DisplayWidget::keyPressEvent ( QKeyEvent* ev ) {
 }
 
 void DisplayWidget::keyReleaseEvent ( QKeyEvent* ev ) {
-    if ( mainWindow->getCameraSettings().isEmpty() ) return;
+    if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
     if( zapLocked ) {
         int fbi = mainWindow->getFeedbackIndex();
