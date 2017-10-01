@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 170923, " (\"beta\")");
+    version = Version(2, 0, 0, 170930, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -696,14 +696,14 @@ void MainWindow::init()
 #endif // NVIDIAGL4PLUS
 
 #ifdef USE_OPEN_EXR
-#ifndef WIN32
+#ifndef Q_OS_WIN
 initTools();
 #endif // UNIX
 #endif // USE_OPEN_EXR
 
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
-    play();
     setupScriptEngine();
+    play();
 }
 
 #ifdef USE_OPEN_EXR
@@ -967,6 +967,7 @@ void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
     
     if (!variableEditor || !shaderProgram) return;    
     variableEditor->setUserUniforms(shaderProgram);
+    if(feedbackcount != 0)
     setFeedbackUniforms(shaderProgram);
 }
 
@@ -1533,9 +1534,9 @@ retry:
     engine->setEXRmode(exrMode);
 #endif
 
-    if( (w*maxTiles>16384 || h*maxTiles > 16384) && !exrMode ) {
+    if( (w*maxTiles>32768 || h*maxTiles > 32768) && !exrMode ) {
         QMessageBox msgBox;
-        msgBox.setText( QString("%1x%2 %3").arg(w*maxTiles).arg(h*maxTiles).arg(tr("is too large!\nMust be less than 16384x16384")));
+        msgBox.setText( QString("%1x%2 %3").arg(w*maxTiles).arg(h*maxTiles).arg(tr("is too large!\nMust be less than 32769x32769")));
         msgBox.setInformativeText(tr("Do you want to try again?"));
         msgBox.setStandardButtons(QMessageBox::Retry | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Retry);
@@ -1646,7 +1647,7 @@ retry:
               
               if (!progress.wasCanceled()) {
 
-                    QImage im;
+                    QImage im(w,h,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
 
                     if (padding>0.0)  {
@@ -1659,7 +1660,7 @@ retry:
                         im = im.copy(ox,oy,nw,nh);
                     }
 
-                    if(w*maxTiles<16385 && h*maxTiles < 16385)
+                    if(w*maxTiles<32769 && h*maxTiles < 32769)
                         cachedTileImages.append(im);
 
                     int dx = (tile / maxTiles);
@@ -1698,8 +1699,6 @@ retry:
                     engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
                 }
                 
-                processGuiEvents();
-                
             }
 
             imageSaved = out.isValidLevel(0,0);
@@ -1715,7 +1714,7 @@ retry:
                 
                 if (!progress.wasCanceled()) {
 
-                    QImage im;
+                    QImage im(w,h,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
 
                     if (padding>0.0)  {
@@ -1728,7 +1727,7 @@ retry:
                         im = im.copy(ox,oy,nw,nh);
                     }
 
-                    if(w*maxTiles<16385 && h*maxTiles < 16385)
+                    if(w*maxTiles<32769 && h*maxTiles < 32769)
                         cachedTileImages.append(im);
 
                     // display tiles while rendering if the tiles fit the window
@@ -1766,9 +1765,6 @@ retry:
                     if( estRenderMS > 86400000 ) // takes longer than 24 hours
                         engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
                 }
-                
-                processGuiEvents();
-                
             }
         }
         
@@ -1787,7 +1783,7 @@ retry:
         
         // Now assemble image
         if (!progress.wasCanceled() &&
-                (!exrMode || (preview && w*maxTiles<16385 && h*maxTiles < 16385)) &&
+                (!exrMode || (preview && w*maxTiles<32769 && h*maxTiles < 32769)) &&
                 (runFromScript == runningScript)) {
             int w = cachedTileImages[0].width();
             int h = cachedTileImages[0].height();
@@ -3074,7 +3070,7 @@ void MainWindow::insertText() {
         return;
     }
 
-    QString text = ((QAction*)sender())->text();
+    QString text = ((QAction*)sender())->iconText(); // iconText is the menu text without hotkey char
     getTextEdit()->insertPlainText(text.section("//",0,0)); // strip comments
 }
 
@@ -3307,7 +3303,7 @@ void MainWindow::processGuiEvents() {
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
-#ifndef WIN32
+#ifdef Q_OS_UNIX
   while(qApp->hasPendingEvents())
 #endif
     qApp->processEvents();
