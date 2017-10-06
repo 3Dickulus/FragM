@@ -131,6 +131,14 @@ before_deploy:
 
       cd ../../Fragmentarium-2.0.b
       macdeployqt ./Fragmentarium-2.0.b.app
+      cp -r ../Fragmentarium-Source/Examples ./Fragmentarium-2.0.b.app/Contents/MacOS/Examples
+      cp -r ../Fragmentarium-Source/fqScript ./Fragmentarium-2.0.b.app/Contents/MacOS/fqScript
+      cp -r ../Fragmentarium-Source/Misc ./Fragmentarium-2.0.b.app/Contents/MacOS/Misc
+      mkdir ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
+      cp ../Fragmentarium-Source/build/*.qm ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages/
+      cp ../Fragmentarium-Source/LICENSE.* ./Fragmentarium-2.0.b.app/Contents/MacOS/
+      
+      
       ditto -c -k ./Fragmentarium-2.0.b.app ./Fragmentarium-2.0.b.app.zip
       mv ./Fragmentarium-2.0.b.app.zip ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.app.zip
       cd ../Fragmentarium-Source/build
@@ -171,4 +179,4 @@ deploy:
         branch: master
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
-    
+
