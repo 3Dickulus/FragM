@@ -134,7 +134,7 @@ before_deploy:
       ditto -c -k ./Fragmentarium-2.0.b.app ./Fragmentarium-2.0.b.app.zip
       mv ./Fragmentarium-2.0.b.app.zip ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.app.zip
       cd ../Fragmentarium-Source/build
-      wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.zip
+      wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     fi
   
   #add a tag
