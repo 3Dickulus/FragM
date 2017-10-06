@@ -112,7 +112,7 @@ public slots:
     void paste();
     void childChanged(bool lockedChanged);
     void presetSelected(QString presetName);
-    void tabChanged(int index);
+    void tabChanged(int );
     void dockChanged(bool t){ tabWidget->setTabPosition( t ? (QTabWidget::North) : (QTabWidget::East)); } // 05/22/17 Sabine ;)
     
 protected:

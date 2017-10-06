@@ -350,7 +350,7 @@ namespace Fragmentarium {
       void clearKeyFrameControl();
       void bufferSpinBoxChanged(int);
       void timeChanged(int);
-      void timeLineRequest(QPoint p);
+      void timeLineRequest(QPoint );
       void videoEncoderRequest();
       void bufferActionChanged(QAction* action);
       void showWelcomeNote();

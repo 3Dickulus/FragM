@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 170930, " (\"beta\")");
+    version = Version(2, 0, 0, 171004, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -2255,7 +2255,7 @@ void MainWindow::bufferActionChanged(QAction* action) {
     engine->updateBuffers();
 }
 
-void MainWindow::timeLineRequest(QPoint p) {
+void MainWindow::timeLineRequest(QPoint ) {
 
   TimeLineDialog *TimeDialog = new TimeLineDialog(this);
   TimeDialog->exec();
@@ -2931,6 +2931,7 @@ void MainWindow::launchGallery() {
 }
 
 void MainWindow::makeScreenshot() {
+    engine->updateGL();
     saveImage(engine->grabFrameBuffer());
 }
 

@@ -257,7 +257,7 @@ void TimeLineDialog::createEasingCurveMap() {
     }
 }
 
-void TimeLineDialog::itemChange(const QList< QRectF >& region)
+void TimeLineDialog::itemChange(const QList< QRectF >& )
 {
     for ( int i = 0; i < easingMap.count(); i++ ) {
         if(eGroupMap[i]->isSelected()) {

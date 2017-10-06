@@ -49,7 +49,7 @@ class TimeLineDialog : public QDialog
     public slots:
       
     private slots:
-      void itemChange(const QList<QRectF> & region);
+      void itemChange(const QList<QRectF> & );
       void readTimeLineSettings();
       void saveTimeLineSettings();
       void createKeyframeMap();

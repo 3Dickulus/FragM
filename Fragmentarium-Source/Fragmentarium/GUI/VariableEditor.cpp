@@ -80,7 +80,7 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
 }
 
 // this adjusts variable widgets, should be handled by layout container?
-void VariableEditor::tabChanged(int index) {
+void VariableEditor::tabChanged(int ) {
     if(currentComboSlider)
         currentComboSlider->blockSignals(true);
     

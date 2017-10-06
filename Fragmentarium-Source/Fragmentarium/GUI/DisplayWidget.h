@@ -277,7 +277,7 @@ namespace Fragmentarium {
       void mousePressEvent ( QMouseEvent * ev) Q_DECL_OVERRIDE;
 //       void initializeGL() Q_DECL_OVERRIDE;
       void paintEvent(QPaintEvent * ev) Q_DECL_OVERRIDE;
-      void showEvent(QShowEvent * event) Q_DECL_OVERRIDE;
+      void showEvent(QShowEvent * ) Q_DECL_OVERRIDE;
       
       int pixelWidth() {
         return width() * devicePixelRatio();

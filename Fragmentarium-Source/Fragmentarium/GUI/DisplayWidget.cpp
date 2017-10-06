@@ -1826,7 +1826,7 @@ void DisplayWidget::timerSignal() {
 //    Plane: 0 (i.e., normal plane).
 //    Multisample buffers: Disabled.
 
-void DisplayWidget::showEvent(QShowEvent * event) {
+void DisplayWidget::showEvent(QShowEvent * ) {
 
     vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
     renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );

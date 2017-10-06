@@ -73,7 +73,7 @@ namespace Fragmentarium {
 
             }
             void setDecimals(int d) {spinner->setDecimals(d);};
-            void contextMenuEvent(QContextMenuEvent* ev ) {
+            void contextMenuEvent(QContextMenuEvent* ) {
              
               bool ok;
               int i = QInputDialog::getInt(this, objectName(),
