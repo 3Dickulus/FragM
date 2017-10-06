@@ -123,15 +123,16 @@ before_deploy:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
-      wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE-Leap42.2.rpm
+      wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-42.2.rpm
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
 
       cd ../../Fragmentarium-2.0.b
-      macdeployqt ./Fragmentarium-2.0.b.app -dmg
-      mv ./Fragmentarium-2.0.b.dmg ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
+      macdeployqt ./Fragmentarium-2.0.b.app
+      ditto -c -k ./Fragmentarium-2.0.b.app ./Fragmentarium-2.0.b.app.zip
+      mv ./Fragmentarium-2.0.b.app.zip ../Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.app.zip
       cd ../Fragmentarium-Source/build
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.zip
     fi
@@ -149,7 +150,7 @@ deploy:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file:
         - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
-        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE-Leap42.2.rpm
+        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-42.2.rpm
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
@@ -162,7 +163,7 @@ deploy:
     api_key:
       secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file: 
-      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.dmg
+      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.app.zip
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.zip
     skip_cleanup: true
     on:

@@ -123,7 +123,7 @@ IF ( USE_OPEN_EXR )
   
 ENDIF (USE_OPEN_EXR)
 
-SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wno-unused-result" )
+SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra" )
 
 add_definitions ( -Wall )
 
@@ -254,7 +254,7 @@ qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
 
 # Runtime support files
 IF(APPLE)
-    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_NAME}.app/Contents/MacOS )
+    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} )
     # Installation
     INSTALL ( TARGETS
     ${PROJECT_NAME}
