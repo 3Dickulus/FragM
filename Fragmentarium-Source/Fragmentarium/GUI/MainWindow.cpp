@@ -1834,7 +1834,7 @@ retry:
 
             } else if( !exrMode )
             {
-//               finalImage.setText("fRAg", variableEditor->getSettings());
+//               finalImage.setText("frAg", variableEditor->getSettings());
               
               imageSaved=finalImage.save(name);
             }
@@ -1874,7 +1874,7 @@ void MainWindow::savePreview() {
             QLabel* label = qd->findChild<QLabel*>("previewImage");
             if(label) {
                 QImage img = label->pixmap()->toImage();
-                img.setText("fRAg", variableEditor->getSettings());
+                img.setText("frAg", variableEditor->getSettings());
                 img.save(fn);
                 qd->close();
                 statusBar()->showMessage(tr("Saved file : ") + fn);
@@ -1923,7 +1923,7 @@ void MainWindow::saveParameters(QString fileName) {
 void MainWindow::loadParameters(QString fileName) {
     QFile file(fileName);
     if (fileName.toLower().endsWith(".png") && file.exists()) {
-      variableEditor->setSettings(QImage(fileName).text("fRAg"));
+      variableEditor->setSettings(QImage(fileName).text("frAg"));
       return;
     }
       else
@@ -2939,7 +2939,7 @@ void MainWindow::saveImage(QImage image) {
     QString filename = GetImageFileName(this, tr("Save screenshot as:"));
     if (filename.isEmpty()) return;
 
-    image.setText("fRAg", variableEditor->getSettings());
+    image.setText("frAg", variableEditor->getSettings());
 
     bool succes = image.save(filename);
     if (succes) {
@@ -3022,7 +3022,7 @@ void MainWindow::dropEvent(QDropEvent *ev) {
             if (file.toLower().endsWith(".fragparams")) loadParameters(file);
             else if (file.toLower().endsWith(".frag")) loadFragFile(file);
             else if (file.toLower().endsWith(".png")) {
-              variableEditor->setSettings(QImage(file).text("fRAg"));
+              variableEditor->setSettings(QImage(file).text("frAg"));
             }
             else INFO(tr("Must be a .frag or .fragparams file."));
         }
