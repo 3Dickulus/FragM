@@ -116,8 +116,9 @@ script:
     fi
 
 before_deploy:
-  - export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-  - export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+  - |
+    export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+    export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
   # create debian package for linux and a disk image for OSX
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
@@ -133,7 +134,6 @@ before_deploy:
       mv ./Examples ./Fragmentarium-2.0.b.app/Contents/MacOS/Examples
       mv ./fqScript ./Fragmentarium-2.0.b.app/Contents/MacOS/fqScript
       mv ./Misc ./Fragmentarium-2.0.b.app/Contents/MacOS/Misc
-      mkdir ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
       mv ./Languages ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
 
       macdeployqt ./Fragmentarium-2.0.b.app
@@ -141,7 +141,7 @@ before_deploy:
       cd ../
       
       ditto -c -k ./Fragmentarium-2.0.b ./Fragmentarium-2.0.b.zip
-      mv ./Fragmentarium-2.0.b.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER_x86_64-apple-darwin15.6.0.zip
+      mv ./Fragmentarium-2.0.b.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin15.6.0.zip
       cd ./Fragmentarium-Source/build
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     fi
@@ -172,7 +172,7 @@ deploy:
     api_key:
       secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file: 
-      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER_x86_64-apple-darwin15.6.0.zip
+      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin15.6.0.zip
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     skip_cleanup: true
     on:
