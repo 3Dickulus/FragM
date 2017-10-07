@@ -130,13 +130,14 @@ before_deploy:
     then
 
       cd ../../Fragmentarium-2.0.b
-      cp -r ../Fragmentarium-Source/Examples ./Fragmentarium-2.0.b.app/Contents/MacOS/Examples
-      cp -r ../Fragmentarium-Source/fqScript ./Fragmentarium-2.0.b.app/Contents/MacOS/fqScript
-      cp -r ../Fragmentarium-Source/Misc ./Fragmentarium-2.0.b.app/Contents/MacOS/Misc
+      mv ./Examples ./Fragmentarium-2.0.b.app/Contents/MacOS/Examples
+      mv ./fqScript ./Fragmentarium-2.0.b.app/Contents/MacOS/fqScript
+      mv ./Misc ./Fragmentarium-2.0.b.app/Contents/MacOS/Misc
       mkdir ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
-      cp ../Fragmentarium-Source/build/*.qm ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages/
-      cp ../Fragmentarium-Source/LICENSE.* ./Fragmentarium-2.0.b.app/Contents/MacOS/
+      mv ./Languages ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
+
       macdeployqt ./Fragmentarium-2.0.b.app
+
       cd ../
       
       ditto -c -k ./Fragmentarium-2.0.b ./Fragmentarium-2.0.b.zip
