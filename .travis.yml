@@ -60,6 +60,7 @@ install:
       sudo apt-get -qq install libilmbase12
       sudo apt-get -qq install libopenexr22
 
+      sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5
@@ -103,10 +104,10 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
        make
        make package
-       ls -l Fragmentarium-2.0.b*
+       ls -l *.deb
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]

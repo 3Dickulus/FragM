@@ -115,7 +115,7 @@ IF ( USE_OPEN_EXR )
             IlmThread
         )
         
-        set(OpenEXR_LIBRARIES -Bstatic -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread -Bdynamic)
+        set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
 
         ADD_DEFINITIONS ( -pthread )
 
@@ -283,7 +283,7 @@ INSTALL ( DIRECTORY
     Examples
     fqScript
     Misc
-DESTINATION
+    DESTINATION
     ${DESTINATION_NAME}
     )
 
@@ -315,10 +315,11 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
 
     SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-
+    
     IF(UNIX AND NOT APPLE)
 
         IF(BUILD_LINUX_RPM)
+            SET(CMAKE_INSTALL_PREFIX "/usr/local")
             SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
             SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
             SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
@@ -326,23 +327,27 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
             SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
             SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
             SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
-            SET(CPACK_RPM_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.6.1")
+            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg")
+            SET(CPACK_RPM_PACKAGE_PREDEPENDS "openexr")
+            SET(CPACK_RPM_PACKAGE_DEPENDS "libQt5Core5, libQt5Gui5, libQt5OpenGL5, libQt5Script5, libQt5Widgets5, libQt5Xml5")
             SET(CPACK_GENERATOR "RPM")
         ENDIF()
 
         IF(BUILD_LINUX_DEB)
-            SET(CPACK_DEB_PACKAGE_NAME "Fragmentarium")
-            SET(CPACK_DEB_PACKAGE_VERSION "2.0.0")
-            SET(CPACK_DEB_PACKAGE_ARCHITECTURE "x86_64")
-            SET(CPACK_DEB_PACKAGE_RELEASE "1")
-            SET(CPACK_DEB_PACKAGE_LICENSE "LPGL,GPL")
-            SET(CPACK_DEB_PACKAGE_GROUP "Graphics")
-            SET(CPACK_DEB_PACKAGE_VENDOR "Digilantism")
-            SET(CPACK_DEB_PACKAGE_REQUIRES "openexr(x86-64) >= 2.1.0, libQt5OpenGL5(x86-64) >= 5.7.1")
+            SET(CMAKE_INSTALL_PREFIX "/usr/local")
+            SET(CPACK_DEBIAN_PACKAGE_NAME "fragmentarium")
+            SET(CPACK_DEBIAN_PACKAGE_VERSION "2.0.0")
+            SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+            SET(CPACK_DEBIAN_PACKAGE_RELEASE "0.0.2")
+            SET(CPACK_DEBIAN_PACKAGE_LICENSE "lgpl,gpl")
+            SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
+            SET(CPACK_DEBIAN_PACKAGE_VENDOR "digilantism")
+            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg")
+            SET(CPACK_DEBIAN_PACKAGE_PREDEPENDS "libilmbase12, libopenexr22")
+            SET(CPACK_DEBIAN_PACKAGE_DEPENDS "qt57base, qt57script, qt57xmlpatterns")
+            SET(CPACK_DEBIAN_PACKAGE_PROVIDES "fragmentarium")
             SET(CPACK_GENERATOR "DEB")
         ENDIF()
-
-        SET(CPACK_TBZ2_SOURCE_PACKAGE_REQUIRES "OpenEXR-devel >= 2.1.0, libQt5OpenGL5-devel >= 5.4.1")
 
     ENDIF()
 
