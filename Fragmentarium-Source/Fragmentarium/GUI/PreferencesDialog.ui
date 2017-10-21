@@ -111,7 +111,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="refreshRateSpinBox"/>
+         <widget class="QSpinBox" name="refreshRateSpinBox">
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
