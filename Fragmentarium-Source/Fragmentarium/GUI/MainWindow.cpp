@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 171004, " (\"beta\")");
+    version = Version(2, 0, 0, 171019, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -1574,7 +1574,7 @@ retry:
     progress.setValue ( 0 );
     progress.move((width()-progress.width())/2,(height()-progress.height())/2);
     progress.setWindowModality(Qt::WindowModal);
-    progress.setValue(startTime*maxTiles*maxTiles*maxSubframes);
+    progress.setValue(steps);
     progress.show();
     
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
@@ -1716,7 +1716,7 @@ retry:
 
                     QImage im(w,h,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
-
+                    
                     if (padding>0.0)  {
                         int w = im.width();
                         int h = im.height();
@@ -1780,11 +1780,10 @@ retry:
           if( estRenderMS > 86400000 ) // takes longer than 24 hours
             engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
         }
-        
+
         // Now assemble image
         if (!progress.wasCanceled() &&
-                (!exrMode || (preview && w*maxTiles<32769 && h*maxTiles < 32769)) &&
-                (runFromScript == runningScript)) {
+                (!exrMode || (preview && w*maxTiles<32769 && h*maxTiles < 32769)) ) {
             int w = cachedTileImages[0].width();
             int h = cachedTileImages[0].height();
             QImage finalImage(w*maxTiles,h*maxTiles,cachedTileImages[0].format());
@@ -1800,7 +1799,7 @@ retry:
                 painter.drawImage(target, cachedTileImages[i], source);
             }
 
-            //             INFO(QString("Created combined image (%1,%2)").arg(w*maxTiles).arg(h*maxTiles));
+            INFO(QString("Created combined image (%1,%2)").arg(w*maxTiles).arg(h*maxTiles));
 
             if (preview) {
                 static QDialog* qd;
@@ -1834,7 +1833,7 @@ retry:
 
             } else if( !exrMode )
             {
-//               finalImage.setText("frAg", variableEditor->getSettings());
+              finalImage.setText("frAg", variableEditor->getSettings());
               
               imageSaved=finalImage.save(name);
             }
@@ -1842,8 +1841,7 @@ retry:
         }
         if(!preview) {
             if(imageSaved && !progress.wasCanceled()) {
-                statusBar()->showMessage(tr("Saved file : ") + name);    // INFO(tr("Saved file : ") + name);
-                statusBar()->update();
+                INFO(tr("Saved file : ") + name);
             }
             else WARNING(tr("Save file failed! : ") + name);
         }
@@ -1877,8 +1875,7 @@ void MainWindow::savePreview() {
                 img.setText("frAg", variableEditor->getSettings());
                 img.save(fn);
                 qd->close();
-                statusBar()->showMessage(tr("Saved file : ") + fn);
-                statusBar()->update();
+                INFO(tr("Saved file : ") + fn);
             }
         }
     }
@@ -1890,7 +1887,7 @@ void MainWindow::pasteSelected() {
     // the text will contain a Unicode U+2029 paragraph separator character instead of a newline \n character. Use QString::replace() to replace these characters with newlines
     settings = settings.replace(QChar::ParagraphSeparator,"\n");
     variableEditor->setSettings(settings);
-    statusBar()->showMessage(tr("Pasted selected settings"), 2000);
+    INFO(tr("Pasted selected settings"));
 }
 
 void MainWindow::saveParameters() {
@@ -1917,7 +1914,7 @@ void MainWindow::saveParameters(QString fileName) {
 
     QTextStream out(&file);
     out << variableEditor->getSettings();
-    statusBar()->showMessage(tr("Settings saved to file"), 2000);
+    INFO(tr("Settings saved to file"));
 }
 
 void MainWindow::loadParameters(QString fileName) {
@@ -1938,7 +1935,7 @@ void MainWindow::loadParameters(QString fileName) {
     QTextStream in(&file);
     QString settings = in.readAll();
     variableEditor->setSettings(settings);
-    statusBar()->showMessage(tr("Settings loaded from file"), 2000);
+    INFO(tr("Settings loaded from file") );
 }
 
 void MainWindow::loadParameters() {
@@ -2310,8 +2307,9 @@ void MainWindow::stop() {
     stopAction->setEnabled(false);
     lastStoredTime = getTime();
 
-    //INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
-    statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
+    if(engine->getState() == DisplayWidget::Animation)
+    INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
+    //statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
 
     engine->setContinuous(false);
     getTime();
@@ -2764,7 +2762,7 @@ OrbitStrength = 0\r\n\
             QApplication::setOverrideCursor(Qt::WaitCursor);
             textEdit->setPlainText(in.readAll());
             QApplication::restoreOverrideCursor();
-            statusBar()->showMessage(tr("Loaded file: %1").arg(filename), 2000);
+            INFO(tr("Loaded file: %1").arg(filename));
             loadingSucceded = true;
         }
     }
