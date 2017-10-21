@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+#include <qopengl.h>
+#include <qopenglext.h>
+
 #include <QWheelEvent>
 #include <QStatusBar>
 #include <QMenu>
@@ -9,13 +12,7 @@
 #include <QVector3D>
 
 #include "DisplayWidget.h"
-#ifdef Q_OS_MAC
-#include <openGL/gl.h>
-#include <openGL/glext.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
+
 #include "MainWindow.h"
 #include "VariableWidget.h"
 #include "../../ThirdPartyCode/hdrloader.h"
@@ -133,7 +130,6 @@ void DisplayWidget::updateRefreshRate() {
 void DisplayWidget::paintEvent(QPaintEvent * ev) {
 
     if ( drawingState == Tiled ) {
-        ev->accept();
         return;
     }
     if ( bufferShaderProgram ) {
@@ -1162,78 +1158,80 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
         glGetActiveUniform( programID, (GLuint)i, bufSize, &length, &size, &type, name);        
         QString uniformName = (char *)name;
-        QString uniformValue;
+        QString uniformValue = "internal fragment variable";
         
         // find a value to go with the name index in the program may not be the same as index in our list
         for( int n=0; n < vw.count(); n++) {
             if(uniformName == vw[n]->getName()) {
+                // get slider values
                 uniformValue = vw[n]->getValueAsText();
+                // test and get filename
+                if(uniformValue.isEmpty()) uniformValue = vw[n]->toString();
                 break;
             }
         }
-        
+
         QString tp;
-        bool found = false;
-        if (!uniformValue.isEmpty()) {
+        bool foundDouble = false;
 
  #ifdef NVIDIAGL4PLUS
           double x,y,z,w;
           GLuint index = glGetUniformLocation(programID, name);
           switch(type) {
 
-                case GL_BYTE:           tp = "BYTE "; found = false; break;
-                case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; found = false; break;
-                case GL_SHORT:          tp = "SHORT"; found = false; break;
-                case GL_UNSIGNED_SHORT: tp = "UNSIGNED_SHORT"; found = false; break;
-                case GL_INT:            tp = "INT  "; found = false; break;
-                case GL_UNSIGNED_INT:   tp = "UNSIGNED_INT"; found = false; break;
-                case GL_FLOAT:          tp = "FLOAT"; found = false; break;
-                case GL_FIXED:          tp = "FIXED"; found = false; break;
-                case GL_FLOAT_VEC2:     tp = "FLOAT_VEC2"; found = false; break;
-                case GL_FLOAT_VEC3:     tp = "FLOAT_VEC3"; found = false; break;
-                case GL_FLOAT_VEC4:     tp = "FLOAT_VEC4"; found = false; break;
-                case GL_INT_VEC2:       tp = "INT_VEC2"; found = false; break;
-                case GL_INT_VEC3:       tp = "INT_VEC3"; found = false; break;
-                case GL_INT_VEC4:       tp = "INT_VEC4"; found = false; break;
-                case GL_BOOL:           tp = "BOOL "; found = false; break;
-                case GL_BOOL_VEC2:      tp = "BOOL_VEC2"; found = false; break;
-                case GL_BOOL_VEC3:      tp = "BOOL_VEC3"; found = false; break;
-                case GL_BOOL_VEC4:      tp = "BOOL_VEC4"; found = false; break;
-                case GL_FLOAT_MAT2:     tp = "FLOAT_MAT2"; found = false; break;
-                case GL_FLOAT_MAT3:     tp = "FLOAT_MAT3"; found = false; break;
-                case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; found = false; break;
-                case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; found = false; break;
-                case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; found = false; break;
-                case GL_DOUBLE:         tp = "DOUBLE"; found = true;
+                case GL_BYTE:           tp = "BYTE "; foundDouble = false; break;
+                case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; foundDouble = false; break;
+                case GL_SHORT:          tp = "SHORT"; foundDouble = false; break;
+                case GL_UNSIGNED_SHORT: tp = "UNSIGNED_SHORT"; foundDouble = false; break;
+                case GL_INT:            tp = "INT  "; foundDouble = false; break;
+                case GL_UNSIGNED_INT:   tp = "UNSIGNED_INT"; foundDouble = false; break;
+                case GL_FLOAT:          tp = "FLOAT"; foundDouble = false; break;
+                case GL_FIXED:          tp = "FIXED"; foundDouble = false; break;
+                case GL_FLOAT_VEC2:     tp = "FLOAT_VEC2"; foundDouble = false; break;
+                case GL_FLOAT_VEC3:     tp = "FLOAT_VEC3"; foundDouble = false; break;
+                case GL_FLOAT_VEC4:     tp = "FLOAT_VEC4"; foundDouble = false; break;
+                case GL_INT_VEC2:       tp = "INT_VEC2"; foundDouble = false; break;
+                case GL_INT_VEC3:       tp = "INT_VEC3"; foundDouble = false; break;
+                case GL_INT_VEC4:       tp = "INT_VEC4"; foundDouble = false; break;
+                case GL_BOOL:           tp = "BOOL "; foundDouble = false; break;
+                case GL_BOOL_VEC2:      tp = "BOOL_VEC2"; foundDouble = false; break;
+                case GL_BOOL_VEC3:      tp = "BOOL_VEC3"; foundDouble = false; break;
+                case GL_BOOL_VEC4:      tp = "BOOL_VEC4"; foundDouble = false; break;
+                case GL_FLOAT_MAT2:     tp = "FLOAT_MAT2"; foundDouble = false; break;
+                case GL_FLOAT_MAT3:     tp = "FLOAT_MAT3"; foundDouble = false; break;
+                case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; foundDouble = false; break;
+                case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; foundDouble = false; break;
+                case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; foundDouble = false; break;
+                case GL_DOUBLE:         tp = "DOUBLE"; foundDouble = true;
                 glUniform1d(index, uniformValue.toDouble());
                 break;
-                case GL_DOUBLE_VEC2:    tp = "DOUBLE_VEC2"; found = true;
+                case GL_DOUBLE_VEC2:    tp = "DOUBLE_VEC2"; foundDouble = true;
                 x = uniformValue.split(",").at(0).toDouble();
                 y = uniformValue.split(",").at(1).toDouble();
                 glUniform2d(index, x, y);
                 break;
-                case GL_DOUBLE_VEC3:    tp = "DOUBLE_VEC3"; found = true;
+                case GL_DOUBLE_VEC3:    tp = "DOUBLE_VEC3"; foundDouble = true;
                 x = uniformValue.split(",").at(0).toDouble();
                 y = uniformValue.split(",").at(1).toDouble();
                 z = uniformValue.split(",").at(2).toDouble();
                 glUniform3d(index, x, y, z);
                 break;
-                case GL_DOUBLE_VEC4:    tp = "DOUBLE_VEC4"; found = true;
+                case GL_DOUBLE_VEC4:    tp = "DOUBLE_VEC4"; foundDouble = true;
                 x = uniformValue.split(",").at(0).toDouble();
                 y = uniformValue.split(",").at(1).toDouble();
                 z = uniformValue.split(",").at(2).toDouble();
                 w = uniformValue.split(",").at(3).toDouble();
                 glUniform4d(index, x, y, z, w);
                 break;
-                case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; found = true; break;
-                case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; found = true; break;
-                case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; found = true; break;
-                case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; found = true; break;
-                case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; found = true; break;
-                case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; found = true; break;
-                case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; found = true; break;
-                case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; found = true; break;
-                case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; found = true; break;
+                case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
+                case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
+                case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; foundDouble = true; break;
+                case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; foundDouble = true; break;
+                case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; foundDouble = true; break;
+                case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; foundDouble = true; break;
+                case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; foundDouble = true; break;
+                case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; foundDouble = true; break;
+                case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; foundDouble = true; break;
                 default:
                 break;
             }
@@ -1242,19 +1240,17 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             // type name and value to console
             if(subframeCounter == 1) qDebug() << tp << "\t" << uniformName << uniformValue;
             // this sets User (32 bit) uniforms not handled above
-            for( int n=0; n < vw.count(); n++) {
-                if(uniformName == vw[n]->getName() && !found) {
-                    vw[n]->setIsDouble(false); // ensure sliders set to float decimals
-                    vw[n]->setUserUniform(shaderProg);
-                    break;
+            if(!foundDouble) {
+                for( int n=0; n < vw.count(); n++) {
+                    if(uniformName == vw[n]->getName()) {
+                        vw[n]->setIsDouble(false); // ensure sliders set to float decimals
+                        vw[n]->setUserUniform(shaderProg);
+                        break;
+                    }
                 }
             }
-        } else {
-            tp.sprintf("%x",type);
-            if(subframeCounter == 1) qDebug() << tp << uniformName;
-        }
         
-        if(found) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
+        if(foundDouble) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
     if(subframeCounter == 1) qDebug() << " ";
     
