@@ -438,7 +438,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 variables[j]->setPalette(QApplication::palette(variables[j]));
                 variables[j]->setAutoFillBackground(false);
 
-                //INFO("Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText()));
+                // INFO("Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText()));
             }
         }
 
@@ -446,7 +446,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
         currentWidget->layout()->removeWidget(spacers[currentWidget]);
 
         if (!found) {
-            //INFO("Creating: " + ps[i]->getName());
+            // INFO("Creating: " + ps[i]->getName());
             if (dynamic_cast<Parser::FloatParameter*>(ps[i])) {
                 Parser::FloatParameter* fp = dynamic_cast<Parser::FloatParameter*>(ps[i]);
                 QString name = fp->getName();
@@ -669,7 +669,6 @@ void VariableEditor::updateCamera(CameraControl* c) {
         createGroup(g);
     }
 
-    c->connectWidgets(this);
     QVector<VariableWidget*> added= c->addWidgets(tabs[g], this);
 
     foreach (VariableWidget* v, added) {
@@ -679,6 +678,8 @@ void VariableEditor::updateCamera(CameraControl* c) {
         v->setUpdated(true);
         tabs[g]->layout()->addWidget(v);
     }
+
+    c->connectWidgets(this);
 }
 
 bool VariableEditor::eventFilter(QObject *obj, QEvent *ev) {
