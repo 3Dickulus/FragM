@@ -20,13 +20,6 @@ namespace SyntopiaCore {
         }
 
         void ListWidgetLogger::log(QString message, LogLevel priority) {
-            if (listWidget->count() > 120) {
-                listWidget->setUpdatesEnabled(false);
-                while (listWidget->count() > 130) {
-                     listWidget->removeItemWidget(listWidget->item(0));
-                }
-                listWidget->setUpdatesEnabled(true);
-            }
 
             QListWidgetItem* i = new QListWidgetItem(message, listWidget);
 
