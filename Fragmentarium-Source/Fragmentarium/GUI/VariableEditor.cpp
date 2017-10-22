@@ -756,9 +756,9 @@ void VariableEditor::setEasingCurve() {
                 return;
             }
             // test if already exists
-            int count = mainWindow->getEngine()->getCurveSettings().count();
-            int found = -1;
             QStringList check = mainWindow->getEngine()->getCurveSettings();
+            int count = check.count();
+            int found = -1;
             for(int i=0; i<count; i++) {
                 if(check.at(i).startsWith(variableName)) {
                     found = i;

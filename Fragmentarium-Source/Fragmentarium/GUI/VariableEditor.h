@@ -45,6 +45,9 @@ public:
     ComboSlider* getCurrentComboSlider() {
         return currentComboSlider;
     }
+    void setCurrentComboSlider(ComboSlider* cs) {
+        currentComboSlider = cs;
+    }
 
     bool setDefault();
     void substituteLockedVariables(FragmentSource* fs);

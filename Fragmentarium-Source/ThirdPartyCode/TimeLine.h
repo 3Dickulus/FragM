@@ -48,10 +48,14 @@ class TimeLineDialog : public QDialog
       ~TimeLineDialog();
     public slots:
       
+    protected slots:
+        void customContextMenuRequested(QPoint);
+        
     private slots:
       void itemChange(const QList<QRectF> & );
       void readTimeLineSettings();
       void saveTimeLineSettings();
+      void restoreTimeLineSettings();
       void createKeyframeMap();
       void createEasingCurveMap();
       QPainterPath createCurve(QSize sz, int type);
@@ -65,6 +69,7 @@ class TimeLineDialog : public QDialog
       int frames;
       int keyframeCount;
       QStringList uNames;
+      QStringList uSettings;
       int vCount;
       int yOff;
       double timeMax;

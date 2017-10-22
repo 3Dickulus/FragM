@@ -59,6 +59,10 @@ TimeLineDialog::TimeLineDialog(MainWindow* parent) : mainWin(parent) {
 
     connect(scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(itemChange(QList<QRectF>)));
     connect(this, SIGNAL(accepted()), this, SLOT( saveTimeLineSettings() ));
+    connect(this, SIGNAL(rejected()), this, SLOT( restoreTimeLineSettings() ));
+    
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
 }
 
 TimeLineDialog::~TimeLineDialog() {
@@ -100,7 +104,7 @@ void TimeLineDialog::readTimeLineSettings() {
         /// put the cursor back to it's original position
         te->setTextCursor(to);
 
-    } else scene->addText(tr("No Keyframes?"), QFont("Arial", 20) )->setPos(1,-40);
+    } else scene->addText(tr("No Keyframes."), QFont("Arial", 10) )->setPos(1,-40);
 
     // render uniform names down the left side
     for( int i = 0; i<vCount; i++) {
@@ -112,10 +116,10 @@ void TimeLineDialog::readTimeLineSettings() {
 
     if(mainWin->getVariableEditor()->hasEasing()) {
         // get acopy the currently active easingcurves
-        QStringList cs = mainWin->getEngine()->getCurveSettings();
+        uSettings = mainWin->getEngine()->getCurveSettings();
         // make a map
-        for ( int i = 0; i < cs.count(); i++ ) {
-            easingMap[i] = new EasingInfo(cs[i]);
+        for ( int i = 0; i < uSettings.count(); i++ ) {
+            easingMap[i] = new EasingInfo(uSettings[i]);
         }
 
     }
@@ -178,6 +182,11 @@ void TimeLineDialog::saveTimeLineSettings() {
     }
 }
 
+void TimeLineDialog::restoreTimeLineSettings() {
+    if(uSettings.count() != 0)
+        mainWin->getEngine()->setCurveSettings(uSettings);
+}
+
 void TimeLineDialog::createKeyframeMap() {
     ///--------------render keyframe timeline
     float fudge = ((mainWin->getTimeMax()*renderFPS)/(keyframeMap.count()-1));
@@ -203,6 +212,7 @@ void TimeLineDialog::createKeyframeMap() {
     }
 }
 
+// generate a path that to render the curve settings
 QPainterPath TimeLineDialog::createCurve(QSize sz, int t)
 {
         QEasingCurve curve((QEasingCurve::Type)t);
@@ -234,7 +244,7 @@ void TimeLineDialog::createEasingCurveMap() {
             int xPos = ((len-(name.length()*4))*0.5);
 
             // render a curve that covers the range of frames for this easingcurve
-            pathMap[i] = scene->addPath( createCurve( QSize(len,6), easingMap[i]->typeNum ), outlinePen );
+            pathMap[i] = scene->addPath( createCurve( QSize(len,6), easingMap[i]->typeNum ), outlinePen, redBrush );
             // put a name on it
             textMap[i] = scene->addText( name , QFont("Arial", 6));
             textMap[i]->setPos( xPos , -5);
@@ -243,8 +253,8 @@ void TimeLineDialog::createEasingCurveMap() {
             eGroupMap[i]->addToGroup(pathMap[i]);
             eGroupMap[i]->addToGroup(textMap[i]);
 
-            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsMovable);
             eGroupMap[i]->setFlag(QGraphicsItem::ItemIsSelectable);
+            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsMovable);
 
             scene->addItem(eGroupMap[i]);
 
@@ -259,7 +269,7 @@ void TimeLineDialog::createEasingCurveMap() {
 
 void TimeLineDialog::itemChange(const QList< QRectF >& )
 {
-    for ( int i = 0; i < easingMap.count(); i++ ) {
+    for ( int i = 0; i < eGroupMap.count(); i++ ) {
         if(eGroupMap[i]->isSelected()) {
 
             QString name = easingMap[i]->slidername;
@@ -279,12 +289,69 @@ void TimeLineDialog::itemChange(const QList< QRectF >& )
 
             int startf = eGroupMap[i]->x()/3;
             int endf = startf + (easingMap[i]->lastFrame - easingMap[i]->firstFrame);
-            eGroupMap[i]->setToolTip(QString("%1,%2").arg( startf ).arg( endf ));
+            eGroupMap[i]->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( easingMap[i]->startVal ).arg( easingMap[i]->endVal ));
             
-            eGroupMap[i]->setPos(eGroupMap[i]->x(), yPos);
+            eGroupMap[i]->setPos(easingMap[i]->firstFrame*3, yPos);
             scene->setSceneRect(sceneMaxRect);
         }
     }
+}
+
+// edit selected item when RMB is clicked
+void TimeLineDialog::customContextMenuRequested(QPoint) {
+
+    QString found = "";
+    // loop through easing curve scene items
+    for ( int i = 0; i < eGroupMap.count(); i++ ) {
+        // process the selected item
+        if(eGroupMap[i]->isSelected()) {
+            // aquire the easing settings for the selected item
+            QString eSettings = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
+                              .arg(easingMap[i]->slidername)
+                              .arg(easingMap[i]->typeName)
+                              .arg(easingMap[i]->typeNum)
+                              .arg(easingMap[i]->startVal)
+                              .arg(easingMap[i]->endVal)
+                              .arg(int(eGroupMap[i]->x()/3))
+                              .arg(int(eGroupMap[i]->x()/3) + int(eGroupMap[i]->boundingRect().width()/3))
+                              .arg(easingMap[i]->period)
+                              .arg(easingMap[i]->amplitude)
+                              .arg(easingMap[i]->overshoot)
+                              .arg(easingMap[i]->loops)
+                              .arg(easingMap[i]->pingpong);
+            // get a pointer to the slider
+            ComboSlider *cs = mainWin->findChild<ComboSlider *>( easingMap[i]->slidername );
+            // set the current working slider
+            mainWin->getVariableEditor()->setCurrentComboSlider(cs);
+            // call the easing curve settings dialog, this applies settings in the engine
+            mainWin->getVariableEditor()->setEasingCurve();
+            // get the new settings from the engine
+            QStringList check = mainWin->getEngine()->getCurveSettings();
+            int count = check.count();
+            for(int i=0; i<count; i++) {
+                if(check.at(i).startsWith(cs->objectName())) {
+                    found = check.at(i);
+                }
+            }
+            // replace old easingMap item with new one if the new one is different
+            if(!found.isEmpty() && (found != easingMap[i]->rawsettings))
+                easingMap[i] = new EasingInfo(found);
+            else found = "";
+        }
+    }
+
+    // cleanup the scene and redraw the curve settings
+    if(!found.isEmpty()) {
+        // remove items from the list
+        for ( int i = 0; i < eGroupMap.count(); i++ ) {
+            scene->removeItem(eGroupMap[i]);
+        }
+        // make sure it's clean
+        eGroupMap.clear();
+        // rebuild the easing curve map
+        createEasingCurveMap();
+    }
+    
 }
 
 }
