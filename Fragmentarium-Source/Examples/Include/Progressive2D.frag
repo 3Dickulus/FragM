@@ -14,7 +14,7 @@
 
 uniform vec2 Center; slider[(-10,-10),(0,0),(10,10)] NotLockable
 uniform float Zoom; slider[0,1,100] NotLockable
-uniform float Rotation; slider[0,0,6.283] NotLockable
+uniform float Rotation; slider[-180,0,180] NotLockable
 
 
 uniform vec2 pixelSize;
@@ -23,17 +23,22 @@ varying vec2 coord;
 varying vec2 aaScale;
 varying vec2 viewCoord;
 
+const float deg2rad = 3.14159265358979 / 180.0;
+
 void main(void)
 {
 	float ar = pixelSize.y/pixelSize.x;
 	gl_Position =  gl_Vertex;
 	viewCoord = (gl_Vertex).xy;
-	coord = (((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/Zoom+  Center);
-	coord -= Center;
-	float xtemp = coord.x;
-	coord.x = (cos(Rotation) * coord.x) - (sin(Rotation) * coord.y);
-	coord.y = (sin(Rotation) * xtemp) + (cos(Rotation) * coord.y);
-	coord += Center;
+	coord = (((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/Zoom + Center);
+	if (Rotation != 0) {
+        coord -= Center;
+        float rot = Rotation * deg2rad;
+        float xtemp = coord.x;
+        coord.x = (cos(rot) * coord.x) - (sin(rot) * coord.y);
+        coord.y = (sin(rot) * xtemp) + (cos(rot) * coord.y);
+        coord += Center;
+	}
 	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/Zoom;
 }
 

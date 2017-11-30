@@ -363,7 +363,10 @@ namespace Fragmentarium {
         double Camera3D::StepSize(){return stepSize;}
         
         /// ----------------- Camera2D ---------------------
-
+        const double PI_D = 3.141592653589793238463;
+        const float  PI_F = 3.14159265358979f;
+        const float deg2rotF = PI_F/180.0f;
+        const double deg2rotD = PI_D/180.0;
 
         Camera2D::Camera2D(QStatusBar* statusBar) : statusBar(statusBar) {
             center = 0;
@@ -410,7 +413,7 @@ namespace Fragmentarium {
             if (!center || !zoom) return false;
             QVector3D centerValue = center->getValue();
             double zoomValue = zoom->getValue();
-            double rotationValue = rotation->getValue();
+            double rotationValue = rotation->getValue() * deg2rotD;
 
             double factor = pow(1.05f,(double)stepSize);
             double zFactor = 0.1/zoomValue;
@@ -491,7 +494,7 @@ namespace Fragmentarium {
             QVector3D pos = QVector3D(e->pos().x()/(0.5*double(w))-1.0,1.0-e->pos().y()/(0.5*double(h)),0.0);
             QVector3D centerValue = center->getValue();
             double zoomValue = zoom->getValue();
-            double rotationValue = rotation->getValue();
+            double rotationValue = rotation->getValue() * deg2rotD;
 
             if (e->type() ==  QEvent::MouseButtonPress) {
                 mouseDown = pos;
