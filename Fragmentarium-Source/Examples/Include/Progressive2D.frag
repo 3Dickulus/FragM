@@ -31,13 +31,13 @@ void main(void)
 	gl_Position =  gl_Vertex;
 	viewCoord = (gl_Vertex).xy;
 	coord = (((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/Zoom + Center);
-	if (Rotation != 0) {
-        coord -= Center;
-        float rot = Rotation * deg2rad;
-        float xtemp = coord.x;
-        coord.x = (cos(rot) * coord.x) - (sin(rot) * coord.y);
-        coord.y = (sin(rot) * xtemp) + (cos(rot) * coord.y);
-        coord += Center;
+	if (Rotation != 0.0) {
+	    coord -= Center;
+	    float rot = Rotation * deg2rad;
+	    float xtemp = coord.x;
+	    coord.x = (cos(rot) * coord.x) - (sin(rot) * coord.y);
+	    coord.y = (sin(rot) * xtemp) + (cos(rot) * coord.y);
+	    coord += Center;
 	}
 	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/Zoom;
 }
