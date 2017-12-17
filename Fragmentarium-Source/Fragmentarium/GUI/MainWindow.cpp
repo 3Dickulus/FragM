@@ -3172,7 +3172,7 @@ QString MainWindow::getCameraSettings() {
     if(camId == "3D")
       r << l.filter("FOV") << l.filter("Eye =") << l.filter("Target") << l.filter("Up");
     else if(camId == "2D")
-      r << l.filter("Center") << l.filter("Zoom");
+      r << l.filter("Center") << l.filter("Zoom") << l.filter("Rotation");
     return r.join("\n");
 }
 
