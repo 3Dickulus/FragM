@@ -1,7 +1,7 @@
 #donotrun
 /*----------------------------------------------------------------
 
-float functions not present in early GLSL versions:
+REAL functions not present in early GLSL versions:
   cosh, sinh, tanh
 
 complex number functions:
@@ -13,7 +13,8 @@ dual complex number functions for automatic differentiation:
   add, sub, norm, abs, arg, sqr, mul, inverse, div, sqrt, exp, log, pow,
   sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, asinh, acosh, atanh
 
-for GLSL >= 400, double precision without trig functions:
+for GLSL >= 400, double precision with trig functions:
+  sin, cos, exp, tan, atan, log, log2 log10
 
 double precision complex number functions:
   add, sub, conj, norm, abs, sqr, mul, inverse, div, sqrt
@@ -42,554 +43,691 @@ TODO:
   The new functions have been added by Claude @ FF
   
 ----------------------------------------------------------------*/
+#if __VERSION__ >= 400 && defined(USE_DOUBLE)
+//--------------------------------------------------------------------
+// 11/12/17
+// double cos() sin() remez exp() by FractalForums.org user clacker
+//--------------------------------------------------------------------
+// 11/13/17
+// remez double atan() by FractalForums.org user 3dickulus
+// remez double log() gist.github.com/dhermes modified for FragM
+//--------------------------------------------------------------------
+//
+// The rest? by Claude?
+//
+//--------------------------------------------------------------------
+//
+// Fixme pow(n) pow(n,n)
+//
+//--------------------------------------------------------------------
 
+// Trig functions
+
+#group Trig
+uniform int TrigIter;slider[0,5,20]
+uniform double TrigLimit;slider[0.001,1.1,1.5]
+
+double M_PI = 	3.14159265358979323846LF;
+double M_2PI = M_PI*2.0LF;
+double M_PI2 = M_PI/2.0LF;
+double M_E =   2.71828182845904523536LF;
+double M_EHALF = 1.6487212707001281469LF;
+
+// sine
+double sin( double x ){
+	int i;
+	int counter = 0;
+	double sum = x, t = x;
+	double s = x;
+
+	if(isnan(x) || isinf(x))
+		return 0.0;
+
+  while(abs(s) > TrigLimit){
+		s = s/3.0;
+		counter += 1;
+	}
+
+	sum = s;
+	t = s;
+
+	for(i=1;i<=TrigIter;i++)
+	{
+		t=(t*(-1.0)*s*s)/(2.0*double(i)*(2.0*double(i)+1.0));
+		sum=sum+t;
+	}
+
+	for(i=0;i<counter;i++)
+		sum = 3.0*sum - 4.0*sum*sum*sum;
+     
+	return sum;
+}
+
+// cosine
+double cos( double x ){
+	int i;
+	int counter = 0;
+	double sum = 1, t = 1;
+	double s = x;
+
+	if(isnan(x) || isinf(x))
+		return 0.0;
+
+  while(abs(s) > TrigLimit){
+		s = s/3.0;
+		counter += 1;
+	}
+
+	for(i=1;i<=TrigIter;i++)
+	{
+        t=t*(-1.0)*s*s/(2.0*double(i)*(2.0*double(i)-1.0));
+        sum=sum+t;
+	}
+
+	for(i=0;i<counter;i++)
+		sum = -3.0*sum + 4.0*sum*sum*sum;
+     
+	return sum;
+}
+
+/* Approximation of f(x) = exp(x)
+ * on interval [ 0, 0.5 ]
+ * with a polynomial of degree 10.
+ */
+ double exp_approx( double x ) {
+    double u = 3.5438786726672135e-7LF;
+    u = u * x + 2.6579928825872315e-6LF;
+    u = u * x + 2.4868626682939294e-5LF;
+    u = u * x + 1.983843872760968e-4LF;
+    u = u * x + 1.3888965369092271e-3LF;
+    u = u * x + 8.3333320096674514e-3LF;
+    u = u * x + 4.1666666809276345e-2LF;
+    u = u * x + 1.6666666665771182e-1LF;
+    u = u * x + 5.0000000000028821e-1LF;
+    u = u * x + 9.9999999999999638e-1LF;
+    u = u * x + 1.0LF;
+	if(isnan(u) || isinf(u))
+		return 0.0;
+    return u;
+}
+
+double exp(double x){
+	int i;
+	int n;
+   double f;
+   double e_accum = M_E;
+   double answer = 1.0;
+	bool invert_answer = true;
+
+	// if x is negative, convert to positive and take inverse at end
+   if(x < 0.0){
+		x = -x;
+		invert_answer = true;
+	}
+
+	// break i into integer andfractional parts
+   n = int(x);
+   f = x - double(n);
+
+	// put f in the range 0-0.5 and adjust answer
+	// subtract 0.5 from fractional exponent and
+	// add 0.5 to integer exponent by multiplying answer by exp(0.5)
+	if(f > 0.5){
+		f -= 0.5;
+		answer = M_EHALF;
+	}
+
+   for(i=0;i<8;i++){
+		if(((n >> i) & 1) == 1)
+			answer *= e_accum;
+		e_accum *= e_accum;
+	}
+	
+	answer *= exp_approx(x);
+
+   if(invert_answer)
+		answer = 1.0/answer;
+
+	return answer;
+}
+
+
+double tan(double x) {
+    return sin(x)/cos(x);
+}
+
+/* Approximation of f(x) = atan(x)
+ * on interval [ -1, 1 ]
+ * with a polynomial of degree 10.
+ */
+double atan_approx(double x)
+{
+    double u = -5.2358956372931703e-129LF;
+    u = u * x + 2.0845114175438905e-2LF;
+    u = u * x + -1.4352617885833465e-128LF;
+    u = u * x + -8.51563508337138e-2LF;
+    u = u * x + 4.4982824080679609e-128LF;
+    u = u * x + 1.8015929463653335e-1LF;
+    u = u * x + -3.2151159799554032e-128LF;
+    u = u * x + -3.3030478550486476e-1LF;
+    u = u * x + 6.8552431842688999e-129LF;
+    u = u * x + 9.9986632946592026e-1LF;
+    u = u * x + -9.8393942267841755e-131LF;
+	if(isnan(u) || isinf(u))
+		return 0.0;
+    return u;
+}
+
+double atan(double y, double x){
+    double ay = abs(y), ax = abs(x);
+    bool inv = (ay > ax);
+    
+    double z;
+    if(inv) z = ax/ay; else z = ay/ax; // [0,1]
+    double th = atan_approx(z);        // [0,π/4]
+    if(inv) th = M_PI2 - th;           // [0,π/2]
+    if(x < 0.0) th = M_PI - th;        // [0,π]
+    if(y < 0.0) th = -th;              // [-π,π]
+    return th;
+}
+
+// ln_ieee754(double x)
+// https://gist.github.com/dhermes/105da2a3c9861c90ea39
+// Accuracy: the error is always less than 1 ulp
+// modified for FragM by 3Dickulus @ FractalForums.org
+double log(double x)  {
+
+	double
+		Ln2Hi = 6.93147180369123816490e-01LF, /* 3fe62e42 fee00000 */
+		Ln2Lo = 1.90821492927058770002e-10LF, /* 3dea39ef 35793c76 */
+        L0    = 7.0710678118654752440e-01LF,  /* 1/sqrt(2) */
+		L1    = 6.666666666666735130e-01LF,   /* 3FE55555 55555593 */
+		L2    = 3.999999999940941908e-01LF,   /* 3FD99999 9997FA04 */
+		L3    = 2.857142874366239149e-01LF,   /* 3FD24924 94229359 */
+		L4    = 2.222219843214978396e-01LF,   /* 3FCC71C5 1D8E78AF */
+		L5    = 1.818357216161805012e-01LF,   /* 3FC74664 96CB03DE */
+		L6    = 1.531383769920937332e-01LF,   /* 3FC39A09 D078C69F */
+		L7    = 1.479819860511658591e-01LF;   /* 3FC2F112 DF3E5244 */
+
+	// special cases
+	if( isinf(x) )
+        return 1.0/0.0; /* return +inf */
+	if( isnan(x) || x < 0 )
+        return -0.0; /* nan */
+	if( x == 0 )
+        return -1.0/0.0; /* return -inf */
+
+    // Argument Reduction
+    int ki;
+    double f1 = frexp(x, ki);
+    
+    if (f1 < L0) {
+		f1 *= 2.0;
+		ki--;
+	}
+	
+	double f = f1 - 1.0;
+	double k = double(ki);
+
+	// Approximation
+	double s = f / (2.0 + f);
+	double s2 = s * s;
+	double s4 = s2 * s2;
+    // Terms with odd powers of s^2.
+	double t1 = s2 * (L1 + s4 * (L3 + s4 * (L5 + s4 * L7)));
+    // Terms with even powers of s^2.
+	double t2 = s4 * (L2 + s4 * (L4 + s4 * L6));
+	double R = t1 + t2;
+	double hfsq = 0.5 * f * f;
+    
+    return k*Ln2Hi - ((hfsq - (s*(hfsq+R) + k*Ln2Lo)) - f);
+
+}
+
+double log2(double N)
+{
+    return (log(N) / 0.69314718055995LF);
+}
+
+double log10(double N)
+{
+    return (log(N) / 2.30258509299405LF);
+}
+
+double log(double N, double B)
+{
+    return (log(N) / log(B));
+}
+
+dvec2 log( dvec2 n ) {
+    return dvec2(log(n.x), log(n.y));
+}
+
+dvec3 log( dvec3 n ) {
+    return dvec3(log(n.x), log(n.y), log(n.z));
+}
+
+dvec4 log( dvec4 n ) {
+    return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
+}
+
+#endif
+
+#if defined(USE_DOUBLE)
+
+#define REAL double
+#define VEC2 dvec2
+#define VEC3 dvec3
+#define VEC4 dvec4
+
+#else
+float M_PI = 	3.14159265358979323846;
+float M_2PI = M_PI*2.0;
+float M_PI2 = M_PI/2.0;
+float M_E =   2.71828182845904523536;
+float M_EHALF = 1.6487212707001281469;
+
+#define REAL float
+#define VEC2 vec2
+#define VEC3 vec3
+#define VEC4 vec4
+#endif
 
 //----------------------------------------------------------------
-// float functions not present in early GLSL versions
+// functions not present in early GLSL versions
 
-#if __VERSION__ < 130
-float cosh(float val)
+REAL cosh(REAL val)
 {
-	float tmp = exp(val);
-	float cosH = (tmp + 1.0 / tmp) / 2.0;
+	REAL tmp = exp(val);
+	REAL cosH = (tmp + 1.0 / tmp) / 2.0;
 	return cosH;
 }
 
-float tanh(float val)
+REAL tanh(REAL val)
 {
-	float tmp = exp(val);
-	float tanH = (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
+	REAL tmp = exp(val);
+	REAL tanH = (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
 	return tanH;
 }
 
-float sinh(float val)
+REAL sinh(REAL val)
 {
-	float tmp = exp(val);
-	float sinH = (tmp - 1.0 / tmp) / 2.0;
+	REAL tmp = exp(val);
+	REAL sinH = (tmp - 1.0 / tmp) / 2.0;
 	return sinH;
 }
-#endif
 
 //----------------------------------------------------------------
 // complex number functions
 
-vec2 cAdd( vec2 a, float s ) {
-  return vec2( a.x+s, a.y );
+VEC2 cAdd( VEC2 a, REAL s ) {
+  return VEC2( a.x+s, a.y );
 }
 
-vec2 cAdd( float s, vec2 a ) {
-  return vec2( s+a.x, a.y );
+VEC2 cAdd( REAL s, VEC2 a ) {
+  return VEC2( s+a.x, a.y );
 }
 
-vec2 cAdd( vec2 a, vec2 s ) {
+VEC2 cAdd( VEC2 a, VEC2 s ) {
   return a + s;
 }
 
-vec2 cSub( vec2 a, float s ) {
-  return vec2( a.x-s, a.y );
+VEC2 cSub( VEC2 a, REAL s ) {
+  return VEC2( a.x-s, a.y );
 }
 
-vec2 cSub( float s, vec2 a ) {
-  return vec2( s-a.x, -a.y );
+VEC2 cSub( REAL s, VEC2 a ) {
+  return VEC2( s-a.x, -a.y );
 }
 
-vec2 cSub( vec2 a, vec2 s ) {
+VEC2 cSub( VEC2 a, VEC2 s ) {
   return a - s;
 }
 
-vec2 cConj( vec2 z ) {
-  return vec2(z.x,-z.y);
+VEC2 cConj( VEC2 z ) {
+  return VEC2(z.x,-z.y);
 }
 
-float cNorm(vec2 z) {
+REAL cNorm(VEC2 z) {
 	return dot(z, z);
 }
 
-float cAbs(vec2 z) {
+REAL cAbs(VEC2 z) {
 	return length(z);
 }
 
-float cArg(vec2 a) {
+REAL cArg(VEC2 a) {
 	return atan(a.y,a.x);
 }
 
-vec2 cSqr(vec2 z) {
-	return vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y);
+VEC2 cSqr(VEC2 z) {
+	return VEC2(z.x*z.x-z.y*z.y,2.*z.x*z.y);
 }
 
-vec2 cMul(vec2 a, vec2 b) {
-	return vec2( a.x*b.x -  a.y*b.y,a.x*b.y + a.y * b.x);
+VEC2 cMul(VEC2 a, VEC2 b) {
+	return VEC2( a.x*b.x -  a.y*b.y,a.x*b.y + a.y * b.x);
 }
 
-vec2 cInverse(vec2 a) {
-	return	vec2(a.x,-a.y)/dot(a,a);
+VEC2 cInverse(VEC2 a) {
+	return	VEC2(a.x,-a.y)/dot(a,a);
 }
 
-vec2 cDiv( vec2 a, vec2 b ) {
-  float d = dot(b,b);
-  return vec2( dot(a,b), a.y*b.x - a.x*b.y ) / d;
+VEC2 cDiv( VEC2 a, VEC2 b ) {
+  REAL d = dot(b,b);
+  return VEC2( dot(a,b), a.y*b.x - a.x*b.y ) / d;
 }
 
-vec2 cSqrt( vec2 z ) {
-  float m = length(z);
-  return sqrt( max(vec2(0.0), 0.5*vec2(m+z.x, m-z.x)) ) *
-    vec2( 1.0, sign(z.y) );
+VEC2 cSqrt( VEC2 z ) {
+  REAL m = length(z);
+  return sqrt( max(VEC2(0.0), 0.5*VEC2(m+z.x, m-z.x)) ) *
+    VEC2( 1.0, sign(z.y) );
 }
 
-vec2 cExp(vec2 z) {
-	return exp(z.x) * vec2(cos(z.y), sin(z.y));
+VEC2 cExp(VEC2 z) {
+	return exp(z.x) * VEC2(cos(z.y), sin(z.y));
 }
 
 // TODO fix those frags that need this to be set...
 #ifdef USE_COMPLEX_1_0_31
 
 // non-standard branch cut, bad PI value too...
-vec2 cLog(vec2 a) {
-	float b =  atan(a.y,a.x);
-	if (b>0.0) b-=2.0*3.1415;
-	return vec2(log(length(a)),b);
+VEC2 cLog(VEC2 a) {
+	REAL b =  atan(a.y,a.x);
+	if (b>0.0) b-=2.0*M_PI;
+	return VEC2(log(length(a)),b);
 }
 
 // same as cPow
-vec2 cPower(vec2 z, float n) {
-	float r2 = dot(z,z);
-	return pow(r2,n/2.0)*vec2(cos(n*atan(z.y,z.x)),sin(n*atan(z.y,z.x)));
+VEC2 cPower(VEC2 z, REAL n) {
+	REAL r2 = dot(z,z);
+	return pow(r2,n/2.0)*VEC2(cos(n*atan(z.y,z.x)),sin(n*atan(z.y,z.x)));
 }
 
-// same as cPower2 specialized to float
-vec2 cPow( vec2 z, float n ) {
-  float r = length( z );
-  float a = atan( z.y, z.x );
-  return pow( r, n )*vec2( cos(a*n), sin(a*n) );
+// same as cPower2 specialized to REAL
+VEC2 cPow( VEC2 z, REAL n ) {
+  REAL r = length( z );
+  REAL a = atan( z.y, z.x );
+  return pow( r, n )*VEC2( cos(a*n), sin(a*n) );
 }
 
 // this version is sensible but has a stupid name
-vec2 cPower2(vec2 z, vec2 a) {
+VEC2 cPower2(VEC2 z, VEC2 a) {
 	return cExp(cMul(cLog(z), a));
 }
 
 // distance evaluators
 // deprecated: use cNorm()
-float lengthSquared( in vec2 v ) { return dot(v,v); }
+REAL lengthSquared( in VEC2 v ) { return dot(v,v); }
 
 // what is this for? seems unused throughout the entire code base
 // seems rather specific, and not really complex-related, so hide it behind
 // the backwards-compatibility #define too...
-float sdSegmentSquared( vec2 p, vec2 a, vec2 b )
+REAL sdSegmentSquared( VEC2 p, VEC2 a, VEC2 b )
 {
-  vec2 pa = p-a, ba = b-a;
-  float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+  VEC2 pa = p-a, ba = b-a;
+  REAL h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
   return lengthSquared( pa - ba*h );
 }
 
 #else
 
-vec2 cLog(vec2 a) {
-	return vec2(log(cAbs(a)),cArg(a));
+VEC2 cLog(VEC2 a) {
+	return VEC2(log(cAbs(a)),cArg(a));
 }
 
-vec2 cPow(vec2 z, vec2 a) {
+VEC2 cPow(VEC2 z, VEC2 a) {
 	return cExp(cMul(cLog(z), a));
 }
 
-vec2 cPow(vec2 z, float a) {
+VEC2 cPow(VEC2 z, REAL a) {
 	return cExp(cLog(z) * a);
 }
 
 #endif
 
-vec2 cSin(vec2 z) {
-	return vec2(sin(z.x)*cosh(z.y), cos(z.x)*sinh(z.y));
+VEC2 cSin(VEC2 z) {
+	return VEC2(sin(z.x)*cosh(z.y), cos(z.x)*sinh(z.y));
 }
 
-vec2 cCos(vec2 z) {
-	return vec2(cos(z.x)*cosh(z.y), -sin(z.x)*sinh(z.y));
+VEC2 cCos(VEC2 z) {
+	return VEC2(cos(z.x)*cosh(z.y), -sin(z.x)*sinh(z.y));
 }
 
-vec2 cTan(vec2 z) {
+VEC2 cTan(VEC2 z) {
 	return cDiv(cSin(z), cCos(z));
 }
 
-vec2 cSinh(vec2 z) {
+VEC2 cSinh(VEC2 z) {
   return 0.5 * (cExp(z) - cExp(-z));
 }
 
-vec2 cCosh(vec2 z) {
+VEC2 cCosh(VEC2 z) {
   return 0.5 * (cExp(z) + cExp(-z));
 }
 
-vec2 cTanh(vec2 z) {
+VEC2 cTanh(VEC2 z) {
 	return cDiv(cSinh(z), cCosh(z));
 }
 
-vec2 cAsin(vec2 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC2 cAsin(VEC2 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cMul(-I, cLog(cMul(I, z) + cSqrt(cSub(1.0, cSqr(z)))));
 }
 
-vec2 cAcos(vec2 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC2 cAcos(VEC2 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cMul(-I, cLog(z + cMul(I, cSqrt(cSub(1.0, cSqr(z))))));
 }
 
-vec2 cAtan(vec2 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC2 cAtan(VEC2 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cDiv
     ( cLog(cAdd(1.0, cMul(I, z))) - cLog(cSub(1.0, cMul(I, z)))
     , 2.0 * I
     );
 }
 
-vec2 cAsinh(vec2 z) {
+VEC2 cAsinh(VEC2 z) {
   return cLog(z + cSqrt(cAdd(cSqr(z), 1.0)));
 }
 
-vec2 cAcosh(vec2 z) {
+VEC2 cAcosh(VEC2 z) {
   return 2.0 *
     cLog(cSqrt(0.5 * cAdd(z, 1.0)) + cSqrt(0.5 * cSub(z, 1.0)));
 }
 
-vec2 cAtanh(vec2 z) {
+VEC2 cAtanh(VEC2 z) {
   return 0.5 * (cLog(cAdd(1.0, z)) - cLog(cSub(1.0, z)));
 }
 
 //----------------------------------------------------------------
 // dual complex number functions for automatic differentiation
 
-vec4 cConst( float z ) {
-  return vec4( z, 0.0, 0.0, 0.0 );
+VEC4 cConst( REAL z ) {
+  return VEC4( z, 0.0, 0.0, 0.0 );
 }
 
-vec4 cConst( vec2 z ) {
-  return vec4( z, 0.0, 0.0 );
+VEC4 cConst( VEC2 z ) {
+  return VEC4( z, 0.0, 0.0 );
 }
 
-vec4 cVar( float z ) {
-  return vec4( z, 0.0, 1.0, 0.0 );
+VEC4 cVar( REAL z ) {
+  return VEC4( z, 0.0, 1.0, 0.0 );
 }
 
-vec4 cVar( vec2 z ) {
-  return vec4( z, 1.0, 0.0 );
+VEC4 cVar( VEC2 z ) {
+  return VEC4( z, 1.0, 0.0 );
 }
 
-vec2 cVar( vec4 z ) {
+VEC2 cVar( VEC4 z ) {
   return z.xy;
 }
 
-vec2 cDeriv( vec4 z ) {
+VEC2 cDeriv( VEC4 z ) {
   return z.zw;
 }
 
-float cNorm(vec4 z) {
+REAL cNorm(VEC4 z) {
 	return cNorm(z.xy);
 }
 
-float cAbs(vec4 z) {
+REAL cAbs(VEC4 z) {
 	return cAbs(z.xy);
 }
 
-float cArg(vec4 z) {
+REAL cArg(VEC4 z) {
 	return cArg(z.xy);
 }
 
-vec4 cAdd( vec4 z, float a ) {
-  return vec4( z.x + a, z.yzw );
+VEC4 cAdd( VEC4 z, REAL a ) {
+  return VEC4( z.x + a, z.yzw );
 }
 
-vec4 cAdd( float a, vec4 z ) {
-  return vec4( a + z.x, z.yzw );
+VEC4 cAdd( REAL a, VEC4 z ) {
+  return VEC4( a + z.x, z.yzw );
 }
 
-vec4 cAdd( vec4 z, vec2 a ) {
-  return vec4( z.xy + a, z.zw );
+VEC4 cAdd( VEC4 z, VEC2 a ) {
+  return VEC4( z.xy + a, z.zw );
 }
 
-vec4 cAdd( vec2 a, vec4 z ) {
-  return vec4( a + z.xy, z.zw );
+VEC4 cAdd( VEC2 a, VEC4 z ) {
+  return VEC4( a + z.xy, z.zw );
 }
 
-vec4 cAdd( vec4 a, vec4 z ) {
+VEC4 cAdd( VEC4 a, VEC4 z ) {
   return a + z;
 }
 
-vec4 cSub( vec4 z, float a ) {
-  return vec4( z.x - a, z.yzw );
+VEC4 cSub( VEC4 z, REAL a ) {
+  return VEC4( z.x - a, z.yzw );
 }
 
-vec4 cSub( float a, vec4 z ) {
-  return vec4( a - z.x, -z.yzw );
+VEC4 cSub( REAL a, VEC4 z ) {
+  return VEC4( a - z.x, -z.yzw );
 }
 
-vec4 cSub( vec4 z, vec2 a ) {
-  return vec4( z.xy - a, z.zw );
+VEC4 cSub( VEC4 z, VEC2 a ) {
+  return VEC4( z.xy - a, z.zw );
 }
 
-vec4 cSub( vec2 a, vec4 z ) {
-  return vec4( a - z.xy, -z.zw );
+VEC4 cSub( VEC2 a, VEC4 z ) {
+  return VEC4( a - z.xy, -z.zw );
 }
 
-vec4 cSub( vec4 a, vec4 z ) {
+VEC4 cSub( VEC4 a, VEC4 z ) {
   return a - z;
 }
 
-vec4 cSqr( vec4 z ) {
-  return vec4( cSqr(z.xy), 2.0 * cMul(z.xy, z.zw) );
+VEC4 cSqr( VEC4 z ) {
+  return VEC4( cSqr(z.xy), 2.0 * cMul(z.xy, z.zw) );
 }
 
-vec4 cMul( vec4 a, vec4 b ) {
-  return vec4
+VEC4 cMul( VEC4 a, VEC4 b ) {
+  return VEC4
     ( cMul(a.xy, b.xy)
     , cMul(a.xy, b.zw) + cMul(a.zw, b.xy)
     );
 }
 
-vec4 cMul( vec2 a, vec4 b ) {
+VEC4 cMul( VEC2 a, VEC4 b ) {
   return cMul( cConst(a), b );
 }
 
-vec4 cMul( vec4 a, vec2 b ) {
+VEC4 cMul( VEC4 a, VEC2 b ) {
   return cMul( a, cConst(b) );
 }
 
-vec4 cDiv( vec4 a, vec4 b ) {
-  return vec4
+VEC4 cDiv( VEC4 a, VEC4 b ) {
+  return VEC4
     ( cDiv(a.xy, b.xy)
     , cDiv(cMul(a.zw, b.xy) - cMul(a.xy, b.zw), cSqr(b.xy))
     );
 }
 
-vec4 cDiv( float a, vec4 b ) {
+VEC4 cDiv( REAL a, VEC4 b ) {
   return cDiv( cConst(a), b );
 }
 
-vec4 cDiv( vec2 a, vec4 b ) {
+VEC4 cDiv( VEC2 a, VEC4 b ) {
   return cDiv( cConst(a), b );
 }
 
-vec4 cDiv( vec4 a, vec2 b ) {
+VEC4 cDiv( VEC4 a, VEC2 b ) {
   return cDiv( a, cConst(b) );
 }
 
-vec4 cInverse( vec4 a ) {
+VEC4 cInverse( VEC4 a ) {
   return cDiv(1.0, a);
 }
 
-vec4 cSqrt( vec4 a ) {
-  vec2 s = cSqrt(a.xy);
-  return vec4( s, cDiv(a.zw, 2.0 * s) );
+VEC4 cSqrt( VEC4 a ) {
+  VEC2 s = cSqrt(a.xy);
+  return VEC4( s, cDiv(a.zw, 2.0 * s) );
 }
 
-vec4 cExp( vec4 a ) {
-  vec2 s = cExp(a.xy);
-  return vec4( s, cMul(s, a.zw) );
+VEC4 cExp( VEC4 a ) {
+  VEC2 s = cExp(a.xy);
+  return VEC4( s, cMul(s, a.zw) );
 }
 
-vec4 cLog( vec4 a ) {
-  return vec4( cLog(a.xy), cDiv(a.zw, a.xy) );
+VEC4 cLog( VEC4 a ) {
+  return VEC4( cLog(a.xy), cDiv(a.zw, a.xy) );
 }
 
-vec4 cSin( vec4 z ) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC4 cSin( VEC4 z ) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cDiv(cExp(cMul(I, z)) - cExp(cMul(-I, z)), 2.0 * I);
 }
 
-vec4 cCos( vec4 z ) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC4 cCos( VEC4 z ) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cExp(cMul(I, z)) + cExp(cMul(-I, z)) / 2.0;
 }
 
-vec4 cTan( vec4 a ) {
+VEC4 cTan( VEC4 a ) {
   return cDiv(cSin(a), cCos(a));
 }
 
-vec4 cSinh(vec4 z) {
+VEC4 cSinh(VEC4 z) {
   return 0.5 * (cExp(z) - cExp(-z));
 }
 
-vec4 cCosh(vec4 z) {
+VEC4 cCosh(VEC4 z) {
   return 0.5 * (cExp(z) + cExp(-z));
 }
 
-vec4 cTanh(vec4 z) {
+VEC4 cTanh(VEC4 z) {
 	return cDiv(cSinh(z), cCosh(z));
 }
 
-vec4 cAsin(vec4 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC4 cAsin(VEC4 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cMul(-I, cLog(cMul(I, z) + cSqrt(cSub(1.0, cSqr(z)))));
 }
 
-vec4 cAcos(vec4 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC4 cAcos(VEC4 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cMul(-I, cLog(z + cMul(I, cSqrt(cSub(1.0, cSqr(z))))));
 }
 
-vec4 cAtan(vec4 z) {
-  const vec2 I = vec2(0.0, 1.0);
+VEC4 cAtan(VEC4 z) {
+  const VEC2 I = VEC2(0.0, 1.0);
   return cDiv
     ( cLog(cAdd(1.0, cMul(I, z))) - cLog(cSub(1.0, cMul(I, z)))
     , 2.0 * I
     );
 }
 
-vec4 cAsinh(vec4 z) {
+VEC4 cAsinh(VEC4 z) {
   return cLog(z + cSqrt(cAdd(cSqr(z), 1.0)));
 }
 
-vec4 cAcosh(vec4 z) {
+VEC4 cAcosh(VEC4 z) {
   return 2.0 *
     cLog(cSqrt(0.5 * cAdd(z, 1.0)) + cSqrt(0.5 * cSub(z, 1.0)));
 }
 
-vec4 cAtanh(vec4 z) {
+VEC4 cAtanh(VEC4 z) {
   return 0.5 * (cLog(cAdd(1.0, z)) - cLog(cSub(1.0, z)));
 }
-
-//----------------------------------------------------------------
-// double precision versions of everything (but no trig available)
-
-// TODO check extensions for earlier versions
-#if __VERSION__ >= 400
-
-//----------------------------------------------------------------
-// double precision complex number functions
-
-dvec2 cAdd( dvec2 a, double s ) {
-  return dvec2( a.x+s, a.y );
-}
-
-dvec2 cDiv( dvec2 a, dvec2 b ) {
-  double d = dot(b,b);
-  return dvec2( dot(a,b), a.y*b.x - a.x*b.y ) / d;
-}
-
-dvec2 cSqrt( dvec2 z ) {
-  double m = length(z);
-  return sqrt( max(dvec2(0.0LF), 0.5LF*dvec2(m+z.x, m-z.x)) ) *
-    dvec2( 1.0LF, sign(z.y) );
-}
-
-dvec2 cConj( dvec2 z ) {
-        return dvec2(z.x,-z.y);
-}
-
-dvec2 cMul(dvec2 a, dvec2 b) {
-	return dvec2( a.x*b.x -  a.y*b.y,a.x*b.y + a.y * b.x);
-}
-
-dvec2 cInverse(dvec2 a) {
-	return	dvec2(a.x,-a.y)/dot(a,a);
-}
-
-double cNorm(dvec2 z) {
-	return dot(z, z);
-}
-
-double cAbs(dvec2 z) {
-	return length(z);
-}
-
-dvec2 cSqr(dvec2 z) {
-	return dvec2(z.x*z.x-z.y*z.y,2.0LF*z.x*z.y);
-}
-
-//----------------------------------------------------------------
-// double precision dual complex number functions for automatic differentiation
-
-dvec4 cConst( double z ) {
-  return dvec4( z, 0.0LF, 0.0LF, 0.0LF );
-}
-
-dvec4 cConst( dvec2 z ) {
-  return dvec4( z, 0.0LF, 0.0LF );
-}
-
-dvec4 cVar( double z ) {
-  return dvec4( z, 0.0LF, 1.0LF, 0.0LF );
-}
-
-dvec4 cVar( dvec2 z ) {
-  return dvec4( z, 1.0LF, 0.0LF );
-}
-
-dvec2 cVar( dvec4 z ) {
-  return z.xy;
-}
-
-dvec2 cDeriv( dvec4 z ) {
-  return z.zw;
-}
-
-double cNorm(dvec4 z) {
-	return cNorm(z.xy);
-}
-
-double cAbs(dvec4 z) {
-	return length(z.xy);
-}
-
-dvec4 cAdd( dvec4 z, double a ) {
-  return dvec4( z.x + a, z.yzw );
-}
-
-dvec4 cAdd( double a, dvec4 z ) {
-  return dvec4( a + z.x, z.yzw );
-}
-
-dvec4 cAdd( dvec4 z, dvec2 a ) {
-  return dvec4( z.xy + a, z.zw );
-}
-
-dvec4 cAdd( dvec2 a, dvec4 z ) {
-  return dvec4( a + z.xy, z.zw );
-}
-
-dvec4 cSqr( dvec4 z ) {
-  return dvec4( cSqr(z.xy), 2.0LF * cMul(z.xy, z.zw) );
-}
-
-dvec4 cMul( dvec4 a, dvec4 b ) {
-  return dvec4
-    ( cMul(a.xy, b.xy)
-    , cMul(a.xy, b.zw) + cMul(a.zw, b.xy)
-    );
-}
-
-dvec4 cMul( dvec2 a, dvec4 b ) {
-  return cMul( cConst(a), b );
-}
-
-dvec4 cMul( dvec4 a, dvec2 b ) {
-  return cMul( a, cConst(b) );
-}
-
-dvec4 cDiv( dvec4 a, dvec4 b ) {
-  return dvec4
-    ( cDiv(a.xy, b.xy)
-    , cDiv(cMul(a.zw, b.xy) - cMul(a.xy, b.zw), cSqr(b.xy))
-    );
-}
-
-dvec4 cDiv( double a, dvec4 b ) {
-  return cDiv( cConst(a), b );
-}
-
-dvec4 cDiv( dvec2 a, dvec4 b ) {
-  return cDiv( cConst(a), b );
-}
-
-dvec4 cDiv( dvec4 a, dvec2 b ) {
-  return cDiv( a, cConst(b) );
-}
-
-dvec4 cInverse( dvec4 a ) {
-  return cDiv(1.0LF, a);
-}
-
-dvec4 cSqrt( dvec4 a ) {
-  dvec2 s = cSqrt(a.xy);
-  return dvec4( s, cDiv(a.zw, 2.0LF * s) );
-}
-
-#endif
-
