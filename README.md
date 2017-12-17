@@ -129,7 +129,8 @@ Continuous integration
 + Timeline easing curves
 + settings are stored in "frAg" chunk of screenshots and full size rendered image files
 + started adding functionality to the TimeLine editor (RMB on time slider)
-+ rotation 2d by FF user CozyG for Progressive2D.frag and key bindings in C++
++ Complex.frag now includes double types with trig functions thanks to Claude and Clacker
++ rotation 2d by FF user CozyG for Progressive2D.frag and key bindings in CameraControl
 
 # GUI Language Translations
 + German by Sabine
