@@ -1,7 +1,6 @@
 #include "CameraControl.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
-#include <cmath>
 
 using namespace SyntopiaCore::Logging;
 
@@ -364,14 +363,10 @@ namespace Fragmentarium {
         
         /// ----------------- Camera2D ---------------------
 
-        // need to convert rotation from degrees to radians
-        const double PI_D = 3.141592653589793238463;
-        const double deg2rad = PI_D/180.0;
 
         Camera2D::Camera2D(QStatusBar* statusBar) : statusBar(statusBar) {
             center = 0;
             zoom = 0;
-            rotation = 0;
             mouseDown = QVector3D(0,0,-1);
             reset(true);
         }
@@ -396,8 +391,6 @@ namespace Fragmentarium {
             if (!center) WARNING(QCoreApplication::translate("Camera2D","Could not find Center interface widget"));
             zoom = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("Zoom"));
             if (!zoom) WARNING(QCoreApplication::translate("Camera2D","Could not find Zoom interface widget"));
-            rotation = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("Rotation"));
-            if (!rotation) WARNING(QCoreApplication::translate("Camera2D","Could not find Rotation interface widget"));
         }
 
         namespace {
@@ -413,7 +406,6 @@ namespace Fragmentarium {
             if (!center || !zoom) return false;
             QVector3D centerValue = center->getValue();
             double zoomValue = zoom->getValue();
-            double rotationValue = rotation->getValue() * deg2rad;
 
             double factor = pow(1.05f,(double)stepSize);
             double zFactor = 0.1/zoomValue;
@@ -448,38 +440,33 @@ namespace Fragmentarium {
             }
 
             // ---------- Movement -----------------------------
-            // A: move camera left (-x)
+
             if (keyDown(Qt::Key_A)) {
-                center->setValue(centerValue + QVector3D(-zFactor * cos(rotationValue), -zFactor * sin(rotationValue), 0.0));
+                center->setValue(centerValue+QVector3D(-zFactor,0.0,0.0));
                 keysDown = true;
             }
 
-            // D: move camera right (+x)
             if (keyDown(Qt::Key_D)) {
-                center->setValue(centerValue + QVector3D(zFactor * cos(rotationValue), zFactor * sin(rotationValue), 0.0));
+                center->setValue(centerValue+QVector3D(zFactor,0.0,0.0));
                 keysDown = true;
             }
 
-            // shouldn't W and S be reversed??
-            // W: move camera down (+y)
+
             if (keyDown(Qt::Key_W)) {
-                center->setValue(centerValue + QVector3D(-zFactor * -sin(rotationValue),-zFactor * cos(rotationValue),0.0));
+                center->setValue(centerValue+QVector3D(0.0,-zFactor,0.0));
                 keysDown = true;
             }
 
-            // S: move camera up (-y)
             if (keyDown(Qt::Key_S)) {
-                center->setValue(centerValue+QVector3D(zFactor * -sin(rotationValue), zFactor * cos(rotationValue),0.0));
+                center->setValue(centerValue+QVector3D(0.0,zFactor,0.0));
                 keysDown = true;
             }
 
-            // Q: zoom in (move camera towards 2D plane)
             if (keyDown(Qt::Key_Q)) {
                 zoom->setValue(zoomValue*factor);
                 keysDown = true;
             }
 
-            // E: zoom out (move camera away from 2D plane)
             if (keyDown(Qt::Key_E)) {
                 zoom->setValue(zoomValue/factor);
                 keysDown = true;
@@ -494,13 +481,11 @@ namespace Fragmentarium {
             QVector3D pos = QVector3D(e->pos().x()/(0.5*double(w))-1.0,1.0-e->pos().y()/(0.5*double(h)),0.0);
             QVector3D centerValue = center->getValue();
             double zoomValue = zoom->getValue();
-            double rotationValue = rotation->getValue() * deg2rad;
 
             if (e->type() ==  QEvent::MouseButtonPress) {
                 mouseDown = pos;
                 zoomDown = zoomValue;
                 centerDown = centerValue;
-                rotationDown = rotationValue;
             } else if (e->type() ==  QEvent::MouseButtonRelease) {
                 mouseDown = QVector3D(0,0,-1);
             }
@@ -508,15 +493,9 @@ namespace Fragmentarium {
             double mouseSpeed = 1.0;
             if (mouseDown.z()!=-1 && e->buttons()!=Qt::NoButton) {
                 QVector3D dp = mouseDown-pos;
-                float xtemp = dp.x();
-                float ytemp = dp.y();
-                dp.setX((cos(rotationDown) * xtemp) - (sin(rotationDown) * ytemp));
-                dp.setY((sin(rotationDown) * xtemp) + (cos(rotationDown) * ytemp));
                 if (e->buttons() == Qt::LeftButton) {
-                    // move camera
                     center->setValue(centerDown + dp*mouseSpeed/zoomDown);
                 } else if (e->buttons() == Qt::RightButton) {
-                    // scale around mousedown coords (move camera in/out from 2D plane)
                     // Convert mouse down to model coordinates
                     QVector3D md = getModelCoord(mouseDown, centerDown, zoomDown, w,h);
                     double newZoom = zoomDown +dp.y()*(zoomDown)*mouseSpeed;

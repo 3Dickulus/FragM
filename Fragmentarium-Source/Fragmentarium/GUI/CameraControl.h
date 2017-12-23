@@ -99,11 +99,9 @@ protected:
             double stepSize;
             Float2Widget* center;
             FloatWidget* zoom;
-            FloatWidget* rotation;
             QStatusBar* statusBar;
             QVector3D mouseDown;
             double zoomDown;
-            double rotationDown;
             QVector3D centerDown;
         };
     }
