@@ -618,8 +618,8 @@ namespace Fragmentarium {
             QString getLockedSubstitution() { return "const bool " + name + " = " + (checkBox->isChecked() ? "true" : "false")+ ";"; }
             QString getLockedSubstitution2() { return "#define " + name + " " + (checkBox->isChecked() ? "true" : "false")+ ""; }
 	        bool isChecked() { return checkBox->isChecked(); }
-            void setIsDouble( bool wd) {
-                wantDouble = wd = false;
+            void setIsDouble( bool wd = false ) {
+                wantDouble = wd;
             };
 
         private:

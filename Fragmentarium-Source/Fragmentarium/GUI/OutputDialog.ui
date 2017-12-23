@@ -8,28 +8,67 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>546</height>
+    <height>558</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>High Resolution and Animation Render</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
-    <widget class="QLabel" name="tilesLabel">
-     <property name="text">
-      <string>Render tiles: (2x2 - 1630x1920 pixels - 3.1 MPixel):</string>
-     </property>
-    </widget>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="tilesLabel">
+       <property name="text">
+        <string>Render tiles: (2x2 - 1630x1920 pixels - 3.1 MPixel):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSlider" name="tilesSlider">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>3</number>
+       </property>
+       <property name="sliderPosition">
+        <number>3</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="paddingLabel">
+       <property name="text">
+        <string>Padding 0%: (resulting size: nnn x nnn pixels - nnn MegaPixel):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QSlider" name="paddingSlider">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QLabel" name="paddingLabel">
-     <property name="text">
-      <string>Padding 0%: (resulting size: nnn x nnn pixels - nnn MegaPixel):</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="5">
+   <item row="1" column="0">
     <spacer name="verticalSpacer_0">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -42,63 +81,77 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="3">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Tile width:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
+   <item row="2" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="1">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Tile width:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QSpinBox" name="tileWidthSpinBox">
+       <property name="minimum">
+        <number>16</number>
+       </property>
+       <property name="maximum">
+        <number>3840</number>
+       </property>
+       <property name="value">
+        <number>64</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Tile height:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QSpinBox" name="tileHeightSpinBox">
+       <property name="minimum">
+        <number>9</number>
+       </property>
+       <property name="maximum">
+        <number>2160</number>
+       </property>
+       <property name="value">
+        <number>36</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="subFramesLabel">
+       <property name="text">
+        <string>Number of subframes (for progressive rendering):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QSpinBox" name="subFrameSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="5" column="4">
-    <widget class="QSpinBox" name="tileWidthSpinBox">
-     <property name="minimum">
-      <number>16</number>
-     </property>
-     <property name="maximum">
-      <number>3840</number>
-     </property>
-     <property name="value">
-      <number>64</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="3">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Tile height:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="4">
-    <widget class="QSpinBox" name="tileHeightSpinBox">
-     <property name="minimum">
-      <number>9</number>
-     </property>
-     <property name="maximum">
-      <number>2160</number>
-     </property>
-     <property name="value">
-      <number>36</number>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="4">
-    <widget class="QSpinBox" name="subFrameSpinBox">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>10000</number>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="5">
+   <item row="3" column="0">
     <spacer name="verticalSpacer_1">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -111,121 +164,165 @@
      </property>
     </spacer>
    </item>
-   <item row="10" column="0" colspan="5">
-    <widget class="qRangeSlider" name="frameRangeSlider" native="true">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>12</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>12</height>
-      </size>
-     </property>
-    </widget>
+   <item row="4" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0" colspan="2">
+      <widget class="QCheckBox" name="animCheckBox">
+       <property name="text">
+        <string>Animation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="4">
+      <widget class="qRangeSlider" name="frameRangeSlider" native="true">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>12</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" rowspan="4">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>48</width>
+         <height>88</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="startFrameLabel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Start Frame:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QSpinBox" name="startFrameSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximum">
+        <number>100000</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3" rowspan="5">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>118</width>
+         <height>118</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="endFrameLabel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>End Frame:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QSpinBox" name="endFrameSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximum">
+        <number>100000</number>
+       </property>
+       <property name="value">
+        <number>2500</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="fpsLabel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>FPS:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QSpinBox" name="fpsSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>25</number>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="endTimeLabel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Maximum length in seconds:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QDoubleSpinBox" name="endTimeSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximum">
+        <double>9999.989999999999782</double>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QLabel" name="totalFrames">
+       <property name="text">
+        <string>Total Frames:</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="11" column="1">
-    <widget class="QLabel" name="startFrameLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Start Frame:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="2">
-    <widget class="QSpinBox" name="startFrameSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="maximum">
-      <number>100000</number>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="1">
-    <widget class="QLabel" name="endFrameLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>End Frame:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="2">
-    <widget class="QSpinBox" name="endFrameSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="maximum">
-      <number>100000</number>
-     </property>
-     <property name="value">
-      <number>2500</number>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="1">
-    <widget class="QLabel" name="fpsLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>FPS:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="2">
-    <widget class="QSpinBox" name="fpsSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>25</number>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="1">
-    <widget class="QLabel" name="endTimeLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Maximum length in seconds:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="2">
-    <widget class="QDoubleSpinBox" name="endTimeSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="maximum">
-      <double>9999.989999999999782</double>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="0" colspan="5">
+   <item row="5" column="0">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -238,35 +335,65 @@
      </property>
     </spacer>
    </item>
-   <item row="18" column="0">
-    <widget class="QLabel" name="filenameLabel">
-     <property name="text">
-      <string>Filename:</string>
-     </property>
-    </widget>
+   <item row="6" column="0">
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0" colspan="2">
+      <widget class="QCheckBox" name="previewFrameCheckBox">
+       <property name="text">
+        <string>Preview frame in window</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="filenameLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Filename:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="filenameEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="fileButton">
+       <property name="text">
+        <string>File</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QCheckBox" name="uniqueCheckBox">
+       <property name="text">
+        <string>Add unique ID to name ()</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QCheckBox" name="autoSaveCheckBox">
+       <property name="text">
+        <string>Autosave fragment (as [ImageOutputName].frag)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="18" column="4">
-    <widget class="QPushButton" name="fileButton">
-     <property name="text">
-      <string>File</string>
-     </property>
-    </widget>
-   </item>
-   <item row="19" column="0" colspan="2">
-    <widget class="QCheckBox" name="uniqueCheckBox">
-     <property name="text">
-      <string>Add unique ID to name ()</string>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="0" colspan="3">
-    <widget class="QCheckBox" name="autoSaveCheckBox">
-     <property name="text">
-      <string>Autosave fragment (as [ImageOutputName].frag)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="21" column="0" colspan="4">
+   <item row="7" column="0">
     <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -279,76 +406,13 @@
      </property>
     </spacer>
    </item>
-   <item row="22" column="0" colspan="2">
+   <item row="8" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="5">
-    <widget class="QSlider" name="paddingSlider">
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="4">
-    <widget class="QLabel" name="subFramesLabel">
-     <property name="text">
-      <string>Number of subframes (for progressive rendering):</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="5">
-    <widget class="QSlider" name="tilesSlider">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>3</number>
-     </property>
-     <property name="sliderPosition">
-      <number>3</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="1" colspan="3">
-    <widget class="QLineEdit" name="filenameEdit"/>
-   </item>
-   <item row="15" column="0" colspan="5">
-    <widget class="QLabel" name="totalFrames">
-     <property name="text">
-      <string>Total Frames:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="0" colspan="5">
-    <widget class="QCheckBox" name="previewFrameCheckBox">
-     <property name="text">
-      <string>Preview frame in window</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0" colspan="5">
-    <widget class="QCheckBox" name="animCheckBox">
-     <property name="text">
-      <string>Animation</string>
      </property>
     </widget>
    </item>

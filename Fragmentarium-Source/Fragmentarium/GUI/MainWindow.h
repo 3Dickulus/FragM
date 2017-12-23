@@ -69,6 +69,7 @@ namespace Fragmentarium {
       QVector3D up;
     };
     
+    // Information about an easing curve
     struct EasingInfo {
       EasingInfo() {}
       EasingInfo(QString settings) : rawsettings(settings){
@@ -198,7 +199,9 @@ namespace Fragmentarium {
         scriptText = text;
         executeScript();
       };
-      
+
+      QString langID;
+     
       // M Benesi "Spray gun" public
       bool fragHasFeedbackVars;
       void setFeebackCoords( QVector3D crds ) { feedbackcrds[feedbackindex] = crds; };
@@ -207,7 +210,6 @@ namespace Fragmentarium {
       int getFeedbackIndex(){ return feedbackindex;};
       int getFeedbackCount(){ return feedbackcount;};
       int getFeedbackMaxIndex(){ return feedbackmaxindex;};
-      QString langID;
       
     protected:
       void dragEnterEvent(QDragEnterEvent *ev);
@@ -216,6 +218,7 @@ namespace Fragmentarium {
       void keyReleaseEvent(QKeyEvent* ev);
       int timeMax;
       
+    // all public slots are available as script commands
     public slots:
       void loadFragFile(const QString &fileName);
       void setParameter(QString settings) {

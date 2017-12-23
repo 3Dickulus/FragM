@@ -1,9 +1,5 @@
 #pragma once
 
-#include <QPropertyAnimation>
-#include <QAnimationGroup>
-#include <QVector>
-#include <QtOpenGL>
 #ifdef Q_OS_MAC
 #include <openGL/gl.h>
 #include <openGL/glext.h>
@@ -11,6 +7,11 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #endif
+
+#include <QPropertyAnimation>
+#include <QAnimationGroup>
+#include <QVector>
+#include <QtOpenGL>
 #include <QGLFormat>
 #include <QGLWidget>
 
@@ -318,6 +319,7 @@ namespace Fragmentarium {
       int requiredRedraws;
       QColor backgroundColor;
       int subframeCounter;
+      int tilesCount;
       
       QMenu* contextMenu;
       
@@ -331,7 +333,6 @@ namespace Fragmentarium {
       QTime fpsTimer;
       int fpsCounter;
       double padding;
-      int tilesCount;
       int tiles;
       int viewFactor;
       int previewFactor;
