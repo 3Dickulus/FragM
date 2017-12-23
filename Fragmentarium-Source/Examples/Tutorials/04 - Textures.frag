@@ -1,9 +1,7 @@
 #include "2D.frag"
 
-// It is possible to read from external bitmaps
-// from Fragmentarium using textures.
-// Set up a sampler2D as below,
-// and read using the texture2D command.
+// It is possible to read from external bitmaps with Fragmentarium using textures.
+// Set up a sampler2D as below, and read using the texture2D command.
 #group MySystem
 
 uniform float T ;slider[0,4,10]
@@ -13,13 +11,17 @@ uniform float time;
 
 // Here we read from a texture
 // Files locations are resolved relative to the current file,
-// and to the include path set in the settings.
-uniform sampler2D texture; file[texture2.jpg]
+// and to the include path set in the preferences settings.
+uniform sampler2D myTexture; file[texture2.jpg]
 
-// You can set texture parameters directly:
-#TexParameter texture GL_TEXTURE_MAG_FILTER GL_LINEAR
-#TexParameter texture GL_TEXTURE_WRAP_S GL_REPEAT
-#TexParameter texture GL_TEXTURE_WRAP_T GL_REPEAT
+// You can set texture parameters directly: all 6 parameters must be present
+#TexParameter myTexture GL_TEXTURE_MAG_FILTER GL_LINEAR
+#TexParameter myTexture GL_TEXTURE_WRAP_S GL_REPEAT
+#TexParameter myTexture GL_TEXTURE_WRAP_T GL_REPEAT
+#TexParameter myTexture GL_TEXTURE_MAX_LEVEL 1000
+#TexParameter myTexture GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR
+#TexParameter myTexture GL_TEXTURE_MAX_ANISOTROPY 16.0
+// you can comment out or remove these lines if the defaults suit your needs
 
 // A simple system based on the 'tunnel' system by Inigo Quilez:
 // http://www.iquilezles.org/apps/shadertoy/
@@ -34,13 +36,13 @@ vec3 color(vec2 c) {
 	uv.y = a/3.1416 + time*0.1;
 	vec2 dd = vec2(step,0.0);
 	vec2 d =uv;
-	vec3 col = texture2D(texture,d).xyz;
-	vec3 colX = texture2D(texture,d+dd.xy).xyz;
-	vec3 colMX = texture2D(texture,d-dd.xy).xyz;
+	vec3 col = texture2D(myTexture,d).xyz;
+	vec3 colX = texture2D(myTexture,d+dd.xy).xyz;
+	vec3 colMX = texture2D(myTexture,d-dd.xy).xyz;
 	vec2 g;
 	g.x = length(colMX)-length(colX);
-	vec3 colY = texture2D(texture,d+dd.yx).xyz;
-	vec3 colMY = texture2D(texture,d-dd.yx).xyz;
+	vec3 colY = texture2D(myTexture,d+dd.yx).xyz;
+	vec3 colMY = texture2D(myTexture,d-dd.yx).xyz;
 	g.y = length(colMY)-length(colY);
 	g = normalize(g);
 	vec2 light = vec2(cos(time*T),sin(time*T))*R;
