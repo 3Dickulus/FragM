@@ -159,11 +159,6 @@ float DEF2(vec3 p) {
 	}
 }
 
-float rand(vec2 co){
-	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
 // Uses the soft-shadow approach by Quilez:
 // http://iquilezles.org/www/articles/rmshadows/rmshadows.htm
 float shadow(vec3 pos, vec3 sdir, float eps) {

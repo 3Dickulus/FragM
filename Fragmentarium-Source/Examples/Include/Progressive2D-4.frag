@@ -15,7 +15,7 @@ out vec2 viewCoord;
 // Use this to adjust clipping planes
 
 uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
-uniform double Zoom; slider[0,1,50000] NotLockable
+uniform double Zoom; slider[0,1,5000000] NotLockable
 
 uniform vec2 pixelSize;
 
@@ -67,8 +67,8 @@ uniform int subframe;
 dvec2 rand(dvec2 co){
 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
 	return
-	dvec2(fract(sin( float(dot(co.xy ,dvec2(12.9898,78.233))) ) * 43758.5453),
-		fract(cos( float(dot(co.xy ,dvec2(4.898,7.23))) ) * 23421.631));
+	dvec2(fract(sin( dot(co.xy ,dvec2(12.9898,78.233)) ) * 43758.5453),
+		fract(cos( dot(co.xy ,dvec2(4.898,7.23)) ) * 23421.631));
 }
 
 uniform sampler2D backbuffer;
@@ -77,7 +77,7 @@ uniform sampler2D backbuffer;
 dvec2 uniformDisc(dvec2 co) {
 	if (co == dvec2(0.0)) return dvec2(0.0);
 	dvec2 r = rand(co);
-	return sqrt(r.y)*dvec2(cos( float(r.x*6.28) ),sin( float(r.x*6.28) ));
+	return sqrt(r.y)*dvec2(cos( r.x*6.28 ),sin( r.x*6.28 ));
 }
 
 void main() {
@@ -99,7 +99,7 @@ void main() {
 	double w =1.0;
       if (GaussianAA) {
 	 	// Gaussian
-		w= exp( float(-dot(r,r)/AAExp) )-exp(float( -1.0/AAExp) );
+		w= exp( -dot(r,r)/AAExp )-exp( -1.0/AAExp );
 
 	      // Lancos
 	      // w = sin(r.x)*sin(r.x/AARange)*sin(r.y)*sin(r.y/AARange)/(r.x*r.x*r.y*r.y*AARange*AARange);

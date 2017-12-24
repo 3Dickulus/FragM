@@ -59,7 +59,7 @@ float minDist = pow(10.0,Detail);
 //float MaxDistance = 100.0;
 
 // Maximum number of  raymarching steps.
-uniform int MaxRaySteps;  slider[0,56,5000]
+uniform int MaxRaySteps;  slider[0,56,15000]
 uniform float MaxDistance;slider[0,20,1000];
 // Use this to boost Ambient Occlusion and Glow
 //uniform float  MaxRayStepsDiv;  slider[0,1.8,10]
@@ -207,6 +207,7 @@ uniform bool EnableFloor; checkbox[false] Locked
 uniform vec3 FloorNormal; slider[(-1,-1,-1),(0,0,1),(1,1,1)]
 uniform float FloorHeight; slider[-5,0,5]
 uniform vec3 FloorColor; color[1,1,1]
+
 bool floorHit = false;
 float floorDist = 0.0;
 vec3 floorNormal = normalize(FloorNormal);
@@ -291,16 +292,6 @@ float DEF2(vec3 p) {
 
 #define MIN_EPS 2./16777216.
 
-float rand(vec2 pos)
-{
-#ifdef WANG_HASH
-  // modified for seeding with wang hash function
-  return fract(sin(dot(wang_hash_fp(pos)*0.123,wang_hash_fp(pos)*vec2(12.9898,78.233))) * 43758.5453);
-#else
-        // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-  return fract(sin(dot(pos.xy*0.123 ,vec2(12.9898,78.233))) * 43758.5453);
-#endif
-}
 #ifdef USE_EIFFIE_SHADOW
 // Uses the soft-shadow approach by Eiffie:
 float linstep(float a, float b, float t){return clamp((t-a)/(b-a),0.,1.);}
@@ -364,15 +355,16 @@ vec2 seed = viewCoord*(float(subframe)+1.0);
 
 vec2 rand2n() {//there are too much rand versions out there. I'll need to clean things up.
     seed+=vec2(-1,1);
+    return rand2(seed);
     // modified for wang hash function
-#ifdef WANG_HASH
-    return vec2(fract(sin(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(12.9898,78.233)))) * 3758.5453),
-                fract(cos(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(4.898,7.23)))) * 43421.631));
-#else
-        // implementation based on: lumina.sourceforge.net/Tutorials/Noise.html
-    return vec2(fract(sin(dot(seed ,vec2(12.9898,78.233))) * 43758.5453),
-                fract(cos(dot(seed ,vec2(4.898,7.23))) * 43421.631));
-#endif
+// #ifdef WANG_HASH
+//     return vec2(fract(sin(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(12.9898,78.233)))) * 3758.5453),
+//                 fract(cos(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(4.898,7.23)))) * 43421.631));
+// #else
+//         // implementation based on: lumina.sourceforge.net/Tutorials/Noise.html
+//     return vec2(fract(sin(dot(seed ,vec2(12.9898,78.233))) * 43758.5453),
+//                 fract(cos(dot(seed ,vec2(4.898,7.23))) * 43421.631));
+// #endif
 };
 
 vec3 ortho(vec3 v) {
@@ -707,15 +699,15 @@ uniform vec3 WindDir; slider[(-1.0,-1.0,-1.0),(0.0,0.0,1.0),(1.0,1.0,1.0)]
 //wind speed
 uniform float WindSpeed; slider[0.0,1.0,2.0]
 
-float rand(vec3 co){
-#ifdef WANG_HASH
-        // modified for seeding with wang hash function
-        return fract(sin(dot(wang_hash_fp(co),wang_hash_fp(vec3(12.9898,78.233,112.166)))) * 3758.5453);
-#else
-        // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-        return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
-#endif
-}
+// float rand(vec3 co){
+// #ifdef WANG_HASH
+//         // modified for seeding with wang hash function
+//         return fract(sin(dot(wang_hash_fp(co),wang_hash_fp(vec3(12.9898,78.233,112.166)))) * 3758.5453);
+// #else
+//         // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+//         return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
+// #endif
+// }
 
 float cnoyz(vec3 co){
 	vec3 d=smoothstep(0.0,1.0,fract(co));
@@ -790,7 +782,7 @@ float length2(vec3 p){ return dot(p,p);}
 // -Extinction: when fog density is high enought.
 // -Anisotropy: I gess this is as important as distance to light because somehow it have the inverse effect.
 //ToDo2: Take fog color into account
-//ToDo3: correct the use of pseudo-random number generator. (any help?)
+//ToDo3: correct the use of pseudo-random number generator. (any help?) :D WANG_HASH
 int fogstrata=0;
 
 vec3 ptLightGlow3(vec3 P0, vec3 P1){
@@ -838,7 +830,8 @@ vec3 color(SRay Ray) {
 		vec3 prevPos= SRCurrentPt(Ray);
 		vec3 col0 = trace(Ray, hitNormal, glow);
 		vec3 curPos= SRCurrentPt(Ray);
-		vec3 FG = fogAmount3(prevPos, curPos);//get fog amount
+
+        vec3 FG = fogAmount3(prevPos, curPos);//get fog amount
 		col0=mix(HF_Color.rgb*HF_Color.w,col0,FG);//modify color
 		col0+=ptLightGlow(max(0.,glow));
 #ifdef KN_VOLUMETRIC
@@ -859,7 +852,7 @@ vec3 color(SRay Ray) {
 			break;
 		}
 
-		Ray=SRReflect(Ray, hitNormal, 1.*minDist);//reflect the ray
+        Ray=SRReflect(Ray, hitNormal, minDist);//reflect the ray
 	}
 	return max(vec3(0.),col);//Sometimes col<BigNegativeValue  ->black dots. Why? I don't know :-/. Solved by Eiffie & Syntopia See: http://www.fractalforums.com/fragmentarium/updating-of-de-raytracer/msg81003/#msg81003 . I keep it just in case .
 }

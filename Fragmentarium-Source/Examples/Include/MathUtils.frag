@@ -85,5 +85,47 @@ vec3 wang_hash_fp(vec3 v)
         uint iz = floatBitsToUint(v.z);
         return vec3(float(wang_hash(wang_hash(wang_hash(ix)+iy)+iz)),float(wang_hash(wang_hash(wang_hash(iy)+ix)+iz)),float(wang_hash(wang_hash(wang_hash(iz)+ix)+iy))) / 4294967296.0;
 }
+// Wrapper for getting from float to ints. This certainly looses precision. I imagine we could do better here. //float wang_hash_fp(vec2 pos)
+float rand(float v)
+{
+        uint ix = floatBitsToUint(v);
+        return float(wang_hash(ix)) / 4294967296.0;
+}
 
+float rand(vec2 pos){
+	uint ix = floatBitsToUint(pos.x);
+	uint iy = floatBitsToUint(pos.y);
+    // I use two hash calls to untangle pos.x and pos.y
+	return float(wang_hash(wang_hash(ix)+iy)) / 4294967296.0;
+}
+//for iq-clouds
+float rand(vec3 pos){
+	uint ix = floatBitsToUint(pos.x);
+	uint iy = floatBitsToUint(pos.y);
+	uint iz = floatBitsToUint(pos.z);
+	return float(wang_hash(wang_hash(wang_hash(ix)+iy)+iz)) / 4294967296.0;
+}
+
+vec2 rand2(vec2 pos){
+	uint ix = floatBitsToUint(pos.x);
+	uint iy = floatBitsToUint(pos.y);
+    // I use two hash calls to untangle pos.x and pos.y
+	return vec2(float(wang_hash(wang_hash(ix)+iy)) / 4294967296.0, float(wang_hash(wang_hash(iy)+ix)) / 4294967296.0);
+}
+#else
+float rand(float v) {
+// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+	return fract(sin(dot(v ,78.233)) * 43758.5453);
+}
+float rand(vec2 pos) {
+// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+    return fract(sin(dot(pos.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+vec2 rand2(vec2 co){
+	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+	return
+	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
+		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
+}
 #endif
