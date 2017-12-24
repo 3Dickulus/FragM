@@ -15,11 +15,11 @@ void main(void)
 #endvertex
 
 uniform float Gamma;
+uniform int ToneMapping;
 uniform float Exposure;
 uniform float Brightness;
 uniform float Contrast;
 uniform float Saturation;
-uniform int ToneMapping;
 uniform bool Bloom;
 uniform float BloomIntensity;
 uniform float BloomPow;
@@ -70,16 +70,15 @@ uniform float FlareHaloWidth;
 uniform float FlareDistortion;
 
 vec4 textureDistorted(
-        in sampler2D tex,
         in vec2 texcoord,
         in vec2 direction,
         in vec4 distortion
 ) {
         return vec4(
-                texture2D(tex, texcoord + direction * distortion.r).r,
-                texture2D(tex, texcoord + direction * distortion.g).g,
-                texture2D(tex, texcoord + direction * distortion.b).b,
-                texture2D(tex, texcoord + direction * distortion.a).a
+                texture2D(frontbuffer, texcoord + direction * distortion.r).r,
+                texture2D(frontbuffer, texcoord + direction * distortion.g).g,
+                texture2D(frontbuffer, texcoord + direction * distortion.b).b,
+                texture2D(frontbuffer, texcoord + direction * distortion.a).a
         );
 }
 
@@ -95,12 +94,12 @@ vec4 lensflare(vec2 texcoord, vec2 texelSize) {
         for (int i = 0; i < FlareSamples; ++i) {
                 vec2 offset = fract(texcoord + ghostVec * float(i));
                 float weight = pow(1.0 - (length(vec2(0.5) - offset) / length(vec2(0.5))), 10.0);
-                result += textureDistorted( frontbuffer,offset,ghostVecNorm,distortion ) * weight;
+                result += textureDistorted(offset,ghostVecNorm,distortion ) * weight;
         }
 
 //      sample halo:
         float weight = pow(1.0 - (length(vec2(0.5) - fract(texcoord + haloVec)) / length(vec2(0.5))), 10.0);
-        result += textureDistorted( frontbuffer, fract(texcoord + haloVec), ghostVecNorm, distortion ) * weight;
+        result += textureDistorted(fract(texcoord + haloVec), ghostVecNorm, distortion ) * weight;
         return result;
 }
 /*----------------------------------------------------------------------------*/
