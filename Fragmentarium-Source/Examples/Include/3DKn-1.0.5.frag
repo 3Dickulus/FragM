@@ -187,7 +187,8 @@ vec3 SRCurrentPt(SRay Ray){
 if(DofCorrect){
 	float t = Ray.Pos;
 	vec3 p= Ray.Origin+Ray.Direction*t ;
-	t = 1.-t*Ray.iFP;
+	//t = 1.-t*Ray.iFP;
+	t = 1.-(t+Ray.fudge)*Ray.iFP;
 	float d=t;
 	d = d - InFocusAWidth*(2.*smoothstep(-1.5*InFocusAWidth, 1.5*InFocusAWidth,t)-1.);
 	vec3 o= Ray.Offset*d;
