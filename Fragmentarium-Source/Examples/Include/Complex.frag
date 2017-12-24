@@ -311,6 +311,21 @@ dvec4 log( dvec4 n ) {
     return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
 }
 
+double pow(double a, double b) {
+    long tmp = long(9076650*(a-1) / (a+1+4*(sqrt(a)))*b + 1072632447);
+    return longBitsToDouble(tmp << 32);
+}
+
+dvec2 pow(dvec2 A, dvec2 B)
+{
+    return dvec2( pow(A.x,B.x), pow(A.y,B.y) );
+}
+
+dvec3 pow(dvec3 A, dvec3 B)
+{
+    return dvec3( pow(A.x,B.x), pow(A.y,B.y), pow(A.z,B.z) );
+}
+
 #endif
 
 #if defined(USE_DOUBLE)
@@ -334,7 +349,7 @@ float M_EHALF = 1.6487212707001281469;
 #endif
 
 //----------------------------------------------------------------
-// functions not present in early GLSL versions
+// REAL functions not present in early GLSL versions
 
 REAL cosh(REAL val)
 {
