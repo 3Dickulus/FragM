@@ -1,7 +1,7 @@
 #info Foldcut toy (DarkBeam 2015/knighty 2011)
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Icosahedral
 
 uniform float Scale; slider[0.00,2,4.00]

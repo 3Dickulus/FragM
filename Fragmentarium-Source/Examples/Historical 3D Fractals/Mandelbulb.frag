@@ -17,6 +17,9 @@ uniform float Power; slider[0,8,16]
 // Bailout radius
 uniform float Bailout; slider[0,5,30]
 
+// mermelada's tweak Derivative bias
+uniform float DerivativeBias; slider[0,1,2]
+
 // Alternate is slightly different, but looks more like a Mandelbrot for Power=2
 uniform bool AlternateVersion; checkbox[false]
 
@@ -44,7 +47,10 @@ void powN1(inout vec3 z, float r, inout float dr) {
 	// extract polar coordinates
 	float theta = acos(z.z/r);
 	float phi = atan(z.y,z.x);
-	dr =  pow( r, Power-1.0)*Power*dr + 1.0;
+//	dr =  pow( r, Power-1.0)*Power*dr + 1.0;
+// mermelada's tweak
+	// http://www.fractalforums.com/new-theories-and-research/error-estimation-of-distance-estimators/msg102670/?topicseen#msg102670
+	  dr =  max(dr*DerivativeBias,pow( r, Power-1.0)*Power*dr + 1.0);
 
 	// scale and rotate the point
 	float zr = pow( r,Power);
@@ -66,7 +72,10 @@ void powN2(inout vec3 z, float zr0, inout float dr) {
 	float zr = pow( zr0, Power-1.0 );
 	float zo = zo0 * Power;
 	float zi = zi0 * Power;
-	dr = zr*dr*Power + 1.0;
+//	dr = zr*dr*Power + 1.0;
+// mermelada's tweak
+	// http://www.fractalforums.com/new-theories-and-research/error-estimation-of-distance-estimators/msg102670/?topicseen#msg102670
+	  dr = max(dr*DerivativeBias,zr*dr*Power + 1.0);
 	zr *= zr0;
 	z  = zr*vec3( cos(zo)*cos(zi), cos(zo)*sin(zi), sin(zo) );
 }

@@ -1,7 +1,7 @@
 #info BioCube
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Icosahedral
 
 //Cut and fold (Houdini?) technique with icosahedral folding
