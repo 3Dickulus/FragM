@@ -130,7 +130,7 @@ Continuous integration
 + settings are stored in "frAg" chunk of screenshots and full size rendered image files
 + started adding functionality to the TimeLine editor (RMB on time slider)
 + Complex.frag now includes double types with trig functions thanks to Claude and Clacker
-+ rotation 2d by FF user CozyG for Progressive2D.frag and key bindings in CameraControl
++ fixed 2D.frag, now single pass render frags save image instead of empty buffer. tnx charPixel ;)
 
 # GUI Language Translations
 + German by Sabine
