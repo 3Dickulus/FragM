@@ -1,7 +1,7 @@
 #info Mixed Distance Estimator (Syntopia 2010)
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mixed DE
 
 // This example shows how to mix two different DE's

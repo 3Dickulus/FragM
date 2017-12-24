@@ -1,7 +1,7 @@
 #info MandalayBox Distance Estimator.
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group MandalayBox
 
 // Number of iterations.

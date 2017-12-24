@@ -1,7 +1,7 @@
 #info Mandelbox Distance Estimator (Rrrola's version).
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandelbox
 
 /*

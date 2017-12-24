@@ -4,6 +4,7 @@
 // http://www.fractalforums.com/new-theories-and-research/not-fractal-but-funny-trefoil-knot-routine
 
 #define providesColor
+#include "MathUtils.frag"
 #include "Soft-Raytracer.frag"
 
 

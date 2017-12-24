@@ -1,7 +1,8 @@
+#version 400 compatibility
 #info 3Dickulus Mandelbulb Distance Estimator + Menger Sphere (knighty)
 #define providesInit
-#include "DE-Kn2.frag"
 #include "MathUtils.frag"
+#include "DE-Kn2.frag"
 
 #group Coloring
 // Roquen's domain mash up coordinate to invert to infinity

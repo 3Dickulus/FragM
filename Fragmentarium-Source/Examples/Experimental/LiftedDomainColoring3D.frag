@@ -1,8 +1,8 @@
 #info Lifted domain coloring
 #define providesInit
 #define providesColor
-#include "Soft-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Soft-Raytracer.frag"
 #include "Complex.frag"
 #group Mandelbrot
 
