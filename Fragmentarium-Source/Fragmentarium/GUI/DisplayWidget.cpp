@@ -1320,10 +1320,10 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
 
     if ( bufferType!=0 ) {
         l = shaderProgram->uniformLocation ( "backbuffer" );
+        glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
+        GLuint i = backBuffer->texture();
+        glBindTexture ( GL_TEXTURE_2D,i );
         if ( l != -1 ) {
-            glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
-            GLuint i = backBuffer->texture();
-            glBindTexture ( GL_TEXTURE_2D,i );
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
             }
