@@ -492,29 +492,24 @@ void DisplayWidget::setupFragmentShader() {
 
     // Setup textures.
     int u = 0;
-    // Bind first texture to backbuffer
-    int l = shaderProgram->uniformLocation ( "backbuffer" );
-    if ( l != -1 ) {
-        if ( bufferType != 0 ) {
-            glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
-            GLuint i = backBuffer->texture();
-            glBindTexture ( GL_TEXTURE_2D,i );
-            if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
-                setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
-            }
-            shaderProgram->setUniformValue ( l, ( GLuint ) u );
-            //INFO(QString("Binding back buffer (ID: %1) to active texture %2").arg(backBuffer->texture()).arg(u));
-            //INFO(QString("Setting uniform backbuffer to active texture %2").arg(u));
-            u++;
-        } else {
-            WARNING ( tr("Trying to use a backbuffer, but no bufferType set.") );
-            WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
-        }
-    } else {
-        // Apparently we must always bind the backbuffer texture.
-        // FIX: this indicates an error in the later binding of user textures.
+    if ( bufferType != 0 ) {
+        // Bind first texture to backbuffer
         glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
+        int l = shaderProgram->uniformLocation ( "backbuffer" );
+        if ( l != -1 ) {
+              GLuint i = backBuffer->texture();
+              glBindTexture ( GL_TEXTURE_2D,i );
+              if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
+                  setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
+              }
+              shaderProgram->setUniformValue ( l, ( GLuint ) u );
+              //INFO(QString("Binding back buffer (ID: %1) to active texture %2").arg(backBuffer->texture()).arg(u));
+              //INFO(QString("Setting uniform backbuffer to active texture %2").arg(u));
+        }
         u++;
+    } else {
+        WARNING ( tr("Trying to use a backbuffer, but no bufferType set.") );
+        WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
     }
 
     GLuint textureID=u;
@@ -1319,10 +1314,10 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
 
     if ( bufferType!=0 ) {
-        l = shaderProgram->uniformLocation ( "backbuffer" );
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
         GLuint i = backBuffer->texture();
         glBindTexture ( GL_TEXTURE_2D,i );
+        l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
