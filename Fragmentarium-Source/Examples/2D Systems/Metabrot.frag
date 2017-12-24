@@ -1,16 +1,17 @@
 #version 400 compatibility
-
+#define USE_DOUBLE
+#include "Complex.frag"
 #include "Progressive2D-4.frag"
 #info MetaBrot inspired by the good folks at FractalForums.com 2013-2017
 #group Metabrot
 
-uniform float R; slider[0,0,1]
-uniform float G; slider[0,0.4,1]
-uniform float B; slider[0,0.7,1]
-uniform float ColDiv; slider[1,256,384]
-uniform float bailout; slider[0,6,160]
+uniform double R; slider[0,0,1]
+uniform double G; slider[0,0.4,1]
+uniform double B; slider[0,0.7,1]
+uniform double ColDiv; slider[1,256,384]
+uniform double bailout; slider[0,6,160]
 uniform int  maxiters; slider[10,100,1000]
-uniform vec2 c; slider[(-2,-2),(-0.2,0.0),(2,2)]
+uniform dvec2 c; slider[(-2,-2),(-0.2,0.0),(2,2)]
 uniform bool PreIter; checkbox[false]
 // z = csqr(z)+c; before entering the iteration loop
 uniform int  preiterations; slider[1,2,10]
@@ -45,11 +46,11 @@ dvec3 color(dvec2 p)
 
    if (i < maxiters) {
       // The color scheme here is based on one from Inigo Quilez's Shader Toy:
-      float co =  float(i) + 1. - (log(.5*log(float(dist)))- log(.5*log(bailout))) / log(bailout);
-      co = 6.2831*sqrt(co/float(ColDiv));
+      double co =  double(i) + 1. - (log(.5*log(dist))- log(.5*log(bailout))) / log(bailout);
+      co = 6.2831*sqrt(co/ColDiv);
       return .5+.5*dvec3( cos(co+R), cos(co+G), cos(co+B) );
    }  else {
-      float ld = log(log(float(6.2831*dist)))-log(length(vec2(z)));
+      double ld = log(log(6.2831*dist))-log(length(vec2(z)));
       return dvec3(ld+R,ld+G,ld+B)*(double(dist));
    }
 }
