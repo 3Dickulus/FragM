@@ -15,12 +15,12 @@ uniform float time;
 uniform sampler2D myTexture; file[texture2.jpg]
 
 // You can set texture parameters directly: all 6 parameters must be present
-#TexParameter myTexture GL_TEXTURE_MAG_FILTER GL_LINEAR
-#TexParameter myTexture GL_TEXTURE_WRAP_S GL_REPEAT
-#TexParameter myTexture GL_TEXTURE_WRAP_T GL_REPEAT
-#TexParameter myTexture GL_TEXTURE_MAX_LEVEL 1000
-#TexParameter myTexture GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR
-#TexParameter myTexture GL_TEXTURE_MAX_ANISOTROPY 16.0
+// #TexParameter myTexture GL_TEXTURE_MAG_FILTER GL_LINEAR
+// #TexParameter myTexture GL_TEXTURE_WRAP_S GL_REPEAT
+// #TexParameter myTexture GL_TEXTURE_WRAP_T GL_REPEAT
+// #TexParameter myTexture GL_TEXTURE_MAX_LEVEL 1000
+// #TexParameter myTexture GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR
+// #TexParameter myTexture GL_TEXTURE_MAX_ANISOTROPY 16.0
 // you can comment out or remove these lines if the defaults suit your needs
 
 // A simple system based on the 'tunnel' system by Inigo Quilez:
