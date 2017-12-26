@@ -70,7 +70,8 @@ namespace Fragmentarium {
                 m_anim = new QPropertyAnimation(this,"value");
                 m_loops = 1;
                 m_pong = 0;
-
+                m_framestart = 0;
+                m_framefin = 0;
             }
             void setDecimals(int d) {spinner->setDecimals(d);};
             void contextMenuEvent(QContextMenuEvent* ) {
@@ -311,8 +312,8 @@ namespace Fragmentarium {
             void reset() { comboBox->setEditText(defaultValue); }
             QString getLockedSubstitution() { return QString(); }
             QString getLockedSubstitution2() { return QString(); }
-            void setIsDouble( bool wd) {
-                wantDouble = wd = false;
+            void setIsDouble( bool wd = false) {
+                wantDouble = wd;
             };
 
         signals:
@@ -355,7 +356,7 @@ namespace Fragmentarium {
                 return "const " + type + name + " = " + toGLSL(getValue()) +";";
             }
             QString getLockedSubstitution2() { return "#define " + name + " " + toGLSL(getValue()); }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
                 comboSlider1->setDecimals(wd ? DDEC : FDEC);
             };
@@ -398,7 +399,7 @@ namespace Fragmentarium {
                 QString type = isDouble() ? " dvec2(" : " vec2(";
                 return "#define " + name + type + toGLSL(getValue().x()) + "," + toGLSL(getValue().y()) +")";
             }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
                 comboSlider1->setDecimals(wd ? DDEC : FDEC);
                 comboSlider2->setDecimals(wd ? DDEC : FDEC);
@@ -440,7 +441,7 @@ namespace Fragmentarium {
                 QString type = isDouble() ? " dvec3(" : " vec3(";
                 return "#define " + name + type + toGLSL(getValue().x()) + "," + toGLSL(getValue().y()) + "," + toGLSL(getValue().z()) +")";
             }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
                 comboSlider1->setDecimals(wd?DDEC:FDEC);
                 comboSlider2->setDecimals(wd?DDEC:FDEC);
@@ -489,7 +490,7 @@ namespace Fragmentarium {
                 QString type = isDouble() ? " dvec4(" : " vec4(";
                 return "#define " + name + type + toGLSL(getValue().x()) + "," + toGLSL(getValue().y()) + "," + toGLSL(getValue().z())+ "," + toGLSL(getValue().w()) +")";
             }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
                 comboSlider1->setDecimals(wd?DDEC:FDEC);
                 comboSlider2->setDecimals(wd?DDEC:FDEC);
@@ -536,7 +537,7 @@ namespace Fragmentarium {
                 QString type = isDouble() ? " dvec3(" : " vec3(";
                 return "#define " + name + type + toGLSL(colorChooser->getValue().x()) + "," + toGLSL(colorChooser->getValue().y()) + "," + toGLSL(colorChooser->getValue().z()) +")";
             }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
             };
         private:
@@ -568,7 +569,7 @@ namespace Fragmentarium {
                 QString type = isDouble() ? " dvec4(" : " vec4(";
                 return "#define " + name + type + toGLSL(colorChooser->getValue().x()) + "," + toGLSL(colorChooser->getValue().y()) + "," + toGLSL(colorChooser->getValue().z())+ "," + toGLSL(comboSlider->getValue()) +")";
             }
-            void setIsDouble( bool wd) {
+            void setIsDouble( bool wd = false) {
                 wantDouble = wd;
                 comboSlider->setDecimals(wd ? DDEC : FDEC);
             };
@@ -595,8 +596,8 @@ namespace Fragmentarium {
             void reset() { comboSlider->setValue(defaultValue); }
             QString getLockedSubstitution() { return "const int " + name + " = " + QString::number(comboSlider->getValue()) + ";"; };
             QString getLockedSubstitution2() { return "#define " + name + " " + QString::number(comboSlider->getValue()) + ""; };
-            void setIsDouble( bool wd) {
-                wantDouble = wd = false;
+            void setIsDouble( bool wd = false) {
+                wantDouble = wd;
             };
         private:
             IntComboSlider* comboSlider;
@@ -617,7 +618,7 @@ namespace Fragmentarium {
             void reset() { checkBox->setChecked(defaultValue); }
             QString getLockedSubstitution() { return "const bool " + name + " = " + (checkBox->isChecked() ? "true" : "false")+ ";"; }
             QString getLockedSubstitution2() { return "#define " + name + " " + (checkBox->isChecked() ? "true" : "false")+ ""; }
-	        bool isChecked() { return checkBox->isChecked(); }
+            bool isChecked() { return checkBox->isChecked(); }
             void setIsDouble( bool wd = false ) {
                 wantDouble = wd;
             };

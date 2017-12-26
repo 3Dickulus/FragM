@@ -92,7 +92,6 @@ namespace Fragmentarium {
       QStringList uSettings;
       int vCount;
       int yOff;
-      double timeMax;
       int renderFPS;
       // TimeLineScene
       QGraphicsScene *scene;

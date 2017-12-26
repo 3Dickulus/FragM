@@ -433,8 +433,10 @@ void DisplayWidget::setupFragmentShader() {
 
     if ( shaderProgram ) {
         shaderProgram->release();
+        delete ( shaderProgram );
+        shaderProgram = 0;
     }
-    delete ( shaderProgram );
+    
     shaderProgram = new QOpenGLShaderProgram ( this );
 
     // Vertex shader
@@ -696,12 +698,12 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
 
 
 void DisplayWidget::setupBufferShader() {
+  
     if ( bufferShaderProgram ) {
         bufferShaderProgram->release();
+        delete ( bufferShaderProgram );
+        bufferShaderProgram = 0;
     }
-
-    delete ( bufferShaderProgram );
-    bufferShaderProgram = 0;
 
     if ( !fragmentSource.bufferShaderSource ) return;
 
@@ -1524,9 +1526,11 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
  */
 void DisplayWidget::clearTileBuffer()  {
     if ( hiresBuffer!=0 ) {
-        hiresBuffer->release();
-        delete ( hiresBuffer );
-        hiresBuffer = 0;
+        bool relcheck = hiresBuffer->release();
+        if(relcheck) {
+          delete ( hiresBuffer );
+          hiresBuffer = 0;
+        } else WARNING( tr("Failed to release hires buffer"));
     }
     mainWindow->getBufferSize ( pixelWidth(), pixelHeight(),bufferSizeX, bufferSizeY, fitWindow );
     makeBuffers();

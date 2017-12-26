@@ -117,16 +117,16 @@ namespace Fragmentarium {
 	    Animation *m_anim;
 	    QSize m_iconSize;
 
-	    double startVal;
-	    double finishVal;
-	    int firstFrame;
-	    int lastFrame;
-	    double period;
-	    double amplitude;
-	    double overshoot;
-	    int animFrames;
-	    int loopCount;
-	    int pong;
+	    double startVal = 0.0;
+            double finishVal = 0.0;
+            int firstFrame = 0;
+            int lastFrame = 0;
+            double period = 0.0;
+            double amplitude = 0.0;
+            double overshoot = 0.0;
+            int animFrames = 0;
+            int loopCount = 0;
+            int pong = 0;
 	};
     }
 }

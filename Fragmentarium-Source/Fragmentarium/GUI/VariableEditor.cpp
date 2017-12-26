@@ -67,16 +67,18 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     w->layout()->addWidget(pb);
     layout->addWidget(w);
 
-//     spacer=0;
+    spacer=0;
     currentWidget=0;
 
     tabWidget->setTabPosition(QTabWidget::East);
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
     connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(focusChanged(QWidget*,QWidget*)));
+
     easingEnabled=false;
-    
     useDefines=false;
+    keyFramesEnabled = false;
+    saveEasing = false;
 }
 
 // this adjusts variable widgets, should be handled by layout container?
@@ -396,6 +398,9 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
 }
 
 void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* showGUI) {
+
+  if (fs) {
+    
     QVector<Parser::GuiParameter*> ps = fs->params;
 
     for (int i = 0; i < variables.count(); ) {
@@ -591,7 +596,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
     }
 
     if (showGUI) (*showGUI) = (variables.count() != 0);
-    if (fs) setPresets(fs->presets);
+    setPresets(fs->presets);
+  }
 
 }
 

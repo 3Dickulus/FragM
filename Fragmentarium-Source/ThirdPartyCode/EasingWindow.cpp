@@ -144,12 +144,12 @@ namespace Fragmentarium {
             painter.fillRect(QRect(QPoint(0, 0), m_iconSize), brush);
             QEasingCurve curve((QEasingCurve::Type)i);
             painter.setPen(QColor(0, 0, 255, 64));
-            qreal xAxis = m_iconSize.height()/1.5;
-            qreal yAxis = m_iconSize.width()/3;
+            qreal xAxis = (qreal)m_iconSize.height()/(qreal)1.5;
+            qreal yAxis = (qreal)m_iconSize.width()/(qreal)3;
             painter.drawLine(0, xAxis, m_iconSize.width(),  xAxis);
             painter.drawLine(yAxis, 0, yAxis, m_iconSize.height());
 
-            qreal curveScale = m_iconSize.height()/2;
+            qreal curveScale = (qreal)m_iconSize.height()/(qreal)2;
 
             painter.setPen(Qt::NoPen);
 

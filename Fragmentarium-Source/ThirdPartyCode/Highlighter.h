@@ -86,7 +86,7 @@ public:
         domDocument.clear();
     }
 
-    bool glslVersionChanged;
+    bool glslVersionChanged = false;
     bool changeGLSLVersion() {
         return glslVersionChanged;
     };

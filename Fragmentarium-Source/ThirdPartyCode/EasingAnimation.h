@@ -54,6 +54,7 @@ public:
     Animation(QObject *target, const QByteArray &prop)
         : QPropertyAnimation(target, prop)
     {
+        m_pathType = NPathTypes;
         m_path = QPainterPath();
     }
 

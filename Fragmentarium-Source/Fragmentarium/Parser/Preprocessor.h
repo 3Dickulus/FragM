@@ -65,7 +65,7 @@ namespace Fragmentarium {
             }
 
         private:
-            LockTypeInner inner;
+          LockTypeInner inner = NotLocked;
         };
 
 
@@ -74,8 +74,8 @@ namespace Fragmentarium {
             GuiParameter(QString group, QString name, QString tooltip) : group(group), name(name), tooltip(tooltip) {
             };
 
-            virtual QString getName() { return name; }
-            virtual QString getGroup() { return group; }
+            QString getName() { return name; }
+            QString getGroup() { return group; }
             virtual QString getUniqueName() = 0;
             QString getTooltip() { return tooltip; }
             LockType getLockType() { return lockType; }

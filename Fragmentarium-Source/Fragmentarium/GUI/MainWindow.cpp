@@ -500,6 +500,7 @@ void MainWindow::showScriptingHelp()
 
 void MainWindow::documentWasModified()
 {
+    if (tabBar->currentIndex() < 0) return;
     // when all is undone
     if(tabInfo[tabBar->currentIndex()].textEdit->document()->availableUndoSteps() == 0)
         tabInfo[tabBar->currentIndex()].unsaved = false;
@@ -507,7 +508,6 @@ void MainWindow::documentWasModified()
         tabInfo[tabBar->currentIndex()].unsaved = true;
 
     if (tabBar->currentIndex() > tabInfo.size()) return;
-    if (tabBar->currentIndex() < 0) return;
 
     TabInfo t = tabInfo[tabBar->currentIndex()];
     QString tabTitle = QString("%1%2").arg(strippedName(t.filename)).arg(t.unsaved ? "*" : "");
@@ -539,7 +539,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 171224, " (\"beta\")");
+    version = Version(2, 0, 0, 171225, " (\"beta\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -1778,7 +1778,7 @@ retry:
           engine->renderETA=t.toString("hh:mm:ss");
           
           if( estRenderMS > 86400000 ) // takes longer than 24 hours
-            engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
+            engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
         }
 
         // Now assemble image

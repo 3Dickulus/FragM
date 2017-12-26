@@ -71,7 +71,7 @@ Patch::Patch(Geometry *g)
         , count(0)
         , geom(g)
 {
-
+  pointSize = 1;
 }
 
 ///n = number of control points p = the selected control point

@@ -224,6 +224,7 @@ void Float2Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
 
 Float3Widget::Float3Widget(QWidget* parent, QWidget* variableEditor, QString name, QVector3D defaultValue, QVector3D min, QVector3D max)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)  {
+
     normalize = false;
 
     if (min==max) {
@@ -231,6 +232,7 @@ Float3Widget::Float3Widget(QWidget* parent, QWidget* variableEditor, QString nam
         max = QVector3D(1,1,1);
         if(name != "Up") normalize = true; // normalizing Up at the widget level interferes with spline path animating
     }
+
     QGridLayout* m = new QGridLayout(widget);
     m->setSpacing(2);
     m->setContentsMargins (0,0,0,0);
@@ -365,10 +367,20 @@ void Float3Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
 
 Float4Widget::Float4Widget(QWidget* parent, QWidget* variableEditor, QString name, QVector4D defaultValue, QVector4D min, QVector4D max)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)  {
+      
     QGridLayout* m = new QGridLayout(widget);
+
     m->setSpacing(2);
     m->setContentsMargins (0,0,0,0);
 
+    normalize = false;
+
+    if (min==max) {
+      min = QVector4D(-1,-1,-1,-1);
+      max = QVector4D(1,1,1,1);
+      normalize = true;
+    }
+    
     comboSlider1 = new ComboSlider(parent,  variableEditor, defaultValue[0], min[0], max[0]);
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
@@ -388,7 +400,7 @@ Float4Widget::Float4Widget(QWidget* parent, QWidget* variableEditor, QString nam
     comboSlider4->setObjectName( QString("%1%2").arg(name).arg("4") );
     m->addWidget(comboSlider4,3,1);
     connect(comboSlider4, SIGNAL(changed()), this, SLOT(valueChanged()));
-
+    
 }
 
 void Float4Widget::setValue(QVector4D v) {

@@ -45,9 +45,22 @@ namespace Fragmentarium {
         }
 
         Camera3D::Camera3D(QStatusBar* statusBar) : statusBar(statusBar) {
-            mouseDown = QVector3D(0,0,-1);
-            reset(true);
 
+            height = 0.0;
+            width = 0.0;
+            stepSize = 0.0;
+            statusBar = 0;
+            eye = 0;
+            target = 0;
+            up = 0;
+            fov = 0;
+            eyeDown = QVector3D(0,0,-1);
+            targetDown = QVector3D(0,0,-1);
+            upDown = QVector3D(0,0,-1);
+            fovDown = 0.0;
+            mouseDown = QVector3D(0,0,-1);
+            
+            reset(true);
         }
 
         Camera3D::~Camera3D() {
@@ -367,6 +380,7 @@ namespace Fragmentarium {
         Camera2D::Camera2D(QStatusBar* statusBar) : statusBar(statusBar) {
             center = 0;
             zoom = 0;
+            zoomDown = 0.0;
             mouseDown = QVector3D(0,0,-1);
             reset(true);
         }

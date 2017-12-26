@@ -41,10 +41,10 @@ namespace Fragmentarium {
       TabInfo() {}
       TabInfo(QString filename, TextEdit* textEdit) : filename(filename), unsaved(false), textEdit(textEdit), hasBeenSavedOnce(false) {}
       TabInfo(QString filename, TextEdit* textEdit, bool unsaved, bool hasBeenSavedOnce=false) : filename(filename), unsaved(unsaved), textEdit(textEdit), hasBeenSavedOnce(hasBeenSavedOnce) {}
-      QString filename;
-      bool unsaved;
-      TextEdit* textEdit;
-      bool hasBeenSavedOnce;
+      QString filename = "";
+      bool unsaved = false;
+      TextEdit* textEdit = 0;
+      bool hasBeenSavedOnce = false;
     };
     
     // Information about a keyframe
