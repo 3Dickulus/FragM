@@ -615,9 +615,9 @@ void DisplayWidget::setupFragmentShader() {
 #endif
 #endif
                 else if ( im.load ( texturePath ) ) { // Qt format image, Qt 5+ loads EXR format on linux
-                    QImage t = convertToGLFormat ( im.mirrored(true,true) );
                     
                     if(type == GL_SAMPLER_CUBE) {
+                        QImage t = convertToGLFormat ( im.mirrored(true,true) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*2) );
@@ -625,6 +625,7 @@ void DisplayWidget::setupFragmentShader() {
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
                     } else {
+                      QImage t = convertToGLFormat ( im );
                       glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
                     }
                     
