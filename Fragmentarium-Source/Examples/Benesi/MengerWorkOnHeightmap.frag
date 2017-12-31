@@ -2,8 +2,8 @@
 #define providesInit
 const float pi=2.*1.570796326794897;
 
-#include "Fast-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Fast-Raytracer.frag"
 #group Menger
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:
 // http://www.fractalforums.com/3d-fractal-generation/kaleidoscopic-%28escape-time-ifs%29/

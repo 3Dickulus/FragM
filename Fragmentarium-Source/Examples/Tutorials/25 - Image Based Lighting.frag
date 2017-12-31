@@ -3,8 +3,9 @@
 // NOTICE:
 //  The Ditch-River Panorama HDR is authored by 'Blotchi' and copyrighted by http://www.hdrlabs.com/sibl/archive.html
 //  It is licensed under a CC3.0 license: http://creativecommons.org/licenses/by-nc-sa/3.0/us/
-#include "IBL-Raytracer.frag"
+#include "MathUtils.frag"
 #include "QuilezLib.frag"
+#include "IBL-Raytracer.frag"
 #group TestScene
 uniform float TextureScale; slider[0,1,40]
 

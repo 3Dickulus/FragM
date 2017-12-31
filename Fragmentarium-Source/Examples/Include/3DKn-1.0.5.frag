@@ -103,16 +103,16 @@ uniform float ApertureRot; slider[0,0,360]
 //For star shaped diphragms. Very limited
 uniform bool ApStarShaped; checkbox[false]
 
-vec2 rand2(vec2 co){
-#ifdef WANG_HASH
-        return vec2(fract(sin(dot(wang_hash_fp(co) ,wang_hash_fp(vec2(12.9898,78.233)))) * 3758.5453),
-                fract(cos(dot(wang_hash_fp(co) ,wang_hash_fp(vec2(4.898,7.23)))) * 23421.631));
-#else
-        // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-        return vec2(fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453),
-                fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
-#endif
-}
+// vec2 rand2(vec2 co){
+// #ifdef WANG_HASH
+//         return vec2(fract(sin(dot(wang_hash_fp(co) ,wang_hash_fp(vec2(12.9898,78.233)))) * 3758.5453),
+//                 fract(cos(dot(wang_hash_fp(co) ,wang_hash_fp(vec2(4.898,7.23)))) * 23421.631));
+// #else
+//         // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+//         return vec2(fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453),
+//                 fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
+// #endif
+// }
 
 vec2 NGonDisc(vec2 co) {
 	vec2 r = rand2(co);

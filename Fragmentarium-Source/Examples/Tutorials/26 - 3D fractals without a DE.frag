@@ -3,7 +3,7 @@
 #define providesInside
 
 #define providesColor
-
+#include "MathUtils.frag"
 #include "Brute-Raytracer.frag"
 #group Mandelbulb
 //#define IterationsBetweenRedraws 5

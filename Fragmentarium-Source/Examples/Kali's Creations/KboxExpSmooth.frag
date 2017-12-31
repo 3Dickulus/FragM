@@ -1,8 +1,8 @@
 #info Mandelbox Distance Estimator (Rrrola's version).
 #define providesInit
+#include "MathUtils.frag"
 #include "ColorPalette.frag"
 #include "DE-Raytracer.frag"
-#include "MathUtils.frag"
 
 #group KaliBox
 

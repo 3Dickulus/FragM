@@ -4,8 +4,8 @@
 //Looks like there is still some work to do on the DE formula
 
 #info Quadray sets Distance Estimator
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Quadray
 
 // Number of fractal iterations.

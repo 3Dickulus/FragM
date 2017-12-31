@@ -1,6 +1,7 @@
 
 #define providesInside
 #define providesInit
+#include "MathUtils.frag"
 //#include "DE-Raytracer.frag"
 #include "Fast-Raytracer.frag"
 //#include "DE-PK-1.1.9.frag"
@@ -9,7 +10,6 @@
 //#include "DE-Kn9.frag"  doesn't work
 
 //#define providesColor
-#include "MathUtils.frag"
 const	float sr32=sqrt(3./2.);
 const	float sr23=sqrt(2./3.);
 const	float sr13=sqrt(1./3.);

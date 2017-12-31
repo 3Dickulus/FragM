@@ -1,7 +1,7 @@
 #info Newton (z^3-1) 2.5D
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Newton
 
 // Made by Knighty, see this thread:

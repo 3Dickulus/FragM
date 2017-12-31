@@ -10,6 +10,7 @@
 #endvertex
 
 #define providesColor
+#include "MathUtils.frag"
 #include "DE-Raytracer.frag"
 
 #vertex

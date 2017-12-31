@@ -1,4 +1,5 @@
 #info 4D Quaternion Julia Distance Estimator
+#include "MathUtils.frag"
 #include "DE-Raytracer.frag"
 #group 4D Quaternion Julia
 

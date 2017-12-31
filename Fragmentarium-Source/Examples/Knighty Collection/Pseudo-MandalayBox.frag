@@ -1,7 +1,7 @@
 #info Pseudo-MandalayBox Distance Estimator.
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Pseudo_MandalayBox
 
 // Number of iterations.

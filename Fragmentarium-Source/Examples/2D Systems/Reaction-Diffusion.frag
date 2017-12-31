@@ -1,5 +1,5 @@
 #buffer RGBA32F
-#buffershader "BufferShaderRD.frag"
+//#buffershader "BufferShaderRD.frag"
 #include "2D.frag"
 
 // A simple Gray-Scott Reaction Diffusion model.

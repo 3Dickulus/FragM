@@ -2,8 +2,8 @@
 #info fold and cut regular polychora (stereographic projection) Distance Estimator (knighty 2012)
 #define providesInit
 //#define providesColor
-#include "Soft-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Soft-Raytracer.frag"
 
 #group polychora
 

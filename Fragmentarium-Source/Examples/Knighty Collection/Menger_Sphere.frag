@@ -1,8 +1,8 @@
 // http://www.fractalforums.com/programming/project-a-cube-into-a-sphere-%28not-riemann%27s-way%29/
 #info Menger Distance Estimator.
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Menger
 
 // Number of iterations.

@@ -1,8 +1,9 @@
 #info Terrain
 #define providesColor
-#include "DE-Raytracer.frag"
+#include "MathUtils.frag"
 //#include "Ashima-Noise.frag"
 #include "Classic-Noise.frag"
+#include "DE-Raytracer.frag"
 #group Terrain
 
 // Number of differnt noise scales

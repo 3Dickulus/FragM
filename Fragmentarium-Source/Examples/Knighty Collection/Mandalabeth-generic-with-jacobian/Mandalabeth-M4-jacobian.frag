@@ -1,7 +1,7 @@
 #version 120
 #info Generic M4 Mandalabeth. DE using jacobian. by knighty
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandalabeth
 
 

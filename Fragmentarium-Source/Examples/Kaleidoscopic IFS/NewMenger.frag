@@ -1,7 +1,7 @@
 #info SphereSponge Distance Estimator.
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group New Menger
 
 // Based on a fractal proposed by Buddhi, with a DE outlined by Knighty:

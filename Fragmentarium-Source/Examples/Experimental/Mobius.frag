@@ -1,8 +1,10 @@
 #define providesColor
+
+#include "MathUtils.frag"
+#include "Complex.frag"
 #include "Soft-Raytracer.frag"
 
 
-#include "Complex.frag"
 #group
 uniform vec2 CA; slider[(-1,-1),(0,0),(1,1)]
 uniform vec2 CB; slider[(-1,-1),(0,0),(1,1)]

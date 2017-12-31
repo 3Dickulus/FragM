@@ -1,4 +1,5 @@
 #define providesColor
+#include "MathUtils.frag"
 #include "Soft-Raytracer.frag"
 
 // This is an example of 

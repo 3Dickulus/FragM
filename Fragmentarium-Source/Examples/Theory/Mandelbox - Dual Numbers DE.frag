@@ -1,8 +1,8 @@
 #version 120
 #define providesInit
 #info Mandelbox Distance Estimator.
-#include "De-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandelbox
 
 // Scale parameter. A perfect Menger is 3.0

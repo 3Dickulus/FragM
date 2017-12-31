@@ -1,6 +1,6 @@
 #define providesInit
-#include "3D.frag"
 #include "MathUtils.frag"
+#include "3D.frag"
 #define PI  3.14159265358979323846264
 
 
@@ -617,7 +617,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = false
 RotatePicXY = 0,0
 BackgroundExposure = 1
-texture = C:/Users/Lord VINZ/Desktop/Fragmentarium Windows Binary v0.9.12b2/Beta/Examples/Include/Ditch-River_Env.hdr
+texture = "Ditch-River_Env.hdr"
 AmbientStrenght = 1
 sunColor = 1,0.960784,0.866667
 sunDirection = 0.86842,-0.08334,1

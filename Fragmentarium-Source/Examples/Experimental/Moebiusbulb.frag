@@ -1,7 +1,7 @@
 #info Mandelbulb Distance Estimator
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandelbulb
 
 // Number of fractal iterations.
@@ -40,12 +40,12 @@ vec2 moebius(vec2 p) {
 
 	if (p.x>0.0) {
 		p.x=dist;
-		p.y*=-1;
+		p.y*=-1.0;
 	};
 
 	if (p.x<0.0) {
 		p.x=-dist;
-		p.y*=-1;
+		p.y*=-1.0;
 	};
 
 	return p;

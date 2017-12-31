@@ -1,6 +1,6 @@
 #info algebraic surfaces (and others) Distance Estimator (knighty 2011)
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group DE parametres
 
 //DE correction param: scaling factor

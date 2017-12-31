@@ -3,6 +3,7 @@
 //http://www.iquilezles.org/www/articles/simplepathtracing/simplepathtracing.htm
 
 #info global illum
+#include "MathUtils.frag"
 //this was built with 3D.frag as of v0.9.12b2
 #include "3D.frag"
 
@@ -144,5 +145,31 @@ vec3 color(vec3 ro, vec3 rd)
 	return clamp(tcol,0.0,1.0);
 }
 
-
-
+#preset Default
+FOV = 0.4
+Eye = -0.8168302,-0.1786888,-3.420389
+Target = 2.145613,-0.0202317,6.129418
+Up = -0.0003365,0.9998639,-0.0164861
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2
+sunDirection = 0.25,1,-0.5
+sunColor = 1,1,0.5
+skyColor = 0.3,0.6,1
+floorColor = 0.125,0.19,0.12
+mengerColor = 0.75,0.75,0.75
+mengerReflect = 0.2
+ballColor = 0.7,0.2,0.2
+ballReflect = 0.8
+RayBounces = 3
+MaxRaySteps = 128
+#endpreset

@@ -1,4 +1,5 @@
 #info Spudsville
+#include "MathUtils.frag"
 #include "Soft-Raytracer.frag"
 //#include "Fast-Raytracer.frag"
 #group Spudsville

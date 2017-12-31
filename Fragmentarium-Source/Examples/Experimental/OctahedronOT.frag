@@ -1,7 +1,7 @@
 #info Orbit Trapped Octahedron Distance Estimator (Syntopia 2012)
 #define providesInit
-#include "Fast-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Fast-Raytracer.frag"
 #group Octahedron
 
 uniform float Scale; slider[0.00,2,4.00]

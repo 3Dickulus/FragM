@@ -2,8 +2,8 @@
 #info fold and cut regular polyhedra Distance Estimator (knighty 2012)
 #define providesInit
 #define providesColor
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 
 #group polyhedra
 

@@ -1,7 +1,7 @@
 #info Dodecahedron Distance Estimator (Syntopia 2010)
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Dodecahedron
 
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:

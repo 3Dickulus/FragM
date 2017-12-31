@@ -1,10 +1,7 @@
-#version 400
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
-#extension GL_ARB_gpu_shader_fp64 : enable
+#version 400 compatibility
 
 #include "Complex.frag"
-#include "Progressive2D-4.frag"
+#include "Progressive2D.frag"
 #info BurningShirp inspired by the good folks at FractalForums.com 2013-2017
 #group BurningShirp
 

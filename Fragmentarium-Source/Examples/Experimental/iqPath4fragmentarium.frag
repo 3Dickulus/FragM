@@ -4,9 +4,11 @@
 //http://www.iquilezles.org/www/articles/simplepathtracing/simplepathtracing.htm
 
 #info global illum
+
+#include "MathUtils.frag"
+
 //this was built with 3D.frag as of v0.9.12b2
 #include "3D.frag" 
-
 #group Colors
 uniform vec3 sunDirection;slider[(-1.0,-1.0,-1.0),(0.25,1.0,-0.5),(1.0,1.0,1.0)]
 uniform vec3 sunColor;color[1.0,1.0,0.5]

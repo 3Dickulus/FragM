@@ -1,8 +1,8 @@
 #info SphereSponge Distance Estimator.
 #define providesInit
 #define providesColor
-#include "Soft-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Soft-Raytracer.frag"
 #group New Menger
 
 

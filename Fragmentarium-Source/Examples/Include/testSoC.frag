@@ -1,7 +1,7 @@
 //an example using the Sphere of Confusion renderer by eiffie
 #include "SoC.frag"
 
-uniform float time; //include this if you are animating
+//uniform float time; //include this if you are animating
 
 //accumulate color samples in the variable mcol by adding your color whenever bColoring==true
 //mcol is a vec4 with mcol.a used for reflections (0..1)

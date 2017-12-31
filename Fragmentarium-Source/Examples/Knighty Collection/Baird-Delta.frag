@@ -2,8 +2,8 @@
 #define providesInit
 #define USE_EIFFIE_SHADOW
 #define MULTI_SAMPLE_AO
-#include "DE-kn2.frag"
 #include "MathUtils.frag"
+#include "DE-Kn2.frag"
 
 #group Baird_Delta
 // Number of fractal iterations.

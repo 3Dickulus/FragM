@@ -1,5 +1,5 @@
-#include "Progressive2DJulia.frag"
 #include "Complex.frag"
+#include "Progressive2DJulia.frag"
 
 // An example of Escape Time Fractals, 
 // using progressive rendering.

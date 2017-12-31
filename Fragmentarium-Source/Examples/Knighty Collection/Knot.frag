@@ -1,4 +1,5 @@
 #info knot thingy by knighty (2012). Based on an idea by DarkBeam from fractalforums (http://www.fractalforums.com/new-theories-and-research/not-fractal-but-funny-trefoil-knot-routine/30/)
+#include "MathUtils.frag"
 #include "Soft-Raytracer.frag"
 #group Trefoil
 

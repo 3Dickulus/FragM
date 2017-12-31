@@ -1,3 +1,4 @@
+#include "MathUtils.frag"
 #include "3D.frag"
 uniform sampler2D texture; file[Ditch-River_2k.hdr]
 uniform sampler2D texture2; file[Ditch-River_Env.hdr]

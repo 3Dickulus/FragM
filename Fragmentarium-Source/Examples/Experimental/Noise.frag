@@ -1,8 +1,9 @@
 #info Noise thing
 #define providesColor
 #define providesNormalOffset
-#include "DE-Raytracer.frag"
+#include "MathUtils.frag"
 #include "Classic-Noise.frag"
+#include "DE-Raytracer.frag"
 #group Menger
 
 // Slow noise thingy

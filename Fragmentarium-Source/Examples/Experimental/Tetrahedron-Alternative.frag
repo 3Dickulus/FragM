@@ -1,8 +1,8 @@
 #version 120
 #info Tetrahedon Distance Estimator (Syntopia 2012)
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Tetrahedron
 // An alternatice way to create a Tetrahedron,
 //Using length to nearest edge

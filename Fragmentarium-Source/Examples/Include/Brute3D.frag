@@ -34,12 +34,12 @@ void init(); // forward declare
 void init() {}
 #endif
 
-vec2 rand(vec2 co){
-	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return
-	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
-		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
-}
+// vec2 rand(vec2 co){
+// 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+// 	return
+// 	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
+// 		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
+// }
 
 
 

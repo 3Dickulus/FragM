@@ -1,6 +1,7 @@
 #info Shader test
-#include "Soft-Raytracer.frag"
+#include "MathUtils.frag"
 #include "QuilezLib.frag"
+#include "Soft-Raytracer.frag"
 uniform float S; slider[0.1,1.1,2.3]
 uniform vec3 V; slider[(0,0,0),(1,1,1),(10,10,10)]
 float DE(vec3 pos) {

@@ -1,7 +1,7 @@
 #pragma optionNV(fastmath off)
 #pragma optionNV(fastprecision off)
-#include "2D-HP.frag"
 #include "EmulatedDouble.frag"
+#include "2D-HP.frag"
 #info Mandelbrot
 #group Mandelbrot
 

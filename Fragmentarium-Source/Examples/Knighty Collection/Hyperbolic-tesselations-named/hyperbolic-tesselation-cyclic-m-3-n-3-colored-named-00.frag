@@ -1,9 +1,9 @@
 #version 130
-#info 3D hyperbolic tessellation. Coxeter group cyclic m-3-n-3. Poincaré ball model. Distance Estimator (knighty 2012)
+#info 3D hyperbolic tessellation. Coxeter group cyclic m-3-n-3. Poincarï¿½ ball model. Distance Estimator (knighty 2012)
 #define providesInit
 #define providesColor
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 
 #group Hyperbolic-tesselation
 // Iteration number.
@@ -233,7 +233,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 //[(4,3,3,3)] family
-#preset N°38
+#preset Nï¿½38
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.426901,0.328683,0.84245
@@ -294,7 +294,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°39
+#preset Nï¿½39
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.0592282,0.281451,0.957746
@@ -355,7 +355,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°40
+#preset Nï¿½40
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -416,7 +416,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°41
+#preset Nï¿½41
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -477,7 +477,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°42
+#preset Nï¿½42
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.403167,0.00558916,0.915109
@@ -538,7 +538,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°43
+#preset Nï¿½43
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -599,7 +599,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°44
+#preset Nï¿½44
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -660,7 +660,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°45
+#preset Nï¿½45
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -721,7 +721,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 
-#preset N°46
+#preset Nï¿½46
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -782,7 +782,7 @@ TypeM = 4
 TypeN = 3
 #endpreset
 //[(5,3,3,3)] family
-#preset N°47
+#preset Nï¿½47
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.426901,0.328683,0.84245
@@ -843,7 +843,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°48
+#preset Nï¿½48
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.0592282,0.281451,0.957746
@@ -904,7 +904,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°49
+#preset Nï¿½49
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -965,7 +965,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°50
+#preset Nï¿½50
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -1026,7 +1026,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°51
+#preset Nï¿½51
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.403167,0.00558916,0.915109
@@ -1087,7 +1087,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°52
+#preset Nï¿½52
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -1148,7 +1148,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°53
+#preset Nï¿½53
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -1209,7 +1209,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°54
+#preset Nï¿½54
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1270,7 +1270,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 
-#preset N°55
+#preset Nï¿½55
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1331,7 +1331,7 @@ TypeM = 5
 TypeN = 3
 #endpreset
 //[(4,3,4,3)] family
-#preset N°56
+#preset Nï¿½56
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1392,7 +1392,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 
-#preset N°57
+#preset Nï¿½57
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1453,7 +1453,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 
-#preset N°58
+#preset Nï¿½58
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1514,7 +1514,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 
-#preset N°59
+#preset Nï¿½59
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1575,7 +1575,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 
-#preset N°60
+#preset Nï¿½60
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1636,7 +1636,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 
-#preset N°61
+#preset Nï¿½61
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -1697,7 +1697,7 @@ TypeM = 4
 TypeN = 4
 #endpreset
 //[(4,3,5,3)] family
-#preset N°62
+#preset Nï¿½62
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.426901,0.328683,0.84245
@@ -1758,7 +1758,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°63
+#preset Nï¿½63
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.0592282,0.281451,0.957746
@@ -1819,7 +1819,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°64
+#preset Nï¿½64
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -1880,7 +1880,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°65
+#preset Nï¿½65
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.241945,0.122533,0.962521
@@ -1941,7 +1941,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°66
+#preset Nï¿½66
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.403167,0.00558916,0.915109
@@ -2002,7 +2002,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°67
+#preset Nï¿½67
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -2063,7 +2063,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°68
+#preset Nï¿½68
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.16958,-0.39158,0.904381
@@ -2124,7 +2124,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°69
+#preset Nï¿½69
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2185,7 +2185,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 
-#preset N°70
+#preset Nï¿½70
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2246,7 +2246,7 @@ TypeM = 4
 TypeN = 5
 #endpreset
 //[(5,3,5,3)] family
-#preset N°71
+#preset Nï¿½71
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2307,7 +2307,7 @@ TypeM = 5
 TypeN = 5
 #endpreset
 
-#preset N°72
+#preset Nï¿½72
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2368,7 +2368,7 @@ TypeM = 5
 TypeN = 5
 #endpreset
 
-#preset N°73
+#preset Nï¿½73
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2429,7 +2429,7 @@ TypeM = 5
 TypeN = 5
 #endpreset
 
-#preset N°74
+#preset Nï¿½74
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2490,7 +2490,7 @@ TypeM = 5
 TypeN = 5
 #endpreset
 
-#preset N°75
+#preset Nï¿½75
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025
@@ -2551,7 +2551,7 @@ TypeM = 5
 TypeN = 5
 #endpreset
 
-#preset N°76
+#preset Nï¿½76
 FOV = 0.4
 Eye = 0,0,0
 Target = -0.00959145,-0.609113,0.793025

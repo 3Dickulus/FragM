@@ -47,3 +47,11 @@ vec3 color(vec2 z) {
 	return (acc/(wt*2.0));
 }
 
+#preset Default
+Center = 0,0
+Zoom = 1
+AntiAliasScale = 1
+AntiAlias = 1
+texture = /home/toonfish/projects/FragM/Fragmentarium-Source/Examples/Include/texture2.jpg
+params = -0.5,0.24
+#endpreset

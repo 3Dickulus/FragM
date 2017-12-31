@@ -1,9 +1,9 @@
 #version 130
-#info 3D hyperbolic tessellation. Coxeter group 5-3-n. Poincaré ball model. Distance Estimator (knighty 2012)
+#info 3D hyperbolic tessellation. Coxeter group 5-3-n. Poincarï¿½ ball model. Distance Estimator (knighty 2012)
 #define providesInit
 #define providesColor
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 
 #group Hyperbolic-tesselation
 // Iteration number.

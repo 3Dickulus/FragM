@@ -20,6 +20,7 @@ It seems like you can get a lot of different materials with these simple control
 There is also an emissive material that will let you create complex lighting.
 That's a lot for such a small script!*/
 #info global illum
+#include "MathUtils.frag"
 //this was built with 3D.frag as of v0.9.12b2
 #include "3D.frag"
 uniform float time;

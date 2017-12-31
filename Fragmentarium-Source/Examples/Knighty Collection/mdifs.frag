@@ -3,8 +3,8 @@
 #ifdef DO_ROTATIONS
 #define providesInit
 #endif
-#include "Soft-Raytracer.frag"
 #include "MathUtils.frag"
+#include "Soft-Raytracer.frag"
 #group mdifs
 
 
@@ -126,7 +126,7 @@ float DE(vec3 pos) {
 	return iter(pos);
 }
 
-#preset default
+#preset Default
 FOV = 0.62536
 Eye = 1.65409,1.40962,1.19573
 Target = -3.41163,-3.81569,-3.86028
@@ -224,7 +224,7 @@ RotVector = 0,0,1 Locked
 RotAngle = 0 Locked
 #endpreset
 
-#preset
+#preset PFW
 FOV = 0.38096
 Eye = 1.63957,0.326783,-0.292567
 Target = -6.96191,0.459571,1.83471

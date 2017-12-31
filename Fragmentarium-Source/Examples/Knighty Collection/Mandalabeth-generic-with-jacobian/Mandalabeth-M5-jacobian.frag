@@ -1,8 +1,8 @@
 #version 120
 #info Generic M5 Mandalabeth. DE using jacobian. by knighty
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandalabeth
 
 

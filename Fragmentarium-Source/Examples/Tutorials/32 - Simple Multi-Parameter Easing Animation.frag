@@ -6,8 +6,8 @@
 // Sets focal plane to Target location
 //uniform bool AutoFocus; checkbox[false]
 
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 
 #group Mandelbulb
 

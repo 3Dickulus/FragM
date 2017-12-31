@@ -6,8 +6,8 @@
 
 #info Quadray sets Distance Estimator
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Quadray
 
 

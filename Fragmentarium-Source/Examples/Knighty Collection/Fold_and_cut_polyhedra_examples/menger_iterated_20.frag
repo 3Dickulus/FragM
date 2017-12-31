@@ -1,7 +1,7 @@
 #info Icosahedral polyhedra Distance Estimator (knighty 2011 some of the code is from Syntopia)
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Icosahedral
 
 //Cut and fold (Houdini?) technique with icosahedral folding

@@ -13,7 +13,7 @@
 // Also it would be nice to have a method that finds the nearest point on a ray to a
 // distance estimate. (anyone??? just taking the nearest march step sucks!)
 // But still a nice trick for Shadertoy!
-
+#include "MathUtils.frag"
 #include "SoC-DE-Raytracer.frag"
 //                ^^^^^^^^^^^^^ modify and rename!!!
 // make a copy of DE-Raytracer.frag call it SoC-DE-Raytracer.frag or something and comment

@@ -1,4 +1,5 @@
 #info SphereSponge Distance Estimator.
+#include "MathUtils.frag"
 #include "DE-Raytracer.frag"
 #group Sphere sponge
 

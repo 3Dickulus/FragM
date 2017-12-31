@@ -359,20 +359,13 @@ float shadow(vec3 ro, vec3 lightPos, float eps) {
 
 #ifdef MULTI_SAMPLE_AO
 //Modified from Syntopia's. http://blog.hvidtfeldts.net/index.php/2015/01/path-tracing-3d-fractals/
-// vec2 seed = viewCoord*(float(subframe)+1.0);
+vec2 seed = viewCoord*(float(subframe)+1.0);
 
-// vec2 rand2n() {//there are too much rand versions out there. I'll need to clean things up.
-//     seed+=vec2(-1,1);
-//     // modified for wang hash function
-// #ifdef WANG_HASH
-//     return vec2(fract(sin(dot(wang_hash_fp(seed) ,vec2(12.9898,78.233))) * 43758.5453),
-//                 fract(cos(dot(wang_hash_fp(seed) ,vec2(4.898,7.23))) * 43421.631));
-// #else
-//     // implementation based on: lumina.sourceforge.net/Tutorials/Noise.html
-//     return vec2(fract(sin(dot(seed ,vec2(12.9898,78.233))) * 43758.5453),
-//                 fract(cos(dot(seed ,vec2(4.898,7.23))) * 43421.631));
-// #endif
-// };
+vec2 rand2n() {//there are too much rand versions out there. I'll need to clean things up.
+    seed+=vec2(-1,1);
+    return rand2(seed);
+}
+
 vec3 ortho(vec3 v) {
     //  See : http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
     return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0)  : vec3(0.0, -v.z, v.y);

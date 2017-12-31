@@ -191,10 +191,10 @@ float shadow(vec3 pos, float eps) {
 	return 1.0;
 }
 
-float rand(vec2 co){
-	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
+// float rand(vec2 co){
+// 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+// 	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+// }
 
 vec3 equirectangularMap(sampler2D sampler, vec3 dir) {
 	// Convert (normalized) dir to spherical coordinates.

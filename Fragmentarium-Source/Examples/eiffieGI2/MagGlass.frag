@@ -6,6 +6,7 @@
 //bulb inspector by eiffie (use continuous mode)
 
 #info global illum
+#include "MathUtils.frag"
 //this was built with 3D.frag as of v0.9.12b2
 #include "3D.frag"
 uniform float time;

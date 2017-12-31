@@ -1,8 +1,8 @@
 #info Mandelbrot set 2.5D
 #define providesInit
 #define providesColor
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group Mandelbrot
 
 // Made by Knighty, see this thread:

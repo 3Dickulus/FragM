@@ -1,7 +1,7 @@
 #info 4D Quaternion Mandelbrot Distance Estimator
 #define providesInit
-#include "DE-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
 #group 4D Quaternion Mandelbrot
 uniform vec3 RotVector; slider[(0,0,0),(1,1,1),(1,1,1)]
 

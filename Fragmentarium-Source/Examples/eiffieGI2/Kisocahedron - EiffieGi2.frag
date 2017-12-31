@@ -23,8 +23,8 @@ That's a lot for such a small script!*/
 #info global illum
 //this was built with 3D.frag as of v0.9.12b2
 #define providesInit
-#include "3D.frag"
 #include "MathUtils.frag"
+#include "3D.frag"
 #define PI  3.14159265358979323846264
 
 #group Raytracer
@@ -548,7 +548,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = false
 RotatePicXY = 0,0
 BackgroundExposure = 1
-texture =/home/toonfish/Fragmentarium/Examples/Include/Ditch-River_Env.hdr
+texture = Ditch-River_Env.hdr
 AmbientStrenght = 1
 sunColor = 1,1,0.5
 sunDirection = 0.55,1,-0.1
@@ -686,7 +686,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = false
 RotatePicXY = 0,0
 BackgroundExposure = 1
-texture = /home/toonfish/Fragmentarium/Examples/Include/Ditch-River_Env.hdr
+texture = Ditch-River_Env.hdr
 AmbientStrenght = 1
 sunColor = 1,1,0.5
 sunDirection = 0.55,1,-0.1
@@ -811,7 +811,7 @@ lightPosition2 = -1.3,0.9,0
 lightSize2 = 0.1
 UseBackgroundPicture = true
 BackgroundExposure = 6
-texture = F:/BACKUP DD/PARTITION DAO/COLLECTION/5. ____ TEXTURES ____/FREE HDRI/openfootage.net/fielditalien_low.hdr
+texture = fielditalien_low.hdr
 AmbientStrenght = 1
 sunColor = 1,1,0.5
 sunDirection = 0.55102,0.18368,-0.22448
@@ -922,7 +922,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = true
 RotatePicXY = -0.187,-0.17074
 BackgroundExposure = 6
-texture = F:/BACKUP DD/PARTITION DAO/COLLECTION/5. ____ TEXTURES ____/FREE HDRI/openfootage.net/fielditalien_low.hdr
+texture = fielditalien_low.hdr
 AmbientStrenght = 1
 sunColor = 1,0.529412,0.294118
 sunDirection = -1,0.03674,-0.6
@@ -1040,7 +1040,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = true
 RotatePicXY = -0.187,-0.11382
 BackgroundExposure = 2.24135
-texture = F:/BACKUP DD/PARTITION DAO/COLLECTION/5. ____ TEXTURES ____/FREE HDRI/openfootage.net/fielditalien_low.hdr
+texture = fielditalien_low.hdr
 AmbientStrenght = 1
 sunColor = 1,0.976471,0.686275
 sunDirection = -1,0.0204,-1
@@ -1158,7 +1158,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = true
 RotatePicXY = -0.3945,0
 BackgroundExposure = 2.24135
-texture = F:/BACKUP DD/PARTITION DAO/COLLECTION/5. ____ TEXTURES ____/FREE HDRI/openfootage.net/fielditalien_low.hdr
+texture = fielditalien_low.hdr
 AmbientStrenght = 1
 sunColor = 1,0.976471,0.686275
 sunDirection = -1,0.0204,-1
@@ -1276,7 +1276,7 @@ lightSize2 = 0.1
 UseBackgroundPicture = true
 RotatePicXY = -0.187,-0.04588
 BackgroundExposure = 1.32001
-texture = F:/BACKUP DD/PARTITION DAO/COLLECTION/5. ____ TEXTURES ____/FREE HDRI/openfootage.net/fielditalien_low.hdr
+texture = fielditalien_low.hdr
 AmbientStrenght = 1
 sunColor = 1,0.976471,0.686275
 sunDirection = 0.63134,0.7235,-1
