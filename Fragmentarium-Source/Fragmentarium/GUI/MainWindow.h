@@ -44,7 +44,7 @@ namespace Fragmentarium {
       QString filename = "";
       bool unsaved = false;
       TextEdit* textEdit = 0;
-      bool hasBeenSavedOnce = false;
+      bool hasBeenSavedOnce = true;
     };
     
     // Information about a keyframe

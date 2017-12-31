@@ -1,5 +1,7 @@
+#include <QCoreApplication>
 #include <QtGui>
 #include <QDir>
+#include <QMenu>
 #include <QString>
 #include <QClipboard>
 #include <QDesktopServices>
@@ -1763,7 +1765,7 @@ retry:
                     engine->renderETA=t.toString("hh:mm:ss");
 
                     if( estRenderMS > 86400000 ) // takes longer than 24 hours
-                        engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
+                      engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
                 }
             }
         }
