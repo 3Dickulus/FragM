@@ -48,7 +48,8 @@ TimeLineDialog::TimeLineDialog(MainWindow* parent) : mainWin(parent) {
     uNames = mainWin->getVariableEditor()->getWidgetNames();
     vCount = uNames.count();
     yOff = 10;
-
+    text = 0;
+    
     readTimeLineSettings();
 
     createKeyframeMap();

@@ -125,25 +125,25 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      cp Fragmentarium-2.0.b-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
+      cp Fragmentarium-2.0.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.deb
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-42.2.rpm
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
 
-      cd ../../Fragmentarium-2.0.b
-      mv ./Examples ./Fragmentarium-2.0.b.app/Contents/MacOS/Examples
-      mv ./fqScript ./Fragmentarium-2.0.b.app/Contents/MacOS/fqScript
-      mv ./Misc ./Fragmentarium-2.0.b.app/Contents/MacOS/Misc
-      mv ./Languages ./Fragmentarium-2.0.b.app/Contents/MacOS/Languages
+      cd ../../Fragmentarium-2.0.0
+      mv ./Examples ./Fragmentarium-2.0.0.app/Contents/MacOS/Examples
+      mv ./fqScript ./Fragmentarium-2.0.0.app/Contents/MacOS/fqScript
+      mv ./Misc ./Fragmentarium-2.0.0.app/Contents/MacOS/Misc
+      mv ./Languages ./Fragmentarium-2.0.0.app/Contents/MacOS/Languages
 
-      macdeployqt ./Fragmentarium-2.0.b.app
+      macdeployqt ./Fragmentarium-2.0.0.app
 
       cd ../
       
-      ditto -c -k ./Fragmentarium-2.0.b ./Fragmentarium-2.0.b.zip
-      mv ./Fragmentarium-2.0.b.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin15.6.0.zip
+      ditto -c -k ./Fragmentarium-2.0.0 ./Fragmentarium-2.0.0.zip
+      mv ./Fragmentarium-2.0.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin15.6.0.zip
       cd ./Fragmentarium-Source/build
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     fi

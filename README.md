@@ -148,5 +148,5 @@ Continuous integration
 # Tested on Windows
 + Windows 7,8,10 Qt-5.6.2  OpenEXR 2.1
 
-# Tested on Mac
-+ OSX 10.11 XCode 7.3 Qt-5.9.1 OpenEXR 2.2
+# Testing on Mac
++ OSX 10.11 GCC 4.8 Qt-5.9.1 OpenEXR 2.2
