@@ -2,6 +2,9 @@ project( Fragmentarium-2.0.0 )
 cmake_minimum_required( VERSION 2.8.12 )
 
 cmake_policy(SET CMP0043 OLD)
+IF ( APPLE )
+    cmake_policy(SET CMP0071 NEW)
+ENDIF ()
 
 IF(UNIX AND NOT APPLE)
     # for find_package ( OpenEXR REQUIRED )
