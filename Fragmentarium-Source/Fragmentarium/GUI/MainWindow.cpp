@@ -541,7 +541,7 @@ void MainWindow::init()
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::StrongFocus);
 
-    version = Version(2, 0, 0, 180101, " (\"bourbon\")");
+    version = Version(2, 0, 0, 180102, " (\"bourbon\")");
     setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
@@ -1698,7 +1698,7 @@ retry:
                   engine->renderETA=t.toString("hh:mm:ss");
                   
                   if( estRenderMS > 86400000 ) // takes longer than 24 hours
-                    engine->renderETA = QString(" %1:%2").arg((int)( (estRenderMS / 86400000)-0.5 )).arg(engine->renderETA);
+                    engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
                 }
                 
             }
@@ -1836,7 +1836,6 @@ retry:
             } else if( !exrMode )
             {
               finalImage.setText("frAg", variableEditor->getSettings());
-              
               imageSaved=finalImage.save(name);
             }
 
@@ -1849,14 +1848,17 @@ retry:
         }
     }
 
+    engine->tilesCount = 0;
     engine->setState(oldState);
     progress.setValue(totalSteps);
     if (preview || progress.wasCanceled()) engine->requireRedraw(true);
     engine->clearTileBuffer();
     engine->updateBuffers();
+    
 }
 
 void MainWindow::savePreview() {
+
     QDialog *qd;
     if(findChild<QDialog*>("PREVIEW")) {
         qd = findChild<QDialog*>("PREVIEW");
