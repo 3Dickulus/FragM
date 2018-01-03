@@ -22,8 +22,17 @@ vec2 formula(vec2 z,vec2 c) {
 }
 
 #preset Default
-Center = -0.00423807,-0.00285229
-Zoom = 3.07152
+Gamma = 2.08335
+Brightness = 1
+Contrast = 1
+Saturation = 1
+Center = -0.0042381,-0.0028523
+Zoom = 0.163192
+ToneMapping = 3
+Exposure = 0.6522
+AARange = 2
+AAExp = 1
+GaussianAA = true
 Iterations = 40
 PreIterations = 1
 R = 0
@@ -31,12 +40,15 @@ G = 0.4
 B = 0.7
 C = 1
 Julia = true
-ShowMap = true
+JuliaX = 0.5663564
+JuliaY = 0.0732411
+ShowMap = false
 MapZoom = 2.1
+EscapeSize = 5
+ColoringType = 0
+ColorFactor = 0.5
 MinRadius = 0
 Scaling = -1.9231
-JuliaX = 1.83071
-JuliaY = 1.63084
 #endpreset
 
 #preset P1

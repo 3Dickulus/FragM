@@ -135,15 +135,18 @@ Contrast = 1
 Saturation = 1
 GaussianWeight = 1
 AntiAliasScale = 2
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
 Detail = -2.84956
 DetailAO = -1.35716
 FudgeFactor = 1
+MaxDistance = 1000
 MaxRaySteps = 164
-BoundingSphere = 10
 Dither = 0.51754
 NormalBackStep = 1
 AO = 0,0,0,0.85185
-Specular = 1.6456
+Specular = 1
 SpecularExp = 16.364
 SpecularMax = 10
 SpotLight = 1,1,1,1
@@ -155,7 +158,9 @@ GlowMax = 52
 Fog = 0
 HardShadow = 0.35385
 ShadowSoft = 12.5806
+QualityShadows = false
 Reflection = 0
+DebugSun = false
 BaseColor = 1,1,1
 OrbitStrength = 1
 X = 1,1,1,1
@@ -165,23 +170,23 @@ R = 0.0784314,1,0.941176,-0.0194
 BackgroundColor = 0.607843,0.866667,0.560784
 GradientBackground = 0.3261
 CycleColors = true
-Cycles1:CosineCurve:44:1:24:1:240:0.3:1:1.7:1:0
-Cycles = 12.4928
+Cycles = 21.17806
 EnableFloor = true
 FloorNormal = 0,1,0
 FloorHeight = -2
 FloorColor = 1,1,1
 Iterations = 12
 ColorIterations = 8
-Power1:SineCurve:43:1:6:20:220:0.3:1:1.7:1:0
-Power = 1
+Power = 4.837909
 Bailout = 6.279
 AlternateVersion = true
 RotVector = 1,1,1
-RotAngle1:OutInBack:36:0:360:40:200:0.3:1:1.7:1:0
-RotAngle = 0.0
 Julia = false
 JuliaC = 0,0,0
+RotAngle = 197.8869
+Cycles1:CosineCurve:44:1:24:1:240:0.3:1:1.7:1:0
+Power1:SineCurve:43:1:6:20:220:0.3:1:1.7:1:0
+RotAngle1:OutInBack:36:0:360:40:200:0.3:1:1.7:1:0
 #endpreset
 
 #preset KeyFrame.001

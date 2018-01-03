@@ -1,5 +1,5 @@
-#include "Progressive2D.frag"
 #include "Complex.frag"
+#include "Progressive2D.frag"
 
 // An example of using progressive rendering.
 // Bbuffers are set up by the 'Progressive2D' fragment.
@@ -12,9 +12,6 @@ vec3 color(vec2 v) {
 	vec2 p = (viewCoord+vec2(1.0))/2.0;
 	p=p/pixelSize;
 	
-	if (p.y<40.0) {
-		return vec3(pow(0.5,1.0/Gamma));
-	}
 	float r = dot(v,v);
 	float a = 1.0;
 	if (mod(r,1.0)<0.5) a =1.0-a;

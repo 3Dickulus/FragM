@@ -2,8 +2,8 @@
 #define providesInside
 #define providesInit
 #include "MathUtils.frag"
-//#include "DE-Raytracer.frag"
-#include "Fast-Raytracer.frag"
+#include "DE-Raytracer.frag"
+//#include "Fast-Raytracer.frag"
 //#include "DE-PK-1.1.9.frag"
 //#include "DE-Raytracer-v0.9.10.frag"
 //#include "DE-Kn2exp.frag"
@@ -749,4 +749,113 @@ T5bScale = 1
 T5bIteration1 = 5
 Up = 0.0589955,0.9982494,-0.0042291
 trapmode = 1
+#endpreset
+
+#preset Default
+FOV = 0.4
+Eye = 0.0406691,-5.057769,0.5512041
+Target = -0.1162459,1.894107,-0.2530369
+Up = -0.0689974,0.1131096,0.9911843
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
+Detail = -3.7
+DetailAO = -0.5
+FudgeFactor = 0.8
+Dither = 0.5
+NormalBackStep = 1
+AO = 0,0,0,0.7
+SpecularExp = 16
+SpotLight = 0.7529412,1,0.8980392,1
+SpotLightDir = -0.4693878,0.4285714
+CamLight = 1,1,1,1
+CamLightMin = 0
+Glow = 1,1,1,0
+GlowMax = 20
+Fog = 0
+HardShadow = 0
+ShadowSoft = 2
+Reflection = 0
+BaseColor = 1,1,1
+OrbitStrength = 0.3414634
+X = 0.5,0.6,0.6,0.7
+Y = 1,0.6,0,0.4
+Z = 0.8,0.78,1,0.5
+R = 0.4,0.7,1,0.12
+BackgroundColor = 0.6,0.6,0.45
+GradientBackground = 0.3
+CycleColors = false
+Cycles = 0.1
+EnableFloor = false
+FloorNormal = 0,0,0
+FloorHeight = 0
+FloorColor = 1,1,1
+Iterations = 3
+ColorIteration = 3
+trapmode = 1
+manPower = 2
+T1offset = 2
+T1Scale = 2
+Julia = true
+JuliaC = -0.8823529,0.0588235,0
+PixelMult = 0.7692308,0,0
+Bailout = 2
+RotVector1 = 1,1,1
+RotAngle1 = 0
+RotIter1 = 1
+tIteration1 = 0
+tCount1 = 1
+tType1 = 1
+tOffset1 = 2
+tScale1 = 1
+tIteration2 = 0
+tCount2 = 1
+tType2 = 1
+tOffset2 = 2
+tScale2 = 1
+PolyIter1 = 0
+P1sides = 4
+P1angle = 0
+Hedron1 = false
+P1sides2 = 4
+P1angle2 = 0
+PolyIter2 = 0
+P2sides = 4
+P2angle = 0
+Hedron2 = false
+P2sides2 = 4
+P2angle2 = 0
+orbititer1 = 0
+orbititer1app = 0
+zlapp = 0
+zorbit = 0,0,0
+zorbitApp = 0,0,0
+orbit1 = 0,0,0,0
+orbitApp1 = 0,0,0,0
+Warp1 = 0
+xparts = 0,0
+xScale = 0
+yzScale = 0
+yparts = 0,0
+yScale = 0
+zparts = 0,0
+zScale = 0
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2
+MaxDistance = 1000
+MaxRaySteps = 181
+Specular = 1
+SpecularMax = 10
+QualityShadows = false
+DebugSun = false
 #endpreset

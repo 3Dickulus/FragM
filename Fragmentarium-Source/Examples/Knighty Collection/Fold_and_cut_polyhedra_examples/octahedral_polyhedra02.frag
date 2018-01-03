@@ -39,9 +39,9 @@ float DE(vec3 z)
 
 #preset Default
 FOV = 0.4
-Eye = -2.502036,-2.180617,-3.467663
-Target = 2.71054,2.362336,3.756637
-Up = 0,0.8465328,-0.5323365
+Eye = 1.39361,-2.260077,1.786026
+Target = -2.857893,5.059999,-3.537613
+Up = -0.4804755,0.3159339,0.8181252
 EquiRectangular = false
 AutoFocus = false
 FocalPlane = 1
@@ -95,5 +95,5 @@ FloorNormal = 0,0,1
 FloorHeight = 0
 FloorColor = 1,1,1
 Size = 0.9565217
-plnormal = 0.03125,0.03125,0.25
+plnormal = 0.03125,0.25,0.34375
 #endpreset

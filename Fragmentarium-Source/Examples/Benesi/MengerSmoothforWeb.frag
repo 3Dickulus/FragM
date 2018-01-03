@@ -1,8 +1,8 @@
 #info Menger Distance Estimator.  Benesi.
 #define providesInit
 #include "MathUtils.frag"
-//#include "DE-Raytracer.frag"
-#include "Fast-Raytracer.frag"
+#include "DE-Raytracer.frag"
+//#include "Fast-Raytracer.frag"
 #group Menger
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:
 // http://www.fractalforums.com/3d-fractal-generation/kaleidoscopic-%28escape-time-ifs%29/
@@ -167,6 +167,91 @@ float DE(vec3 z)
 	}
 	return abs(length(z)-0.0 ) /w;
 }
+
+
+#preset Default
+FOV = 0.62536
+Eye = 2.437061,-1.849022,0.377589
+Target = -4.464397,3.638738,-0.5072719
+Up = 0.401286,0.369883,-0.83588
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
+Detail = -2.84956
+DetailAO = -1.35716
+FudgeFactor = 1
+Dither = 0.51754
+NormalBackStep = 1
+AO = 0,0,0,0.85185
+SpecularExp = 16.364
+SpotLight = 1,1,1,1
+SpotLightDir = 0.63626,0.5
+CamLight = 1,1,1,1.53846
+CamLightMin = 0.12121
+Glow = 1,1,1,0.43836
+GlowMax = 52
+Fog = 0
+HardShadow = 0.35385
+ShadowSoft = 12.5806
+Reflection = 0
+BaseColor = 1,1,1
+OrbitStrength = 0.14286
+X = 1,1,1,1
+Y = 0.345098,0.666667,0,0.02912
+Z = 1,0.666667,0,1
+R = 0.0784314,1,0.941176,-0.0194
+BackgroundColor = 0.607843,0.866667,0.560784
+GradientBackground = 0.3261
+CycleColors = false
+Cycles = 4.04901
+EnableFloor = false
+FloorNormal = 0,0,0
+FloorHeight = 0
+FloorColor = 1,1,1
+Scale = 3
+s = 0.005
+Sphere = false
+HoleSphere = false
+unSphere = false
+Octalize = false
+unOctalize = false
+Iterations = 12
+ColorIterations = 8
+T2Iteration1 = 5
+Total_Sphere_Iter = 11
+SphereiterationT1 = 12
+SphereiterationT2 = 12
+SphereiterationT3 = 12
+Total_unSphere_Iter = 11
+unSphereiterationT1 = 12
+unSphereiterationT2 = 12
+unSphereiterationT3 = 12
+T2offset = 2
+T2Scale = 1
+RotVector = 1,1,1
+RotAngle = 0
+RotIter1 = 3
+RotIter2 = 9
+RotEverAfter = 9
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2
+MaxDistance = 1000
+MaxRaySteps = 56
+Specular = 0.4
+SpecularMax = 10
+QualityShadows = false
+DebugSun = false
+#endpreset
 
 #preset Transform2
 FOV = 0.4

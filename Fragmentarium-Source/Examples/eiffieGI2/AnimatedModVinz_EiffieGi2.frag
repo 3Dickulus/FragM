@@ -576,7 +576,7 @@ void main() {//for slow accumulation (needs texture same size)
 
 
 
-#preset Defaut
+#preset Default
 FOV = 0.39216
 Eye = -0.370982,-0.033395,-2.87777
 Target = 1.19436,0.130941,6.95466

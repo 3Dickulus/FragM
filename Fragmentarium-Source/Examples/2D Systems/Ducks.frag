@@ -53,8 +53,17 @@ JuliaY = 5.5384
 #endpreset
 
 #preset Default
-Center = 0,0
-Zoom = 1
+Gamma = 2.08335
+Brightness = 1
+Contrast = 1
+Saturation = 1
+Center = 2.205952,0.0576923
+Zoom = 0.2707256
+ToneMapping = 3
+Exposure = 0.6522
+AARange = 2
+AAExp = 1
+GaussianAA = true
 Iterations = 200
 PreIterations = 1
 R = 0
@@ -62,13 +71,15 @@ G = 0.4
 B = 0.7
 C = 1
 Julia = true
-JuliaX = 0.23528
-JuliaY = 5.5384
-ShowMap = true
+JuliaX = -0.1718987
+JuliaY = -0.7941772
+ShowMap = false
 MapZoom = 2.1
 EscapeSize = 5
 ColoringType = 0
 ColorFactor = 0.5
+TrigIter = 5
+TrigLimit = 1.1
 #endpreset
 
 

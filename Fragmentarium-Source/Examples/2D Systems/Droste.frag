@@ -1,4 +1,4 @@
-#include "2D.frag"
+#include "Progressive2D.frag"
 #include "Complex.frag"
 
 // A Escher/Droste transformation.
@@ -45,9 +45,11 @@ Center = -0.276125,0.175167
 Zoom = 0.639375
 AntiAliasScale = 1
 AntiAlias = 1
-r1 = 0.38776
-r2 = 0.89286
-Branches = 1
+TrigIter = 5
+TrigLimit = 1.1
+r1 = 1.065421
+r2 = 2
 texture = vigga.jpg NotLocked
+Branches = 1
 #endpreset
 

@@ -1,4 +1,4 @@
-#include "2D.frag"
+#include "Progressive2D.frag"
 
 // It is possible to read from external bitmaps with Fragmentarium using textures.
 // Set up a sampler2D as below, and read using the texture2D command.
@@ -57,4 +57,5 @@ AntiAlias = 1
 T = 4.3511
 R = 2.2308
 step = 0.0041
+myTexture = texture2.jpg
 #endpreset

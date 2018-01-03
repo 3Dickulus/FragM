@@ -1,8 +1,8 @@
 #info Menger Distance Estimator.
 #define providesInit
-//#include "DE-Raytracer.frag"
-#include "Fast-Raytracer.frag"
 #include "MathUtils.frag"
+#include "DE-Raytracer.frag"
+//#include "Fast-Raytracer.frag"
 #group Menger
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:
 // http://www.fractalforums.com/3d-fractal-generation/kaleidoscopic-%28escape-time-ifs%29/
@@ -195,6 +195,87 @@ float DE(vec3 z)
 
 	//return abs(length(z)-0.0 ) * pow(Scale, float(-n));
 }
+
+#preset Default
+FOV = 0.4
+Eye = 2.803797,2.012923,-2.72889
+Target = -3.568471,-2.561902,3.473134
+Up = -0.1934184,0.8739289,0.4459123
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
+Detail = -2.3
+DetailAO = -0.5
+FudgeFactor = 1
+MaxDistance = 1000
+MaxRaySteps = 56
+Dither = 0.5
+NormalBackStep = 1
+AO = 0,0,0,0.7
+Specular = 0.4
+SpecularExp = 16
+SpecularMax = 10
+SpotLight = 1,1,1,0.4
+SpotLightDir = 0.1,0.1
+CamLight = 1,1,1,1
+CamLightMin = 0
+Glow = 1,1,1,0
+GlowMax = 20
+Fog = 0
+HardShadow = 0
+ShadowSoft = 2
+QualityShadows = false
+Reflection = 0
+DebugSun = false
+BaseColor = 1,1,1
+OrbitStrength = 0
+X = 0.5,0.6,0.6,0.7
+Y = 1,0.6,0,0.4
+Z = 0.8,0.78,1,0.5
+R = 0.4,0.7,1,0.12
+BackgroundColor = 0.6,0.6,0.45
+GradientBackground = 0.3
+CycleColors = false
+Cycles = 1.1
+EnableFloor = false
+FloorNormal = 0,0,1
+FloorHeight = 0
+FloorColor = 1,1,1
+Scale = 3
+s = 0.005
+Total_Sphere_Iter = 11
+SphereiterationT1 = 12
+SphereiterationT2 = 12
+SphereiterationT3 = 12
+Total_unSphere_Iter = 11
+unSphereiterationT1 = 12
+unSphereiterationT2 = 12
+unSphereiterationT3 = 12
+Sphere = false
+HoleSphere = false
+unSphere = false
+Octalize = false
+unOctalize = false
+RotVector = 1,1,1
+RotAngle = 0
+Offset = 1,1,1
+tetralixinatorer = false
+test = false
+Iterations = 8
+ColorIterations = 8
+#endpreset
 
 #preset Balls
 FOV = 0.4

@@ -1,4 +1,4 @@
-#include "2D.frag"
+#include "Progressive2D.frag"
 
 #info SimpleTexture demo.
 #group Simple Texture demo.
@@ -48,10 +48,17 @@ vec3 color(vec2 z) {
 }
 
 #preset Default
+Gamma = 2.08335
+Brightness = 1
+Contrast = 1
+Saturation = 1
 Center = 0,0
-Zoom = 1
-AntiAliasScale = 1
-AntiAlias = 1
-texture = /home/toonfish/projects/FragM/Fragmentarium-Source/Examples/Include/texture2.jpg
+Zoom = 1.520875
+ToneMapping = 3
+Exposure = 0.6522
+AARange = 2
+AAExp = 1
+GaussianAA = true
+texture = texture2.jpg
 params = -0.5,0.24
 #endpreset
