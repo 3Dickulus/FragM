@@ -318,6 +318,9 @@ namespace Fragmentarium {
         runningScript=false;
       };
       
+      QString currentFragmentName() { return tabInfo[tabBar->currentIndex()].filename.split("/").last().split(".").first(); };
+      void scriptExitProgram(int x = 0) { exit(x); };
+      
       void saveParameters(QString fileName);
       void loadParameters(QString fileName);
       void selectPreset();
