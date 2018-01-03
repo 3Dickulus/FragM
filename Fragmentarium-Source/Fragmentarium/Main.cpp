@@ -23,19 +23,19 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-    QApplication::setStyle(QStyleFactory::create("Fusion")); // default gui style
+    QApplication::setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
 
     /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
     /// replaced with "_" fixed preferences settings not loading...
     /// was saved in "~/.config/Syntopia Software/" tried to load from "~/.config/Syntopia/"
-    QApplication::setOrganizationName("Syntopia_Software");
-    QApplication::setApplicationName("Fragmentarium");
+    QApplication::setOrganizationName(QString("Syntopia_Software"));
+    QApplication::setApplicationName(QString("Fragmentarium"));
 
     QApplication app(argc, argv, true);
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + QLocale::system().name(),
+    qtTranslator.load(QString("qt_") + QLocale::system().name(),
                       QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
@@ -47,14 +47,14 @@ int main(int argc, char *argv[])
     );
 
 //     parser.addPositionalArgument("-s", QString("fQScript file to load and execute."), QString("[-s <filename.fqs>]"));
-    parser.addPositionalArgument("filename.frag", app.translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]") );
+    parser.addPositionalArgument(QString("filename.frag"), app.translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]") );
 
 //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
 //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
 //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
     parser.addOption(QCommandLineOption (QString("style"),
                                          app.translate("main", "sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
-                                         "style",
+                                         QString("style"),
                                          QString("Fusion"))
                     );
 //     parser.addOption(QCommandLineOption("stylesheet","stylesheet, sets the application styleSheet. The value must be a path to a file that contains the Style Sheet."));
@@ -78,28 +78,28 @@ int main(int argc, char *argv[])
 //     parser.addOption(QCommandLineOption("im","sets the input method server (equivalent to setting the XMODIFIERS environment variable)"));
 //     parser.addOption(QCommandLineOption("inputstyle","defines how the input is inserted into the given widget, e.g., onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."));
 
-    parser.addOption(QCommandLineOption( (QStringList() << "l" << "language"),
+    parser.addOption(QCommandLineOption( (QStringList() << QString("l") << QString("language")),
                                          app.translate("main", "sets the application language.\nPossible values are 'en','de','ru','nl'."),
-                                        "language",
+                                        QString("language"),
                                         QString("en"))
                     );
 
-    parser.addOption(QCommandLineOption( (QStringList() << "s" << "script"),
+    parser.addOption(QCommandLineOption( (QStringList() << QString("s") << QString("script")),
                                          app.translate("main", "Fragmentarium script file to load."),
-                                        "script",
+                                        QString("script"),
                                         QString(""))
                     );
 
     // Process the actual command line arguments given by the user
     parser.process(app);
 
-    QString langArg = "en";
+    QString langArg = QString("en");
 
     QTranslator myappTranslator;
-    if(parser.isSet("language")) {
-      langArg = parser.value("language");
+    if(parser.isSet(QString("language"))) {
+      langArg = parser.value(QString("language"));
       if( langArg != QString("en") ) {
-        if(myappTranslator.load("Languages/Fragmentarium_" + langArg ))
+        if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg ))
           app.installTranslator(&myappTranslator);
         else
           qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     else {
       langArg = QLocale::system().name().split("_").at(0);
        if( langArg != QString("en") ) {
-         if(myappTranslator.load("Languages/Fragmentarium_" + langArg))
+         if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg))
            app.installTranslator(&myappTranslator);
          else
            qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
@@ -143,7 +143,6 @@ int main(int argc, char *argv[])
     splash.setMask(pixmap.mask());
     splash.show();
     mainWin->langID = langArg;
-    mainWin->ensurePolished();
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
@@ -162,15 +161,18 @@ int main(int argc, char *argv[])
     if(parser.isSet("script")) {
       QString filename = parser.value("script");
       if(filename.endsWith(".fqs")) {
+
         QFile file(filename);
-        if (file.open(QFile::ReadOnly | QFile::Text)) {
-          QTextStream in(&file);
-          QString text = in.readAll();
-          file.close();
-          mainWin->runScript( text );
-//           QTimer::singleShot(5000, SLOT(mainWin->runScript( text )));
-        }
-      }
+        
+        if(file.exists()) {
+            if (file.open(QFile::ReadOnly | QFile::Text)) {
+            QTextStream in(&file);
+            QString text = in.readAll();
+            file.close();
+            mainWin->runScript( text );
+            } else qDebug() << "Script file " << filename << " open failed!";
+        } else qDebug() << "Script file " << filename << " does not exist!";
+      } else qDebug() << "Script file requires .fqs extention!";
     }
 
 /// BEGIN 3DTexture
@@ -195,3 +197,5 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+
+
