@@ -1124,6 +1124,7 @@ void DisplayWidget::setViewPort ( int w, int h ) {
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
+    if(tilesCount > 1) return;
     // this should speed things up a litte because we are only setting uniforms on the first subframe
     if(subframeCounter > 1) return;
     

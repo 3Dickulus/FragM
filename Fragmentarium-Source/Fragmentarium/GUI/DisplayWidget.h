@@ -209,6 +209,8 @@ namespace Fragmentarium {
       int framesToRender;
       int tileAVG;
       
+      int subframeCounter;
+      int tilesCount;
       #ifdef USE_OPEN_EXR
       void setEXRmode(bool m) {
         exrMode = m;
@@ -318,8 +320,6 @@ namespace Fragmentarium {
       int pendingRedraws; // the number of times we must redraw
       int requiredRedraws;
       QColor backgroundColor;
-      int subframeCounter;
-      int tilesCount;
       
       QMenu* contextMenu;
       
