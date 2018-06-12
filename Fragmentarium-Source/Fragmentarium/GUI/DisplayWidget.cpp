@@ -1551,8 +1551,8 @@ void DisplayWidget::clearGL() {
 #ifdef USE_OPEN_EXR
 void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 
-  GLfloat (*myImgdata)[h][w][4] = (GLfloat (*)[h][w][4])malloc( (h*w*4*sizeof(GLfloat)) );
-  GLfloat (*myDepths)[h][w][1] = (GLfloat (*)[h][w][1])malloc( (h*w*sizeof(GLfloat)) );
+  GLfloat *myImgdata = (GLfloat *)malloc( (h*w*4*sizeof(GLfloat)) );
+  GLfloat *myDepths = (GLfloat *)malloc( (h*w*sizeof(GLfloat)) );
   
     if ( !hiresBuffer->bind() ) {
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
@@ -1580,8 +1580,8 @@ void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
     // put them together as RGBZ or RGBA
     for ( int i = 0; i < h; i++ ) {
       for ( int j = 0; j < w; j++ ) {
-        array[ ( h-1 )-i][j] = Rgba ( (*myImgdata)[i][j][0], (*myImgdata)[i][j][1], (*myImgdata)[i][j][2],
-                                      depthToAlpha ? (*myDepths)[i][j][0] : (*myImgdata)[i][j][3] );
+        array[ ( h-1 )-i][j] = Rgba ( myImgdata[((i * w) + j) * 4 + 0], myImgdata[((i * w) + j) * 4 + 1], myImgdata[((i * w) + j) * 4 + 2],
+                                      depthToAlpha ? myDepths[((i * w) + j) * 1 + 0] : myImgdata[((i * w) + j) * 4 + 3] );
         }
     }
     
