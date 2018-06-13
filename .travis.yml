@@ -51,7 +51,7 @@ install:
     then
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qq update
-      sudo apt-get -qq install qtcreator-latest
+      sudo apt-get -qq install qt57-meta
       
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qq update
@@ -83,7 +83,7 @@ install:
 
       brew unlink cmake
       brew install cmake
-      #brew install extra-cmake-modules
+      brew install extra-cmake-modules
     fi
 
 #before_script:
