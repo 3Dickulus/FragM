@@ -5,9 +5,9 @@ dist: trusty
 
 os:
   - linux
-  - osx
+  #- osx
 
-sudo: false
+sudo: true
 
 branches:
   only:
@@ -49,8 +49,8 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      #sudo apt-add-repository -y ppa:beineri/opt-qt58-trusty
-      #sudo apt-get -qq update
+      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
       
       sudo apt-add-repository -y ppa:thomas-schiex/blender
@@ -86,36 +86,36 @@ install:
       #brew install extra-cmake-modules
     fi
 
-before_script:
+#before_script:
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     #then
-      #source /opt/qt58/bin/qt58-env.sh
+      #source /opt/qt57/bin/qt57-env.sh
     #fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then
-      export PATH="$QTDIR/bin:$PATH"
-    fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    #then
+      #export PATH="$QTDIR/bin:$PATH"
+    #fi
 
-  - mkdir Fragmentarium-Source/build
-  - cd Fragmentarium-Source/build
+  #- mkdir Fragmentarium-Source/build
+  #- cd Fragmentarium-Source/build
 
-script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
-       make
-       make package
-       ls -l *.deb
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
-       make install
-    fi
+#script:
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+       #cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
+       #make
+       #make package
+       #ls -l *.deb
+    #fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    #then
+       #cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       #make install
+    #fi
 
 #before_deploy:
   #- |
