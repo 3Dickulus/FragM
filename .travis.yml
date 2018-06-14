@@ -82,7 +82,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      ls -la /usr/lib/x86_64-linux-gnu/qt-default/bin/
+      ls -la /usr/lib/x86_64-linux-gnu/qt*/bin/
       source /usr/lib/x86_64-linux-gnu/qt-default/bin/qt-env.sh
     fi
   - |
