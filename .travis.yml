@@ -51,7 +51,7 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      sudo apt-get -qq install qtcreator-latest
+      sudo apt-get -qq install qtcreator
       sudo apt-get -qq install g++-4.8 libc6-i386
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
