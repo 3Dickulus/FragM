@@ -82,6 +82,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+      ls -la /opt/
       source /opt/qt52/bin/qt52-env.sh
     fi
   - |
