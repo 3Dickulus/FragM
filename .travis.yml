@@ -29,7 +29,10 @@ before_install:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
-      sudo apt-get update -qq
+      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      sudo apt-get -qq update
+      sudo apt-add-repository -y ppa:thomas-schiex/blender
+      sudo apt-get -qq update
       sudo apt-get -qq install g++-4.8 libc6-i386
     fi
   - |
@@ -49,12 +52,7 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
-      sudo apt-get -qq update
       sudo apt-get -qq install qtcreator-latest
-      
-      sudo apt-add-repository -y ppa:thomas-schiex/blender
-      sudo apt-get -qq update
 
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
@@ -87,11 +85,11 @@ install:
     fi
 
 before_script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      source /opt/qt57/bin/qt57-env.sh
-    fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #source /opt/qt57/bin/qt57-env.sh
+    #fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
@@ -101,21 +99,21 @@ before_script:
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
 
-script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
-       make
-       make package
-       ls -l *.deb
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then
-       cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
-       make install
-    fi
+#script:
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+       #cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
+       #make
+       #make package
+       #ls -l *.deb
+    #fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    #then
+       #cmake -DNVIDIAGL4PLUS=ON -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       #make install
+    #fi
 
 #before_deploy:
   #- |
