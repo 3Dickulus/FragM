@@ -49,12 +49,12 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      #sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
-      #sudo apt-get -qq update
-      sudo apt-get -qq install qtcreator
+      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      sudo apt-get -qq update
+      sudo apt-get -qq install qtcreator-latest
       
-      #sudo apt-add-repository -y ppa:thomas-schiex/blender
-      #sudo apt-get -qq update
+      sudo apt-add-repository -y ppa:thomas-schiex/blender
+      sudo apt-get -qq update
 
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
@@ -90,8 +90,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-    find ./ | grep qt57-env.sh
-      #source /opt/qt57/bin/qt57-env.sh
+      source /opt/qt57/bin/qt57-env.sh
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
