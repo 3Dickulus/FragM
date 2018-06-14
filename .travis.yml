@@ -48,10 +48,6 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
-      sudo apt-get -qq update
-      sudo apt-get -qq install qtcreator
-      
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qq update
       sudo apt-get -qq install libilmbase-dev
@@ -60,6 +56,10 @@ install:
       sudo apt-get -qq install libopenexr22
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
+      
+      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      sudo apt-get -qq update
+      sudo apt-get -qq install qtcreator-latest
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
@@ -83,7 +83,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      source /opt/qt57/bin/qt57-env.sh
+      source /opt/qt5/bin/qt5-env.sh
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
