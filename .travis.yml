@@ -30,7 +30,10 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
-      sudo apt-get -qq install g++-4.8 libc6-i386
+      sudo apt-add-repository -y ppa:thomas-schiex/blender
+      sudo apt-get -qq update
+      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      sudo apt-get -qq update
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -48,18 +51,14 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      sudo apt-add-repository -y ppa:thomas-schiex/blender
-      sudo apt-get -qq update
+      sudo apt-get -qq install qtcreator-latest
+      sudo apt-get -qq install g++-4.8 libc6-i386
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase12
       sudo apt-get -qq install libopenexr22
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
-      
-      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
-      sudo apt-get -qq update
-      sudo apt-get -qq install qtcreator-latest
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
