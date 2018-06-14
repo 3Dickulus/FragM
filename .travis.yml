@@ -82,8 +82,8 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      find /usr/ | grep Qt | grep env.sh
-      source /opt/qt52/bin/qt52-env.sh
+      ls -la /usr/lib/x86_64-linux-gnu/qt-default/bin/
+      source /usr/lib/x86_64-linux-gnu/qt-default/bin/qt-env.sh
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
