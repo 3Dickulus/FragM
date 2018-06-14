@@ -82,7 +82,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      find / | grep /bin/ | grep env.sh
+      find /usr/ | grep qt | grep env.sh
       source /opt/qt52/bin/qt52-env.sh
     fi
   - |
