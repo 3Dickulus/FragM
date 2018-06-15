@@ -7,7 +7,7 @@ os:
   - linux
   #- osx
 
-sudo: required
+sudo: false
 
 branches:
   only:
