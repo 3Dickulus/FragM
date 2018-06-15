@@ -31,8 +31,6 @@ before_install:
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qy
       sudo apt-get -qy install g++-4.8 libc6-i386
-      sudo apt-get -qy install cmake
-      sudo apt-get -qy install extra-cmake-modules
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qy update
       sudo apt-get -qy install libilmbase-dev
@@ -56,6 +54,8 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+      sudo apt-get -qy install cmake
+      sudo apt-get -qy install extra-cmake-modules
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qy update
       sudo apt-get -qy install qtcreator-latest
