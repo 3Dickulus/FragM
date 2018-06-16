@@ -30,8 +30,11 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
-      sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
+      #sudo apt-get -qq install g++-4.8 libc6-i386
+      sudo apt-add-repository -y ppa:beineri/opt-qt595-trusty
       sudo apt-get -qq update
+      sudo apt-get -qq install qt59creator
+      
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qq update
     fi
@@ -52,10 +55,7 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      #sudo apt-get -qq install g++-4.8 libc6-i386
 
-      sudo apt-get -qq install qt57creator
-      
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase12
@@ -90,7 +90,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      source /opt/qt57/bin/qt57-env.sh
+      source /opt/qt59/bin/qt59-env.sh
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
