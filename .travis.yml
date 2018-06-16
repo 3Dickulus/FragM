@@ -30,7 +30,8 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qy
-      sudo apt-get -qy install g++-4.8 libc6-i386
+      sudo apt-get -qy install cmake
+      sudo apt-get -qy install extra-cmake-modules
       sudo apt-add-repository -y ppa:thomas-schiex/blender
       sudo apt-get -qy update
       sudo apt-get -qy install libilmbase-dev
@@ -57,8 +58,6 @@ install:
       sudo apt-add-repository -y ppa:beineri/opt-qt571-trusty
       sudo apt-get -qy update
       sudo apt-get -qy install qtcreator-latest
-      sudo apt-get -qy install cmake
-      sudo apt-get -qy install extra-cmake-modules
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
