@@ -128,7 +128,7 @@ void TimeLineDialog::saveTimeLineSettings() {
         QMapIterator<int, EasingInfo*> em(easingMap);
         while (em.hasNext()) {
             em.next();
-            DBOUT << em.value()->rawsettings;
+//             DBOUT << em.value()->rawsettings;
             QString newSettings = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
                                   .arg(em.value()->slidername)
                                   .arg(em.value()->typeName)
@@ -142,7 +142,7 @@ void TimeLineDialog::saveTimeLineSettings() {
                                   .arg(em.value()->overshoot)
                                   .arg(em.value()->loops)
                                   .arg(em.value()->pingpong);
-            DBOUT << newSettings;
+//             DBOUT << newSettings;
             
             TextEdit* te = mainWin->getTextEdit();
             QTextCursor to = te->textCursor();
@@ -183,7 +183,7 @@ void TimeLineDialog::saveTimeLineSettings() {
 }
 
 void TimeLineDialog::restoreTimeLineSettings() {
-    DBOUT;
+//     DBOUT;
     if(uSettings.count() != 0)
         mainWin->getEngine()->setCurveSettings(uSettings);
 }
