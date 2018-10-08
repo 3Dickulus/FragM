@@ -536,12 +536,11 @@ void QStyleRangeSlider::paintGroove(QPainter& p, const QRect& bbox) const
 
   QPolygonF paintArea = QPolygon(paintBox, true);
 
-  float offset = 0.025;
   float aspect =
     getGrooveWidth(bbox) * 1.0 /
     getGrooveHeight(bbox);
 
-  offset = 0.2;
+  float offset = 0.2;
   float offset2 = offset / aspect;
 
   for (int i = 4; i > 0; --i) {
@@ -651,7 +650,7 @@ void QStyleRangeSlider::paintTicks(QPainter& p, const QRect& bbox,
   int top = getGrooveY(bbox) + getGrooveHeight(bbox);
   int bottom = bbox.height();
 
-  top = 0;
+//  top = 0;
 
   int baseX = getGrooveX(bbox);
   int width = getGrooveWidth(bbox);

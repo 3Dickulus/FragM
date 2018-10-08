@@ -60,8 +60,8 @@ void AsmBrowser::showPage(const QStringList &page, const QString &title)
   int n=0;
   while(i!=page.end()){
     newPage << QString("%1\t").arg(n) + page.at(n);
-    i++;
-    n++;
+    ++i;
+    ++n;
   }
 
     AsmBrowser *browser = new AsmBrowser( newPage );
