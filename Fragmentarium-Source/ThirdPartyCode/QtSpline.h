@@ -73,7 +73,7 @@ public:
 class QtSpline : public QObject
 {
 public:
-    QtSpline(QGLWidget* parent, int nctrl = 0, int nsegs = 0, QVector3D* cv = 0);
+    QtSpline(QOpenGLWidget* parent, int nctrl = 0, int nsegs = 0, QVector3D* cv = 0);
     ~QtSpline();
 
     void setSplineColor(QColor c) const;
@@ -87,7 +87,7 @@ public:
     void recalc(int nc, int ns, QVector3D *cv);
 private:
     void buildGeometry(int d, int s, QVector3D* cv);
-    QGLWidget *prnt;
+    QOpenGLWidget *prnt;
     Geometry *geom;
     QList<Patch *> parts;
     int num_c, num_s;

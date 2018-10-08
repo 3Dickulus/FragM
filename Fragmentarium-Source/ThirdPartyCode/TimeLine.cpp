@@ -34,6 +34,7 @@ TimeLineDialog::TimeLineDialog(MainWindow* parent) : mainWin(parent) {
     m_ui.setupUi(this);
 
     scene = new QGraphicsScene(this);
+
     m_ui.graphicsView->setScene(scene);
 
     greenBrush = QBrush(Qt::green);
@@ -42,260 +43,327 @@ TimeLineDialog::TimeLineDialog(MainWindow* parent) : mainWin(parent) {
     outlinePen = QColor(Qt::gray);
     outlinePen.setWidth(1);
 
-    renderFPS = mainWin->renderFPS;
-    frames = mainWin->getTimeMax()*renderFPS;
-    keyframeCount = mainWin->getVariableEditor()->getKeyFrameCount();
-    uNames = mainWin->getVariableEditor()->getWidgetNames();
-    vCount = uNames.count();
-    yOff = 10;
-    text = 0;
-    
     readTimeLineSettings();
 
-    createKeyframeMap();
+    renderKeyframeMap();
 
-    createEasingCurveMap();
+    renderEasingCurveMap();
 
     sceneMaxRect = scene->sceneRect();
 
-    connect(scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(itemChange(QList<QRectF>)));
+    resize(sceneMaxRect.width()+100, sceneMaxRect.height()+50);
+
     connect(this, SIGNAL(accepted()), this, SLOT( saveTimeLineSettings() ));
     connect(this, SIGNAL(rejected()), this, SLOT( restoreTimeLineSettings() ));
-    
+
     setContextMenuPolicy(Qt::CustomContextMenu);
+
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
+
+    // for keyframes
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(selectionChange()));
+    // for easing curves
+    connect(scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(itemChange(QList<QRectF>)));
+
 }
 
 TimeLineDialog::~TimeLineDialog() {
 }
 
+// feeds this timeline editor all the required info, keyframes, easingcurves, total frames, FPS
 void TimeLineDialog::readTimeLineSettings() {
 
-    if(mainWin->getVariableEditor()->hasKeyFrames()) {
-        TextEdit* te = mainWin->getTextEdit();
-        QTextCursor to = te->textCursor();
+    renderFPS = mainWin->renderFPS;
+    frames = mainWin->getTimeMax()*renderFPS;
 
-        // capture the current list of keyframes from the text editor
+    if(mainWin->getVariableEditor()->hasKeyFrames()) {
+        // get a copy the currently listed keyframes from the variable editor (presets)
+        keyframeCount = mainWin->getVariableEditor()->getKeyFrameCount();
+        // make a map
         for(int x=0; x<keyframeCount; x++) {
             QString pName;
 
-            pName.sprintf("#preset keyframe.%.3d", x+1);
+            pName.sprintf("Keyframe.%.3d", x+1);
+            // only gets the settings for a keyframe so we add the name
+            QStringList p;
+            p << pName << mainWin->getVariableEditor()->getPresetByName(pName);
+            keyframeMap.insert(x, new KeyFrameInfo( p ) );
 
-            QTextCursor tc= te->textCursor();
-            tc.setPosition(0);
-
-            te->setTextCursor(tc);
-
-            bool found = te->find( pName );
-            if(found ) {
-                tc = te->textCursor();
-                tc.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor);
-                found = te->find("#endpreset");
-                if(found) {
-                    tc.setPosition(te->textCursor().position()+1, QTextCursor::KeepAnchor);
-                    te->setTextCursor(tc);
-                } else mainWin->statusBar()->showMessage(tr("#endpreset not found!"));
-            } else mainWin->statusBar()->showMessage(tr( QString(pName + " not found!").toStdString().c_str() ));
-
-            if(found ) {
-                te->copy();
-                keyframeMap[x] = new KeyFrameInfo( qApp->clipboard()->text() );
-            }
         }
-        /// put the cursor back to it's original position
-        te->setTextCursor(to);
+        // initialize an empty map
+        for(int x = 0; x < frames; x++) rectMap[x];
 
-    } else scene->addText(tr("No Keyframes."), QFont("Arial", 10) )->setPos(1,-40);
+    } else scene->addText(tr("No Keyframes. \"F8\" key while in \"Progressive\" mode."), QFont("Arial", 10) )->setPos(1,-20);
 
-    // render uniform names down the left side
-    for( int i = 0; i<vCount; i++) {
-        scene->addText( uNames[i] , QFont("Arial", 6))->setPos( -100 , (i*yOff)-(yOff*0.5) );
+    yOff = 20;
+
+    if(mainWin->getVariableEditor()->hasEasing()) {
+        // get a copy the currently active easingcurves from the engine
+        uSettings = mainWin->getEngine()->getCurveSettings();
+        // make a map
+        for ( int i = 0; i < uSettings.count(); i++ ) {
+            easingMap.insert(i, new EasingInfo(uSettings[i]));
+            // render uniform names down the left side
+            scene->addText( easingMap.value(i)->slidername , QFont("Arial", 6))->setPos( -100 , (i*yOff) );
+        }
+
     }
+    else scene->addText(tr("No easing curves. \"Apply\" a preset that contains easing curve settings.\nOr create them with \"F7\" hotkey for the selected float slider."), QFont("Arial", 10) )->setPos(1,-40);
+
+    vCount = easingMap.count() == 0 ? 10 : uSettings.count();
 
     scene->addText( QString("%1 FR / %2 FPS = %3 SEC").arg(frames).arg(renderFPS).arg( float(frames)/float(renderFPS) ) ,
                     QFont("Arial", 6))->setPos( -100 , (yOff*vCount) +5 );
 
-    if(mainWin->getVariableEditor()->hasEasing()) {
-        // get acopy the currently active easingcurves
-        uSettings = mainWin->getEngine()->getCurveSettings();
-        // make a map
-        for ( int i = 0; i < uSettings.count(); i++ ) {
-            easingMap[i] = new EasingInfo(uSettings[i]);
-        }
-
-    }
-    else scene->addText(tr("No Easing curves?"), QFont("Arial", 20) )->setPos(1,40);
-
-    if(!mainWin->getVariableEditor()->hasKeyFrames() || !mainWin->getVariableEditor()->hasEasing()) {
-        text = scene->addText("http://www.digilanti.org/fragmentarium", QFont("Arial", 20) );
-        text->setPos(0,0);
-        /// if no keyframes or easingcurves render a bit of movable text
-        text->setFlag(QGraphicsItem::ItemIsMovable);
-    }
 }
 
 void TimeLineDialog::saveTimeLineSettings() {
 
     bool changed = false;
-    if(mainWin->getVariableEditor()->hasEasing())
-    for ( int i = 0; i < easingMap.count(); i++ ) {
+    QString name = "";
+    
+    if(easingMap.count()) {
 
-        QString newSettings = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
-                              .arg(easingMap[i]->slidername)
-                              .arg(easingMap[i]->typeName)
-                              .arg(easingMap[i]->typeNum)
-                              .arg(easingMap[i]->startVal)
-                              .arg(easingMap[i]->endVal)
-                              .arg(int(eGroupMap[i]->x()/3))
-                              .arg(int(eGroupMap[i]->x()/3) + int(eGroupMap[i]->boundingRect().width()/3))
-                              .arg(easingMap[i]->period)
-                              .arg(easingMap[i]->amplitude)
-                              .arg(easingMap[i]->overshoot)
-                              .arg(easingMap[i]->loops)
-                              .arg(easingMap[i]->pingpong);
-
-        TextEdit* te = mainWin->getTextEdit();
-        QTextCursor to = te->textCursor();
-        QTextCursor tc= te->textCursor();
-        tc.setPosition(0);
-
-        te->setTextCursor(tc);
-        bool found = te->find( "#preset " + mainWin->getVariableEditor()->getPresetName() );
-        if(found) {
-            tc = te->textCursor();
-            found = te->find("#endpreset");
+        // loop through easing curve settings
+        QMapIterator<int, EasingInfo*> em(easingMap);
+        while (em.hasNext()) {
+            em.next();
+            DBOUT << em.value()->rawsettings;
+            QString newSettings = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
+                                  .arg(em.value()->slidername)
+                                  .arg(em.value()->typeName)
+                                  .arg(em.value()->typeNum)
+                                  .arg(em.value()->startVal)
+                                  .arg(em.value()->endVal)
+                                  .arg(int(eGroupMap.value(em.key())->x()/3))
+                                  .arg(int(eGroupMap.value(em.key())->x()/3) + int(eGroupMap.value(em.key())->boundingRect().width()/3))
+                                  .arg(em.value()->period)
+                                  .arg(em.value()->amplitude)
+                                  .arg(em.value()->overshoot)
+                                  .arg(em.value()->loops)
+                                  .arg(em.value()->pingpong);
+            DBOUT << newSettings;
+            
+            TextEdit* te = mainWin->getTextEdit();
+            QTextCursor to = te->textCursor();
+            QTextCursor tc = te->textCursor();
+            tc.setPosition(0);
+            te->setTextCursor(tc);
+            // find the old settings
+            bool found = te->find( em.value()->rawsettings );
+            // replace with new settings
             if(found) {
+                tc = te->textCursor();
+                tc.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+                tc.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
                 te->setTextCursor(tc);
-                found = te->find( easingMap[i]->rawsettings );
-                if(found && (easingMap[i]->rawsettings != newSettings) ) {
-                    qApp->clipboard()->setText(newSettings);
-                    te->paste();
-                    changed = true;
-                }
+                qApp->clipboard()->setText(newSettings);
+                te->paste();
+                changed = true;
             }
-        }
-        te->setTextCursor(to);
-    }
+            // find the preset name that contains the settings
+            found = te->find("#preset",QTextDocument::FindBackward);
+            if(found) {
+                tc = te->textCursor();
+                tc.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+                tc.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+                te->setTextCursor(tc);
+                te->copy();
 
+                name = qApp->clipboard()->text().split(" ").at(1);
+            }
+
+        }
+    }
     if(changed) {
         mainWin->initializeFragment();
+        mainWin->getVariableEditor()->setPreset(name);
         mainWin->getVariableEditor()->applyPreset();
     }
 }
 
 void TimeLineDialog::restoreTimeLineSettings() {
+    DBOUT;
     if(uSettings.count() != 0)
         mainWin->getEngine()->setCurveSettings(uSettings);
 }
 
-void TimeLineDialog::createKeyframeMap() {
-    ///--------------render keyframe timeline
-    float fudge = ((mainWin->getTimeMax()*renderFPS)/(keyframeMap.count()-1));
-    int o = (frames/(keyframeMap.count()-1));
+void TimeLineDialog::renderKeyframeMap() {
+    if(mainWin->getVariableEditor()->hasKeyFrames()) {
+        QMapIterator<int, QGraphicsRectItem*> r(rectMap);
+        int o = (frames/(keyframeMap.count()-1))+1;
+        while (r.hasNext()) {
+            r.next();
 
-    for(int x = 0; x<frames+1; x++) {
-        /// calculate keyframe time per frame
-        int myFrame = int((x/o)*fudge);
-        /// render frame position markers
-        rectMap[x] = scene->addRect((x*3)+1, 0, 3, yOff*vCount, outlinePen, ( myFrame == x ) ? greenBrush:grayBrush);
-        if( myFrame == x && mainWin->getVariableEditor()->hasKeyFrames()) {
-            QStringList dlist =  keyframeMap[int(x/o)]->rawsettings.split("\n");
-            QString name = dlist.at(1).split(" ").at(1);
-            int xPos = (x*3)-(name.length()*5);
-            name += QString(" @ %1 sec").arg( float( (myFrame/renderFPS ) ) );
-            /// render the keyframe data, eye taget and up
-            scene->addText( name, QFont("Arial", 10))->setPos(xPos,-60);
-            scene->addText( dlist.at(3) , QFont("Arial", 6))->setPos(xPos,-45);
-            scene->addText( dlist.at(4) , QFont("Arial", 6))->setPos(xPos,-35);
-            scene->addText( dlist.at(5) , QFont("Arial", 6))->setPos(xPos,-25);
-            scene->addText( QString("%1").arg(x) , QFont("Arial", 6))->setPos( (x*3)-3 , -15 );
+            /// calculate keyframe time per frame
+            int kfr = int(r.key()/o);
+            bool myFrame = ((kfr == double(r.key())/double(o)) || (r.key()==frames));
+            // frame position markers
+            rectMap.insert( r.key(), scene->addRect((r.key()*3)+1, 0, -3, yOff*vCount, outlinePen, myFrame ? greenBrush:grayBrush) );
+
+            if( myFrame ) {
+
+                rectMap.value(r.key())->setToolTip(QString("Key Frame: %1\nTime: %2").arg( kfr+1).arg(float(r.key())/renderFPS,-2,'g',2,'0'));
+                int xPos = (r.key()*3);
+                scene->addText( QString("%1").arg(kfr+1), QFont("Arial", 10))->setPos(xPos-(r.key()<10?8:12),-20);
+                rectMap.value(r.key())->setFlag(QGraphicsItem::ItemIsSelectable);
+                rectMap.value(r.key())->setZValue(1000);
+
+            } else {
+                rectMap.value(r.key())->setToolTip(QString("Frame: %1\nTime: %2").arg(r.key()+1).arg(float(r.key())/renderFPS,-2,'g',2,'0'));
+            }
+
         }
-    }
+
+        rectMap.insert(frames, scene->addRect((frames*3), 0, -3, yOff*vCount, outlinePen, greenBrush) );
+        rectMap.value(frames)->setToolTip(QString("Key Frame: %1\nTime: %2").arg( keyframeMap.count()).arg(float(frames)/renderFPS,-2,'g',2,'0'));
+        rectMap.value(frames)->setFlag(QGraphicsItem::ItemIsSelectable);
+        scene->addText( QString("%1").arg(keyframeMap.count()), QFont("Arial", 10))->setPos((frames*3)-8,-20);
+    } else
+        rectMap.insert(0, scene->addRect(0, 0, frames*3, yOff*vCount, outlinePen, grayBrush) );
+
+    scene->update();
 }
 
-// generate a path that to render the curve settings
+// generate a path to render the curve settings
 QPainterPath TimeLineDialog::createCurve(QSize sz, int t)
 {
-        QEasingCurve curve((QEasingCurve::Type)t);
-        qreal curveScale = sz.height();
-        QPoint start(0, curveScale - (curveScale * curve.valueForProgress(0)));
-        QPoint end(sz.width(), curveScale - curveScale * curve.valueForProgress(1));
+    QEasingCurve curve((QEasingCurve::Type)t);
+    qreal curveScale = sz.height();
+    QPoint start(0, curveScale - (curveScale * curve.valueForProgress(0)));
+    QPoint end(sz.width(), curveScale - curveScale * curve.valueForProgress(1));
 
-        QPainterPath curvePath;
-        curvePath.moveTo(start);
-        for (qreal t = 0; t <= 1.0; t+=1.0/curveScale) {
-            QPoint to;
-            to.setX(sz.width() * t);
-            to.setY(curveScale - (curveScale * curve.valueForProgress(t)));
-            curvePath.lineTo(to);
-        }
-        
-        return curvePath;
+    QPainterPath curvePath;
+    curvePath.moveTo(start);
+    for (qreal len = 0; len <= 1.0; len+=1.0/curveScale) {
+        QPoint to;
+        to.setX(sz.width() * len);
+        to.setY(curveScale - (curveScale * curve.valueForProgress(len)));
+        curvePath.lineTo(to);
+    }
+
+    return curvePath;
 }
 
-void TimeLineDialog::createEasingCurveMap() {
+void TimeLineDialog::renderEasingCurveMap() {
 
     if(mainWin->getVariableEditor()->hasEasing()) {
-        for ( int i = 0; i < easingMap.count(); i++ ) {
-            QString name = easingMap[i]->slidername;
+        QMapIterator<int, EasingInfo*> ec(easingMap);
+        while (ec.hasNext()) {
+            ec.next();
+            QString name = ec.value()->slidername;
             QString u = name;
             u.truncate(name.length()-1);
-            int len = (easingMap[i]->lastFrame - easingMap[i]->firstFrame)*3;
-            int yPos = (uNames.indexOf( u )*yOff)+1;
+            int len = (ec.value()->lastFrame - ec.value()->firstFrame)*3;
+            int yPos = (ec.key()*yOff)+6;
             int xPos = ((len-(name.length()*4))*0.5);
 
             // render a curve that covers the range of frames for this easingcurve
-            pathMap[i] = scene->addPath( createCurve( QSize(len,6), easingMap[i]->typeNum ), outlinePen, redBrush );
+            pathMap.insert(ec.key(), scene->addPath( createCurve( QSize(len,6), ec.value()->typeNum ), outlinePen, redBrush ));
             // put a name on it
-            textMap[i] = scene->addText( name , QFont("Arial", 6));
-            textMap[i]->setPos( xPos , -5);
+            textMap.insert(ec.key(), scene->addText( name , QFont("Arial", 6)));
+            textMap.value(ec.key())->setPos( xPos , -5);
+            textMap.value(ec.key())->setFlag(QGraphicsItem::ItemIsFocusable, false);
             // tie the name to the curve
-            eGroupMap[i] = new QGraphicsItemGroup(0);
-            eGroupMap[i]->addToGroup(pathMap[i]);
-            eGroupMap[i]->addToGroup(textMap[i]);
+            eGroupMap.insert(ec.key(), new QGraphicsItemGroup(0));
+            eGroupMap.value(ec.key())->addToGroup(pathMap.value(ec.key()));
+            eGroupMap.value(ec.key())->addToGroup(textMap.value(ec.key()));
 
-            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsSelectable);
-            eGroupMap[i]->setFlag(QGraphicsItem::ItemIsMovable);
+            eGroupMap.value(ec.key())->setFlag(QGraphicsItem::ItemIsSelectable);
+            eGroupMap.value(ec.key())->setFlag(QGraphicsItem::ItemIsMovable);
 
-            scene->addItem(eGroupMap[i]);
+            scene->addItem(eGroupMap.value(ec.key()));
 
-            eGroupMap[i]->setPos(easingMap[i]->firstFrame*3, yPos);
-            int startf = eGroupMap[i]->x()/3;
+            eGroupMap.value(ec.key())->setPos(ec.value()->firstFrame*3, yPos);
+            int startf = eGroupMap.value(ec.key())->x()/3;
             int endf = startf + int(len/3);
 
-            eGroupMap[i]->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( easingMap[i]->startVal ).arg( easingMap[i]->endVal ));
+            eGroupMap.value(ec.key())->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( ec.value()->startVal ).arg( ec.value()->endVal ));
         }
     }
+    scene->update();
 }
 
-void TimeLineDialog::itemChange(const QList< QRectF >& )
+void TimeLineDialog::selectionChange()
 {
-    for ( int i = 0; i < eGroupMap.count(); i++ ) {
-        if(eGroupMap[i]->isSelected()) {
+//     if(eGroupMap.count()) {
+//         QMapIterator<int, QGraphicsItemGroup*> ec(eGroupMap);
+//         while (ec.hasNext()) {
+//             ec.next();
+// 
+//             if(ec.value()->isSelected()) {
+// 
+//                 QString name = easingMap.value(ec.key())->slidername;
+//                 DBOUT << name;
+// 
+//             }
+//         }
+//     }
 
-            QString name = easingMap[i]->slidername;
-            QString u = name;
-            u.truncate(name.length()-1);
-            int yPos = (uNames.indexOf( u )*yOff)+1;
+    if(keyframeMap.count()) {
+        QMapIterator<int, QGraphicsRectItem*> kf(rectMap);
+        int o = (frames/(keyframeMap.count()-1))+1;
+        while (kf.hasNext()) {
+            kf.next();
 
-            if(eGroupMap[i]->x() < 3) {
-                eGroupMap[i]->setPos(3,yPos);
-                return;
+            int kfr = int(kf.key()/o);
+            bool myFrame = ((kfr == double(kf.key())/double(o)) || (kf.key()==frames));
+            if(myFrame) kf.value()->setBrush(greenBrush);
+
+            if(kf.value()->isSelected()) {
+//                 DBOUT << keyframeMap.value(kfr)->name;
+                if(kf.key()+1 > frames) kfr = keyframeMap.count()-1; // last frame
+                // apply the selected keyframe in the engine
+                mainWin->applyPresetByName(keyframeMap.value(kfr)->name);
+                // select the keyframe preset in the editor
+                mainWin->selectPreset();
+                // update the item in the rectmap with color change to show it has been selected
+                kf.value()->setBrush(redBrush);
+
             }
-
-            if(eGroupMap[i]->x() > ((frames+1)*3) - eGroupMap[i]->boundingRect().width() ) {
-                eGroupMap[i]->setPos(((frames+1)*3) - eGroupMap[i]->boundingRect().width(), yPos );
-                return;
-            }
-
-            int startf = eGroupMap[i]->x()/3;
-            int endf = startf + (easingMap[i]->lastFrame - easingMap[i]->firstFrame);
-            eGroupMap[i]->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( easingMap[i]->startVal ).arg( easingMap[i]->endVal ));
-            
-            eGroupMap[i]->setPos(easingMap[i]->firstFrame*3, yPos);
-            scene->setSceneRect(sceneMaxRect);
         }
     }
+    scene->update();
+}
+
+void TimeLineDialog::itemChange(const QList< QRectF >& region)
+{
+    if(eGroupMap.count() && region.count()) {
+        QMapIterator<int, QGraphicsItemGroup*> ec(eGroupMap);
+        while (ec.hasNext()) {
+            ec.next();
+
+            if(ec.value()->isSelected()) {
+
+                // prevent recursion
+                if(ec.value()->boundingRect().x() == region.first().x()) return;
+
+                QString name = easingMap.value(ec.key())->slidername;
+                QString u = name;
+                u.truncate(name.length()-1);
+                int yPos = (ec.key()*yOff)+6;
+
+                if(ec.value()->x() < 1) {
+                    ec.value()->setPos(1,yPos);
+                    return;
+                }
+
+                if(ec.value()->x() > ((frames)*3) - ec.value()->boundingRect().width() ) {
+                    ec.value()->setPos(((frames)*3) - ec.value()->boundingRect().width(), yPos );
+                    return;
+                }
+
+                int startf = ec.value()->x()/3;
+                int endf = startf + (easingMap.value(ec.key())->lastFrame - easingMap.value(ec.key())->firstFrame);
+                ec.value()->setToolTip(QString("Fr:%1~%2 Val:%3~%4").arg( startf ).arg( endf ).arg( easingMap.value(ec.key())->startVal ).arg( easingMap.value(ec.key())->endVal ));
+
+                ec.value()->setPos(ec.value()->x(), yPos);
+            }
+            
+        }
+        scene->setSceneRect(sceneMaxRect);
+    }
+    
 }
 
 // edit selected item when RMB is clicked
@@ -303,30 +371,18 @@ void TimeLineDialog::customContextMenuRequested(QPoint) {
 
     QString found = "";
     // loop through easing curve scene items
-    for ( int i = 0; i < eGroupMap.count(); i++ ) {
-        // process the selected item
-        if(eGroupMap[i]->isSelected()) {
-            // aquire the easing settings for the selected item
-            QString eSettings = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
-                              .arg(easingMap[i]->slidername)
-                              .arg(easingMap[i]->typeName)
-                              .arg(easingMap[i]->typeNum)
-                              .arg(easingMap[i]->startVal)
-                              .arg(easingMap[i]->endVal)
-                              .arg(int(eGroupMap[i]->x()/3))
-                              .arg(int(eGroupMap[i]->x()/3) + int(eGroupMap[i]->boundingRect().width()/3))
-                              .arg(easingMap[i]->period)
-                              .arg(easingMap[i]->amplitude)
-                              .arg(easingMap[i]->overshoot)
-                              .arg(easingMap[i]->loops)
-                              .arg(easingMap[i]->pingpong);
+    QMapIterator<int, QGraphicsItemGroup*> ec(eGroupMap);
+    while (ec.hasNext()) {
+        ec.next();
+
+        if(ec.value()->isSelected()) {
             // get a pointer to the slider
-            ComboSlider *cs = mainWin->findChild<ComboSlider *>( easingMap[i]->slidername );
+            ComboSlider *cs = mainWin->findChild<ComboSlider *>( easingMap.value(ec.key())->slidername );
             // set the current working slider
             mainWin->getVariableEditor()->setCurrentComboSlider(cs);
             // call the easing curve settings dialog, this applies settings in the engine
             mainWin->getVariableEditor()->setEasingCurve();
-            // get the new settings from the engine
+            // read back the new settings from the engine
             QStringList check = mainWin->getEngine()->getCurveSettings();
             int count = check.count();
             for(int i=0; i<count; i++) {
@@ -335,8 +391,8 @@ void TimeLineDialog::customContextMenuRequested(QPoint) {
                 }
             }
             // replace old easingMap item with new one if the new one is different
-            if(!found.isEmpty() && (found != easingMap[i]->rawsettings))
-                easingMap[i] = new EasingInfo(found);
+            if(!found.isEmpty() && (found != easingMap.value(ec.key())->rawsettings))
+                easingMap.insert(ec.key(), new EasingInfo(found));
             else found = "";
         }
     }
@@ -345,15 +401,58 @@ void TimeLineDialog::customContextMenuRequested(QPoint) {
     if(!found.isEmpty()) {
         // remove items from the list
         for ( int i = 0; i < eGroupMap.count(); i++ ) {
-            scene->removeItem(eGroupMap[i]);
+            scene->removeItem(eGroupMap.value(i));
         }
         // make sure it's clean
         eGroupMap.clear();
-        // rebuild the easing curve map
-        createEasingCurveMap();
+        // redraw the easing curve map
+        renderEasingCurveMap();
     }
-    
+
+}
+
+void TimeLineDialog::mousePressEvent(QMouseEvent *ev) {
+
+    if(ev->buttons() == Qt::RightButton && keyframeMap.count()) {
+        int o = (frames/(keyframeMap.count()-1))+1;
+        QMapIterator<int, QGraphicsRectItem*> kf(rectMap);
+        while (kf.hasNext()) {
+            kf.next();
+
+            /// calculate keyframe time per frame
+            int kfr = int(kf.key()/o);
+            bool myFrame = ((kfr == double(kf.key())/double(o)) || (kf.key()==frames));
+            if( myFrame ) {
+                if(kf.value()->isUnderMouse()) {
+                    kf.value()->setSelected(true);
+                    // fudge to get the last one when total frames does not divide nice by keyframe count
+                    if(kf.key()+1 > frames) kfr=keyframeMap.count()-1;
+                    // get values from our keframe map
+                    QVector3D e = keyframeMap.value(kfr)->eye;
+                    QVector3D t = keyframeMap.value(kfr)->target;
+                    QVector3D u = keyframeMap.value(kfr)->up;
+                    // put them in a stext string for display
+                    QString dlist = QString("");
+                    dlist += QString("EYE:\t X %1 Y %2 Z %3 \n").arg(e.x()).arg(e.y()).arg(e.z());
+                    dlist += QString("TARGET:\t X %1 Y %2 Z %3 \n").arg(t.x()).arg(t.y()).arg(t.z());
+                    dlist += QString("UP:\t X %1 Y %2 Z %3 \n").arg(u.x()).arg(u.y()).arg(u.z());
+                    // fudge for last frame ?
+                    if(kf.key()+1 > frames)
+                        dlist += QString("\nLast Frame %1").arg( frames );
+                    else
+                        dlist += QString("\nBegin %1 End %2").arg(kf.key()+1).arg( kf.key()+o > frames ? frames : kf.key()+o );
+
+                    // show the info to the user
+                    QMessageBox::information(this, keyframeMap.value(kfr)->name, dlist);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 }
 }
+
+
+

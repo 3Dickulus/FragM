@@ -40,26 +40,6 @@ class MainWindow;
 namespace Fragmentarium {
   namespace GUI {
     
-//   class EasingItem : public QGraphicsItem
-//   {
-//   public:
-//       EasingItem(EasingInfo ei) : data(ei);
-//       ~EasingItem();
-//       QRectF boundingRect() const
-//       {
-//           qreal penWidth = 1;
-//           return QRectF(-10 - penWidth / 2, -10 - penWidth / 2,
-//                         20 + penWidth, 20 + penWidth);
-//       }
-// 
-//       void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-//                  QWidget *widget)
-//       {
-//           painter->drawRoundedRect(-10, -10, 20, 20, 5, 5);
-//       }
-//       EasingInfo data;
-//   };
-
  class TimeLineDialog : public QDialog
     {
       Q_OBJECT
@@ -69,15 +49,17 @@ namespace Fragmentarium {
     public slots:
       
     protected slots:
-        void customContextMenuRequested(QPoint);
-        
+      void customContextMenuRequested(QPoint);
+      void itemChange(const QList< QRectF >& region);
+      virtual void mousePressEvent(QMouseEvent *ev);
+
     private slots:
-      void itemChange(const QList<QRectF> & );
+      void selectionChange();
       void readTimeLineSettings();
       void saveTimeLineSettings();
       void restoreTimeLineSettings();
-      void createKeyframeMap();
-      void createEasingCurveMap();
+      void renderKeyframeMap();
+      void renderEasingCurveMap();
       QPainterPath createCurve(QSize sz, int type);
     private:
       Ui::TimeLineDialog m_ui;
@@ -88,18 +70,18 @@ namespace Fragmentarium {
       QPen outlinePen;
       int frames;
       int keyframeCount;
-      QStringList uNames;
       QStringList uSettings;
       int vCount;
       int yOff;
       int renderFPS;
       // TimeLineScene
       QGraphicsScene *scene;
-      QGraphicsTextItem *text;
-      QMap<int, QGraphicsTextItem *> textMap;
-      QMap<int, QGraphicsRectItem*> rectMap;
-      QMap<int, QGraphicsPathItem*> pathMap;
-      QMap<int, QGraphicsItemGroup*> eGroupMap;
+      
+      QMap<int, QGraphicsTextItem *> textMap; // easingcurve labels
+      QMap<int, QGraphicsRectItem*> rectMap;  // keyframe markers
+      QMap<int, QGraphicsPathItem*> pathMap;  // easingcurve path representation
+      QMap<int, QGraphicsItemGroup*> eGroupMap; // easingcurve group
+      
       QMap<int, KeyFrameInfo*> keyframeMap;
       QMap<int, EasingInfo*> easingMap;
       QRectF sceneMaxRect;

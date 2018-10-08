@@ -78,10 +78,10 @@ Patch::Patch(Geometry *g)
 void Patch::draw(int n, int p) const
 {
 
+            glDepthMask ( GL_TRUE );   // Write to depth buffer for control points
     glPointSize( pointSize );
     if (start == 0) { /// drawing control points
         const QVector3D *v = geom->vertices.constData();
-            glDepthMask ( GL_TRUE );   // Write to depth buffer for control points
         for (uint i=0; i<count;i++) {
             int objIndex = i+(n*count);
             if (p==objIndex) glColor4f(1.0,1.0,0.0,1.0);
@@ -129,7 +129,7 @@ VectControlPoints::VectControlPoints(Geometry *g, int num_ctrlpoints, QVector3D 
     for (int i = 0; i < num_ctrlpoints; ++i) {
         cp->addVertex(ctrlpoints[i]);
     }
-    cp->pointSize = 3.0;
+    cp->pointSize = 6.0;
 
     cp->start = g->vertices.count() - num_ctrlpoints;
 
@@ -192,7 +192,8 @@ VectSpline::VectSpline(Geometry *g, int num_ctrlpoints, int num_segments)
     parts << sp;
 }
 
-QtSpline::QtSpline(QGLWidget* parent, int nctrl, int nsegs, QVector3D* cv)
+// TODO add start frame end frame for control points
+QtSpline::QtSpline(QOpenGLWidget* parent, int nctrl, int nsegs, QVector3D* cv)
 : prnt(parent) , geom(new Geometry())
 {
     buildGeometry(nctrl, nsegs, cv);
