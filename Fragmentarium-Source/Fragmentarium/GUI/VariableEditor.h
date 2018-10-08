@@ -46,6 +46,7 @@ public:
         return currentComboSlider;
     }
     void setCurrentComboSlider(ComboSlider* cs) {
+        focusChanged(currentComboSlider,cs);
         currentComboSlider = cs;
     }
 
@@ -115,8 +116,10 @@ public slots:
     void paste();
     void childChanged(bool lockedChanged);
     void presetSelected(QString presetName);
-    void tabChanged(int );
-    void dockChanged(bool t){ tabWidget->setTabPosition( t ? (QTabWidget::North) : (QTabWidget::East)); } // 05/22/17 Sabine ;)
+    void dockChanged(bool t){
+        if(width() > height()*2) t = true;
+        tabWidget->setTabPosition( t ? (QTabWidget::North) : (QTabWidget::East)); // 05/22/17 Sabine ;)
+    }
     
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);

@@ -22,9 +22,7 @@
 #include "VariableWidget.h"
 #include "VariableEditor.h"
 
-#ifdef NVIDIAGL4PLUS
 #include "asmbrowser.h"
-#endif
 
 class QAction;
 class QMenu;
@@ -34,39 +32,44 @@ namespace Fragmentarium {
     
     #define DBOUT   qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__ 
     
+#ifdef USE_OPEN_EXR
+using namespace Imf;
+using namespace Imath;
+#endif
+
     class TextEdit;
     
     // Information about the current tab
     struct TabInfo {
       TabInfo() {}
-      TabInfo(QString filename, TextEdit* textEdit) : filename(filename), unsaved(false), textEdit(textEdit), hasBeenSavedOnce(false) {}
-      TabInfo(QString filename, TextEdit* textEdit, bool unsaved, bool hasBeenSavedOnce=false) : filename(filename), unsaved(unsaved), textEdit(textEdit), hasBeenSavedOnce(hasBeenSavedOnce) {}
+      TabInfo(QString filename, TextEdit* textEdit, bool unsaved=true, bool hasBeenSavedOnce=false) : filename(filename), textEdit(textEdit), unsaved(unsaved), hasBeenSavedOnce(hasBeenSavedOnce) {}
       QString filename = "";
-      bool unsaved = false;
       TextEdit* textEdit = 0;
-      bool hasBeenSavedOnce = true;
+      bool unsaved = true;
+      bool hasBeenSavedOnce = false;
     };
     
     // Information about a keyframe
     struct KeyFrameInfo {
       KeyFrameInfo() {}
-      KeyFrameInfo(QString settings) : rawsettings(settings) {
-        QStringList cs = settings.split ( "\n" );
-        index = cs.filter ( "#preset keyframe", Qt::CaseInsensitive ).at ( 0 ).split ( "." ).at ( 1 ).toInt();
-        fov = cs.filter ( "FOV", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).toFloat();
-        QStringList cv = cs.filter ( "Eye ", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
+      KeyFrameInfo(QStringList settings) : rawsettings(settings) {
+        name = settings.filter ( "keyframe", Qt::CaseInsensitive ).at ( 0 );
+        index = settings.filter ( name, Qt::CaseInsensitive ).at ( 0 ).split ( "." ).at ( 1 ).toInt();
+        QStringList cv = settings.filter ( "Eye ", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
         eye = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
-        cv = cs.filter ( "Target", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
+        cv = settings.filter ( "Target", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
         target = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
-        cv = cs.filter ( "Up", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
+        cv = settings.filter ( "Up", Qt::CaseInsensitive ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
         up = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
       }
-      QString rawsettings;
-      QString index;
-      double fov;
-      QVector3D eye;
-      QVector3D target;
-      QVector3D up;
+      QString name = QString("");
+      QStringList rawsettings = QStringList("");
+      int index = 0;
+      QVector3D eye = QVector3D(0,0,0);
+      QVector3D target = QVector3D(0,0,0);
+      QVector3D up = QVector3D(0,0,0);
+      int first = 0;
+      int last = 0;
     };
     
     // Information about an easing curve
@@ -74,6 +77,7 @@ namespace Fragmentarium {
       EasingInfo() {}
       EasingInfo(QString settings) : rawsettings(settings){
         QStringList easingOptions = settings.split(":");
+        if(easingOptions.count() == 12) {
             slidername = easingOptions.at(0);
             typeName = easingOptions.at(1);
             typeNum = easingOptions.at(2).toInt();
@@ -87,19 +91,20 @@ namespace Fragmentarium {
             loops = easingOptions.at(10).toInt();
             pingpong = easingOptions.at(11).toInt();
         }
-      QString rawsettings;
-      QString slidername;
-      QString typeName;
-      int typeNum;
-      double startVal;
-      double endVal;
-      int firstFrame;
-      int lastFrame;
-      double period;
-      double amplitude;
-      double overshoot;
-      int loops;
-      int pingpong;
+      }
+      QString rawsettings = QString("");
+      QString slidername = QString("");
+      QString typeName = QString("");
+      int typeNum = 0;
+      double startVal = 0;
+      double endVal = 0;
+      int firstFrame = 0;
+      int lastFrame = 0;
+      double period = 0;
+      double amplitude = 0;
+      double overshoot = 0;
+      int loops = 0;
+      int pingpong = 0;
     };
     
     /// The main window of the application.
@@ -109,7 +114,10 @@ namespace Fragmentarium {
       
     public:
       MainWindow(QSplashScreen* splashWidget);
-      virtual ~MainWindow() {};
+      virtual ~MainWindow() {
+        if(keyframeMap.count() > 0) keyframeMap.clear();
+        if(easingMap.count() > 0) easingMap.clear();
+      };
       double getTime();
       void setLastStoredTime(float time) {
         lastStoredTime = time;
@@ -123,7 +131,7 @@ namespace Fragmentarium {
 
       void setUserUniforms(QOpenGLShaderProgram* shaderProgram);
       QVector<VariableWidget*> getUserUniforms(){return variableEditor->getUserUniforms();};
-      void setFeedbackUniforms(QOpenGLShaderProgram* shaderProgram);
+
       DisplayWidget* getEngine() {
         return engine;
       }
@@ -151,6 +159,9 @@ namespace Fragmentarium {
       int getTimeSliderValue() {
         return (timeSlider->value());
       }
+      int getFrameMax() {
+        return timeSlider->maximum();
+      }
       void setTimeSliderValue(int value);
       
       TextEdit* getTextEdit();
@@ -168,7 +179,7 @@ namespace Fragmentarium {
       bool wantPaths() {
         return wantGLPaths;
       }
-      QStringList keyFrameList;
+
       bool autoFocusEnabled;
       int renderFPS;
       bool wantGLPaths;
@@ -199,6 +210,7 @@ namespace Fragmentarium {
         scriptText = text;
         executeScript();
       };
+      void setVerbose( bool v ) { getEngine()->setVerbose(v);};
 
       QString langID;
      
@@ -316,7 +328,7 @@ namespace Fragmentarium {
       void saveParameters(QString fileName);
       void loadParameters(QString fileName);
       void selectPreset();
-      void addKeyFrame(QString name);
+      void addKeyFrame(QStringList kfps);
       void clearKeyFrames();
       void initKeyFrameControl();
       
@@ -355,7 +367,7 @@ namespace Fragmentarium {
       void removeSplash();
       void maxSubSamplesChanged(int);
       void makeScreenshot();
-      void showDebug();
+      void showPreprocessedScript();
       void pasteSelected();
       void renderModeChanged();
       void saveParameters();
@@ -426,7 +438,6 @@ namespace Fragmentarium {
       bool saveFile(const QString &fileName);
       QString strippedName(const QString &fullFileName);
       void createOpenGLContextMenu();
-      bool hasBeenResized;
       QSpinBox* seedSpinBox;
       ListWidgetLogger* logger;
       QDockWidget* dockLog;
@@ -447,6 +458,7 @@ namespace Fragmentarium {
       QMenu *editMenu;
       QMenu *renderMenu;
       QMenu *parametersMenu;
+      QMenu *examplesMenu;
       QMenu *helpMenu;
       QToolBar *fileToolBar;
       QToolBar *renderToolBar;
@@ -529,6 +541,10 @@ namespace Fragmentarium {
       QMenu *exrToolsMenu;
       QStringList exrBinaryPath;
 #endif // USE_OPEN_EXR
+      
+      QString progressiveCameraSettings;
+      QMap<int, KeyFrameInfo*> keyframeMap;
+      QMap<int, EasingInfo*> easingMap;
     };
     
   }

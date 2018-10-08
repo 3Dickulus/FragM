@@ -20,7 +20,7 @@ namespace Fragmentarium {
             connect(m_ui.animCheckBox, SIGNAL(clicked()), this, SLOT(animationChanged()));
             connect(m_ui.startFrameSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTotalTiles(int)));
             connect(m_ui.endFrameSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTotalTiles(int)));
-            connect(m_ui.fpsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTotalTiles(int)));
+//             connect(m_ui.fpsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTotalTiles(int)));
             connect(m_ui.tilesSlider, SIGNAL(valueChanged(int)), this, SLOT(tilesChanged(int)));
             connect(m_ui.paddingSlider, SIGNAL(valueChanged(int)), this, SLOT(tilesChanged(int)));
             connect(m_ui.uniqueCheckBox, SIGNAL(clicked()), this, SLOT(updateFileName()));
@@ -62,8 +62,8 @@ namespace Fragmentarium {
             m_ui.subFrameSpinBox->setValue(settings.value("subframes", 1).toInt());
             m_ui.tilesSlider->setValue(settings.value("tiles", 3).toInt());
             m_ui.paddingSlider->setValue(settings.value("padding", 0).toInt());
-	    m_ui.animCheckBox->setChecked(settings.value("animation", false).toBool());
-	    m_ui.previewFrameCheckBox->setChecked(settings.value("preview", false).toBool());
+            m_ui.animCheckBox->setChecked(settings.value("animation", false).toBool());
+            m_ui.previewFrameCheckBox->setChecked(settings.value("preview", false).toBool());
             m_ui.tileWidthSpinBox->setValue(settings.value("tilewidth", 16).toInt());
             m_ui.tileHeightSpinBox->setValue(settings.value("tileheight", 9).toInt());
         }
@@ -87,11 +87,11 @@ namespace Fragmentarium {
         }
 
         void OutputDialog::setMaxTime(double f) {
-	  m_ui.endTimeSpinBox->setValue(f);
-	  m_ui.endFrameSpinBox->setMaximum(f*m_ui.fpsSpinBox->value());
-	  m_ui.frameRangeSlider->setCutoffRange(QPair<int,int>(0,m_ui.endTimeSpinBox->value()*m_ui.fpsSpinBox->value()));
-	  m_ui.frameRangeSlider->setRange(QPair<int,int>(m_ui.startFrameSpinBox->value(),m_ui.endFrameSpinBox->value()));
-	}
+            m_ui.endTimeSpinBox->setValue(f);
+            m_ui.endFrameSpinBox->setMaximum(f*m_ui.fpsSpinBox->value());
+            m_ui.frameRangeSlider->setCutoffRange(QPair<int,int>(0,m_ui.endTimeSpinBox->value()*m_ui.fpsSpinBox->value()));
+            m_ui.frameRangeSlider->setRange(QPair<int,int>(m_ui.startFrameSpinBox->value(),m_ui.endFrameSpinBox->value()));
+        }
 
         void OutputDialog::animationChanged() {
             m_ui.previewFrameCheckBox->setEnabled(!m_ui.animCheckBox->isChecked());
@@ -99,13 +99,13 @@ namespace Fragmentarium {
                 m_ui.previewFrameCheckBox->setChecked(false);
             }
             updateTotalTiles(0);
+            m_ui.fpsSpinBox->setEnabled(false);
         }
 
-	void OutputDialog::frameRangeSliderChanged(QPair<int,int>fR)
-	{
-	  m_ui.startFrameSpinBox->setValue(fR.first);
-	  m_ui.endFrameSpinBox->setValue(fR.second);
-	}
+        void OutputDialog::frameRangeSliderChanged(QPair<int,int>fR) {
+            m_ui.startFrameSpinBox->setValue(fR.first);
+            m_ui.endFrameSpinBox->setValue(fR.second);
+        }
 
         void OutputDialog::chooseFile() {
             QString filename = SyntopiaCore::Misc::GetImageFileName(this, tr("Save image as:"));

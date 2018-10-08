@@ -2,6 +2,7 @@
 #include <QDialog>
 #include <QDebug>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 // #include "MainWindow.h"
 #include "ui_PreferencesDialog.h"
 
@@ -62,6 +63,7 @@ namespace Fragmentarium {
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
         settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
+        
     }
 
     private:

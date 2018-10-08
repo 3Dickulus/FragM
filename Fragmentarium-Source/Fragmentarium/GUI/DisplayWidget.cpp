@@ -29,38 +29,10 @@ namespace GUI {
 
 using namespace Parser;
 
-namespace {
-// Literal names for OpenGL flags
-QStringList GetOpenGLFlags() {
-    QGLFormat::OpenGLVersionFlags f = QGLFormat::openGLVersionFlags ();
-    QStringList s;
-    s.append ( "OpenGL " );
-    if ( f & QGLFormat::OpenGL_Version_1_1 ) s.append ( "1.1" );
-    if ( f & QGLFormat::OpenGL_Version_1_2 ) s.append ( "1.2" );
-    if ( f & QGLFormat::OpenGL_Version_1_3 ) s.append ( "1.3" );
-    if ( f & QGLFormat::OpenGL_Version_1_4 ) s.append ( "1.4" );
-    if ( f & QGLFormat::OpenGL_Version_1_5 ) s.append ( "1.5" );
-    if ( f & QGLFormat::OpenGL_Version_2_0 ) s.append ( "2.0" );
-    if ( f & QGLFormat::OpenGL_Version_2_1 ) s.append ( "2.1" );
-    if ( f & QGLFormat::OpenGL_Version_3_0 ) s.append ( "3.0" );
-    if ( f & QGLFormat::OpenGL_Version_3_2 ) s.append ( "3.2" );
-    if ( f & QGLFormat::OpenGL_Version_3_3 ) s.append ( "3.3" );
-    if ( f & QGLFormat::OpenGL_Version_4_0 ) s.append ( "4.0" );
-    if ( f & QGLFormat::OpenGL_Version_4_1 ) s.append ( "4.1" );
-    if ( f & QGLFormat::OpenGL_Version_4_2 ) s.append ( "4.2" );
-    if ( f & QGLFormat::OpenGL_Version_4_3 ) s.append ( "4.3" );
-    if ( f & QGLFormat::OpenGL_ES_CommonLite_Version_1_0 ) s.append ( "ES_CL_1.0" );
-    if ( f & QGLFormat::OpenGL_ES_Common_Version_1_0 ) s.append ( "ES_C_1.0" );
-    if ( f & QGLFormat::OpenGL_ES_CommonLite_Version_1_1 ) s.append ( "ES_CL_1.1" );
-    if ( f & QGLFormat::OpenGL_ES_Common_Version_1_1 ) s.append ( "ES_C_1.1" );
-    if ( f & QGLFormat::OpenGL_ES_Version_2_0 ) s.append ( "ES_2,0" );
-    return s;
-}
-}
+DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
+    : QOpenGLWidget ( parent ), mainWindow ( mainWin ) {
 
-
-DisplayWidget::DisplayWidget ( QGLFormat format, MainWindow* mainWin, QWidget* parent )
-    : QGLWidget ( format, parent, 0, 0 ), mainWindow ( mainWin ) {
+    verbose = false;
     clearOnChange = true;
     drawingState = Progressive;
     hiresBuffer = 0;
@@ -105,6 +77,16 @@ DisplayWidget::DisplayWidget ( QGLFormat format, MainWindow* mainWin, QWidget* p
     //     m3DTexId = 0;
     /// END 3DTexture
     buttonDown = false;
+    updateRefreshRate();
+    }
+
+void DisplayWidget::initializeGL() {
+         initializeOpenGLFunctions();
+    vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
+    renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
+    /// test for nVidia card and set the nV flag
+    foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
+
 }
 
 void DisplayWidget::updateRefreshRate() {
@@ -132,7 +114,7 @@ void DisplayWidget::paintEvent(QPaintEvent * ev) {
     if ( shaderProgram ) {
         shaderProgram->release();
     }
-    QGLWidget::paintEvent(ev);
+    QOpenGLWidget::paintEvent(ev);
 }
 
 DisplayWidget::~DisplayWidget() {
@@ -142,8 +124,8 @@ void DisplayWidget::contextMenuEvent(QContextMenuEvent* ev ) {
     if(ev->modifiers() == Qt::ShiftModifier)
         if( mainWindow->isFullScreen()) {
             contextMenu->show();
-            QPoint myPos((width()-contextMenu->width())/2,(height()-contextMenu->height())/2);
-            contextMenu->move( mapToGlobal( myPos ));
+//            QPoint myPos((width()-contextMenu->width())/2,(height()-contextMenu->height())/2);
+            contextMenu->move( mapToGlobal( ev->pos() ));
         }
 }
 
@@ -297,11 +279,10 @@ void DisplayWidget::setGlTexParameter ( QMap<QString, QString> map ) {
             if ( !ok ) wantedLevels = 128; // just an arbitrary small number, GL default = 1000
             glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
 
-#ifdef NVIDIAGL4PLUS
+if(context()->format().majorVersion() > 2)
             glGenerateMipmap ( GL_TEXTURE_2D ); //Generate mipmaps here!!!
-#else
+else
             glTexParameteri ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); //Generate mipmaps here!!!
-#endif // NVIDIAGL4PLUS
 
             // read back and test our value
             glGetTexParameteriv ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &levels );
@@ -377,9 +358,11 @@ void DisplayWidget::setGlTexParameter ( QMap<QString, QString> map ) {
     }
 }
 
-#ifdef NVIDIAGL4PLUS
 // this function parses the assembler text and returns a string list containing the lines
 QStringList DisplayWidget::shaderAsm ( bool w ) {
+    
+    if(!foundnV) return QStringList("nVidia gfx card required for this feature!");
+    
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
     GLint formats = 0;
     glGetIntegerv ( GL_NUM_PROGRAM_BINARY_FORMATS, &formats );
@@ -418,7 +401,6 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
 
     return asmList;
 }
-#endif // NVIDIAGL4PLUS
 
 void DisplayWidget::setupFragmentShader() {
 
@@ -434,8 +416,7 @@ void DisplayWidget::setupFragmentShader() {
     shaderProgram = new QOpenGLShaderProgram ( this );
 
     // Vertex shader
-    bool s = false;
-    s = shaderProgram->addShaderFromSourceCode ( QOpenGLShader::Vertex,fragmentSource.vertexSource.join ( "\n" ) );
+    bool s = shaderProgram->addShaderFromSourceCode ( QOpenGLShader::Vertex,fragmentSource.vertexSource.join ( "\n" ) );
     if ( fragmentSource.vertexSource.count() == 0 ) {
         WARNING ( tr("No vertex shader found!") );
         s = false;
@@ -460,8 +441,7 @@ void DisplayWidget::setupFragmentShader() {
         shaderProgram = 0;
         return;
     }
-
-    if ( !shaderProgram->log().isEmpty() ) INFO ( tr("Fragment shader compiled with warnings: ") + shaderProgram->log() );
+    else if ( !shaderProgram->log().isEmpty() ) INFO ( tr("Fragment shader compiled with warnings: ") + shaderProgram->log() );
 
     s = shaderProgram->link();
 
@@ -476,7 +456,7 @@ void DisplayWidget::setupFragmentShader() {
         shaderProgram = 0;
         return;
     }
-    if ( !shaderProgram->log().isEmpty() ) INFO ( tr("Fragment shader compiled with warnings: ") + shaderProgram->log() );
+    else if ( !shaderProgram->log().isEmpty() ) INFO ( tr("Fragment shader compiled with warnings: ") + shaderProgram->log() );
 
     s = shaderProgram->bind();
     if ( !s ) {
@@ -489,6 +469,7 @@ void DisplayWidget::setupFragmentShader() {
     // Setup textures.
     int u = 0;
     if ( bufferType != 0 ) {
+        makeCurrent();
         // Bind first texture to backbuffer
         glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
         int l = shaderProgram->uniformLocation ( "backbuffer" );
@@ -499,8 +480,8 @@ void DisplayWidget::setupFragmentShader() {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
               shaderProgram->setUniformValue ( l, ( GLuint ) u );
-              //INFO(QString("Binding back buffer (ID: %1) to active texture %2").arg(backBuffer->texture()).arg(u));
-              //INFO(QString("Setting uniform backbuffer to active texture %2").arg(u));
+              if(verbose && subframeCounter == 1) qDebug() << QString("Binding back buffer (ID: %1) to active texture %2").arg(backBuffer->texture()).arg(u);
+              if(verbose && subframeCounter == 1) qDebug() << QString("Setting uniform backbuffer to active texture %2").arg(u);
         }
         u++;
     } else {
@@ -510,7 +491,8 @@ void DisplayWidget::setupFragmentShader() {
 
     GLuint textureID=u;
 
-    for ( QMap<QString, QString>::iterator it = fragmentSource.textures.begin(); it!=fragmentSource.textures.end(); it++ ) {
+    QMapIterator<QString, QString> it( fragmentSource.textures );
+    while( it.hasNext() ) { it.next();
 
         QString textureName = it.key();
         QString texturePath = it.value();
@@ -540,19 +522,21 @@ void DisplayWidget::setupFragmentShader() {
                 glPixelStorei ( GL_UNPACK_ALIGNMENT, 4 ); // byte alignment 4 bytes = 32 bits
                 // allocate a texture id
                 glGenTextures ( 1, &textureID );
-//                 INFO ( QString ( "Allocated texture ID: %1" ).arg ( textureID ) );
+
+                if(verbose) qDebug() << QString ( "Allocated texture ID: %1" ).arg ( textureID );
+                
                 glBindTexture ( (type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
 
                 if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
                     HDRLoaderResult result;
                     if ( HDRLoader::load ( texturePath.toLatin1().data(), result ) ) {
                         if(type == GL_SAMPLER_CUBE) {
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*2*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*3*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
                         } else
                             glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
                         loaded = true;
@@ -611,15 +595,16 @@ void DisplayWidget::setupFragmentShader() {
                 else if ( im.load ( texturePath ) ) { // Qt format image, Qt 5+ loads EXR format on linux
                     
                     if(type == GL_SAMPLER_CUBE) {
-                        QImage t = convertToGLFormat ( im.mirrored(true,true) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
+                        QImage t = im.convertToFormat(QImage::Format_RGBA8888);
+                        
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*2) );
                         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*3) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
+                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
                     } else {
-                      QImage t = convertToGLFormat ( im );
+                      QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
                       glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
                     }
                     
@@ -655,7 +640,9 @@ vec3  backgroundColor(vec3 dir) {
                     map.insert ( "GL_TEXTURE_MIN_FILTER","GL_LINEAR" );
                     setGlTexParameter ( map );
                 }
-                //INFO(QString("Setting uniform %1 to active texture %2").arg(textureName).arg(u));
+
+                if(verbose) qDebug() << QString("Setting uniform %1 to active texture %2").arg(textureName).arg(u);
+                
                 shaderProgram->setUniformValue ( l, ( GLuint ) u );
                 u++;
             } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
@@ -674,8 +661,9 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
             i.next();
             if ( !textureCacheUsed->contains ( i.key() ) ) {
                 INFO ( tr("Removing texture from cache: ") +i.key() );
-                GLuint id = i.value();
-                deleteTexture ( id );
+// TODO delete textures
+// FIXME                GLuint id = i.value();
+// FIXME                deleteTexture ( id );
                 TextureCache.remove ( i.key() );
             }
         }
@@ -684,8 +672,9 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
         while ( i.hasNext() ) {
             i.next();
             INFO ( tr("Removing unused texture from cache: ") +i.key() );
-            GLuint id = i.value();
-            deleteTexture ( id );
+// TODO delete textures
+// FIXME            GLuint id = i.value();
+// FIXME            deleteTexture ( id );
         }
     }
     TextureCache.clear();
@@ -705,8 +694,7 @@ void DisplayWidget::setupBufferShader() {
     bufferShaderProgram = new QOpenGLShaderProgram ( this );
 
     // Vertex shader
-    bool s = false;
-    s = bufferShaderProgram->addShaderFromSourceCode ( QOpenGLShader::Vertex,fragmentSource.bufferShaderSource->vertexSource.join ( "\n" ) );
+    bool s = bufferShaderProgram->addShaderFromSourceCode ( QOpenGLShader::Vertex,fragmentSource.bufferShaderSource->vertexSource.join ( "\n" ) );
     if ( fragmentSource.bufferShaderSource->vertexSource.count() == 0 ) {
         WARNING ( tr("No buffer shader vertex shader found!") );
         s = false;
@@ -830,11 +818,15 @@ void DisplayWidget::makeBuffers() {
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     clearBackBuffer();
     previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
+
+    if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
-        WARNING( tr("FBO Incomplete Error!") );
+            qDebug( ) << tr("FBO Incomplete Error!");
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
     }
-    glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void DisplayWidget::clearBackBuffer() {
@@ -1015,14 +1007,14 @@ void DisplayWidget::setViewPort ( int w, int h ) {
 //   cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
 //   QVector3D up = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   
-//   float ascpectRatio = float( ( float ) width() / ( float ) height() );
+//   float aspectRatio = float( ( float ) width() / ( float ) height() );
 //   float zNear = 0.00001;
 //   float zFar = 1000.0;
 //   float vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
 //   
 //   QMatrix4x4 matrix;
 //   matrix.setToIdentity();
-//   matrix.perspective ( vertAngle, ascpectRatio, zNear, zFar );
+//   matrix.perspective ( vertAngle, aspectRatio, zNear, zFar );
 //   matrix.lookAt ( eye,target,up );
 //   
 //   texMatrix = matrix;
@@ -1118,9 +1110,9 @@ void DisplayWidget::setViewPort ( int w, int h ) {
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
-    if(tilesCount > 1) return;
-    // this should speed things up a litte because we are only setting uniforms on the first subframe
+    // this should speed things up a litte because we are only setting uniforms on the first subframe of the first tile
     if(subframeCounter > 1) return;
+    if(tilesCount > 1) return;
     
     // contains ALL uniforms in buffershader and shader program
     QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
@@ -1130,14 +1122,14 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    if(subframeCounter == 1)
+    if(subframeCounter == 1) {
         if(programID == shaderProgram->programId()) {
-        qDebug() << "shaderProgram";
+            qDebug() << "\nshaderProgram";
         }
         
-    if(subframeCounter == 1)
         if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
-        qDebug() << "bufferShaderProgram";
+            qDebug() << "\nbufferShaderProgram";
+        }
     }
 
     for (int i = 0; i < count; i++) {
@@ -1150,7 +1142,13 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
         glGetActiveUniform( programID, (GLuint)i, bufSize, &length, &size, &type, name);        
         QString uniformName = (char *)name;
-        QString uniformValue = "internal fragment variable";
+        QString uniformValue = "";
+        if(uniformName.startsWith("gl_")) uniformValue = "OpenGL variable";
+        if(uniformName == "pixelSize") uniformValue = "Special variable";
+        if(uniformName == "subframe") uniformValue = "Special variable";
+        if(uniformName == "frontbuffer") uniformValue = "Special variable";
+        if(uniformName == "backbuffer") uniformValue = "Special variable";
+        if(uniformName == "time") uniformValue = "Special variable";
 
         // find a value to go with the name index in the program may not be the same as index in our list
         for( int n=0; n < vw.count(); n++) {
@@ -1163,12 +1161,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             }
         }
 
+        if(uniformValue.isEmpty()) uniformValue = "Unused variable widget";
+
         QString tp;
         bool foundDouble = false;
 
- #ifdef NVIDIAGL4PLUS
-          double x,y,z,w;
-          GLuint index = glGetUniformLocation(programID, name);
           switch(type) {
 
                 case GL_BYTE:           tp = "BYTE "; foundDouble = false; break;
@@ -1194,6 +1191,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                 case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; foundDouble = false; break;
                 case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; foundDouble = false; break;
                 case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; foundDouble = false; break;
+            }
+
+        if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
+          double x,y,z,w;
+          GLuint index = glGetUniformLocation(programID, name);
+          switch(type) {
                 case GL_DOUBLE:         tp = "DOUBLE"; foundDouble = true;
                 glUniform1d(index, uniformValue.toDouble());
                 break;
@@ -1227,7 +1230,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                 default:
                 break;
             }
-#endif // NVIDIAGL4PLUS
+        }
 
             // type name and value to console
             if(subframeCounter == 1) qDebug() << tp << "\t" << uniformName << uniformValue;
@@ -1249,9 +1252,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 }
 
 void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
-    //static int c = 0;
-    //INFO(QString("Draw fragment program: %1").arg(c++));
-
+    if(verbose && subframeCounter == 1) {
+        static int c = 0;
+        qDebug() << QString("Draw fragment program: %1").arg(c++);
+    }
     /// BEGIN 3DTexture
     //     if( m3DTexId==0 )
     /// END 3DTexture
@@ -1320,23 +1324,20 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
             }
             shaderProgram->setUniformValue ( l, 0 );
-            //INFO(QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0));
-            //INFO(QString("Setting uniform backbuffer to active texture %2").arg(0));
+            if(verbose && subframeCounter == 1) qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
+            if(verbose && subframeCounter == 1) qDebug() << QString("Setting uniform backbuffer to active texture %2").arg(0);
         }
 
         l = shaderProgram->uniformLocation ( "subframe" );
         if ( l != -1 ) {
             shaderProgram->setUniformValue ( l, subframeCounter );
-            //INFO(QString("Setting subframe: %1").arg(subframeCounter));
+            // if(verbose) qDebug() << QString("Setting subframe: %1").arg(subframeCounter);
 
         }
     }
 
     // Setup User Uniforms
-    // new method
     setShaderUniforms(shaderProgram);   
-    // old method
-    // mainWindow->setUserUniforms(shaderProgram);   
    
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -1356,10 +1357,11 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    glFinish(); // wait for GPU to return control
     // finished with the shader
     shaderProgram->release();
     
+//     glFinish(); // wait for GPU to return control
+
     if (cameraControl->getID() == "3D") {
         // draw splines using depth buffer for occlusion... or not
         if ( mainWindow->wantPaths()  && !isContinuous()) {
@@ -1375,7 +1377,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
             }
         }
         /// copy the depth value @ mouse XY
-        if(!zapLocked && subframeCounter == 1) {
+        if(subframeCounter == 1) {
             float zatmxy;
             glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
             ZAtMXY = zatmxy;
@@ -1387,8 +1389,10 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
 }
 
 void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast ) {
-    //static int c = 0;
-    //INFO(QString("drawToFrameBufferObject: %1").arg(c++));
+    if(verbose && subframeCounter == 1) {
+        static int c = 0;
+        qDebug() << QString("drawToFrameBufferObject: %1").arg(c++);
+    }
     
     if ( previewBuffer == 0 || !previewBuffer->isValid() ) {
       WARNING ( tr("Non valid FBO - previewBuffer") );
@@ -1422,6 +1426,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
                 backBuffer= previewBuffer;
                 previewBuffer = temp;
                 subframeCounter++;
+                makeCurrent();
             }
 
             if ( !previewBuffer->bind() ) {
@@ -1438,7 +1443,9 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         }
     }
 
-    if(drawingState != Tiled) mainWindow->setSubFrameDisplay ( subframeCounter );
+
+    if(drawingState != Tiled)
+        mainWindow->setSubFrameDisplay ( subframeCounter );
 
     if ( buffer && !buffer->bind() ) {
       WARNING ( tr("Failed to bind target buffer") );
@@ -1468,10 +1475,8 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         } else {
           WARNING ( tr("No front buffer sampler found in buffer shader. This doesn't make sense.") );
         }
-        // new method
+
         setShaderUniforms ( bufferShaderProgram );
-        // old method
-        // mainWindow->setUserUniforms(bufferShaderProgram);   
     }
 
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -1505,7 +1510,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glEnd();
     glPopAttrib();
 
-    glFinish(); // wait for GPU to return control
+//     glFinish(); // wait for GPU to return control
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
@@ -1590,6 +1595,18 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
     padding = pad;
     mainWindow->setLastStoredTime ( time*renderFPS );
 
+    makeCurrent();
+    
+    if ( !previewBuffer->bind() ) {
+      WARNING ( tr("Failed to bind previewBuffer FBO") );
+    }
+    glClearColor ( 0.0f,0.0f,0.0f,0.0f );
+    clearGL();
+
+    if ( !previewBuffer->release() ) {
+      WARNING ( tr("Failed to release previewBuffer FBO") );
+    }
+    
     if ( hiresBuffer==0 || hiresBuffer->width() != w || hiresBuffer->height() != h) {
         QOpenGLFramebufferObjectFormat fbof;
         fbof.setAttachment ( QOpenGLFramebufferObject::Depth );
@@ -1600,15 +1617,6 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
     }
     if ( !hiresBuffer->isValid() ) {
       WARNING ( tr("Failed to create hiresBuffer FBO") );
-    }
-    if ( !previewBuffer->bind() ) {
-      WARNING ( tr("Failed to bind previewBuffer FBO") );
-    }
-    glClearColor ( 0.0f,0.0f,0.0f,0.0f );
-    clearGL();
-
-    if ( !previewBuffer->release() ) {
-      WARNING ( tr("Failed to release previewBuffer FBO") );
     }
     if ( !hiresBuffer->bind() ) {
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
@@ -1621,28 +1629,31 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
     QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
     QString framesize = QString("%1x%2").arg ( tileMax*w ).arg ( tileMax*h );
     
+    progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
+                                    .arg ( ( int ) ( time*renderFPS ) ).arg ( framesToRender )
+                                    .arg ( time, 8, 'g', 3, QChar ( ' ' )  )
+        
+    );
+
     for ( int i = 0; i< subframes; i++ ) {
 
 
         if ( !progress->wasCanceled() ) {
 
             progress->setValue ( *steps );
-            progress->setLabelText ( tr( "Frame:%1/%2 Time:%3\nTile:%4.%5/%6 Size:%7\n avg sec/tile:%8 ETA:%9" )
-                                    .arg ( ( int ) ( time*renderFPS ) ).arg ( framesToRender )
-                                    .arg ( time, 8, 'g', 3, QChar ( ' ' )  )
+            progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
                                     .arg ( tile,tileField,10, QChar ( '0' ) )
                                     .arg ( i,subField,10,QChar ( '0' ) )
                                     .arg ( frametile )
                                     .arg ( framesize ) 
-                                    .arg ( (tileAVG/(tile+1))/1000.0, 8, 'g', 3, QChar ( ' ' ) )
+                                    .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
 
             ( *steps ) ++;
 
-            mainWindow->processGuiEvents();
-
             drawToFrameBufferObject ( hiresBuffer, false );
         }
+            mainWindow->processGuiEvents();
     }
 
     (*im) = hiresBuffer->toImage();
@@ -1736,6 +1747,9 @@ void DisplayWidget::resizeGL ( int /* width */, int /* height */ ) {
     // When resizing the perspective must be recalculated
     updatePerspective();
     clearPreviewBuffer();
+    
+    mainWindow->getVariableEditor()->dockChanged( (mainWindow->getVariableEditor()->width() > mainWindow->getVariableEditor()->height()*2) );
+
 }
 
 void DisplayWidget::updatePerspective() {
@@ -1765,7 +1779,7 @@ void DisplayWidget::timerSignal() {
 
     if ( pendingRedraws ) {
       if(buttonDown) pendingRedraws=0;
-        updateGL();
+        update();
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
@@ -1773,7 +1787,7 @@ void DisplayWidget::timerSignal() {
         } else {
             if(buttonDown) return;
             QTime t = QTime::currentTime();
-            updateGL();
+            update();
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );
             fpsCounter++;
@@ -1801,42 +1815,35 @@ void DisplayWidget::timerSignal() {
     }
 }
 
-/// Default QGLFormat settings
-//    Double buffer: Enabled.
-//    Depth buffer: Enabled.
-//    RGBA: Enabled (i.e., color index disabled).
-//    Alpha channel: Disabled.
-//    Accumulator buffer: Disabled.    should use this one: anti-aliasing, progressive render, ambient shading etc.
-//    Stencil buffer: Enabled.         disable this but could be used for tile render
-//    Stereo: Disabled.
-//    Direct rendering: Enabled.
-//    Overlay: Disabled.
-//    Plane: 0 (i.e., normal plane).
-//    Multisample buffers: Disabled.
-
 void DisplayWidget::showEvent(QShowEvent * ) {
 
-    vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
-    renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
-    /// test for nVidia card and set the nV flag
-    foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
+    // Show info first... when NO-auto-run
+    INFO ( vendor + " " + renderer );
 
     requireRedraw ( true );
 
-    // Show info first time...
-    INFO ( vendor + " " + renderer );
-    INFO ( tr("This video card supports: ") + GetOpenGLFlags().join ( ", " ) );
+    // report the version and profile that was actually created in the engine
+    int prof = context()->format().profile();
+    QString s1 = QString("Using GL version %1.%2").arg(context()->format().majorVersion()).arg(context()->format().minorVersion());
+    INFO(s1);
+    QString s2 = QString("Using GL profile %1").arg(prof==0 ? "None" : prof == 1 ? "Core" : prof == 2 ? "Compatability" : "oops");
+    INFO(s2);
+    // report to console
+    if( verbose ) {
+        qDebug() << s1;
+        qDebug() << s2;
+    }
     
-    QStringList extensions;
+    QStringList imgFileExtensions;
 
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
 #ifdef USE_OPEN_EXR
     a.append ( "exr" );
 #endif
     foreach ( QByteArray s, a ) {
-        extensions.append ( QString ( s ) );
+        imgFileExtensions.append ( QString ( s ) );
     }
-    INFO ( tr("Available output formats: ") + extensions.join ( ", " ) );
+    INFO ( tr("Available output formats: ") + imgFileExtensions.join ( ", " ) );
 
 }
 
@@ -1935,7 +1942,7 @@ void DisplayWidget::keyPressEvent ( QKeyEvent* ev ) {
         requireRedraw ( clearOnChange );
         ev->accept();
     } else {
-        QGLWidget::keyPressEvent ( ev );
+        QOpenGLWidget::keyPressEvent ( ev );
     }
 }
 
@@ -1947,7 +1954,7 @@ void DisplayWidget::keyReleaseEvent ( QKeyEvent* ev ) {
         requireRedraw ( clearOnChange );
         ev->accept();
     } else {
-        QGLWidget::keyReleaseEvent ( ev );
+        QOpenGLWidget::keyReleaseEvent ( ev );
     }
 }
 
@@ -2046,14 +2053,14 @@ void DisplayWidget::setPerspective() {
     cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
     QVector3D up = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
     
-    double ascpectRatio = double( ( double ) width() / ( double ) height() );
+    double aspectRatio = double( ( double ) width() / ( double ) height() );
     double zNear = 0.00001;
     double zFar = 1000.0;
     double vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
     
     QMatrix4x4 matrix;
     matrix.setToIdentity();
-    matrix.perspective ( vertAngle, ascpectRatio, zNear, zFar );
+    matrix.perspective ( vertAngle, aspectRatio, zNear, zFar );
     matrix.lookAt ( eye,target,up );
 
     /// BEGIN 3DTexture
@@ -2070,12 +2077,10 @@ QStringList DisplayWidget::getCurveSettings() {
 void DisplayWidget::setCurveSettings ( QStringList cset ) {
     mainWindow->getVariableEditor()->setEasingEnabled ( !cset.isEmpty() );
     curveSettings = cset;
+    if(verbose) qDebug() << cset;
 }
 
 void DisplayWidget::drawSplines() {
-    // control point to highlight = currently selected preset keyframe
-    int p = mainWindow->getCurrentCtrlPoint();
-
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if(depthToAlpha )
         glDepthFunc ( GL_ALWAYS );
@@ -2084,19 +2089,36 @@ void DisplayWidget::drawSplines() {
         glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
     }
     
+    // control point to highlight = currently selected preset keyframe
+    int p = mainWindow->getCurrentCtrlPoint();
+
     targetSpline->drawSplinePoints();
     targetSpline->drawControlPoints ( p );
 
     eyeSpline->drawSplinePoints();
-    // TODO add Up vectors to spline control points and enable editing of points with mouse
     eyeSpline->drawControlPoints ( p );
+    
+    // TODO add vectors to spline control points and enable editing of points with mouse
 }
 
-QVector3D *DisplayWidget::getControlPoints ( int i ) {
-    if ( i==1 ) return ( QVector3D * ) eyeControlPoints.constData();
-    else if ( i==2 ) return ( QVector3D * ) targetControlPoints.constData();
-    else if ( i==3 ) return ( QVector3D * ) upControlPoints.constData();
-    return NULL;
+void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames ) {
+    if( cameraID() == "3D" ) {
+        QVector3D *eyeCp = ( QVector3D * ) eyeControlPoints.constData();
+        QVector3D *tarCp = ( QVector3D * ) targetControlPoints.constData();
+        QVector3D *upCp =  ( QVector3D * ) upControlPoints.constData();
+
+        if(eyeCp != NULL && tarCp != NULL && upCp != NULL) {
+            eyeSpline = new QtSpline(this,numberOfControlPoints,numberOfFrames, eyeCp);
+            targetSpline = new QtSpline(this,numberOfControlPoints,numberOfFrames, tarCp);
+            upSpline = new QtSpline(this,numberOfControlPoints,numberOfFrames, upCp);
+            
+            eyeSpline->setSplineColor( QColor("red") );
+            eyeSpline->setControlColor( QColor("green"));
+            
+            targetSpline->setSplineColor( QColor("blue"));
+            targetSpline->setControlColor( QColor("green"));
+        }
+    }
 }
 
 void DisplayWidget::addControlPoint ( QVector3D eP, QVector3D tP, QVector3D uP ) {

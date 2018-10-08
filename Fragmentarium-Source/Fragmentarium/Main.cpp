@@ -20,9 +20,10 @@ int main(int argc, char *argv[])
   qApp->addLibraryPath("./plugins");
   qApp->addLibraryPath("platforms");
   #endif
-
+  
     Q_INIT_RESOURCE(Fragmentarium);
 
+  
     QApplication::setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
 
     /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
@@ -31,29 +32,36 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName(QString("Syntopia_Software"));
     QApplication::setApplicationName(QString("Fragmentarium"));
 
-    QApplication app(argc, argv, true);
+    QApplication *app = new QApplication(argc, argv);
+
+    app->setApplicationVersion("2.5.0.180909");
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;
     qtTranslator.load(QString("qt_") + QLocale::system().name(),
                       QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&qtTranslator);
+    app->installTranslator(&qtTranslator);
 
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addVersionOption();
     parser.setApplicationDescription(
-      QString("\n") + app.translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.")
+      QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.")
     );
 
-//     parser.addPositionalArgument("-s", QString("fQScript file to load and execute."), QString("[-s <filename.fqs>]"));
-    parser.addPositionalArgument(QString("filename.frag"), app.translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]") );
+    parser.addPositionalArgument(QString("filename.frag"), app->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]") );
 
 //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
 //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
 //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
+    parser.addOption(QCommandLineOption (QString("verbose"),
+                                         app->translate("main", "sets reporting of shader variables to console."),
+                                         QString(""),
+                                         QString(""))
+                    );
+
     parser.addOption(QCommandLineOption (QString("style"),
-                                         app.translate("main", "sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
+                                         app->translate("main", "sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
                                          QString("style"),
                                          QString("Fusion"))
                     );
@@ -79,19 +87,19 @@ int main(int argc, char *argv[])
 //     parser.addOption(QCommandLineOption("inputstyle","defines how the input is inserted into the given widget, e.g., onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."));
 
     parser.addOption(QCommandLineOption( (QStringList() << QString("l") << QString("language")),
-                                         app.translate("main", "sets the application language.\nPossible values are 'en','de','ru','nl'."),
+                                         app->translate("main", "sets the application language.\nPossible values are 'en','de','ru','nl'."),
                                         QString("language"),
                                         QString("en"))
                     );
 
     parser.addOption(QCommandLineOption( (QStringList() << QString("s") << QString("script")),
-                                         app.translate("main", "Fragmentarium script file to load."),
+                                         app->translate("main", "Fragmentarium script file to load. Must be \".fqs\" filename extention."),
                                         QString("script"),
                                         QString(""))
                     );
 
     // Process the actual command line arguments given by the user
-    parser.process(app);
+    parser.process( app->arguments() );
 
     QString langArg = QString("en");
 
@@ -100,7 +108,7 @@ int main(int argc, char *argv[])
       langArg = parser.value(QString("language"));
       if( langArg != QString("en") ) {
         if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg ))
-          app.installTranslator(&myappTranslator);
+          app->installTranslator(&myappTranslator);
         else
           qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
       }
@@ -109,7 +117,7 @@ int main(int argc, char *argv[])
       langArg = QLocale::system().name().split("_").at(0);
        if( langArg != QString("en") ) {
          if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg))
-           app.installTranslator(&myappTranslator);
+           app->installTranslator(&myappTranslator);
          else
            qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
        }
@@ -118,37 +126,24 @@ int main(int argc, char *argv[])
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
-//     // We will parse for filenames.
-//     // On Windows 'argv*' is not of much use, since it fails for Unicode paths.
-//     // We will fetch the unicode strings...
-//     QStringList args;
-//
-//     // QtCreator on Windows fails to link with CommandLineToArgvW, so unicode is disabled for now...
-// #ifdef Q_WS_WIN_DISABLED
-//     // On Windows we call this Win32 call...
-//     int nArgs = 0;
-//     LPWSTR* wargv = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-//     for (int i = 0; i < nArgs; i++) { args.append(QString::fromUtf16((const ushort *)wargv[i])); }
-// #else
-//     // Other platforms must implement their unicode parsing here...
-//     // I believe Linux and Unix will store UTF8 in the argv array.
-//     for (int i = 0; i < argc; i++) {
-//         args.append(QString::fromUtf8(argv[i]));
-//     }
-// #endif
+    QSettings settings;
 
     Fragmentarium::GUI::MainWindow *mainWin;
-
     mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
+    mainWin->langID = langArg;
+    mainWin->setVerbose(parser.isSet("verbose"));
+    
+    mainWin->show();
+
     splash.setMask(pixmap.mask());
     splash.show();
-    mainWin->langID = langArg;
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
     /// load a single frag from comandline or load the default bulb
     if( !fragFile.isEmpty() ) {
-        mainWin->loadFragFile( app.arguments().last() );
+        mainWin->loadFragFile( app->arguments().last() );
     }
     else if(fragFile.isEmpty())
     {
@@ -156,7 +151,6 @@ int main(int argc, char *argv[])
     }
 
     mainWin->setSplashWidgetTimeout(&splash);
-    mainWin->show();
     
     if(parser.isSet("script")) {
       QString filename = parser.value("script");
@@ -166,10 +160,15 @@ int main(int argc, char *argv[])
         
         if(file.exists()) {
             if (file.open(QFile::ReadOnly | QFile::Text)) {
-            QTextStream in(&file);
-            QString text = in.readAll();
-            file.close();
-            mainWin->runScript( text );
+                QTextStream in(&file);
+                QString text = in.readAll();
+                file.close();
+                // The sync function will first empty Qts events by calling QCoreApplication::processEvents(),
+                // then the platform plugin will sync up with the windowsystem,
+                // and finally Qts events will be delived by another call to QCoreApplication::processEvents();
+                app->sync();
+                // everything is now in place and ready for script control
+                mainWin->runScript( text );
             } else qDebug() << "Script file " << filename << " open failed!";
         } else qDebug() << "Script file " << filename << " does not exist!";
       } else qDebug() << "Script file requires .fqs extention!";
@@ -195,7 +194,7 @@ int main(int argc, char *argv[])
 //     }
 /// END 3DTexture
 
-    return app.exec();
+    return app->exec();
 }
 
 

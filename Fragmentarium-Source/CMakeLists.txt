@@ -1,4 +1,4 @@
-project( Fragmentarium-2.0.0 )
+project( Fragmentarium-2.5.0 )
 cmake_minimum_required( VERSION 2.8.12 )
 
 cmake_policy(SET CMP0043 OLD)
@@ -16,7 +16,7 @@ IF(UNIX AND NOT APPLE)
         )
 ENDIF ()
 
-set ( CMAKE_BUILD_TYPE Release )
+set ( CMAKE_BUILD_TYPE Debug )
 set ( CMAKE_AUTOMOC ON )
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
@@ -31,8 +31,6 @@ find_package ( Qt5LinguistTools )
 
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
 
-# ON to compile with AsmBrowser enabled requires nVidia + GL > 4.0
-OPTION ( NVIDIAGL4PLUS "Build for nVidia GL v4+" ON)
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" OFF)
 
@@ -43,10 +41,6 @@ OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 # set to the mingw lib path
 IF ( MINGW )
   set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
-ENDIF ()
-
-IF( NVIDIAGL4PLUS )
-  ADD_DEFINITIONS ( -DNVIDIAGL4PLUS=1 )
 ENDIF ()
 
 IF(OPENGL_LIBRARIES_NOTFOUND)
@@ -324,7 +318,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
         IF(BUILD_LINUX_RPM)
             SET(CMAKE_INSTALL_PREFIX "/usr/local")
             SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
-            SET(CPACK_RPM_PACKAGE_VERSION "2.0.0")
+            SET(CPACK_RPM_PACKAGE_VERSION "2.5.0")
             SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
             SET(CPACK_RPM_PACKAGE_RELEASE "1")
             SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
@@ -339,9 +333,9 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
         IF(BUILD_LINUX_DEB)
             SET(CMAKE_INSTALL_PREFIX "/usr/local")
             SET(CPACK_DEBIAN_PACKAGE_NAME "fragmentarium")
-            SET(CPACK_DEBIAN_PACKAGE_VERSION "2.0.0")
+            SET(CPACK_DEBIAN_PACKAGE_VERSION "2.5.0")
             SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-            SET(CPACK_DEBIAN_PACKAGE_RELEASE "0.0.2")
+            SET(CPACK_DEBIAN_PACKAGE_RELEASE "0.0.3")
             SET(CPACK_DEBIAN_PACKAGE_LICENSE "lgpl,gpl")
             SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
             SET(CPACK_DEBIAN_PACKAGE_VENDOR "digilantism")

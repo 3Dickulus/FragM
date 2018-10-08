@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
-    <height>545</height>
+    <width>447</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,7 +163,7 @@
         <item>
          <widget class="QLineEdit" name="exrBinPathsLineEdit">
           <property name="text">
-           <string>/usr/bin;</string>
+           <string>bin;</string>
           </property>
          </widget>
         </item>

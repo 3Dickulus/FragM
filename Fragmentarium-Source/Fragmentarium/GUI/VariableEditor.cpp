@@ -34,6 +34,8 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
 
     QWidget* tw = new QWidget(this);
     QHBoxLayout* topLayout = new QHBoxLayout(tw);
+    QSpacerItem *horizontalSpacer = new QSpacerItem(1024, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    topLayout->addItem(horizontalSpacer);
 
     QLabel* l = new QLabel(tr("Preset:"), tw);
     topLayout->addWidget(l);
@@ -71,7 +73,6 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     currentWidget=0;
 
     tabWidget->setTabPosition(QTabWidget::East);
-    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
     connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(focusChanged(QWidget*,QWidget*)));
 
@@ -79,19 +80,6 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     useDefines=false;
     keyFramesEnabled = false;
     saveEasing = false;
-}
-
-// this adjusts variable widgets, should be handled by layout container?
-void VariableEditor::tabChanged(int ) {
-    if(currentComboSlider)
-        currentComboSlider->blockSignals(true);
-    
-    tabWidget->adjustSize();
-    tabWidget->update();
-    
-    if(currentComboSlider)
-        currentComboSlider->blockSignals(false);
-
 }
 
 void VariableEditor::presetSelected( QString presetName ) {
@@ -112,10 +100,12 @@ void VariableEditor::focusChanged(QWidget* oldWidget,QWidget* newWidget) {
     // Detect if a ComboSlider gets or looses focus
     ComboSlider* oldFloat = 0;
     if (oldWidget && oldWidget->parent()) oldFloat = qobject_cast<ComboSlider*>(oldWidget->parent());
+    if (oldFloat == 0) oldFloat = qobject_cast<ComboSlider*>(oldWidget);
     ComboSlider* newFloat = 0;
     if (newWidget && newWidget->parent()) newFloat = qobject_cast<ComboSlider*>(newWidget->parent());
+    if (newFloat == 0) newFloat = qobject_cast<ComboSlider*>(newWidget);
 
-    if (newFloat) {
+    if (newFloat != 0) {
 
         if (currentComboSlider) {
             currentComboSlider->setPalette(QApplication::palette(oldFloat));
@@ -129,6 +119,8 @@ void VariableEditor::focusChanged(QWidget* oldWidget,QWidget* newWidget) {
         currentComboSlider = newFloat;
         connect(currentComboSlider, SIGNAL(destroyed(QObject *)), this, SLOT(sliderDestroyed(QObject *)));
     }
+
+    QApplication::postEvent(tabWidget, new QEvent(QEvent::LayoutRequest));
 }
 
 void VariableEditor::setPresets(QMap<QString, QString> presets) {
@@ -139,13 +131,14 @@ void VariableEditor::setPresets(QMap<QString, QString> presets) {
     }
     this->presets = presets;
 
-    if(!pi.isEmpty()) presetComboBox->setCurrentIndex( presetComboBox->findText(pi,Qt::MatchContains) );
+    if(!pi.isEmpty()) presetComboBox->setCurrentIndex( presetComboBox->findText(pi,Qt::MatchContains|Qt::MatchFixedString) );
+
     if(getKeyFrameCount() > 1) mainWindow->initKeyFrameControl();
 }
 
 bool VariableEditor::setDefault() {
-    int i = presetComboBox->findText("default", Qt::MatchContains);
     if (!(QSettings().value("autorun", true).toBool())) return false;
+    int i = presetComboBox->findText("default", Qt::MatchContains|Qt::MatchFixedString);
     if (i != -1) {
         presetComboBox->setCurrentIndex(i);
         INFO(tr("Found '") + presetComboBox->currentText() + tr("' preset. Executing..."));
@@ -158,7 +151,7 @@ bool VariableEditor::applyPreset() {
     QString presetName = presetComboBox->currentText();
     QString preset = presets[presetName];
     /// this bit of fudge sets the current time to keyframe time
-    if(presetName.contains("KeyFrame"))
+    if(presetName.contains("KeyFrame",Qt::CaseInsensitive))
         mainWindow->setTimeSliderValue( getCurrentKeyFrame() * ((mainWindow->getTimeMax()*mainWindow->renderFPS)/(getKeyFrameCount()-1)));
     return setSettings(preset);
 }
@@ -169,6 +162,7 @@ void VariableEditor::resetUniforms(bool clear ) {
     }
     variables.clear();
     mainWindow->resetCamera(true);
+
     if (clear) mainWindow->initializeFragment();
 }
 
@@ -446,7 +440,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 // INFO("Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText()));
             }
         }
-
+       
         // We need to move the spacer to bottom.
         currentWidget->layout()->removeWidget(spacers[currentWidget]);
 
@@ -565,11 +559,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 
         // We need to move the spacer to bottom.
         currentWidget->layout()->addWidget(spacers[currentWidget]);
-        // this adjusts variable widgets, should be handled by layout container?
-        //((ScrollArea*)currentWidget->parent())->resizeEvent(0);
-        //QApplication::postEvent(currentWidget->parent(), new QEvent(QEvent::LayoutRequest));
-        currentWidget->adjustSize();
-        currentWidget->update();
+
     }
 
     for (int i = 0; i < variables.count(); ) {
@@ -711,7 +701,8 @@ int VariableEditor::addEasingCurve(QString c) {
         }
     }
     if(found != -1) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
         msgBox.setText(tr("This variable already has an Easing Curve!"));
         msgBox.setInformativeText(tr("Apply changes? Delete existing? Do nothing?"));
         msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Discard | QMessageBox::Cancel);
@@ -942,7 +933,7 @@ int VariableEditor::getKeyFrameCount() {
 }
 
 QStringList VariableEditor::getPresetByName(QString name) {
-    int i = presetComboBox->findText(name, Qt::MatchExactly);
+    int i = presetComboBox->findText(name, Qt::MatchFixedString);
     if (i>=0) {
         QString presetName = presetComboBox->itemText(i);
         QStringList preset = presets[presetName].split("\n");
@@ -954,12 +945,12 @@ QStringList VariableEditor::getPresetByName(QString name) {
 int VariableEditor::getCurrentKeyFrame() {
     int id=0;
     QStringList name = presetComboBox->currentText().split(".");
-    if(name.at(0).contains("KeyFrame")) id = name.at(1).toInt();
+    if(name.at(0).contains("KeyFrame",Qt::CaseInsensitive)) id = name.at(1).toInt();
     return id-1;
 }
 
 void VariableEditor::setPreset(QString p) {
-    int item = presetComboBox->findText(p);
+    int item = presetComboBox->findText(p, Qt::MatchFixedString);
     presetComboBox->setCurrentIndex(item);
     applyPreset();
     /// this bit of fudge sets the current time to keyframe time

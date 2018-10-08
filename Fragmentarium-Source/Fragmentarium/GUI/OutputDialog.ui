@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>558</height>
+    <height>566</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -281,6 +281,9 @@
       <widget class="QSpinBox" name="fpsSpinBox">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Set in Preferences.</string>
        </property>
        <property name="minimum">
         <number>1</number>

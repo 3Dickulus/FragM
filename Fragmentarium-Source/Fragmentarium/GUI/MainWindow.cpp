@@ -13,6 +13,7 @@
 #include <QDialogButtonBox>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDialog>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -162,7 +163,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     if (modification) {
-        QString mess = tr("There are tabs with unsaved changes.%1\r\nContinue and loose changes?").arg( variableEditor->hasEasing() ? "\r\nTo keep Easing curves you must\r\nadd a \"Range\" preset and save to file\r\nbefore closing!":"\r\n");
+        QString mess = tr("There are tabs with unsaved changes.\r\n%1\r\nContinue and loose changes?").arg( variableEditor->hasEasing() ? "\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n":"\r\n");
         int i = QMessageBox::warning(this, tr("Unsaved changes"), mess, QMessageBox::Ok, QMessageBox::Cancel);
         if (i == QMessageBox::Ok) {
             // OK
@@ -216,12 +217,9 @@ void MainWindow::insertPreset() {
 
         if(newPresetName.contains("KeyFrame.")) { /// adding keyframe
             getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getCameraSettings() + "\n#endpreset\n");
-            addKeyFrame(newPresetName);
         } else if(newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
             if(variableEditor->hasEasing()) {
                 getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getEngine()->getCurveSettings().join("\n") + "\n#endpreset\n");
-                addKeyFrame(newPresetName);
-                return;
             } else {
                 QMessageBox::warning ( this, tr("Warning!"), tr("Setup some parameter Easing Curves first!") );
                 INFO(tr("%1 Failed!").arg(newPresetName));
@@ -370,6 +368,7 @@ void MainWindow::showControlHelp()
   "<h2>3D</h2>"
   "<p>"
   "<ul>"
+  "<li>Shift+Right mouse button: shows menus when in fullscreen mode.</li>"
   "<li>Left mouse button: change camera direction.</li>"
   "<li>Right mouse button: move camera in screen plane.</li>"
   "<li>Left+Right mouse button: zoom.</li>"
@@ -390,7 +389,8 @@ void MainWindow::showControlHelp()
   "</p>"
   "<h2>Sliders</h2>"
   "<p>"
-  "When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size."
+  "When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.<br>"
+  "<b>F7 Key</b> opens the easing curve editor for the currently selected slider."
   "</p>");
 
   text += "</html>";
@@ -532,23 +532,9 @@ void MainWindow::documentWasModified()
 
 void MainWindow::init()
 {
-    MaxRecentFiles = 5;
 
-    lastStoredTime = 0;
-    engine = 0;
-
-    setAcceptDrops(true);
     lastTime = new QTime();
     lastTime->start();
-
-    needRebuild(true);
-    hasBeenResized = true;
-
-    oldDirtyPosition = -1;
-    setFocusPolicy(Qt::StrongFocus);
-
-    version = Version(2, 0, 0, 180102, " (\"bourbon\")");
-    setAttribute(Qt::WA_DeleteOnClose);
 
     splitter = new QSplitter(this);
     splitter->setObjectName(QString::fromUtf8("splitter"));
@@ -556,32 +542,19 @@ void MainWindow::init()
 
     stackedTextEdits = new QStackedWidget(splitter);
 
-    /// Default QGLFormat settings
-    //    Double buffer: Enabled.
-    //    Depth buffer: Enabled.
-    //    RGBA: Enabled (i.e., color index disabled).
-    //    Alpha channel: Disabled.
-    //    Accumulator buffer: Disabled.
-    //    Stencil buffer: Enabled.
-    //    Stereo: Disabled.
-    //    Direct rendering: Enabled.
-    //    Overlay: Disabled.
-    //    Plane: 0 (i.e., normal plane).
-    //    Multisample buffers: Disabled.
-
-    QGLFormat fmt;
-    fmt.setDoubleBuffer(false);
-    fmt.setStencil(false);
+    QSurfaceFormat fmt;
     fmt.setDepthBufferSize(32);
     QSettings settings;
     int i = settings.value("refreshRate", 20).toInt();
     fmt.setSwapInterval(i);
+    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+    fmt.setSwapBehavior(QSurfaceFormat::SingleBuffer);
 
-    engine = new DisplayWidget(fmt, this, splitter);
+    engine = new DisplayWidget(this, splitter);
+    engine->setFormat(fmt);
+    engine->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
     engine->makeCurrent();
     engine->show();
-    if(!engine->init()) CRITICAL(tr("Engine failed to start!"));
-    engine->updateRefreshRate();
     
     tabBar = new QTabBar(this);
 
@@ -604,11 +577,13 @@ void MainWindow::init()
 
     QDir d(getExamplesDir());
 
+    setDockOptions(AnimatedDocks | AllowTabbedDocks);
+
     // Log widget (in dockable window)
     dockLog = new QDockWidget(this);
     dockLog->setWindowTitle(tr("Log"));
     dockLog->setObjectName(QString::fromUtf8("dockWidget"));
-    dockLog->setAllowedAreas(Qt::BottomDockWidgetArea);
+    dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
     QVBoxLayout* vboxLayout1 = new QVBoxLayout(dockLogContents);
@@ -622,10 +597,10 @@ void MainWindow::init()
 
     // Variable editor (in dockable window)
     editorDockWidget = new QDockWidget(this);
-    editorDockWidget->setMinimumWidth(250);
+    editorDockWidget->setMinimumWidth(320);
     editorDockWidget->setWindowTitle(tr("Variable Editor (uniforms)"));
     editorDockWidget->setObjectName(QString::fromUtf8("editorDockWidget"));
-    editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+    editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
     QVBoxLayout* vboxLayout2 = new QVBoxLayout(editorLogContents);
@@ -633,7 +608,7 @@ void MainWindow::init()
     vboxLayout2->setContentsMargins(0, 0, 0, 0);
 
     variableEditor = new VariableEditor(editorDockWidget, this);
-    variableEditor->setMinimumWidth(250);
+    variableEditor->setMinimumWidth(320);
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
@@ -647,9 +622,6 @@ void MainWindow::init()
     WARNING(tr("This is an experimental 3Dickulus build."));
     INFO("");
 
-    fullScreenEnabled = false;
-    createOpenGLContextMenu();
-
     connect(this->tabBar, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
     readSettings();
@@ -657,12 +629,11 @@ void MainWindow::init()
     {
         QSettings settings;
         if (settings.value("firstRun", true).toBool()) {
-            removeSplash();
             showWelcomeNote();
         }
         settings.setValue("firstRun", false);
     }
-
+    removeSplash();
     {
         QSettings settings;
         if (settings.value("isStarting", false).toBool()) {
@@ -671,9 +642,9 @@ void MainWindow::init()
                         "\nThis option may be re-enabled through Preferences");
 
 
-            removeSplash();
-            QMessageBox msgBox;
+            QMessageBox msgBox(this);
             msgBox.setText(s);
+            msgBox.setIcon(QMessageBox::Warning);
             QAbstractButton* b = msgBox.addButton(tr("Disable Autorun"),QMessageBox::AcceptRole);
             msgBox.addButton(tr("Enable Autorun"),QMessageBox::RejectRole);
 
@@ -692,16 +663,6 @@ void MainWindow::init()
     createMenus();
     renderModeChanged();
 
-    // test for nVidia card and GL > 4.0
-#ifdef NVIDIAGL4PLUS
-    if( !(engine->context()->format().majorVersion() > 3) || !engine->foundnV) {
-        if( !(engine->context()->format().minorVersion() > 0) ) {
-            QMessageBox::critical(0, tr("OpenGL features missing"),
-                                  tr("Failed to resolve OpenGL functions required"" to enable AsmBrowser"));
-        }
-        if(asmAction)editMenu->removeAction(asmAction);
-    }
-#endif // NVIDIAGL4PLUS
 
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_WIN
@@ -712,6 +673,9 @@ initTools();
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
     setupScriptEngine();
     play();
+    
+    veDockChanged((width() > height()*2));
+
 }
 
 #ifdef USE_OPEN_EXR
@@ -795,7 +759,7 @@ void MainWindow::runTool() {
         file.remove();
         
         // display for user
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.setText(helpText);
         msgBox.setDetailedText(detailedText);
         msgBox.setIcon(QMessageBox::Information);
@@ -810,7 +774,8 @@ void MainWindow::showWelcomeNote() {
         "(1) Fragmentarium requires a decent GPU, preferably a NVIDIA or ATI discrete graphics card with recent drivers.\n\n"
         "(2) On Windows Vista and 7, there is a built-in GPU watchdog, requiring each frame to render in less than 2 seconds. Some fragments may exceed this limit, especially on low-end graphics cards. It is possible to circumvent this, see the Fragmentarium FAQ (in the Help menu) for more information.\n\n"
         "(3) Many examples in Fragmentarium use progressive rendering, which requires Fragmentarium to run in Continuous mode. When running in this mode, Fragmentarium uses 100% GPU power (but you may use the 'Subframe : Max' spinbox to limit the number of frames rendered. A value of zero means there is no maximum count.)\n\n");
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Information);
     msgBox.setText(s);
     msgBox.exec();
 
@@ -830,7 +795,11 @@ void MainWindow::variablesChanged(bool lockedChanged) {
 void MainWindow::createOpenGLContextMenu() {
     openGLContextMenu = new QMenu();
     openGLContextMenu->addAction(fullScreenAction);
-    openGLContextMenu->addAction(screenshotAction);
+    openGLContextMenu->addMenu(fileMenu);
+    openGLContextMenu->addMenu(renderMenu);
+    openGLContextMenu->addMenu(examplesMenu);
+    openGLContextMenu->addMenu(helpMenu);
+    openGLContextMenu->addAction(exitAction);
     engine->setContextMenu(openGLContextMenu);
 }
 
@@ -841,7 +810,6 @@ void MainWindow::toggleFullScreen() {
         fullScreenEnabled = false;
         fullScreenAction->setChecked(false);
         stackedTextEdits->show();
-        dockLog->show();
         menuBar()->show();
         statusBar()->show();
         tabBar->show();
@@ -852,7 +820,6 @@ void MainWindow::toggleFullScreen() {
 
         tabBar->hide();
         stackedTextEdits->hide();
-        dockLog->hide();
         menuBar()->hide();
         statusBar()->hide();
         showFullScreen();
@@ -918,12 +885,12 @@ void MainWindow::createActions()
     findAction->setShortcut(tr("Ctrl+F"));
     findAction->setStatusTip(tr("Finds the current selection"));
     connect(findAction, SIGNAL(triggered()), this, SLOT(search()));
-#ifdef NVIDIAGL4PLUS
+
     asmAction = new QAction(QIcon(":/Icons/find.png"), tr("Shader &Asm"), this);
     asmAction->setShortcut(tr("Ctrl+A"));
     asmAction->setStatusTip(tr("NV objdump"));
     connect(asmAction, SIGNAL(triggered()), this, SLOT(dumpShaderAsm()));
-#endif // NVIDIAGL4PLUS
+
     scriptAction = new QAction(tr("&Edit Cmd Script"), this);
     scriptAction->setShortcut(tr("Ctrl+R"));
     scriptAction->setStatusTip(tr("Edit the currently loaded script"));
@@ -1031,9 +998,9 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAction);
     editMenu->addAction(pasteAction);
     editMenu->addAction(findAction);
-#ifdef NVIDIAGL4PLUS
+
     editMenu->addAction(asmAction);
-#endif // NVIDIAGL4PLUS
+
     editMenu->addSeparator();
     editMenu->addAction(tr("Indent Script"), this, SLOT(indent()));
     QMenu* m = editMenu->addMenu(tr("Insert Command"));
@@ -1049,7 +1016,7 @@ void MainWindow::createMenus()
     renderMenu->addAction(renderAction);
     renderMenu->addAction(QIcon(":/Icons/render.png"),tr("High Resolution and Animation Render"), this, SLOT(tileBasedRender()));
     renderMenu->addSeparator();
-    renderMenu->addAction(tr("Output Preprocessed Script (for Debug)"), this, SLOT(showDebug()));
+    renderMenu->addAction(tr("Output Preprocessed Script (for Debug)"), this, SLOT(showPreprocessedScript()));
     renderMenu->addSeparator();
     renderMenu->addAction(fullScreenAction);
     renderMenu->addAction(screenshotAction);
@@ -1071,7 +1038,7 @@ void MainWindow::createMenus()
 
     // -- Examples Menu --
     QStringList filters;
-    QMenu* examplesMenu = menuBar()->addMenu(tr("&Examples"));
+    examplesMenu = menuBar()->addMenu(tr("&Examples"));
     // Scan examples dir...
     QDir d(getExamplesDir());
     filters.clear();
@@ -1148,6 +1115,9 @@ void MainWindow::createMenus()
     helpMenu->addAction(glslHomeAction);
     helpMenu->addAction(faqAction);
     helpMenu->addAction(introAction);
+
+    createOpenGLContextMenu();
+
 }
 
 QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileName) {
@@ -1178,10 +1148,10 @@ retry:
         od.readOutputSettings();
     }
 
-    int w = od.getTileWidth();
-    bufferXSpinBox->setValue(w);
-    int h = od.getTileHeight();
-    bufferYSpinBox->setValue(h);
+    int tileWidth = od.getTileWidth();
+    bufferXSpinBox->setValue(tileWidth);
+    int tileHeight = od.getTileHeight();
+    bufferYSpinBox->setValue(tileHeight);
     int maxTiles = od.getTiles();
 
     if (od.doSaveFragment()) {
@@ -1293,9 +1263,10 @@ retry:
     engine->setEXRmode(exrMode);
 #endif
 
-    if( (w*maxTiles>32768 || h*maxTiles > 32768) && !exrMode ) {
-        QMessageBox msgBox;
-        msgBox.setText( QString("%1x%2 %3").arg(w*maxTiles).arg(h*maxTiles).arg(tr("is too large!\nMust be less than 32769x32769")));
+    if( (tileWidth*maxTiles>32768 || tileHeight*maxTiles > 32768) && !exrMode ) {
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setText( QString("%1x%2 %3").arg(tileWidth*maxTiles).arg(tileHeight*maxTiles).arg(tr("is too large!\nMust be less than 32769x32769")));
         msgBox.setInformativeText(tr("Do you want to try again?"));
         msgBox.setStandardButtons(QMessageBox::Retry | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Retry);
@@ -1331,6 +1302,7 @@ retry:
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
     progress.setValue ( 0 );
+    progress.resize(300, 120);
     progress.move((width()-progress.width())/2,(height()-progress.height())/2);
     progress.setWindowModality(Qt::WindowModal);
     progress.setValue(steps);
@@ -1379,14 +1351,17 @@ retry:
         QTime frametime;
         frametime.start();
 
+        bool pause = pausePlay;
+        stop();
+
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             //
             // Write a tiled image with one level using a tile-sized framebuffer.
             //
             TiledRgbaOutputFile out (name.toLatin1(),
-                                     w*maxTiles, h*maxTiles,            // image size
-                                     w, h,                              // tile size
+                                     tileWidth*maxTiles, tileHeight*maxTiles,            // image size
+                                     tileWidth, tileHeight,                              // tile size
                                      ONE_LEVEL);                        // level mode
             //                           ROUND_DOWN,                        // rounding mode
             //                           WRITE_RGBA,                        // channels in file
@@ -1397,7 +1372,7 @@ retry:
             //                           ZIP_COMPRESSION,                   // Compression
             //                           globalThreadCount() );             // int numThreads
 
-            Array2D<Rgba> pixels (h, w);
+            Array2D<Rgba> pixels (tileHeight, tileWidth);
 
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
@@ -1406,8 +1381,8 @@ retry:
               
               if (!progress.wasCanceled()) {
 
-                    QImage im(w,h,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
+                    QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im);
 
                     if (padding>0.0)  {
                         int w = im.width();
@@ -1419,27 +1394,27 @@ retry:
                         im = im.copy(ox,oy,nw,nh);
                     }
 
-                    if(w*maxTiles<32769 && h*maxTiles < 32769)
+                    if(tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)
                         cachedTileImages.append(im);
 
                     int dx = (tile / maxTiles);
                     int dy = (maxTiles-1)-(tile % maxTiles);
-                    int xoff = dx*w;
-                    int yoff = dy*h;
+                    int xoff = dx*tileWidth;
+                    int yoff = dy*tileHeight;
 
-                    engine->getRGBAFtile( pixels, w, h );
+                    engine->getRGBAFtile( pixels, tileWidth, tileHeight );
                     Box2i range = out.dataWindowForTile (dx, dy);
                     out.setFrameBuffer (&pixels[-range.min.y][-range.min.x],
                                         1,  // xStride
-                                        w); // yStride
+                                        tileWidth); // yStride
 
                     out.writeTile (dx, dy);
 
                     // display tiles while rendering if the tiles fit the window
                     if(engine->width() >= im.width()*maxTiles && engine->height() >= im.height()*maxTiles) {
                         QPainter painter(engine);
-                        QRect target(xoff, yoff, w, h);
-                        QRect source(0, 0, w, h);
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
                         painter.drawImage(target, im, source);
                     }
                 } else {
@@ -1461,6 +1436,7 @@ retry:
             }
 
             imageSaved = out.isValidLevel(0,0);
+            engine->update();
 
         } else
 #endif
@@ -1472,41 +1448,40 @@ retry:
                 tiletime.start();
                 
                 if (!progress.wasCanceled()) {
-
-                    QImage im(w,h,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, w,h, tile, maxTiles, &progress, &steps, &im);
-                    
+                    QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im);
                     if (padding>0.0)  {
-                        int w = im.width();
-                        int h = im.height();
-                        int nw = (int)(w / (1.0 + padding));
-                        int nh = (int)(h / (1.0 + padding));
-                        int ox = (w-nw)/2;
-                        int oy = (h-nh)/2;
+                        int nw = (int)(tileWidth / (1.0 + padding));
+                        int nh = (int)(tileHeight / (1.0 + padding));
+                        int ox = (tileWidth-nw)/2;
+                        int oy = (tileHeight-nh)/2;
                         im = im.copy(ox,oy,nw,nh);
                     }
                     
-                    if(w*maxTiles<32769 && h*maxTiles < 32769)
+                    if(tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)
                         cachedTileImages.append(im);
 
                     // display tiles while rendering if the tiles fit the window
-                    if(engine->width() >= im.width()*maxTiles && engine->height() >= im.height()*maxTiles) {
-                        QPainter painter(engine);
+                    if(engine->width() >= tileWidth*maxTiles && engine->height() >= tileHeight*maxTiles) {
                         int dx = (tile / maxTiles);
                         int dy = (maxTiles-1)-(tile % maxTiles);
-                        int xoff = dx*w;
-                        int yoff = dy*h;
-                        QRect target(xoff, yoff, w, h);
-                        QRect source(0, 0, w, h);
+                        int xoff = dx*tileWidth;
+                        int yoff = dy*tileHeight;
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
+                        QPainter painter(engine);
                         painter.drawImage(target, im, source);
                     }
-                    else // display single tiles if tile is same size or smaller
-                        if ( engine->width() >= im.width() && engine->height() >= im.height()) {
-                            int w = im.width();
-                            int h = im.height();
+                    else // display scaled tiles if tile is same size or smaller than the window
+                        if ( engine->width() >= tileWidth && engine->height() >= tileHeight) {
+                            float wScaleFactor = engine->width() / maxTiles;
+                            float hScaleFactor = engine->height() / maxTiles;
+                            int dx = (tile / maxTiles);
+                            int dy = (maxTiles-1)-(tile % maxTiles);
+                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                            QRect target ( dx*wScaleFactor, dy*hScaleFactor, wScaleFactor, hScaleFactor );
                             QPainter painter ( engine );
-                            QRect source ( 0, 0, w, h );
-                            QRect target ( 0, 0, w, h );
+                            im = im.scaled(wScaleFactor, hScaleFactor,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
                             painter.drawImage ( target, im, source );
                         }
                 } else {
@@ -1524,8 +1499,11 @@ retry:
                     if( estRenderMS > 86400000 ) // takes longer than 24 hours
                       engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
                 }
+                engine->update();
             }
         }
+        
+        pause ? stop() : play();
         
         engine->tileAVG /= maxTiles*maxTiles;
         engine->renderAVG += frametime.elapsed();
@@ -1542,7 +1520,7 @@ retry:
 
         // Now assemble image
         if (!progress.wasCanceled() &&
-                (!exrMode || (preview && w*maxTiles<32769 && h*maxTiles < 32769)) ) {
+                (!exrMode || (preview && tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)) ) {
             int w = cachedTileImages[0].width();
             int h = cachedTileImages[0].height();
             QImage finalImage(w*maxTiles,h*maxTiles,cachedTileImages[0].format());
@@ -1890,8 +1868,9 @@ void MainWindow::bufferActionChanged(QAction* action) {
 
 void MainWindow::timeLineRequest(QPoint ) {
 
-  TimeLineDialog *TimeDialog = new TimeLineDialog(this);
-  TimeDialog->exec();
+  TimeLineDialog *timeDialog = new TimeLineDialog(this);
+  timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
+  timeDialog->open();
 
 };
 
@@ -1985,12 +1964,14 @@ void MainWindow::renderModeChanged() {
     engine->setMaxSubFrames(frameSpinBox->value());
     setFPS(-1);
     QObject* o = QObject::sender();
+    lastStoredTime = getTime();
     if (o == 0 || o == progressiveButton) {
-        lastStoredTime = getTime();
+        if(!progressiveCameraSettings.isEmpty() ) setParameter(progressiveCameraSettings);
         engine->setState(DisplayWidget::Progressive);
         getTime();
     } else if (o == animationButton) {
-        lastStoredTime = getTime();
+        // copy to return to the working view
+        progressiveCameraSettings = getCameraSettings();
         engine->setState(DisplayWidget::Animation);
         lastTime->restart();
         getTime();
@@ -2036,6 +2017,8 @@ void MainWindow::readSettings()
         restoreState(settings.value("windowState").toByteArray());
         first = false;
         splitter->restoreState(settings.value("splitterSizes").toByteArray());
+        fullScreenEnabled = settings.value("fullScreenEnabled", false).toBool();
+        if(fullScreenEnabled) { fullScreenEnabled=false; toggleFullScreen(); }
     }
     renderFPS = settings.value("fps", 25).toInt();
     timeMax = settings.value("timeMax", 10).toInt();
@@ -2057,6 +2040,8 @@ void MainWindow::writeSettings()
     QSettings settings;
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
+    settings.setValue("splitterSizes", splitter->saveState());
+    settings.setValue("fullScreenEnabled", fullScreenEnabled);
     settings.setValue("fps", renderFPS);
     settings.setValue("timeMax", timeMax);
     settings.setValue("drawGLPaths", wantGLPaths);
@@ -2064,7 +2049,6 @@ void MainWindow::writeSettings()
     settings.setValue("lineNumbers", wantLineNumbers);
     settings.setValue("loopPlay", wantLoopPlay);
     settings.setValue("editorStylesheet", editorStylesheet);
-    settings.setValue("splitterSizes", splitter->saveState());
     QString ipaths = fileManager.getIncludePaths().join(";");
     if(fileManager.getIncludePaths().count() == 1) ipaths += ";";
     settings.setValue("includePaths", ipaths);
@@ -2101,13 +2085,12 @@ void MainWindow::loadFragFile(const QString &fileName)
 
     QString inputText = getTextEdit()->toPlainText();
     if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
-    if (QSettings().value("autorun", true).toBool() && initializeFragment()) {
+    if (QSettings().value("autorun", true).toBool()) {
         bool requiresRecompile = variableEditor->setDefault();
+        rebuildRequired = initializeFragment();
         if (requiresRecompile || rebuildRequired) {
             INFO(tr("Build to update locking..."));
         }
-        initializeFragment();
-        variableEditor->setDefault();
     }
     QSettings settings;
     settings.setValue("isStarting", false);
@@ -2153,7 +2136,7 @@ QString MainWindow::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-void MainWindow::showDebug() {
+void MainWindow::showPreprocessedScript() {
 
     logger->getListWidget()->clear();
     if (tabBar->currentIndex() == -1) {
@@ -2280,8 +2263,9 @@ bool MainWindow::initializeFragment() {
                 }
             }
         }
-        // this adjusts variable widgets, should be handled by layout container?
-        variableEditor->tabChanged(0);
+        
+        //TODO: remove group tab if it's empty, if all widgets in group are hidden
+        // then they have been optimized out by the glsl compiler
 
         return true;
     } else {
@@ -2327,7 +2311,7 @@ void MainWindow::cursorPositionChanged() {
     TextEdit *te = this->getTextEdit();
     if (!te) return;
     int pos = te->textCursor().position();
-    int blockNumber = te->textCursor().blockNumber();
+    int blockNumber = te->textCursor().blockNumber()+1;
 
     // Do reverse look up...
     FragmentSource* fs = engine->getFragmentSource();
@@ -2339,7 +2323,7 @@ void MainWindow::cursorPositionChanged() {
         // fs->sourceFiles[fs->sourceFile[i]]->fileName()
         if (fs->lines[i] == blockNumber &&
                 QString::compare(filename,fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive)==0
-           ) ex.append(QString::number(i+4));
+           ) ex.append(QString::number(i));
     }
     if (ex.count()) {
         x = tr(" Line in preprocessed script: ") + ex.join(",");
@@ -2347,7 +2331,7 @@ void MainWindow::cursorPositionChanged() {
         x = tr(" (Not part of current script) ");
     }
 
-    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber+1)+x, 5000);
+    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber)+x, 5000);
 }
 
 TextEdit* MainWindow::insertTabPage(QString filename) {
@@ -2361,26 +2345,21 @@ TextEdit* MainWindow::insertTabPage(QString filename) {
     textEdit->setTabStopWidth(20);
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
-    QString s = tr("// Write fragment code here...\r\n");
-/*    
-    s = "#include \"DE-Raytracer.frag\" \r\n\
+    QString s("// Write fragment code here...\r\n\
+#include \"MathUtils.frag\"\r\n\
+#include \"DE-Raytracer.frag\" \r\n\
 \r\n\
 float DE(vec3 pos) {\r\n\
 	return abs(length(abs(pos)+vec3(-1.0))-1.2);\r\n\
 }\r\n\
-\r\n\
+// minimum number of settings for a preset\r\n\
 #preset Default\r\n\
-FudgeFactor = 0.9\r\n\
-BoundingSphere = 5\r\n\
-Detail = -0.8\r\n\
-Specular = 2.25\r\n\
-SpecularExp = 33.332\r\n\
-SpotLight = 1,1,1,0.02174\r\n\
-SpotLightDir = -0.5619,0.06666\r\n\
-Glow = 1,1,1,0.21053\r\n\
-OrbitStrength = 0\r\n\
-#endpreset\r\n";
-*/
+FOV = 0.4\r\n\
+Eye = 5.582327,4.881191,-6.709066\r\n\
+Target = 0,0,0\r\n\
+Up = -0.1207781,0.8478234,0.5163409\r\n\
+#endpreset\r\n");
+
     textEdit->setPlainText(s);
 
     bool loadingSucceded = false;
@@ -2410,7 +2389,6 @@ OrbitStrength = 0\r\n\
             unique = true;
             for (int i = 0; i < tabInfo.size(); i++) {
                 if (tabInfo[i].filename == suggestedName) {
-                    //INFO("equal");
                     unique = false;
                     break;
                 }
@@ -2560,8 +2538,8 @@ void MainWindow::launchGallery() {
 }
 
 void MainWindow::makeScreenshot() {
-    engine->updateGL();
-    saveImage(engine->grabFrameBuffer());
+    engine->update();
+    saveImage(engine->grabFramebuffer());
 }
 
 void MainWindow::saveImage(QImage image) {
@@ -2687,6 +2665,13 @@ void MainWindow::setRecentFile(const QString &fileName)
 void MainWindow::setSplashWidgetTimeout(QSplashScreen* w) {
     splashWidget = w;
     QTimer::singleShot(2000, this, SLOT(removeSplash()));
+    // test for nVidia card and GL > 4.0
+    if( !(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
+            QMessageBox::critical(this, tr("OpenGL features missing"),
+                                  tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+        if(asmAction)editMenu->removeAction(asmAction);
+    }
+
 }
 
 void MainWindow::removeSplash() {
@@ -2842,42 +2827,15 @@ void MainWindow::initKeyFrameControl() {
         if(c>1) {
             for(int i =0; i<c; i++) {
                 QString presetname = variableEditor->getPresetName(i);
-                if(presetname.contains("KeyFrame")) { /// found a keyframe, add to list
-                    addKeyFrame(presetname);
-                    /// for each key frame add ctrl point to the list
-                    QStringList ps = variableEditor->getPresetByName(presetname);
-
-                    if(engine->cameraID() == "3D" ) {
-                      QStringList in = ps.filter("Eye ").at(0).split("=").at(1).split(",");
-                      QVector3D eyeCp = QVector3D(in.at(0).toFloat(),in.at(1).toFloat(),in.at(2).toFloat());
-
-                      in = ps.filter("Target").at(0).split("=").at(1).split(",");
-                      QVector3D tarCp = QVector3D(in.at(0).toFloat(),in.at(1).toFloat(),in.at(2).toFloat());
-
-                      in = ps.filter("Up").at(0).split("=").at(1).split(",");
-                      QVector3D upCp = QVector3D(in.at(0).toFloat(),in.at(1).toFloat(),in.at(2).toFloat());
-
-                      engine->addControlPoint(eyeCp,tarCp,upCp);
-                    }
+                if(presetname.contains("KeyFrame", Qt::CaseInsensitive)) { /// found a keyframe, add to keyframeMap
+                    QStringList p;
+                    p << presetname << variableEditor->getPresetByName( presetname );
+                    addKeyFrame( p );
                 }
             }
             
-            if( engine->cameraID() == "3D" ) {
-                QVector3D *eyeCp = engine->getControlPoints(1);
-                QVector3D *tarCp = engine->getControlPoints(2);
-                QVector3D *upCp =  engine->getControlPoints(3);
-
-                if(eyeCp != NULL && tarCp != NULL && upCp != NULL) {
-                    int segs = timeSlider->maximum()+1; // time 0:0 = frame 00:01
-                    engine->eyeSpline = new QtSpline(engine,k,segs, eyeCp);
-                    engine->targetSpline = new QtSpline(engine,k,segs, tarCp);
-                    engine->upSpline = new QtSpline(engine,k,segs, upCp);
-                    engine->eyeSpline->setSplineColor( QColor("red") );
-                    engine->eyeSpline->setControlColor( QColor("green"));
-                    engine->targetSpline->setSplineColor( QColor("blue"));
-                    engine->targetSpline->setControlColor( QColor("green"));
-                }
-            }
+            // after keyframeMap is complete create camera path splines in the engine
+            engine->createSplines(k,getFrameMax()+1);
         }
     }
 }
@@ -2885,7 +2843,6 @@ void MainWindow::initKeyFrameControl() {
 void MainWindow::clearKeyFrameControl() {
     variableEditor->setKeyFramesEnabled(false);
     if( engine->eyeSpline != NULL || engine->targetSpline != NULL || engine->upSpline != NULL) {
-        keyFrameList = QStringList();
         engine->clearControlPoints();
         engine->eyeSpline = NULL;
         engine->targetSpline = NULL;
@@ -2893,16 +2850,19 @@ void MainWindow::clearKeyFrameControl() {
         engine->setHasKeyFrames(false);
         timeSlider->setTickPosition(QSlider::NoTicks);
     }
+    keyframeMap.clear();
+}
+
+void MainWindow::addKeyFrame(QStringList kfps) {
+    /// for each key frame add ctrl point to the list
+    if(engine->cameraID() == "3D" ) {
+        KeyFrameInfo kf(kfps);
+        keyframeMap.insert(kf.index, &kf);
+        // TODO: control points in the engine need to be an indexed array
+        // in case they are not generated in order ie: editing a point in the middle
+        engine->addControlPoint(kf.eye,kf.target,kf.up);
     }
 
-void MainWindow::addKeyFrame(QString name) {
-    //check to see if the frame name already exists
-    int i = keyFrameList.indexOf(name);
-    if ( i == -1 ) { // not found
-        // add it to the list
-        keyFrameList << name;
-    } else //found so replace
-        keyFrameList.replace(i,name);
 }
 
 void MainWindow::selectPreset() {
@@ -2941,14 +2901,12 @@ void MainWindow::processGuiEvents() {
 
 }
 
-#ifdef NVIDIAGL4PLUS
 void MainWindow::dumpShaderAsm() {
     if(engine->hasShader())
         AsmBrowser::showPage(engine->shaderAsm(true), "Shader Program");
     if(engine->hasBufferShader())
         AsmBrowser::showPage(engine->shaderAsm(false), "Buffershader Program");
 }
-#endif // NVIDIAGL4PLUS
 
 void MainWindow::saveCmdScript() {
 

@@ -1,26 +1,42 @@
 #pragma once
 
-#ifdef Q_OS_MAC
-#include <openGL/gl.h>
-#include <openGL/glext.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
-
 #include <QPropertyAnimation>
 #include <QAnimationGroup>
 #include <QVector>
-#include <QtOpenGL>
-#include <QGLFormat>
-#include <QGLWidget>
 
-#ifdef NVIDIAGL4PLUS
+#include <QSurfaceFormat>
+#include <QOpenGLWidget>
+
+#include <QOpenGLFunctions_1_0>
+#include <QOpenGLFunctions_1_1>
+#include <QOpenGLFunctions_1_2>
+#include <QOpenGLFunctions_1_3>
+#include <QOpenGLFunctions_1_4>
+#include <QOpenGLFunctions_1_5>
+#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_2_1>
+#include <QOpenGLFunctions_3_0>
+#include <QOpenGLFunctions_3_1>
+#include <QOpenGLFunctions_3_2_Compatibility>
+#include <QOpenGLFunctions_3_2_Core>
+#include <QOpenGLFunctions_3_3_Compatibility>
+#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_0_Compatibility>
+#include <QOpenGLFunctions_4_0_Core>
+#include <QOpenGLFunctions_4_1_Compatibility>
 #include <QOpenGLFunctions_4_1_Core>
-#else
-#include <QOpenGLFunctions>
-#endif // NVIDIAGL4PLUS
+#include <QOpenGLFunctions_4_2_Compatibility>
+#include <QOpenGLFunctions_4_2_Core>
+#include <QOpenGLFunctions_4_3_Compatibility>
+#include <QOpenGLFunctions_4_3_Core>
+#include <QOpenGLFunctions_4_4_Compatibility>
+#include <QOpenGLFunctions_4_4_Core>
+#include <QOpenGLFunctions_4_5_Compatibility>
+#include <QOpenGLFunctions_4_5_Core>
+#include <QOpenGLFunctions_ES2>
 
+#include <QOpenGLFunctions>
+#include <QOpenGLExtraFunctions>
 #include <QOpenGLVersionFunctions>
 
 #include <QOpenGLFramebufferObject>
@@ -35,6 +51,7 @@
 #include "QtSpline.h"
 
 #ifdef USE_OPEN_EXR
+#include <OpenEXRConfig.h>
 #include <half.h>
 #include <ImfTileDescription.h>
 #include <ImfTiledOutputFile.h>
@@ -50,7 +67,6 @@
 #include <ImfPartHelper.h>
 #include <ImfPartType.h>
 
-#include <OpenEXRConfig.h>
 #include <Iex.h>
 
 #endif
@@ -72,11 +88,7 @@ namespace Fragmentarium {
     class CameraControl;
     
     
-    #ifdef NVIDIAGL4PLUS
-    class DisplayWidget : public QGLWidget, protected QOpenGLFunctions_4_1_Core
-    #else
-    class DisplayWidget : public QGLWidget, protected QOpenGLFunctions
-    #endif // NVIDIAGL4PLUS
+    class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
     {
       Q_OBJECT
     public:
@@ -84,7 +96,7 @@ namespace Fragmentarium {
       enum DrawingState { Progressive, Animation, Tiled };
 
       /// Constructor
-      DisplayWidget( QGLFormat format, GUI::MainWindow* mainWin, QWidget* parent);
+      DisplayWidget( GUI::MainWindow* mainWin, QWidget* parent);
       
       /// Destructor
       ~DisplayWidget();
@@ -168,12 +180,13 @@ namespace Fragmentarium {
       void updatePerspective();
       void drawLookatVector();
       void drawSplines();
-      QVector3D *getControlPoints(int i);
+      void createSplines(int numberOfControlPoints, int numberOfFrames);
+
       void addControlPoint(QVector3D eP, QVector3D tP, QVector3D uP);
       void clearControlPoints();
-      #ifdef NVIDIAGL4PLUS
+
       QStringList shaderAsm(bool w);
-      #endif // NVIDIAGL4PLUS
+
       /// should make these private?
       QVector<QVector3D> eyeControlPoints;
       QVector<QVector3D> targetControlPoints;
@@ -199,6 +212,9 @@ namespace Fragmentarium {
 
       void getRGBAFtile(Imf::Array2D< Imf::Rgba >& array, int w, int h);
       #endif
+      
+      void setVerbose(bool v) { verbose = v; };
+      
     public slots:
       void updateBuffers();
       void clearPreviewBuffer();
@@ -226,22 +242,6 @@ namespace Fragmentarium {
       
       QString cameraID() { return cameraControl->getID(); }
       
-      bool init() {
-        #ifdef NVIDIAGL4PLUS
-        bool ret = initializeOpenGLFunctions();
-        #else
-        initializeOpenGLFunctions();
-        #endif // NVIDIAGL4PLUS
-        vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
-        renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
-        /// test for nVidia card and set the nV flag
-        foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
-        #ifndef NVIDIAGL4PLUS
-        bool ret = true;
-        #endif // NVIDIAGL4PLUS
-        return ret;
-      };
-
 /// BEGIN 3DTexture
 //       void init3DTexture();
 //       void set3DTextureFileName( QString vfn ){ voxelFileName = vfn; };
@@ -259,7 +259,7 @@ namespace Fragmentarium {
       void contextMenuEvent (QContextMenuEvent* ev) Q_DECL_OVERRIDE;
       void mouseReleaseEvent ( QMouseEvent * ev) Q_DECL_OVERRIDE;
       void mousePressEvent ( QMouseEvent * ev) Q_DECL_OVERRIDE;
-//       void initializeGL() Q_DECL_OVERRIDE;
+      void initializeGL() Q_DECL_OVERRIDE;
       void paintEvent(QPaintEvent * ev) Q_DECL_OVERRIDE;
       void showEvent(QShowEvent * ) Q_DECL_OVERRIDE;
       
@@ -339,7 +339,7 @@ namespace Fragmentarium {
       double ZAtMXY;
       QPoint mouseXY;
       bool depthToAlpha;
-      
+      bool verbose;
       
       /// BEGIN 3DTexture
 //       QMatrix4x4 texMatrix;

@@ -150,3 +150,25 @@ Continuous integration
 
 # Testing on Mac
 + OSX 10.11 GCC 4.8 Qt-5.9.1 OpenEXR 2.2
+
+# Version bump 2.5.0-180909
+
++ Removed deprecated QGLWidget now using QOpenGL variants
++ Shift+Right mouse button: shows more menus when in fullscreen mode.
++ some improvements in the timeline editor ( RMB click on time slider )
++ added --verbose switch to commandline, turns on variable and info output to console
++ dock widgets are now stackable (uniform editor and log windows)
++ GL area shows scaled tiles when rendering images in tiled mode
++ cubemap sampler image format +x-x+y-y+z-z
++ reports "special", "gl", "uniform" and "unused" variables to console
+- removed NVIDIAGL4PLUS #define, now tests context
+- removed M Benesi spraygun code (loved it but nobody used it)
++ Progressive mode remembers last view when switching from Animation mode
++ "New" provides minimum working frag code
++ keyframe and easingcurves are handled with QMap<T,T> lists
+
+#  Tested on Linux desktop
++  Compiled with gcc (SuSE Leap 42.3) Qt 5.6.2
+
+#  Tested on Windows 10
++  Compiled with MinGW 4.9.2 Qt 5.6.2
