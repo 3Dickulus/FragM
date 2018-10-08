@@ -3,9 +3,8 @@
 ######################################################################
 TRANSLATIONS = Fragmentarium_de.ts  Fragmentarium_nl.ts  Fragmentarium_ru.ts
 TEMPLATE = app
-TARGET = Fragmentarium-2.0.beta
+TARGET = Fragmentarium-2.5.0
 DEPENDPATH += $$PWD/ \
-              /usr/include/OpenEXR \
               $$PWD/./Fragmentarium \
               $$PWD/./ThirdPartyCode \
               $$PWD/./Fragmentarium/GUI \
@@ -15,8 +14,6 @@ DEPENDPATH += $$PWD/ \
               $$PWD/./SyntopiaCore/Misc
 
 INCLUDEPATH += $$PWD/ \
-              /usr/include/OpenEXR \
-              /usr/include/GL \
               $$PWD/./Fragmentarium \
               $$PWD/./ThirdPartyCode \
               $$PWD/./Fragmentarium/GUI \
@@ -41,6 +38,7 @@ HEADERS += $$PWD/./Fragmentarium/GUI/CameraControl.h \
            $$PWD/./SyntopiaCore/Exceptions/Exception.h \
            $$PWD/./SyntopiaCore/Logging/ListWidgetLogger.h \
            $$PWD/./SyntopiaCore/Logging/Logging.h \
+           $$PWD/./SyntopiaCore/Misc/ColorUtils.h \
            $$PWD/./SyntopiaCore/Misc/MiniParser.h \
            $$PWD/./SyntopiaCore/Misc/Misc.h \
            $$PWD/./SyntopiaCore/Misc/Version.h \
@@ -51,6 +49,7 @@ HEADERS += $$PWD/./Fragmentarium/GUI/CameraControl.h \
            $$PWD/./ThirdPartyCode/QtSpline.h \
            $$PWD/./ThirdPartyCode/Timeline.h \
            $$PWD/./ThirdPartyCode/VideoDialog.h
+
 SOURCES += $$PWD/./Fragmentarium/Main.cpp \
            $$PWD/./Fragmentarium/GUI/CameraControl.cpp \
            $$PWD/./ThirdPartyCode/asmbrowser.cpp \
@@ -65,6 +64,7 @@ SOURCES += $$PWD/./Fragmentarium/Main.cpp \
            $$PWD/./Fragmentarium/Parser/Preprocessor.cpp \
            $$PWD/./SyntopiaCore/Logging/ListWidgetLogger.cpp \
            $$PWD/./SyntopiaCore/Logging/Logging.cpp \
+           $$PWD/./SyntopiaCore/Misc/ColorUtils.cpp \
            $$PWD/./SyntopiaCore/Misc/MiniParser.cpp \
            $$PWD/./SyntopiaCore/Misc/Misc.cpp \
            $$PWD/./SyntopiaCore/Misc/Version.cpp \
@@ -85,21 +85,32 @@ RESOURCES += $$PWD/./Fragmentarium.qrc
 CONFIG+=opengl widgets
 QT+=xml opengl widgets script
 
-DEFINES+=NVIDIAGL4PLUS
-DEFINES+=USE_OPEN_EXR
-QMAKE_CFLAGS+=-std=c++11
-
 OTHER_FILES += \
     $$PWD/./notes.txt \
     $$PWD/./changelog.txt \
     $$PWD/./Bugs.txt \
     $$PWD/./roadmap.txt
 
-win32:CONFIG(release, debug|release): LIBS += -mthreads -lmingwthrd -lwinpthread
-else:unix:CONFIG(release, debug|release): LIBS += -lz -lpthread
+win32:CONFIG(release, debug|release) {
+LIBS += -mthreads -lmingwthrd -lwinpthread
+LIBS += -L$$PWD/../OpenEXR/lib/ -lIlmImf-2_1 -lHalf -lIex-2_1 -lIexMath-2_1 -lImath-2_1 -lIlmThread-2_1
+}
+else:unix:CONFIG(release, debug|release) {
+LIBS += -lz -lpthread
+LIBS += -lIlmImf -lHalf -lIex -lIexMath -lImath -lIlmThread
+}
 
-LIBS += -L$$PWD/../OpenEXR/lib/ -lIlmImf -lHalf -lIex -lIexMath -lImath -lIlmThread
-win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Tools/mingw491_32/i686-w64-mingw32/lib -lz
+win32:CONFIG(release, debug|release) {
+LIBS += -LC:/Qt/Tools/mingw491_32/i686-w64-mingw32/lib -lz
+INCLUDEPATH += $$PWD/../OpenEXR/include/OpenEXR
+INCLUDEPATH += $$PWD/../OpenEXR/include
+DEPENDPATH += $$PWD/../OpenEXR/lib
+DEPENDPATH += $$PWD/../OpenEXR
+PRE_TARGETDEPS += $$PWD/../OpenEXR/lib/libIlmImf-2_1.a $$PWD/../OpenEXR/lib/libHalf.a $$PWD/../OpenEXR/lib/libIex-2_1.a  $$PWD/../OpenEXR/lib/libIexMath-2_1.a $$PWD/../OpenEXR/lib/libIlmThread-2_1.a $$PWD/../OpenEXR/lib/libImath-2_1.a
+}
+else:unix:CONFIG(release, debug|release) {
+INCLUDEPATH += /usr/include/OpenEXR
+}
 
 macx {
     ICON = $$PWD/./Icons/fileicons/Fragmentarium.icns
