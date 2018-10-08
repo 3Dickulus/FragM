@@ -83,16 +83,6 @@ namespace Fragmentarium {
       
       enum DrawingState { Progressive, Animation, Tiled };
 
-      enum FeedbackModifier {
-        NoFeedbackModifier = Qt::NoModifier,
-        AddModifier = Qt::ControlModifier,
-        MinusModifier = Qt::ControlModifier + Qt::AltModifier,
-        DeleteModifier = Qt::ControlModifier + Qt::ShiftModifier,
-        ClearModifier = Qt::ControlModifier + Qt::AltModifier + Qt::ShiftModifier,
-        FeedbackModifierMax // this one gets auto-set to count-1
-      };
-      Q_DECLARE_FLAGS(FeedbackModifiers,FeedbackModifier)
-      
       /// Constructor
       DisplayWidget( QGLFormat format, GUI::MainWindow* mainWin, QWidget* parent);
       
@@ -168,15 +158,6 @@ namespace Fragmentarium {
       }
       bool wantsDepthToAlpha(){return depthToAlpha; };
       
-      // M Benesi "Spray gun" public
-      bool wantZappaAdd;
-      bool wantZappaMinus;
-      bool wantZappaDelete;
-      bool wantZappaClear;
-      bool zapLocked;
-      void resetZappaStatus();
-      void setZapLock( bool lok ) { zapLocked = lok; };
-      bool getZapLock() { return zapLocked; };
       bool buttonDown;
       
       void clearTextureCache(QMap< QString, bool >* textureCacheUsed);
@@ -297,9 +278,6 @@ namespace Fragmentarium {
       /// Triggers a perspective update and a redraw
       void resizeGL(int w, int h) Q_DECL_OVERRIDE;
       void wheelEvent(QWheelEvent* e) Q_DECL_OVERRIDE;
-      
-      // M Benesi "Spray gun" protected
-      void setZappaStatus(Qt::KeyboardModifiers km);
       
     private:
       QOpenGLFramebufferObject* previewBuffer;

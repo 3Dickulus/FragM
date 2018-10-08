@@ -101,17 +101,11 @@ DisplayWidget::DisplayWidget ( QGLFormat format, MainWindow* mainWin, QWidget* p
     exrMode = false;
     depthToAlpha = false;
     ZAtMXY=0.0;
-    // M Benesi "Spray gun" DisplayWidget
-    zapLocked = false;
-    wantZappaMinus = false;
-    wantZappaDelete = false;
-    wantZappaAdd = false;
-    wantZappaClear = false;
     /// BEGIN 3DTexture
     //     m3DTexId = 0;
     /// END 3DTexture
     buttonDown = false;
-    }
+}
 
 void DisplayWidget::updateRefreshRate() {
     QSettings settings;
@@ -836,8 +830,8 @@ void DisplayWidget::makeBuffers() {
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     clearBackBuffer();
     previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
-    GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+        GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
         WARNING( tr("FBO Incomplete Error!") );
     }
     glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
@@ -1137,12 +1131,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
     if(subframeCounter == 1)
-    if(programID == shaderProgram->programId()) {
+        if(programID == shaderProgram->programId()) {
         qDebug() << "shaderProgram";
-    }
-    
+        }
+        
     if(subframeCounter == 1)
-    if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
+        if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
         qDebug() << "bufferShaderProgram";
     }
 
@@ -1154,11 +1148,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         GLenum type;
         GLchar name[bufSize];
 
-
         glGetActiveUniform( programID, (GLuint)i, bufSize, &length, &size, &type, name);        
         QString uniformName = (char *)name;
         QString uniformValue = "internal fragment variable";
-        
+
         // find a value to go with the name index in the program may not be the same as index in our list
         for( int n=0; n < vw.count(); n++) {
             if(uniformName == vw[n]->getName()) {
@@ -1383,9 +1376,9 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
         }
         /// copy the depth value @ mouse XY
         if(!zapLocked && subframeCounter == 1) {
-        float zatmxy;
-        glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
-        ZAtMXY = zatmxy;
+            float zatmxy;
+            glReadPixels ( mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy );
+            ZAtMXY = zatmxy;
         }
     }
     // restore state
@@ -1396,7 +1389,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
 void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast ) {
     //static int c = 0;
     //INFO(QString("drawToFrameBufferObject: %1").arg(c++));
-
+    
     if ( previewBuffer == 0 || !previewBuffer->isValid() ) {
       WARNING ( tr("Non valid FBO - previewBuffer") );
         return;
@@ -1627,8 +1620,9 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
     int subField = tmp.length();
     QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
     QString framesize = QString("%1x%2").arg ( tileMax*w ).arg ( tileMax*h );
-
+    
     for ( int i = 0; i< subframes; i++ ) {
+
 
         if ( !progress->wasCanceled() ) {
 
@@ -1648,19 +1642,16 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
             mainWindow->processGuiEvents();
 
             drawToFrameBufferObject ( hiresBuffer, false );
-
         }
     }
 
-
     (*im) = hiresBuffer->toImage();
-
+    
     subframeCounter=0;
-
+    
     if ( !hiresBuffer->release() ) {
       WARNING ( tr("Failed to release hiresBuffer FBO") );
     }
-
 }
 
 void DisplayWidget::setState ( DrawingState state ) {
@@ -1835,7 +1826,7 @@ void DisplayWidget::showEvent(QShowEvent * ) {
     // Show info first time...
     INFO ( vendor + " " + renderer );
     INFO ( tr("This video card supports: ") + GetOpenGLFlags().join ( ", " ) );
-
+    
     QStringList extensions;
 
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
@@ -1847,52 +1838,11 @@ void DisplayWidget::showEvent(QShowEvent * ) {
     }
     INFO ( tr("Available output formats: ") + extensions.join ( ", " ) );
 
-    if ( QSettings().value ( "autorun", true ).toBool() == false ) {
-        WARNING ( tr("Auto run is disabled! You must select \"Build\" and apply a preset.") );
-        WARNING ( tr("If the preset alters locked variables \"Build\" will be required again.") );
-        mainWindow->highlightBuildButton ( true );
-    }
 }
-
-void DisplayWidget::setZappaStatus(Qt::KeyboardModifiers km) {
-    if( km == AddModifier) {
-        wantZappaAdd = true;
-    } else if( km == MinusModifier ) {
-        wantZappaMinus = true;
-    }  else if( km == DeleteModifier ) {
-        wantZappaDelete=true;
-    } else if( km == ClearModifier ) {
-        wantZappaClear=true;
-    }
-};
-
-void DisplayWidget::resetZappaStatus() {
-    wantZappaMinus = false;
-    wantZappaAdd = false;
-    wantZappaDelete = false;
-    wantZappaClear = false;
-};
 
 void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
-    // M Benesi "Spray gun" wheelEvent
-    if( zapLocked ) {
-        QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
-        QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-        QVector3D eye = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-        ZAtMXY += (cameraControl->StepSize() * (ev->delta()/120.0) );
-        QVector3D target = cameraControl->screenTo3D( ev->x(), ev->y(), ZAtMXY );
-        QVector3D direction = (target-eye);
-        QVector3D dir = direction.normalized();
-        QVector3D offset = dir*(cameraControl->StepSize()*0.001);
-        target = target+offset;
-        mainWindow->setFeebackCoords( QVector3D(target.x(), target.y(), target.z()) );
-        requireRedraw ( clearOnChange );
-        QGLWidget::wheelEvent ( ev );
-        return;
-    }
-    
     cameraControl->wheelEvent ( ev );
     requireRedraw ( clearOnChange );
     ev->accept();
@@ -1901,18 +1851,8 @@ void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
 void DisplayWidget::mouseMoveEvent ( QMouseEvent *ev ) {
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
-    // M Benesi "Spray gun" mouseMoveEvent
-    mouseXY=ev->pos();
-    if( zapLocked ) {
-        if( buttonDown) {
-            QVector3D m = cameraControl->screenTo3D( ev->x(), ev->y(), ZAtMXY );
-            mainWindow->setFeebackCoords( QVector3D(m.x(), m.y(), m.z()) );
-            requireRedraw ( clearOnChange );
-            QGLWidget::mouseMoveEvent ( ev );
-        }
-        return;
-    }
-
+    mouseXY = ev->pos();
+    
     if( buttonDown) {
         bool redraw = cameraControl->mouseEvent ( ev, width(), height() );
         if ( redraw ) {
@@ -1925,10 +1865,8 @@ void DisplayWidget::mouseMoveEvent ( QMouseEvent *ev ) {
 void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) return;
 
-    // M Benesi "Spray gun" mouseReleaseEvent
     buttonDown=false;
-    resetZappaStatus();
-    if( zapLocked ) return;
+
     // if the user just clicked and didn't drag update the statusbar
     if ( ev->pos() == mouseXY ) {
         QVector3D mXYZ = cameraControl->screenTo3D( mouseXY.x(), mouseXY.y(), ZAtMXY );
@@ -1976,13 +1914,7 @@ void DisplayWidget::mouseReleaseEvent ( QMouseEvent* ev )  {
 void DisplayWidget::mousePressEvent ( QMouseEvent* ev )  {
     buttonDown=true;
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
-
-    // M Benesi "Spray gun" mousePressEvent
-    if( zapLocked ) // this is where ZAtMXY needs to be set to current zappa dist from camera
-      return;
-    if( ev->button() == Qt::LeftButton) {
-        setZappaStatus( ev->modifiers() );
-    }
+    if ( ev->button() == Qt::MouseButton::RightButton && ev->modifiers() == Qt::ShiftModifier) return;
 
     mouseXY=ev->pos();
 
@@ -1998,11 +1930,6 @@ void DisplayWidget::mousePressEvent ( QMouseEvent* ev )  {
 void DisplayWidget::keyPressEvent ( QKeyEvent* ev ) {
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
 
-    if( zapLocked ) {
-        QGLWidget::keyPressEvent ( ev );
-        return;
-    }
-
     bool redraw = cameraControl->keyPressEvent ( ev );
     if ( redraw ) {
         requireRedraw ( clearOnChange );
@@ -2014,24 +1941,6 @@ void DisplayWidget::keyPressEvent ( QKeyEvent* ev ) {
 
 void DisplayWidget::keyReleaseEvent ( QKeyEvent* ev ) {
     if ( mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled ) return;
-
-    if( zapLocked ) {
-        int fbi = mainWindow->getFeedbackIndex();
-        int fbmi = mainWindow->getFeedbackMaxIndex();
-        int fbc = mainWindow->getFeedbackCount();
-
-        if(ev->key() == Qt::Key_Left) fbi--;
-        else if(ev->key() == Qt::Key_Right) fbi++;
-
-        if(fbi+1 > fbc) fbi = fbc;
-        else if(fbi+1 > fbmi) fbi = 1;
-        else if(fbi-1 < 1) fbi = 1;
-
-        if(ev->key() == Qt::Key_Left || ev->key() == Qt::Key_Right) mainWindow->setFeedbackId( fbi );
-
-        QGLWidget::keyReleaseEvent ( ev );
-        return;
-    }
 
     bool redraw = cameraControl->keyPressEvent ( ev );
     if ( redraw ) {
@@ -2174,7 +2083,7 @@ void DisplayWidget::drawSplines() {
         glDepthFunc ( GL_LESS );    // closer to eye passes test
         glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
     }
-
+    
     targetSpline->drawSplinePoints();
     targetSpline->drawControlPoints ( p );
 

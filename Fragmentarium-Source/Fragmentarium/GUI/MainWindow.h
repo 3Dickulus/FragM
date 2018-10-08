@@ -74,19 +74,19 @@ namespace Fragmentarium {
       EasingInfo() {}
       EasingInfo(QString settings) : rawsettings(settings){
         QStringList easingOptions = settings.split(":");
-        slidername = easingOptions.at(0);
-        typeName = easingOptions.at(1);
-        typeNum = easingOptions.at(2).toInt();
-        startVal = easingOptions.at(3).toFloat();
-        endVal = easingOptions.at(4).toFloat();
-        firstFrame = easingOptions.at(5).toInt();
-        lastFrame = easingOptions.at(6).toInt();
-        period = easingOptions.at(7).toFloat();
-        amplitude = easingOptions.at(8).toFloat();
-        overshoot = easingOptions.at(9).toFloat();
-        loops = easingOptions.at(10).toInt();
-        pingpong = easingOptions.at(11).toInt();
-      }
+            slidername = easingOptions.at(0);
+            typeName = easingOptions.at(1);
+            typeNum = easingOptions.at(2).toInt();
+            startVal = easingOptions.at(3).toFloat();
+            endVal = easingOptions.at(4).toFloat();
+            firstFrame = easingOptions.at(5).toInt();
+            lastFrame = easingOptions.at(6).toInt();
+            period = easingOptions.at(7).toFloat();
+            amplitude = easingOptions.at(8).toFloat();
+            overshoot = easingOptions.at(9).toFloat();
+            loops = easingOptions.at(10).toInt();
+            pingpong = easingOptions.at(11).toInt();
+        }
       QString rawsettings;
       QString slidername;
       QString typeName;
@@ -202,19 +202,11 @@ namespace Fragmentarium {
 
       QString langID;
      
-      // M Benesi "Spray gun" public
-      bool fragHasFeedbackVars;
-      void setFeebackCoords( QVector3D crds ) { feedbackcrds[feedbackindex] = crds; };
-      QVector3D getFeebackCoords() { return feedbackcrds[feedbackindex]; };
-      QVector3D getFeebackCoord() { QVector3D ret = feedbackcrds[feedbackindex]; return QVector3D(ret.x(),ret.y(),ret.z()); };
-      int getFeedbackIndex(){ return feedbackindex;};
-      int getFeedbackCount(){ return feedbackcount;};
-      int getFeedbackMaxIndex(){ return feedbackmaxindex;};
-      
     protected:
       void dragEnterEvent(QDragEnterEvent *ev);
       void dropEvent(QDropEvent *ev);
       void closeEvent(QCloseEvent* ev);
+
       void keyReleaseEvent(QKeyEvent* ev);
       int timeMax;
       
@@ -341,10 +333,10 @@ namespace Fragmentarium {
       void rewind();
       void play();
       void stop();
-      #ifdef NVIDIAGL4PLUS
+
       void dumpShaderAsm();
-      #endif // NVIDIAGL4PLUS
-      void setFeedbackId( int fbi ){ zapIndex->setValue(fbi); };
+
+      QString getVersion() { return version.toLongString(); };
 
     private slots:
 #ifdef USE_OPEN_EXR
@@ -412,27 +404,6 @@ namespace Fragmentarium {
       void loadCmdScript();
       
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
-
-      // M Benesi "Spray gun" private
-      QVector4D grabFeedbackSettings();
-      QVector4D grabFeedbackSettings2();
-      QVector4D grabFeedbackRotation();
-      void setFeedbackArrayData();
-      void setFeedbackParameters();
-      void saveFeedback();
-      void loadFeedback();
-      void setZapLock( bool lok ) { engine->setZapLock(lok); };
-      void setZapClear() { engine->wantZappaClear = true;  engine->requireRedraw(true); };
-      void setFeedbackIndex( int fbi ){
-        if(fbi<feedbackmaxindex && fbi > 0) {
-          feedbackindex = fbi;
-          statusBar()->showMessage(QString("Zappa:%1, %2 : %3,%4,%5").
-          arg(fbi).arg(feedbackcount).
-          arg(feedbackcrds[fbi].x()).arg(feedbackcrds[fbi].y()).arg(feedbackcrds[fbi].z()), 0);
-          
-          setFeedbackParameters();
-        }
-      };
       
     private:
       QSpinBox* timeMaxSpinBox;
@@ -475,7 +446,7 @@ namespace Fragmentarium {
       QMenu *fileMenu;
       QMenu *editMenu;
       QMenu *renderMenu;
-      QMenu* parametersMenu;
+      QMenu *parametersMenu;
       QMenu *helpMenu;
       QToolBar *fileToolBar;
       QToolBar *renderToolBar;
@@ -553,27 +524,7 @@ namespace Fragmentarium {
 /// BEGIN 3DTexture
 //       QString voxelFileName;
 /// END 3DTexture
-      
-      // M Benesi "Spray gun" private
-      void enableZappaTools( bool doZap );
-      QToolBar *zappaToolBar;
-      QAction* zapLock;
-      QCheckBox* zapCheck;
-      QSpinBox* zapIndex;
-      QAction* zapIndx;
-      QPushButton* zapClear;
-      QAction* zapClr;
-      
-      int feedbackindex;
-      int feedbackcount;
-      int feedbackmaxindex;
-      QVector3D *feedbackcrds;
-      QVector4D *feedcontrol1;
-      QVector4D *feedcontrol2;
-      QVector4D *feedrotation;
-      QAction* loadfdbkAction;
-      QAction* savefdbkAction;
-      
+
 #ifdef USE_OPEN_EXR
       QMenu *exrToolsMenu;
       QStringList exrBinaryPath;

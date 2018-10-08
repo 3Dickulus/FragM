@@ -66,17 +66,23 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
 #ifdef USE_OPEN_EXR
     exrToolsMenu = 0;
 #endif
-    // M Benesi "Spray gun" MainWindow
-    fragHasFeedbackVars = false;
-    feedbackindex = 0;
-    feedbackcount = 0;
-    feedbackmaxindex = 102;
-    feedbackcrds = new QVector3D [feedbackmaxindex];
-    feedcontrol1 = new QVector4D [feedbackmaxindex];
-    feedcontrol2 = new QVector4D [feedbackmaxindex];
-    feedrotation = new QVector4D [feedbackmaxindex];
-    zapCheck = NULL;
-    zapLock = NULL;
+
+    MaxRecentFiles = 5;
+
+    lastStoredTime = 0;
+    engine = 0;
+    setAcceptDrops(true);
+
+    needRebuild(true);
+
+    oldDirtyPosition = -1;
+    setFocusPolicy(Qt::WheelFocus);
+
+    version = Version(2, 5, 0, 180909, "");
+    setAttribute(Qt::WA_DeleteOnClose);
+
+    fullScreenEnabled = false;
+
     QDir::setCurrent(QCoreApplication::applicationDirPath ()); // Otherwise we cannot find examples + templates
     init();
 }
@@ -228,7 +234,7 @@ void MainWindow::insertPreset() {
         needRebuild(true);
         initializeFragment();
         variableEditor->setPreset(newPresetName);
-
+ 
         INFO(tr("Added %1").arg(newPresetName));
     }
 }
@@ -364,11 +370,11 @@ void MainWindow::showControlHelp()
   "<h2>3D</h2>"
   "<p>"
   "<ul>"
-  "<li>Left mousebutton: change camera direction.</li>"
-  "<li>Right mousebutton: move camera in screen plane.</li>"
-  "<li>Left+Right mousebutton: zoom.</li>"
-  "<li>Shift+Left mousebutton: rotate object (around origin).</li>"
-  "<li>Shift+Alt+Left mousebutton: rotate object (around target).</li>"
+  "<li>Left mouse button: change camera direction.</li>"
+  "<li>Right mouse button: move camera in screen plane.</li>"
+  "<li>Left+Right mouse button: zoom.</li>"
+  "<li>Shift+Left mouse button: rotate object (around origin).</li>"
+  "<li>Shift+Alt+Left mouse button: rotate object (around target).</li>"
   "<li>Shift+Tilde (~) resets the view to look through origin (0,0,0)</li>"
   "<li>Wheel: Move forward/backward</li>"
   "<li>W/S: move forward/back.</li>"
@@ -576,7 +582,7 @@ void MainWindow::init()
     engine->show();
     if(!engine->init()) CRITICAL(tr("Engine failed to start!"));
     engine->updateRefreshRate();
-
+    
     tabBar = new QTabBar(this);
 
     tabBar->setTabsClosable(true);
@@ -810,253 +816,14 @@ void MainWindow::showWelcomeNote() {
 
 }
 
-// M Benesi "Spray gun" grabFeedbackSettings
-QVector4D MainWindow::grabFeedbackSettings() {
-
-    VariableEditor *ve = getVariableEditor();
-    int appI=0;
-    IntWidget* widgeti = dynamic_cast<IntWidget*>(ve->getWidgetFromName("ApplyOnIteration"));
-    if (!widgeti) WARNING("Could not find ApplyOnIteration interface widget");
-    else appI = widgeti->getValue();
-
-    int form=0;
-    widgeti = dynamic_cast<IntWidget*>(ve->getWidgetFromName("FormulaType"));
-    if (!widgeti ) WARNING("Could not find FormulaType interface widget");
-    else form = widgeti->getValue();
-
-    int appT=0;
-    widgeti = dynamic_cast<IntWidget*>(ve->getWidgetFromName("ApplicationType"));
-    if (!widgeti) WARNING("Could not find ApplicationType interface widget");
-    else appT = widgeti->getValue();
-
-    double fv1=0.0;
-    FloatWidget* widgetf = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FeedbackVariable1"));
-    if (!widgetf) WARNING("Could not find FeedbackVariable1 interface widget");
-    else fv1 = widgetf->getValue();
-
-    QVector4D floop = QVector4D(appI,form,appT,fv1);
-    return floop;
-
-}
-
-// M Benesi "Spray gun" grabFeedbackSettings2
-QVector4D MainWindow::grabFeedbackSettings2() {
-
-    VariableEditor *ve = getVariableEditor();
-    double fr=0.0;
-    FloatWidget* widget = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FeedbackRadius"));
-    if (!widget) WARNING("Could not find FeedbackRadius interface widget");
-    else fr = widget->getValue();
-
-    double fs=0.0;
-    widget = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FeedbackStrength"));
-    if (!widget ) WARNING("Could not find FeedbackStrength interface widget");
-    else fs = widget->getValue();
-//     if( engine->wantZappaMinus ) {
-//         fs=-fs;
-//     }
-
-    double fv=0.0;
-    widget = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FeedbackVariable2"));
-    if (!widget) WARNING("Could not find FeedbackVariable2 interface widget");
-    else fv = widget->getValue();
-
-    double fv2=0.0;
-    widget = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FeedbackVariable3"));
-    if (!widget) WARNING("Could not find FeedbackVariable3 interface widget");
-    else fv2 = widget->getValue();
-
-    QVector4D floop = QVector4D(fr,fs,fv,fv2);
-    return floop;
-
-}
-
-// M Benesi "Spray gun" grabFeedbackRotation
-QVector4D MainWindow::grabFeedbackRotation() {
-
-    VariableEditor *ve = getVariableEditor();
-    QVector3D fr=QVector3D(0,0,0);
-    Float3Widget* widget = dynamic_cast<Float3Widget*>(ve->getWidgetFromName("FBRotVector"));
-    if (!widget) WARNING("Could not find FBRotVector interface widget");
-    else fr = widget->getValue();
-
-    double fs=0.0;
-    FloatWidget* fwidget = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("FBRotAngle"));
-    if (!fwidget ) WARNING("Could not find FBRotAngle interface widget");
-    else fs = fwidget->getValue();
-
-    IntWidget* widgeti = dynamic_cast<IntWidget*>(ve->getWidgetFromName("FeedBackCutOff"));
-    if (!widgeti) WARNING("Could not find FeedBackCutOff interface widget");
-    else feedbackmaxindex = widgeti->getValue();
-
-    QVector4D floop = QVector4D(fr.x(),fr.y(),fr.z(),fs);
-    return floop;
-
-}
-
-void MainWindow::setFeedbackArrayData() {
-    QVector4D feedbacksettings = grabFeedbackSettings();
-    feedcontrol1[feedbackindex] = QVector4D (feedbacksettings.x(),feedbacksettings.y(),feedbacksettings.z(),feedbacksettings.w());
-    QVector4D feedbacksettings2 = grabFeedbackSettings2();
-    feedcontrol2[feedbackindex] = QVector4D (feedbacksettings2.x(),feedbacksettings2.y(),feedbacksettings2.z(),feedbacksettings2.w());
-    QVector4D feedbackrotation = grabFeedbackRotation();
-    feedrotation[feedbackindex] = QVector4D (feedbackrotation.x(),feedbackrotation.y(),feedbackrotation.z(),feedbackrotation.w());
-}
-
-void MainWindow::setFeedbackParameters() {
-    variableEditor->blockSignals(true);
-    setParameter("ApplyOnIteration", (int)feedcontrol1[feedbackindex].x());
-    setParameter("FormulaType", (int)feedcontrol1[feedbackindex].y());
-    setParameter("ApplicationType", (int)feedcontrol1[feedbackindex].z());
-    setParameter("FeedbackVariable1", (float)feedcontrol1[feedbackindex].w());
-    setParameter("FeedbackRadius", (float)feedcontrol2[feedbackindex].x());
-    setParameter("FeedbackStrength", (float)feedcontrol2[feedbackindex].y());
-    setParameter("FeedbackVariable2", (float)feedcontrol2[feedbackindex].z());
-    setParameter("FeedbackVariable3", (float)feedcontrol2[feedbackindex].w());
-    setParameter("FBRotVector",feedrotation[feedbackindex].x(),feedrotation[feedbackindex].y(),feedrotation[feedbackindex].z());
-    setParameter("FBRotAngle", (float)feedrotation[feedbackindex].w());
-    variableEditor->blockSignals(false);
-}
-
-void MainWindow::enableZappaTools( bool doZap )
-{
-    if(doZap) {
-        zappaToolBar->show();
-        if(!fileMenu->actions().contains(loadfdbkAction))
-            fileMenu->addAction(loadfdbkAction);
-        if(!fileMenu->actions().contains(savefdbkAction))
-            fileMenu->addAction(savefdbkAction);
-        if(!zappaToolBar->actions().contains(zapLock))
-            zappaToolBar->addAction(zapLock);
-        if(!zappaToolBar->actions().contains(zapIndx))
-            zappaToolBar->addAction(zapIndx);
-
-        zapIndex->setMaximum(feedbackcount);
-        zapIndex->setValue(feedbackindex);
-
-        if(zapCheck->isChecked())
-            statusBar()->showMessage(QString("Current Zappa:%1, %2 : %3,%4,%5").
-                                     arg(feedbackindex).
-                                     arg(feedbackcount).
-                                     arg(feedbackcrds[feedbackindex].x()).
-                                     arg(feedbackcrds[feedbackindex].y()).
-                                     arg(feedbackcrds[feedbackindex].z()), 0);
-
-        setZapLock(zapCheck->isChecked());
-
-        if(!zappaToolBar->actions().contains(zapClr))
-            zappaToolBar->addAction(zapClr);
-
-    } else {
-
-        if(fileMenu->actions().contains(loadfdbkAction))
-            fileMenu->removeAction(loadfdbkAction);
-        if(fileMenu->actions().contains(savefdbkAction))
-            fileMenu->removeAction(savefdbkAction);
-        if(zappaToolBar->actions().contains(zapLock))
-            zappaToolBar->removeAction( zapLock );
-        if(zappaToolBar->actions().contains(zapIndx))
-            zappaToolBar->removeAction( zapIndx );
-        if(zappaToolBar->actions().contains(zapClr))
-            zappaToolBar->removeAction( zapClr );
-        zappaToolBar->hide();
-        setZapLock(false);
-    }
-
-}
-
 void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
     
     if (!variableEditor || !shaderProgram) return;    
     variableEditor->setUserUniforms(shaderProgram);
-    if(feedbackcount != 0)
-    setFeedbackUniforms(shaderProgram);
-}
-
-void MainWindow::setFeedbackUniforms(QOpenGLShaderProgram* shaderProgram) {
-
-    // M Benesi "Spray gun" setFeedbackUniforms
-    // this sets the feedback uniform to mouseXY + depth@mouseXY
-    int uloc1 = shaderProgram->uniformLocation( "feedbackcrds" );
-    int uloc2 = shaderProgram->uniformLocation( "feedbackcontrol1" );
-    int uloc3 = shaderProgram->uniformLocation( "feedbackcontrol2" );
-    int uloc4 = shaderProgram->uniformLocation( "feedbackcount" );
-    int uloc5 = shaderProgram->uniformLocation( "feedbackrotation" );
-    int uloc6 = shaderProgram->uniformLocation( "FeedBackCutOff" );
-
-    // need to test for these too
-    // int ApplyOnIteration
-    // int FormulaType
-    // int ApplicationType
-    // float FeedbackVariable1
-
-    // float FeedbackRadius
-    // float FeedbackStrength
-    // float FeedbackVariable2
-    // float FeedbackVariable3
-
-    // QVector3D FBRotVector
-    // float FBRotAngle
-
-    fragHasFeedbackVars=false;
-
-    if( uloc1 != -1 && uloc2 != -1 && uloc3 != -1 && uloc4 != -1 && uloc5 != -1 && uloc6 != -1 ) {
-        fragHasFeedbackVars=true;
-
-        if( engine->wantZappaClear ) {
-            int i=0;
-            feedbackindex = 0;
-            feedbackcount = 0;
-            while (i<feedbackmaxindex) {
-                feedbackcrds[i]=QVector3D(333,0,0);
-                feedcontrol1[i]=feedcontrol2[i]=feedrotation[i]=QVector4D(333,0,0,0);
-                i++;
-            }
-        }
-        else if( engine->wantZappaDelete) {
-
-            feedbackcrds[feedbackcount]=QVector3D(333,0,0);
-            feedcontrol1[feedbackcount]=feedcontrol2[feedbackcount]=feedrotation[feedbackcount]=QVector4D(333,0,0,0);
-            feedbackcount--;
-
-            if(feedbackcount<0) feedbackcount=0;
-            if(feedbackindex>feedbackcount)feedbackindex=feedbackcount;
-
-        }
-        else if( (engine->wantZappaAdd) && (feedbackindex<feedbackmaxindex) ) {
-            feedbackindex++;
-            QPoint XY = engine->getMXY();
-            double zAtXY = engine->getZAtMXY();
-            QVector3D coords = engine->getCameraControl()->screenTo3D(XY.x(),XY.y(),zAtXY);
-            if(!engine->getZapLock())
-                feedbackcrds[feedbackindex] = QVector3D(coords.x(),coords.y(),coords.z());
-            QVector4D feedbacksettings = grabFeedbackSettings();
-            feedcontrol1[feedbackindex] = QVector4D (feedbacksettings.x(),feedbacksettings.y(),feedbacksettings.z(),feedbacksettings.w());
-            QVector4D feedbacksettings2 = grabFeedbackSettings2();
-            feedcontrol2[feedbackindex] = QVector4D (feedbacksettings2.x(),feedbacksettings2.y(),feedbacksettings2.z(),feedbacksettings2.w());
-            QVector4D feedbackrotation = grabFeedbackRotation();
-            feedrotation[feedbackindex] = QVector4D (feedbackrotation.x(),feedbackrotation.y(),feedbackrotation.z(),feedbackrotation.w());
-
-            if(feedbackindex>feedbackcount)feedbackcount=feedbackindex;
-            if(feedbackcount>feedbackmaxindex-1) feedbackcount=feedbackmaxindex-1;
-            if(feedbackindex>feedbackmaxindex-1)feedbackindex=0;
-
-        }
-
-        shaderProgram->setUniformValueArray(uloc1, feedbackcrds , feedbackmaxindex);
-        shaderProgram->setUniformValueArray(uloc2, feedcontrol1 , feedbackmaxindex);
-        shaderProgram->setUniformValueArray(uloc3, feedcontrol2 , feedbackmaxindex);
-        shaderProgram->setUniformValueArray(uloc5, feedrotation , feedbackmaxindex);
-        shaderProgram->setUniformValue(uloc4, feedbackcount);
-
-        enableZappaTools(fragHasFeedbackVars);
-    } else engine->setZapLock(false);
-
 }
 
 void MainWindow::variablesChanged(bool lockedChanged) {
     if(lockedChanged) highlightBuildButton(true);
-    if( fragHasFeedbackVars ) setFeedbackArrayData();
     engine->uniformsHasChanged();
 }
 
@@ -1119,16 +886,6 @@ void MainWindow::createActions()
     saveAsAction->setShortcut(tr("Ctrl+Shift+S"));
     saveAsAction->setStatusTip(tr("Save the script under a new name"));
     connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-// M Benesi "spray gun" load/save data
-    loadfdbkAction = new QAction(QIcon(":/Icons/open.png"), tr("Load &Zappas"), this);
-    loadfdbkAction->setShortcut(tr("Ctrl+Alt+L"));
-    loadfdbkAction->setStatusTip(tr("Load the Zappas from disk"));
-    connect(loadfdbkAction, SIGNAL(triggered()), this, SLOT(loadFeedback()));
-    savefdbkAction = new QAction(QIcon(":/Icons/save.png"), tr("Save &Zappas"), this);
-    savefdbkAction->setShortcut(tr("Ctrl+Alt+S"));
-    savefdbkAction->setStatusTip(tr("Save the Zappas to disk"));
-    connect(savefdbkAction, SIGNAL(triggered()), this, SLOT(saveFeedback()));
 
     closeAction = new QAction(QIcon(":/Icons/fileclose.png"), tr("&Close Tab"), this);
     closeAction->setShortcut(tr("Ctrl+W"));
@@ -1708,8 +1465,8 @@ retry:
         } else
 #endif
         {
-                    
-          for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+            
+            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
                 QTime tiletime;
                 tiletime.start();
@@ -1728,7 +1485,7 @@ retry:
                         int oy = (h-nh)/2;
                         im = im.copy(ox,oy,nw,nh);
                     }
-
+                    
                     if(w*maxTiles<32769 && h*maxTiles < 32769)
                         cachedTileImages.append(im);
 
@@ -1951,107 +1708,6 @@ void MainWindow::loadParameters() {
     loadParameters(fileName);
 }
 
-// M Benesi "Spray gun" saveFeedback
-void MainWindow::saveFeedback() {
-    // set filename extention filter
-  QString filter = tr("Fragment Parameters (*.fdbk);;All Files (*.*)");
-    // get a name from user
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), "", filter);
-
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Fragmentarium"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
-    }
-
-    QTextStream out(&file);
-    out << "// feedback data for: " + windowTitle().split(" ").at(0) + "\n";
-    out << "#feedbackvars\n";
-    out << "feedbackindex=" + QString("%1\n").arg(feedbackindex);
-    out << "feedbackcount=" + QString("%1\n").arg(feedbackcount);
-    out << "feedbackmaxindex=" + QString("%1\n").arg(feedbackmaxindex);
-    out << "#endfeedbackvars\n\n";
-    out << "//index , coords , ctrl1 , ctrl2 , rot \n";
-    out << "#feedbackdata\n";
-    for( int i=0; i<feedbackcount+1; i++ ) {
-        out << i << ",";
-        out << feedbackcrds[i].x() << " " << feedbackcrds[i].y() << " " << feedbackcrds[i].z() << " " << ",";
-        out << feedcontrol1[i].x() << " " << feedcontrol1[i].y() << " " << feedcontrol1[i].z() << " " << feedcontrol1[i].w() << ",";
-        out << feedcontrol2[i].x() << " " << feedcontrol2[i].y() << " " << feedcontrol2[i].z() << " " << feedcontrol2[i].w() << ",";
-        out << feedrotation[i].x() << " " << feedrotation[i].y() << " " << feedrotation[i].z() << " " << feedrotation[i].w() << "\n";
-    }
-    out << "#endfeedbackdata\n";
-
-    file.close();
-
-    statusBar()->showMessage(tr("Feedback saved to file"), 2000);
-}
-
-// M Benesi "Spray gun" loadFeedback
-void MainWindow::loadFeedback() {
-    // set filename extention filter
-    QString filter = tr("Fragment Parameters (*.fdbk);;All Files (*.*)");
-    // get a name from user
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Load From"), "", filter);
-
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Fragmentarium"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
-    }
-
-    QTextStream in(&file);
-    QString line = in.readLine();
-
-    while(line != "#feedbackvars") line = in.readLine();
-
-    if(line == "#feedbackvars") {
-        statusBar()->showMessage(tr("Reading Feedback vars..."), 2000);
-        while(line != "#endfeedbackvars") {
-            line = in.readLine();
-            if(line == "#endfeedbackvars") break;
-            if(line.startsWith("feedbackindex="))feedbackindex=line.split("=").at(1).toInt();
-            if(line.startsWith("feedbackcount="))feedbackcount=line.split("=").at(1).toInt();
-            if(line.startsWith("feedbackmaxindex="))feedbackmaxindex=line.split("=").at(1).toInt();
-        }
-    }
-
-    while(line != "#feedbackdata") line = in.readLine();
-    int dataCount = 0;
-    if(line == "#feedbackdata") {
-        statusBar()->showMessage(tr("Reading Feedback data..."), 2000);
-        while(line != "#endfeedbackdata") {
-            line = in.readLine();          //index , coords , ctrl1 , ctrl2 , rot
-            if(line == "#endfeedbackdata") break;
-            QStringList dataLine = line.split(",");
-            QStringList data = dataLine.at(1).split(" ");
-            QVector3D coord(data.at(0).toFloat(),data.at(1).toFloat(),data.at(2).toFloat());
-            feedbackcrds[dataCount] = coord;
-            data = dataLine.at(2).split(" ");
-            QVector4D feed(data.at(0).toFloat(),data.at(1).toFloat(),data.at(2).toFloat(),data.at(3).toFloat());
-            feedcontrol1[dataCount] = feed;
-            data = dataLine.at(3).split(" ");
-            feed = QVector4D(data.at(0).toFloat(),data.at(1).toFloat(),data.at(2).toFloat(),data.at(3).toFloat());
-            feedcontrol2[dataCount] = feed;
-            data = dataLine.at(4).split(" ");
-            feed = QVector4D(data.at(0).toFloat(),data.at(1).toFloat(),data.at(2).toFloat(),data.at(3).toFloat());
-            feedrotation[dataCount] = feed;
-            dataCount++;
-        }
-    }
-    if(dataCount != feedbackcount+1) qDebug() << "Warning! feedbackcount=" << feedbackcount << " feedbackdatacount=" << dataCount;
-    else
-        statusBar()->showMessage(tr("Feedback loaded from file"), 2000);
-    engine->requireRedraw ( true );
-
-}
-
 void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("File Toolbar"));
@@ -2168,30 +1824,6 @@ void MainWindow::createToolBars()
     renderModeToolBar->addWidget(frameLabel);
     renderModeToolBar->setObjectName("RenderingMode");
 
-    // M Benesi "spray gun
-    zappaToolBar = addToolBar(tr("Zappa Tools"));
-    zappaToolBar->setObjectName("ZappaToolBar");
-    zappaToolBar->layout()->setSpacing(10);
-
-    zapCheck = new QCheckBox(this);
-    zapCheck->setToolTip(tr("Enable Zappa Control"));
-    connect(zapCheck, SIGNAL(toggled(bool)), this, SLOT(setZapLock(bool)));
-    zapLock = zappaToolBar->addWidget(zapCheck);
-
-    zapIndex = new QSpinBox(this);
-    zapIndex->setToolTip(tr("Current Zappa Index"));
-    zapIndex->setMaximum(0);
-    zapIndex->setMinimum(0);
-    connect(zapIndex, SIGNAL(valueChanged(int)), this, SLOT(setFeedbackIndex(int)));
-    zapIndx = zappaToolBar->addWidget(zapIndex);
-
-    zapClear = new QPushButton(this);
-    zapClear->setToolTip(tr("Clear All Zappas"));
-    zapClear->setText(tr("Clear"));
-    connect(zapClear, SIGNAL(clicked()), this, SLOT(setZapClear()));
-    zapClr = zappaToolBar->addWidget(zapClear);
-    zappaToolBar->hide();
-
     addToolBarBreak();
     timeToolBar = addToolBar(tr("Time"));
 
@@ -2281,11 +1913,10 @@ void MainWindow::timeMaxChanged(int v) {
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
-    timeSlider->setMaximum(v*renderFPS);        // timeslider max = animation length in frames
-    timeSlider->setSingleStep(1);                       // should be one frame
+    timeSlider->setMaximum(v*renderFPS);  // timeslider max = animation length in frames
+    timeSlider->setSingleStep(1);        // should be one frame
     timeSlider->setPageStep(renderFPS); // should be one second
     timeMax=v;
-
     if(variableEditor->hasKeyFrames()) initKeyFrameControl();
 }
 
@@ -2567,8 +2198,6 @@ void MainWindow::highlightBuildButton(bool value) {
 }
 
 bool MainWindow::initializeFragment() {
- 
-    fragHasFeedbackVars=false;
 
     DisplayWidget::DrawingState oldState = engine->getState();
     bool pause = pausePlay;
@@ -2576,6 +2205,7 @@ bool MainWindow::initializeFragment() {
     stop();
 
     logger->getListWidget()->clear();
+    
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
@@ -2639,14 +2269,11 @@ bool MainWindow::initializeFragment() {
                     uloc = vw->uniformLocation(engine->getBufferShader());
                 /// locked widgets are transformed into const or #define so don't show up as uniforms
                 /// AutoFocus is a dummy so does not exist inside shader program
-                /// feedback vars are a special case these are transfered to an Array then used in the frag
-                /// and will get optimized out by the GPU compiler, if they exist we should not attempt to hide widgets
                 if(uloc == -1 &&
                         !(vw->getLockType() == Parser::Locked ||
                           vw->getDefaultLockType() == Parser::AlwaysLocked ||
                           vw->getDefaultLockType() == Parser::NotLockable) &&
-                        !wnames.at(i).contains("AutoFocus")  &&
-                        !(vw->getGroup().contains("Feedback") || vw->getName().contains("Feedback")))  {
+                        !wnames.at(i).contains("AutoFocus")  )  {
                     vw->hide();
                 } else {
                     vw->show();
@@ -3197,6 +2824,7 @@ void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u) {
 }
 
 void MainWindow::initKeyFrameControl() {
+    
     if( engine->eyeSpline != NULL || engine->targetSpline != NULL || engine->upSpline != NULL)
         clearKeyFrameControl();
 
@@ -3233,7 +2861,7 @@ void MainWindow::initKeyFrameControl() {
                     }
                 }
             }
-
+            
             if( engine->cameraID() == "3D" ) {
                 QVector3D *eyeCp = engine->getControlPoints(1);
                 QVector3D *tarCp = engine->getControlPoints(2);
@@ -3265,7 +2893,7 @@ void MainWindow::clearKeyFrameControl() {
         engine->setHasKeyFrames(false);
         timeSlider->setTickPosition(QSlider::NoTicks);
     }
-}
+    }
 
 void MainWindow::addKeyFrame(QString name) {
     //check to see if the frame name already exists
