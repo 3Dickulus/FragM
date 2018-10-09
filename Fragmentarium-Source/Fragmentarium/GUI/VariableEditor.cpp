@@ -80,6 +80,7 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     useDefines=false;
     keyFramesEnabled = false;
     saveEasing = false;
+    verbose = false;
 }
 
 void VariableEditor::presetSelected( QString presetName ) {
@@ -290,7 +291,7 @@ void VariableEditor::childChanged(bool lockedChanged) {
 }
 
 void VariableEditor::createGroup(QString g) {
-    //INFO("Creating new "+ g);
+    if(verbose) qDebug() << "Creating new group -> "+ g;
 
     QWidget* w =new QWidget(this,0);
 
@@ -384,7 +385,7 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
                 else
                   s = map[exp.cap(2)]->getLockedSubstitution2();
 
-//                 INFO("Substituted: " + s + " -> " + fs->source[i]);
+//                 if(verbose) qDebug() << "Substituted: " + s + " -> " + fs->source[i];
                 if (!s.isNull()) fs->source[i] = s;
             }
         }
@@ -429,7 +430,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
         bool found = false;
         for (int j = 0; j < variables.count(); j++) {
             QString name = variables[j]->getUniqueName();
-            // INFO("Checking " + name + " -> " +  ps[i]->getUniqueName());
+//             if(verbose) qDebug() << "Checking " + name + " -> " +  ps[i]->getUniqueName();
             if (name == ps[i]->getUniqueName()) {
                 found = true;
                 variables[j]->setUpdated(true);
@@ -437,7 +438,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 variables[j]->setPalette(QApplication::palette(variables[j]));
                 variables[j]->setAutoFillBackground(false);
 
-                // INFO("Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText()));
+//                 if(verbose) qDebug() << "Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText());
             }
         }
        
@@ -445,7 +446,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
         currentWidget->layout()->removeWidget(spacers[currentWidget]);
 
         if (!found) {
-            // INFO("Creating: " + ps[i]->getName());
+//             if(verbose) qDebug() << "Creating: " + ps[i]->getName();
             if (dynamic_cast<Parser::FloatParameter*>(ps[i])) {
                 Parser::FloatParameter* fp = dynamic_cast<Parser::FloatParameter*>(ps[i]);
                 QString name = fp->getName();
@@ -638,7 +639,7 @@ bool VariableEditor::setSettings(QString text) {
     for (int i = 0; i < variables.count(); i++) {
         if (maps.contains(variables[i]->getName())) {
             requiresRecompile = requiresRecompile | variables[i]->fromSettingsString(maps[variables[i]->getName()]);
-            //INFO("Found: "+variables[i]->getName());
+//             if(verbose) qDebug() << "Found: "+variables[i]->getName();
             maps.remove(variables[i]->getName());
         }
     }

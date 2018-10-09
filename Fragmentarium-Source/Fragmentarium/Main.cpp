@@ -132,12 +132,13 @@ int main(int argc, char *argv[])
     mainWin = new Fragmentarium::GUI::MainWindow(&splash);
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;
-    mainWin->setVerbose(parser.isSet("verbose"));
     
     mainWin->show();
 
     splash.setMask(pixmap.mask());
     splash.show();
+
+    mainWin->setVerbose(parser.isSet("verbose"));
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();

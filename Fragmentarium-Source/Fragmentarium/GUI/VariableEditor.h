@@ -99,6 +99,7 @@ public:
       }
       return varnames;
     }
+    void setVerbose( bool v ) { verbose = v; }
     
 signals:
     void changed(bool lockedChanged);
@@ -141,6 +142,7 @@ private:
     bool easingEnabled;
     bool saveEasing;
     bool useDefines;
+    bool verbose;
 };
 }
 }

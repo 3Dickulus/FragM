@@ -210,7 +210,7 @@ using namespace Imath;
         scriptText = text;
         executeScript();
       };
-      void setVerbose( bool v ) { getEngine()->setVerbose(v);};
+      void setVerbose( bool v ) { getEngine()->setVerbose(v); getVariableEditor()->setVerbose(v); };
 
       QString langID;
      
