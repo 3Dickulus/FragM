@@ -130,8 +130,8 @@ namespace Fragmentarium {
       bool hasBufferShader() {
         return (bufferShaderProgram!=0);
       }
-      void setupFragmentShader();
-      void setupBufferShader();
+      void initFragmentShader();
+      void initBufferShader();
       void setContinuous(bool value) {
         continuous = value;
       }

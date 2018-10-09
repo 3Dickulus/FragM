@@ -33,8 +33,8 @@ namespace Fragmentarium {
             LockType(LockTypeInner l) : inner(l) {}
             bool operator ==(const LockTypeInner lty) { return inner==lty; }
             bool operator !=(const LockTypeInner lty) { return inner!=lty; }
-            bool operator ==(const LockType lty) { return inner==lty.inner; }
-            bool operator !=(const LockType lty) { return inner!=lty.inner; }
+            bool operator ==(const LockType &lty) { return inner==lty.inner; }
+            bool operator !=(const LockType &lty) { return inner!=lty.inner; }
             QString toString() {
                 if (inner == Locked) {
                     return "Locked";

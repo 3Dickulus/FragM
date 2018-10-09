@@ -180,7 +180,7 @@ void DisplayWidget::setFragmentShader ( FragmentSource fs ) {
     INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
 
     requireRedraw ( true );
-    setupFragmentShader();    
+    initFragmentShader();    
 }
 
 void DisplayWidget::requireRedraw ( bool clear ) {
@@ -402,7 +402,7 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
     return asmList;
 }
 
-void DisplayWidget::setupFragmentShader() {
+void DisplayWidget::initFragmentShader() {
 
     QMap<QString, bool> textureCacheUsed;
     QImage im;
@@ -649,21 +649,21 @@ vec3  backgroundColor(vec3 dir) {
         } else WARNING ( tr("Unused sampler uniform: ") + textureName );
         
     }
-    setupBufferShader();
+    initBufferShader();
     clearTextureCache ( &textureCacheUsed );
 }
 
 void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) {
     if ( textureCacheUsed ) {
         // Check for unused textures
-        QMutableMapIterator<QString, int> i ( TextureCache );
+        QMapIterator<QString, int> i ( TextureCache );
         while ( i.hasNext() ) {
             i.next();
             if ( !textureCacheUsed->contains ( i.key() ) ) {
                 INFO ( tr("Removing texture from cache: ") +i.key() );
-// TODO delete textures
-// FIXME                GLuint id = i.value();
-// FIXME                deleteTexture ( id );
+
+                if( glIsTexture( i.value() ) )
+                glDeleteTextures(1, (GLuint*)&i.value() );
                 TextureCache.remove ( i.key() );
             }
         }
@@ -672,16 +672,18 @@ void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) 
         while ( i.hasNext() ) {
             i.next();
             INFO ( tr("Removing unused texture from cache: ") +i.key() );
-// TODO delete textures
-// FIXME            GLuint id = i.value();
-// FIXME            deleteTexture ( id );
+
+            if( glIsTexture( i.value() ) )
+            glDeleteTextures(1, (GLuint*)&i.value() );
+            TextureCache.remove ( i.key() );
+            
         }
     }
     TextureCache.clear();
 }
 
 
-void DisplayWidget::setupBufferShader() {
+void DisplayWidget::initBufferShader() {
   
     if ( bufferShaderProgram ) {
         bufferShaderProgram->release();

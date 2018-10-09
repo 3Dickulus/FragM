@@ -200,7 +200,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
     parseSource ( &fs, input, file, false );
 
     // Step two: resolve magic uniforms:
-    QRegExp pixelSizeCommand ( "^\\s*uniform\\s+vec2\\s+pixelSize.*$" ); // Look for 'uniform vec2 pixelSize'
+    QRegExp pixelSizeCommand ( "^\\s*uniform\\s+vec2\\s+pixelSize.*$",Qt::CaseInsensitive ); // Look for 'uniform vec2 pixelSize'
     if ( fs.source.indexOf ( pixelSizeCommand ) !=-1 ) {
         fs.hasPixelSizeUniform = true;
     } else fs.hasPixelSizeUniform = false;
