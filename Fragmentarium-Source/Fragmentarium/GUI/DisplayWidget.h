@@ -172,7 +172,7 @@ namespace Fragmentarium {
       
       bool buttonDown;
       
-      void clearTextureCache(QMap< QString, bool >* textureCacheUsed);
+      void clearTextureCache();
       
       QStringList getCurveSettings();
       void setCurveSettings(QStringList cset);
@@ -320,6 +320,8 @@ namespace Fragmentarium {
       
       QDateTime tileRenderStart;
       QMap<QString, int> TextureCache;
+      QMap<QString, bool> textureCacheUsed;
+
       bool doClearBackBuffer;
       QTimer* timer;
       int maxSubFrames;

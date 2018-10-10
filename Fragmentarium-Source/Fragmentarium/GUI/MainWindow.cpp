@@ -266,7 +266,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ev) {
 
 void MainWindow::clearTextures()
 {
-    engine->clearTextureCache(0);
+    engine->clearTextureCache();
 }
 
 void MainWindow::bufferSpinBoxChanged(int)
@@ -1870,7 +1870,7 @@ void MainWindow::timeLineRequest(QPoint ) {
 
   TimeLineDialog *timeDialog = new TimeLineDialog(this);
   timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
-  timeDialog->open();
+  timeDialog->exec();
 
 };
 

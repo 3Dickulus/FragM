@@ -404,7 +404,6 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
 
 void DisplayWidget::initFragmentShader() {
 
-    QMap<QString, bool> textureCacheUsed;
     QImage im;
 
     if ( shaderProgram ) {
@@ -650,36 +649,38 @@ vec3  backgroundColor(vec3 dir) {
         
     }
     initBufferShader();
-    clearTextureCache ( &textureCacheUsed );
-}
-
-void DisplayWidget::clearTextureCache ( QMap<QString, bool> *textureCacheUsed ) {
-    if ( textureCacheUsed ) {
+    
         // Check for unused textures
         QMapIterator<QString, int> i ( TextureCache );
         while ( i.hasNext() ) {
             i.next();
-            if ( !textureCacheUsed->contains ( i.key() ) ) {
-                INFO ( tr("Removing texture from cache: ") +i.key() );
+            if ( !textureCacheUsed.contains ( i.key() ) ) {
+                INFO ( tr("Removing unused texture from cache: ") +i.key() );
 
-                if( glIsTexture( i.value() ) )
-                glDeleteTextures(1, (GLuint*)&i.value() );
-                TextureCache.remove ( i.key() );
+                if( glIsTexture( i.value() ) ) {
+                    glDeleteTextures(1, (GLuint*)&i.value() );
+                    TextureCache.remove ( i.key() );
+                }
             }
         }
-    } else {
+}
+
+void DisplayWidget::clearTextureCache () {
+
         QMapIterator<QString, int> i ( TextureCache );
         while ( i.hasNext() ) {
             i.next();
-            INFO ( tr("Removing unused texture from cache: ") +i.key() );
+            INFO ( tr("Removing texture from cache: ") +i.key() );
 
-            if( glIsTexture( i.value() ) )
-            glDeleteTextures(1, (GLuint*)&i.value() );
-            TextureCache.remove ( i.key() );
+            if( glIsTexture( i.value() ) ) {
+                glDeleteTextures(1, (GLuint*)&i.value() );
+                TextureCache.remove ( i.key() );
+                textureCacheUsed.remove ( i.key() );
+            }
             
         }
-    }
-    TextureCache.clear();
+
+        TextureCache.clear();
 }
 
 

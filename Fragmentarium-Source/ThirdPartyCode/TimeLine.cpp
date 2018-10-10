@@ -93,7 +93,7 @@ void TimeLineDialog::readTimeLineSettings() {
         // initialize an empty map
         for(int x = 0; x < frames; x++) rectMap[x];
 
-    } else scene->addText(tr("No Keyframes. \"F8\" key while in \"Progressive\" mode."), QFont("Arial", 10) )->setPos(1,-20);
+    } else scene->addText(tr("No Keyframes. Use \"F8\" key while in \"Progressive\" mode."), QFont("Arial", 10) )->setPos(1,-30);
 
     yOff = 20;
 
@@ -108,7 +108,7 @@ void TimeLineDialog::readTimeLineSettings() {
         }
 
     }
-    else scene->addText(tr("No easing curves. \"Apply\" a preset that contains easing curve settings.\nOr create them with \"F7\" hotkey for the selected float slider."), QFont("Arial", 10) )->setPos(1,-40);
+    else scene->addText(tr("No easing curves. \"Apply\" a preset that contains easing curve settings.\nOr create them with \"F7\" hotkey for the selected float slider."), QFont("Arial", 10) )->setPos(1,-60);
 
     vCount = easingMap.count() == 0 ? 10 : uSettings.count();
 
