@@ -548,7 +548,7 @@ void MainWindow::init()
     int i = settings.value("refreshRate", 20).toInt();
     fmt.setSwapInterval(i);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
-    fmt.setSwapBehavior(QSurfaceFormat::SingleBuffer);
+    fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
     engine = new DisplayWidget(this, splitter);
     engine->setFormat(fmt);
