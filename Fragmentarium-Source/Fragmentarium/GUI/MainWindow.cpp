@@ -553,7 +553,7 @@ void MainWindow::init()
     engine = new DisplayWidget(this, splitter);
     engine->setFormat(fmt);
     engine->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
-    engine->makeCurrent();
+//     engine->makeCurrent(); makes GLContext current in toplevel window, only needs to be current in DisplayWidget
     engine->show();
     
     tabBar = new QTabBar(this);
