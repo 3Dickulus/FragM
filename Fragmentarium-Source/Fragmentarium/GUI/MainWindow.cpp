@@ -2157,6 +2157,8 @@ void MainWindow::showPreprocessedScript() {
 //                            "#define lowp\n";
         variableEditor->substituteLockedVariables(&fs);
         insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
+        // suggested by FF user Sabine62 18/10/12
+        tabBar->setTabText(tabBar->currentIndex(), QString("Preprocessed_%1").arg(strippedName(filename)));
     } catch (Exception& e) {
         WARNING(e.getMessage());
     }
