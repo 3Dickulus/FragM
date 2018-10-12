@@ -1363,7 +1363,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     // finished with the shader
     shaderProgram->release();
     
-//     glFinish(); // wait for GPU to return control
+    glFinish(); // wait for GPU to return control
 
     if (cameraControl->getID() == "3D") {
         // draw splines using depth buffer for occlusion... or not
@@ -1513,7 +1513,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glEnd();
     glPopAttrib();
 
-//     glFinish(); // wait for GPU to return control
+    glFinish(); // wait for GPU to return control
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
@@ -1642,6 +1642,7 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
 
         if ( !progress->wasCanceled() ) {
+            mainWindow->processGuiEvents();
 
             progress->setValue ( *steps );
             progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
@@ -1656,7 +1657,6 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
             drawToFrameBufferObject ( hiresBuffer, false );
         }
-            mainWindow->processGuiEvents();
     }
 
     (*im) = hiresBuffer->toImage();
@@ -1829,7 +1829,7 @@ void DisplayWidget::showEvent(QShowEvent * ) {
     int prof = context()->format().profile();
     QString s1 = QString("Using GL version %1.%2").arg(context()->format().majorVersion()).arg(context()->format().minorVersion());
     INFO(s1);
-    QString s2 = QString("Using GL profile %1").arg(prof==0 ? "None" : prof == 1 ? "Core" : prof == 2 ? "Compatability" : "oops");
+    QString s2 = QString("Using GL profile %1").arg(prof==0 ? "None" : prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "oops");
     INFO(s2);
     // report to console
     if( verbose ) {
