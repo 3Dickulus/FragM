@@ -88,7 +88,7 @@ namespace Fragmentarium {
     class CameraControl;
     
     
-    class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core
+    class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
     {
       Q_OBJECT
     public:
