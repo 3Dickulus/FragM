@@ -64,7 +64,6 @@ SOURCES += $$PWD/./Fragmentarium/Main.cpp \
            $$PWD/./Fragmentarium/Parser/Preprocessor.cpp \
            $$PWD/./SyntopiaCore/Logging/ListWidgetLogger.cpp \
            $$PWD/./SyntopiaCore/Logging/Logging.cpp \
-           $$PWD/./SyntopiaCore/Misc/ColorUtils.cpp \
            $$PWD/./SyntopiaCore/Misc/MiniParser.cpp \
            $$PWD/./SyntopiaCore/Misc/Misc.cpp \
            $$PWD/./SyntopiaCore/Misc/Version.cpp \
