@@ -105,7 +105,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-       cmake -DUSE_OPEN_EXR=ON ..
+       cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
        make
        make package
     fi
