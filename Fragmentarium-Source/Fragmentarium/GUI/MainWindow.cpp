@@ -682,15 +682,7 @@ initTools();
 void MainWindow::initTools() {
 
     QStringList filters;
-    
-    QDir binDir("bin");
-        if (!binDir.exists())
-            return;
-
-    QFile file(QString("bin") + QDir::separator() + QString("exrenvmap.exe"));
-        if (!file.exists())
-            return;
-        
+       
     if(exrToolsMenu == 0)
       exrToolsMenu = menuBar()->addMenu(tr("EXR &Tools"));
 
