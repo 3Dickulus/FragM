@@ -105,8 +105,8 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+       cmake -DUSE_OPEN_EXR=ON
        make
-       ls -l *.deb
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
