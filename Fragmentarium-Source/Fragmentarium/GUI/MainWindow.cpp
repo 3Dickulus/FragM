@@ -2713,9 +2713,10 @@ void MainWindow::preferences() {
     engine->updateRefreshRate();
     getTextEdit()->setStyleSheet(editorStylesheet);
 #ifdef USE_OPEN_EXR
-    initTools();
+#ifndef Q_OS_WIN
+initTools();
+#endif // UNIX
 #endif // USE_OPEN_EXR
-}
 
 void MainWindow::getBufferSize(int w, int h, int& bufferSizeX, int& bufferSizeY, bool& fitWindow) {
     if (engine && engine->getState()==DisplayWidget::Tiled) {
