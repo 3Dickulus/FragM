@@ -445,12 +445,8 @@ void DisplayWidget::initFragmentShader() {
     s = shaderProgram->link();
 
     if ( !s ) {
-        QStringList tmp = shaderProgram->log().split ( '\n' );
-        QStringList logStrings; // the first 5 lines
-        for ( int i=0; i<5; i++ ) logStrings << tmp.at ( i );
-        logStrings << "";
-        WARNING ( tr("Could not link fragment shaders: ") );
-        CRITICAL ( logStrings.join ( '\n' ) );
+        WARNING( tr("Could not link vertex + fragment shader: ") );
+        CRITICAL( shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = 0;
         return;
@@ -1125,7 +1121,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    if(subframeCounter == 1) {
+    if(subframeCounter == 1 && verbose) {
         if(programID == shaderProgram->programId()) {
             qDebug() << "\nshaderProgram";
         }
@@ -1236,7 +1232,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         }
 
             // type name and value to console
-            if(subframeCounter == 1) qDebug() << tp << "\t" << uniformName << uniformValue;
+            if(subframeCounter == 1 && verbose) qDebug() << tp << "\t" << uniformName << uniformValue;
             // this sets User (32 bit) uniforms not handled above
             if(!foundDouble) {
                 for( int n=0; n < vw.count(); n++) {
@@ -1250,7 +1246,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         
         if(foundDouble) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
-    if(subframeCounter == 1) qDebug() << " ";
+    if(subframeCounter == 1 && verbose) qDebug() << " ";
     
 }
 
