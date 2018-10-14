@@ -1421,7 +1421,10 @@ retry:
                   stopScript();
                   tile = maxTiles*maxTiles;
                 }
-                engine->tileAVG += tiletime.elapsed();
+                if((maxTiles*maxTiles) == 1)
+                    engine->tileAVG = tiletime.elapsed();
+                else
+                    engine->tileAVG += tiletime.elapsed();
                 // calculate the ETA for one frame
                 if(!od.doAnimation() || timeStep == startTime) {
                   int estRenderMS = ((maxTiles*maxTiles)-tile)*(engine->tileAVG/(tile+1));
@@ -1488,7 +1491,11 @@ retry:
                     stopScript();
                     tile = maxTiles*maxTiles;
                 }
-                engine->tileAVG += tiletime.elapsed();
+                
+                if((maxTiles*maxTiles) == 1)
+                    engine->tileAVG = tiletime.elapsed();
+                else
+                    engine->tileAVG += tiletime.elapsed();
                 // calculate the ETA for one frame
                 if(!od.doAnimation() || timeStep == startTime) {
                     int estRenderMS = ((maxTiles*maxTiles)-tile)*(engine->tileAVG/(tile+1));
@@ -1506,10 +1513,17 @@ retry:
         pause ? stop() : play();
         
         engine->tileAVG /= maxTiles*maxTiles;
-        engine->renderAVG += frametime.elapsed();
+        if((maxTiles*maxTiles) == 1)
+            engine->renderAVG = frametime.elapsed();
+        else
+            engine->renderAVG += frametime.elapsed();
         
         if(od.doAnimation() && timeStep != startTime) {
-          int estRenderMS = (engine->renderAVG/timeStep) * (timeSteps-timeStep);
+            int estRenderMS;
+            if((maxTiles*maxTiles) == 1)
+                estRenderMS = engine->renderAVG * (timeSteps-timeStep);
+            else
+                estRenderMS = (engine->renderAVG/timeStep) * (timeSteps-timeStep);
           QTime t(0,0,0,0);
           t=t.addMSecs(estRenderMS);
           engine->renderETA=t.toString("hh:mm:ss");
@@ -2089,7 +2103,8 @@ void MainWindow::loadFragFile(const QString &fileName)
         bool requiresRecompile = variableEditor->setDefault();
         rebuildRequired = initializeFragment();
         if (requiresRecompile || rebuildRequired) {
-            INFO(tr("Build to update locking..."));
+            if(!initializeFragment())
+                INFO(tr("Build to update locking..."));
         }
     }
     QSettings settings;
