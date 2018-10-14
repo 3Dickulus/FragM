@@ -683,6 +683,14 @@ void MainWindow::initTools() {
 
     QStringList filters;
     
+    QDir binDir("bin");
+        if (!binDir.exists())
+            return;
+
+    QFile file(QString("bin") + QDir::separator() + QString("exrenvmap.exe"));
+        if (!file.exists())
+            return;
+        
     if(exrToolsMenu == 0)
       exrToolsMenu = menuBar()->addMenu(tr("EXR &Tools"));
 
@@ -2717,6 +2725,7 @@ void MainWindow::preferences() {
 initTools();
 #endif // UNIX
 #endif // USE_OPEN_EXR
+}
 
 void MainWindow::getBufferSize(int w, int h, int& bufferSizeX, int& bufferSizeY, bool& fitWindow) {
     if (engine && engine->getState()==DisplayWidget::Tiled) {
