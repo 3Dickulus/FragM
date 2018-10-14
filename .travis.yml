@@ -107,6 +107,7 @@ script:
     then
        cmake -DUSE_OPEN_EXR=ON
        make
+       make package
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -123,7 +124,7 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
+      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
       wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
     fi
