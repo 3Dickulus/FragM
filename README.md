@@ -6,18 +6,15 @@ Continuous integration
 ----------------------
 [![Release][release-image]][releases]
 [![License][license-image]][license]
+[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
 
 [release-image]: https://img.shields.io/badge/release-2.5.0-green.svg?style=flat
-[releases]: https://github.com/3Dickulus/FragM/releases
+[releases]: https://github.com/3Dickulus/FragM/releases/latest
 
 [license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat
 [license]: https://github.com/3Dickulus/FragM/blob/master/LICENSE
 
-[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
-[![Coverity Status][coverity-image]][coverity-scan]
 
-[coverity-image]: https://scan.coverity.com/projects/14365/badge.svg?flat=1
-[coverity-scan]: https://scan.coverity.com/projects/3dickulus-fragm
  
 # Changes since v0.9.5
 + Stops playing/rendering at the end of animation
