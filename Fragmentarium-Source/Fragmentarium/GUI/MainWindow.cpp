@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 180909, "");
+    version = Version(2, 5, 0, 181016, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -2473,6 +2473,10 @@ void MainWindow::tabChanged(int index) {
 }
 
 void MainWindow::closeTab() {
+    if (tabBar->currentIndex() == -1) {
+        WARNING(tr("No open tab"));
+        return;
+    }
     int index = tabBar->currentIndex();
     closeTab(index);
 }
