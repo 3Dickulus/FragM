@@ -550,6 +550,8 @@ void MainWindow::init()
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
+    QSurfaceFormat::setDefaultFormat(fmt);
+
     engine = new DisplayWidget(this, splitter);
     engine->setFormat(fmt);
     engine->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
@@ -2173,7 +2175,10 @@ void MainWindow::showPreprocessedScript() {
         variableEditor->substituteLockedVariables(&fs);
         insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
         // suggested by FF user Sabine62 18/10/12
-        tabBar->setTabText(tabBar->currentIndex(), QString("Preprocessed_%1").arg(strippedName(filename)));
+        QString fname = QString("Preprocessed_%1").arg(strippedName(filename));
+        tabBar->setTabText(tabBar->currentIndex(), fname);
+        tabInfo[tabBar->currentIndex()].filename = fname;
+        
     } catch (Exception& e) {
         WARNING(e.getMessage());
     }
