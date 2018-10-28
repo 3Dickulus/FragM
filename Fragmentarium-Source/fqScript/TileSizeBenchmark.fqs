@@ -47,6 +47,9 @@ app.setPreview(false);
 // true = control from frag
 app.setAnimation(false);
 
+// select your test settings here
+app.applyPresetByName("Default");
+
 // begin
 app.setStartFrame(0);
 app.setEndFrame(0);
@@ -56,40 +59,40 @@ print(fragname+":");
 
 print("W\tH\tN\tSubframe\tTile\t\tImage");
 
-setFrameSpec(64,36,32,10);
+setFrameSpec(64,36,32,16);
 setFilenameNumber(1);
 // render an image
 app.tileBasedRender();
-printAverages(64,36,32,10);
+printAverages(64,36,32,16);
 
-setFrameSpec(128,72,16,10);
+setFrameSpec(128,72,16,16);
 setFilenameNumber(2);
 // render an image
 app.tileBasedRender();
-printAverages(128,72,16,10);
+printAverages(128,72,16,16);
 
-setFrameSpec(256,144,8,10);
+setFrameSpec(256,144,8,16);
 setFilenameNumber(3);
 // render an image
 app.tileBasedRender();
-printAverages(256,144,8,10);
+printAverages(256,144,8,16);
 
-setFrameSpec(512,288,4,10);
+setFrameSpec(512,288,4,16);
 setFilenameNumber(4);
 // render an image
 app.tileBasedRender();
-printAverages(512,288,4,10);
+printAverages(512,288,4,16);
 
-setFrameSpec(1024,576,2,10);
+setFrameSpec(1024,576,2,16);
 setFilenameNumber(5);
 // render an image
 app.tileBasedRender();
-printAverages(1024,576,2,10);
+printAverages(1024,576,2,16);
 
-setFrameSpec(2048,1152,1,10);
+setFrameSpec(2048,1152,1,16);
 setFilenameNumber(6);
 // render an image
 app.tileBasedRender();
-printAverages(2048,1152,1,10);
+printAverages(2048,1152,1,16);
 
 app.scriptExitProgram();
