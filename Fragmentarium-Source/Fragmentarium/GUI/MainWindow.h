@@ -345,6 +345,9 @@ using namespace Imath;
       void rewind();
       void play();
       void stop();
+      // for benchmark script
+      int getTileAVG() {return engine->tileAVG;};
+      int getRenderAVG(){return engine->renderAVG;};
 
       void dumpShaderAsm();
 
