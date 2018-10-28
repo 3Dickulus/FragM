@@ -96,6 +96,7 @@ void DisplayWidget::updateRefreshRate() {
         timer = new QTimer();
         connect ( timer, SIGNAL ( timeout() ), this, SLOT ( timerSignal() ) );
     }
+    if(i==0)i=1; // must be at least 1ms or GPU blocks GUI refresh.
     timer->start ( i );
     renderFPS = settings.value ( "fps", 25 ).toInt();
     INFO ( tr( "Setting display update timer to %1 ms (max %2 FPS)." ).arg ( i ).arg ( 1000.0/i,0,'f',2 ) );
@@ -1251,6 +1252,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 }
 
 void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
+    
     if(verbose && subframeCounter == 1) {
         static int c = 0;
         qDebug() << QString("Draw fragment program: %1").arg(c++);
@@ -1638,7 +1640,6 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
 
         if ( !progress->wasCanceled() ) {
-            mainWindow->processGuiEvents();
 
             progress->setValue ( *steps );
             progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
@@ -1759,13 +1760,7 @@ void DisplayWidget::updatePerspective() {
 }
 
 void DisplayWidget::timerSignal() {
-    static bool firstTime = true;
-    if ( firstTime ) {
-        firstTime = false;
-        updatePerspective();
-        requireRedraw ( true );
-    }
-    
+
     static QWidget* lastFocusedWidget = QApplication::focusWidget();
     if ( QApplication::focusWidget() !=lastFocusedWidget && cameraControl ) {
         cameraControl->releaseControl();
@@ -1786,6 +1781,8 @@ void DisplayWidget::timerSignal() {
         } else {
             if(buttonDown) return;
             QTime t = QTime::currentTime();
+            
+            // render
             update();
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );
@@ -1812,6 +1809,9 @@ void DisplayWidget::timerSignal() {
             }
         }
     }
+
+    mainWindow->processGuiEvents();
+
 }
 
 void DisplayWidget::showEvent(QShowEvent * ) {

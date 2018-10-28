@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181019, "");
+    version = Version(2, 5, 0, 181027, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -545,8 +545,7 @@ void MainWindow::init()
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(32);
     QSettings settings;
-    int i = settings.value("refreshRate", 20).toInt();
-    fmt.setSwapInterval(i);
+    fmt.setSwapInterval(0);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
@@ -555,7 +554,6 @@ void MainWindow::init()
     engine = new DisplayWidget(this, splitter);
     engine->setFormat(fmt);
     engine->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
-//     engine->makeCurrent(); makes GLContext current in toplevel window, only needs to be current in DisplayWidget
     engine->show();
     
     tabBar = new QTabBar(this);
@@ -1244,7 +1242,6 @@ retry:
         }
     }
 
-    engine->makeCurrent();
     DisplayWidget::DrawingState oldState = engine->getState();
     engine->setState(DisplayWidget::Tiled);
     engine->clearTileBuffer();
@@ -1310,6 +1307,8 @@ retry:
     progress.setValue(steps);
     progress.show();
     
+    processGuiEvents();
+
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
 
@@ -1806,8 +1805,7 @@ void MainWindow::createToolBars()
     renderModeToolBar->addWidget(subframeLabel);
     frameSpinBox = new QSpinBox(renderModeToolBar);
     frameSpinBox->setRange(0,10000);
-    frameSpinBox->setValue(10);
-//     frameSpinBox->setValue(QSettings().value("subframes").toInt());
+    frameSpinBox->setValue( settings.value("maxSubframes", 10).toInt() );
     frameSpinBox->setSingleStep(5);
 
     connect(frameSpinBox, SIGNAL(valueChanged(int)), this, SLOT(maxSubSamplesChanged(int)));
@@ -1919,6 +1917,7 @@ void MainWindow::rewind() {
     lastTime->restart();
     lastStoredTime = 0;
     getTime();
+    engine->update();
 }
 
 void MainWindow::play() {
@@ -2058,6 +2057,7 @@ void MainWindow::writeSettings()
     settings.setValue("windowState", saveState());
     settings.setValue("splitterSizes", splitter->saveState());
     settings.setValue("fullScreenEnabled", fullScreenEnabled);
+    settings.setValue("maxSubframes", getSubFrameMax());
     settings.setValue("fps", renderFPS);
     settings.setValue("timeMax", timeMax);
     settings.setValue("drawGLPaths", wantGLPaths);
