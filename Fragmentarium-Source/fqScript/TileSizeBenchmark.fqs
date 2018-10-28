@@ -1,0 +1,80 @@
+// fqscript
+// Tile size Benchmark
+// 3Dickulus 181024
+// requires ./benchmark/ folder
+// Usage:
+// ./Fragmentarium-2.5.0 -s ./fqScript/TileSizeBenchmark.fqs examples/some.frag
+// for more info about the script language see https://doc.qt.io/archives/qsa-1.2.2/language.html
+
+function setFrameSpec(w,h,m,s) {
+  // set the tile buffer size
+  app.setTileWidth(w);
+  app.setTileHeight(h);
+  // set tile multiplier
+  app.setTileMax(m);
+  // how many frames to accumulate
+  app.setSubFrames(s);
+}
+
+function printAverages(w,h,m,s) {
+    print( (w)+"\t"+(h)+"\t"+(m)+"\t"+((app.getTileAVG()/1000)/s).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) );
+}
+
+// false = save images
+// true = open a preview window for EACH image (be careful)
+app.setPreview(false);
+
+// false = no control from frag
+// true = control from frag
+app.setAnimation(true);
+
+// begin
+app.setStartFrame(0);
+app.setEndFrame(0);
+
+fragname = app.currentFragmentName(); // name without file ext .frag
+print(fragname+":");
+// we need a png filename, this is relative to the folder FragM is running in and must exist
+filename = "benchmark/" + fragname + ".png";
+
+app.setOutputBaseFileName( filename );
+
+print("W\tH\tN\tSubframe\tTile\t\tImage");
+
+setFrameSpec(64,36,32,64);
+app.setFrame(1);
+// render an image
+app.tileBasedRender();
+printAverages(64,36,32,64);
+
+setFrameSpec(128,72,16,64);
+app.setFrame(2);
+// render an image
+app.tileBasedRender();
+printAverages(128,72,16,64);
+
+setFrameSpec(256,144,8,64);
+app.setFrame(3);
+// render an image
+app.tileBasedRender();
+printAverages(256,144,8,64);
+
+setFrameSpec(512,288,4,64);
+app.setFrame(4);
+// render an image
+app.tileBasedRender();
+printAverages(512,288,4,64);
+
+setFrameSpec(1024,576,2,64);
+app.setFrame(5);
+// render an image
+app.tileBasedRender();
+printAverages(1024,576,2,64);
+
+setFrameSpec(2048,1152,1,64);
+app.setFrame(6);
+// render an image
+app.tileBasedRender();
+printAverages(2048,1152,1,64);
+
+app.scriptExitProgram();
