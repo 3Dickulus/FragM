@@ -1692,6 +1692,8 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
                                     .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
 
+            mainWindow->processGuiEvents();
+
             ( *steps ) ++;
 
             drawToFrameBufferObject ( hiresBuffer, false );
