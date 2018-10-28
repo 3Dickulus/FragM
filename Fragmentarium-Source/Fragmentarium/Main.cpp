@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     mainWin->show();
 
     splash.setMask(pixmap.mask());
-    splash.show();
+    if(!parser.isSet("script")) splash.show();
 
 
     QStringList args = parser.positionalArguments();
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
         mainWin->loadFragFile(QDir(mainWin->getExamplesDir()).absoluteFilePath("Historical 3D Fractals/Mandelbulb.frag"));
     }
 
-    mainWin->setSplashWidgetTimeout(&splash);
+    
     
     if(parser.isSet("script")) {
       QString filename = parser.value("script");
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
             } else qDebug() << "Script file " << filename << " open failed!";
         } else qDebug() << "Script file " << filename << " does not exist!";
       } else qDebug() << "Script file requires .fqs extention!";
-    }
+    } else mainWin->setSplashWidgetTimeout(&splash);
 
 /// BEGIN 3DTexture
 //     if(app.arguments().contains("-voxel")) {

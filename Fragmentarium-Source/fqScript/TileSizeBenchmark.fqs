@@ -16,6 +16,25 @@ function setFrameSpec(w,h,m,s) {
   app.setSubFrames(s);
 }
 
+// pad function from http://blog.hvidtfeldts.net/index.php/2010/11/scripting-in-structure-synth/
+function pad(number) {
+   number = number + ''; // convert to string
+   while (number.length < 5) { number = "0" + number; }
+   return number;
+}
+
+// name without file ext .frag
+fragname = app.currentFragmentName();
+
+function setFilenameNumber( i ) {
+
+    // we need to adjust the filename for each frame
+    app.setOutputBaseFileName("./benchmark/" + fragname + "." + pad(i) + ".png");
+  
+    // if the user wants to stop rendering break before next image
+    if(!app.scriptRunning()) break;
+}
+
 function printAverages(w,h,m,s) {
     print( (w)+"\t"+(h)+"\t"+(m)+"\t"+((app.getTileAVG()/1000)/s).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) );
 }
@@ -26,55 +45,51 @@ app.setPreview(false);
 
 // false = no control from frag
 // true = control from frag
-app.setAnimation(true);
+app.setAnimation(false);
 
 // begin
 app.setStartFrame(0);
 app.setEndFrame(0);
 
-fragname = app.currentFragmentName(); // name without file ext .frag
+// output name to console
 print(fragname+":");
-// we need a png filename, this is relative to the folder FragM is running in and must exist
-filename = "benchmark/" + fragname + ".png";
-
-app.setOutputBaseFileName( filename );
 
 print("W\tH\tN\tSubframe\tTile\t\tImage");
 
-setFrameSpec(64,36,32,64);
-app.setFrame(1);
+setFrameSpec(64,36,32,10);
+setFilenameNumber(1);
 // render an image
 app.tileBasedRender();
-printAverages(64,36,32,64);
+printAverages(64,36,32,10);
 
-setFrameSpec(128,72,16,64);
-app.setFrame(2);
+setFrameSpec(128,72,16,10);
+setFilenameNumber(2);
 // render an image
 app.tileBasedRender();
-printAverages(128,72,16,64);
+printAverages(128,72,16,10);
 
-setFrameSpec(256,144,8,64);
-app.setFrame(3);
+setFrameSpec(256,144,8,10);
+setFilenameNumber(3);
 // render an image
 app.tileBasedRender();
-printAverages(256,144,8,64);
+printAverages(256,144,8,10);
 
-setFrameSpec(512,288,4,64);
-app.setFrame(4);
+setFrameSpec(512,288,4,10);
+setFilenameNumber(4);
 // render an image
 app.tileBasedRender();
-printAverages(512,288,4,64);
+printAverages(512,288,4,10);
 
-setFrameSpec(1024,576,2,64);
-app.setFrame(5);
+setFrameSpec(1024,576,2,10);
+setFilenameNumber(5);
 // render an image
 app.tileBasedRender();
-printAverages(1024,576,2,64);
+printAverages(1024,576,2,10);
 
-setFrameSpec(2048,1152,1,64);
-app.setFrame(6);
+setFrameSpec(2048,1152,1,10);
+setFilenameNumber(6);
 // render an image
 app.tileBasedRender();
-printAverages(2048,1152,1,64);
+printAverages(2048,1152,1,10);
 
 app.scriptExitProgram();
