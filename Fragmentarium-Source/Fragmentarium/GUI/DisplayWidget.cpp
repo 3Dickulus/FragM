@@ -372,11 +372,17 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
 
     GLint len=0;
     glGetProgramiv ( progId, GL_PROGRAM_BINARY_LENGTH, &len );
-    uchar binary[len];
-    glGetProgramBinary ( progId, len, NULL, ( GLenum* ) binaryFormats, binary );
+    uchar binary[ size_t(len+1) ];
+
+    glGetProgramBinary ( progId, len, NULL, ( GLenum* ) binaryFormats, &binary[0] );
 
     QString asmTxt = "";
     QStringList asmList;
+
+    // contains ALL uniforms in buffershader and shader program
+    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
+    bool foundFirstUniform=false;
+    bool foundLastUniform=false;
 
     for ( int x=0; x<len-1; x++ ) {
         if ( isprint ( binary[x] ) ) {
@@ -385,20 +391,56 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
 
         if ( !asmList.isEmpty() && asmList.last() == "END" && !asmTxt.startsWith ( "!" ) ) {
             asmTxt="";
-            x++;
         }
 
-        if ( binary[x] == ';' || binary[x] == 10 || binary[x] == 0 ) {
-            if ( asmTxt.length() > 2 ) {
-                asmList << asmTxt;
-            }
+        if ( !asmTxt.isEmpty() && binary[x] == 10) { // end of assembler statement
+                if(foundFirstUniform==true) asmList << asmTxt;
             asmTxt="";
+            }
+
+        // this locates all of the uniform names not optimized out by the compiler
+        if ( !asmTxt.isEmpty() && binary[x] == 0  ) { // end of string literal
+            int uLoc = w ? shaderProgram->uniformLocation ( asmTxt ) : bufferShaderProgram->uniformLocation ( asmTxt );
+            if(uLoc != -1) {
+                if(uLoc == 0)foundFirstUniform=true;
+                if(foundFirstUniform==true) asmList << asmTxt;
+            } else { if( foundFirstUniform==true ) foundLastUniform=true; }
+
+            asmTxt="";
+        }
+        
+        if(!asmList.isEmpty() && foundLastUniform && asmList.last().length() == 1) asmList.removeLast();
+        
+    }
+
+    // find a value to go with the name, index in the program may not be the same as index in our list
+    for( int n=0; n < vw.count(); n++) {
+        asmTxt = vw[n]->getName();
+        if( asmList.indexOf( asmTxt ) != -1 ){
+            int uLoc = w ? shaderProgram->uniformLocation ( asmTxt ) : bufferShaderProgram->uniformLocation ( asmTxt );
+            if(uLoc != -1) {
+                QString newLine = QString("%1").arg(vw[n]->getLockedSubstitution());
+                asmList[ asmList.indexOf(vw[n]->getName()) ] = newLine;
+            }
         }
     }
 
-    // tidy head and tail
-    while ( !fragmentSource.getText().contains ( asmList.first() ) ) asmList.removeFirst();
-    while ( asmList.last() != "END" ) asmList.removeLast();
+// uncomment this if you want to save the binaries for hexeditor? disassembler?
+//     if(verbose) {
+//         QString fileName = w ? "RenderShader.bin" : "BufferShader.bin";
+//         QFile file(fileName);
+//         if (!file.open(QFile::WriteOnly)) {
+//             QMessageBox::warning(this, tr("Fragmentarium"),
+//                                 tr("Cannot write Shader binary %1:\n%2.")
+//                                 .arg(fileName)
+//                                 .arg(file.errorString()));
+//         return asmList;
+//         }
+// 
+//         file.write( ( char * )( &binary ), len );
+//         file.close();
+//         INFO(tr("Binary shader saved to file:")+fileName);
+//     }
 
     return asmList;
 }
