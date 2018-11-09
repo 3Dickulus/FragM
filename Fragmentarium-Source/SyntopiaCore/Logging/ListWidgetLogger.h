@@ -8,9 +8,10 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QApplication>
-
-
+#include <QSettings>
 #include "Logging.h"
+
+
 
 namespace SyntopiaCore {
     namespace Logging {

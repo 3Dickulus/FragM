@@ -2076,6 +2076,7 @@ void MainWindow::writeSettings()
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
+    settings.sync();
 }
 
 void MainWindow::openFile()
