@@ -87,6 +87,8 @@ Continuous integration
 + enabled MiddleButton (Wheel) click = center view at this location
 + Shift+Tilde key resets camera to look at origin 0,0,0
 + Shift+Alt+LMB rotates around target
+
+# These have been redacted due to lack of use may be brought back if there is demand
 + CTRL+LMB record mouse pos and increment feedback array counter
 + CTRL+Alt+LMB record mouse pos to feedback array
 + CTRL+SHIFT+LMB erase last mouse pos from feedback array and decrement counter
