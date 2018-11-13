@@ -59,7 +59,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     disabled = false;
     updatePerspective();
     pendingRedraws = 0;
-    requiredRedraws = 1;
     setMouseTracking ( true );
     backgroundColor = QColor ( 30,30,30 );
     contextMenu = 0;
@@ -186,9 +185,10 @@ void DisplayWidget::setFragmentShader ( FragmentSource fs ) {
 
 void DisplayWidget::requireRedraw ( bool clear ) {
     if ( disableRedraw ) return;
-    pendingRedraws = requiredRedraws;
+
     if ( clear ) {
         clearBackBuffer();
+        pendingRedraws = 1;
     } else {
         subframeCounter = 0;
     }
@@ -1294,7 +1294,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 }
 
 void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
-    
+
     if(verbose && subframeCounter == 1) {
         static int c = 0;
         qDebug() << QString("Draw fragment program: %1").arg(c++);
@@ -1428,7 +1428,6 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
     // restore state
     glPopAttrib();
-   
 }
 
 void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast ) {
@@ -1693,7 +1692,7 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
                                     .arg ( renderETA ) );
 
             mainWindow->processGuiEvents();
-
+            
             ( *steps ) ++;
 
             drawToFrameBufferObject ( hiresBuffer, false );

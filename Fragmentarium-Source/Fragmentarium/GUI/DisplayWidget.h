@@ -296,7 +296,6 @@ namespace Fragmentarium {
       void makeBuffers();
       void setPerspective();
       int pendingRedraws; // the number of times we must redraw
-      int requiredRedraws;
       QColor backgroundColor;
       
       QMenu* contextMenu;
@@ -341,7 +340,7 @@ namespace Fragmentarium {
       double ZAtMXY;
       QPoint mouseXY;
       bool depthToAlpha;
-      bool verbose;
+      int verbose;
       
       /// BEGIN 3DTexture
 //       QMatrix4x4 texMatrix;
