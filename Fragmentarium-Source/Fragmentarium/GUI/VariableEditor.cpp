@@ -12,6 +12,7 @@
 #include <QScrollArea>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QSpacerItem>
 
 #include "../../SyntopiaCore/Logging/ListWidgetLogger.h"
 #include "../../SyntopiaCore/Misc/MiniParser.h"
@@ -311,7 +312,7 @@ void VariableEditor::createGroup(QString g) {
 
     tabWidget->addTab(sa, g);
     tabs[g] = w;
-
+    
     QWidget* a = new QWidget();
     a->setLayout(new QVBoxLayout(a));
     a->layout()->setSpacing(0);
@@ -346,7 +347,8 @@ void VariableEditor::createGroup(QString g) {
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(resetGroup()));
     a->layout()->addWidget(c);
-
+    QSpacerItem *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    a->layout()->addItem(verticalSpacer);
     w->layout()->addWidget(a);
     spacers[w] = a;
 
@@ -456,8 +458,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 fw->setGroup(fp->getGroup());
                 fw->setDefaultLockType(fp->getLockType());
                 fw->setIsDouble(ps[i]->isDouble());
-                variables.append(fw);
                 fw->setUpdated(true);
+                variables.append(fw);
                 currentWidget->layout()->addWidget(fw);
             } else if (dynamic_cast<Parser::Float2Parameter*>(ps[i])) {
                 Parser::Float2Parameter* f2p = dynamic_cast<Parser::Float2Parameter*>(ps[i]);
@@ -468,8 +470,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 f2w->setGroup(f2p->getGroup());
                 f2w->setDefaultLockType(f2p->getLockType());
                 f2w->setIsDouble(ps[i]->isDouble());
-                variables.append(f2w);
                 f2w->setUpdated(true);
+                variables.append(f2w);
                 currentWidget->layout()->addWidget(f2w);
             } else if (dynamic_cast<Parser::Float3Parameter*>(ps[i])) {
                 Parser::Float3Parameter* f3p = dynamic_cast<Parser::Float3Parameter*>(ps[i]);
@@ -480,8 +482,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 f3w->setGroup(f3p->getGroup());
                 f3w->setDefaultLockType(f3p->getLockType());
                 f3w->setIsDouble(ps[i]->isDouble());
-                variables.append(f3w);
                 f3w->setUpdated(true);
+                variables.append(f3w);
                 currentWidget->layout()->addWidget(f3w);
             } else if (dynamic_cast<Parser::Float4Parameter*>(ps[i])) {
                 Parser::Float4Parameter* f4p = dynamic_cast<Parser::Float4Parameter*>(ps[i]);
@@ -492,8 +494,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 f4w->setGroup(f4p->getGroup());
                 f4w->setDefaultLockType(f4p->getLockType());
                 f4w->setIsDouble(ps[i]->isDouble());
-                variables.append(f4w);
                 f4w->setUpdated(true);
+                variables.append(f4w);
                 currentWidget->layout()->addWidget(f4w);
             } else if (dynamic_cast<Parser::IntParameter*>(ps[i])) {
                 Parser::IntParameter* ip = dynamic_cast<Parser::IntParameter*>(ps[i]);
@@ -503,8 +505,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 iw->setToolTip(ip->getTooltip());
 //                 iw->setStatusTip(ip->getTooltip());
                 iw->setDefaultLockType(ip->getLockType());
-                variables.append(iw);
                 iw->setUpdated(true);
+                variables.append(iw);
                 currentWidget->layout()->addWidget(iw);
             } else if (dynamic_cast<Parser::ColorParameter*>(ps[i])) {
                 Parser::ColorParameter* cp = dynamic_cast<Parser::ColorParameter*>(ps[i]);
@@ -515,8 +517,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 //                 cw->setStatusTip(cp->getTooltip());
                 cw->setDefaultLockType(cp->getLockType());
                 cw->setIsDouble(ps[i]->isDouble());
-                variables.append(cw);
                 cw->setUpdated(true);
+                variables.append(cw);
                 currentWidget->layout()->addWidget(cw);
             } else if (dynamic_cast<Parser::FloatColorParameter*>(ps[i])) {
                 Parser::FloatColorParameter* cp = dynamic_cast<Parser::FloatColorParameter*>(ps[i]);
@@ -527,8 +529,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 //                 cw->setStatusTip(cp->getTooltip());
                 cw->setDefaultLockType(cp->getLockType());
                 cw->setIsDouble(ps[i]->isDouble());
-                variables.append(cw);
                 cw->setUpdated(true);
+                variables.append(cw);
                 currentWidget->layout()->addWidget(cw);
             } else if (dynamic_cast<Parser::BoolParameter*>(ps[i])) {
                 Parser::BoolParameter* bp = dynamic_cast<Parser::BoolParameter*>(ps[i]);
@@ -538,8 +540,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 //                 bw->setStatusTip(bp->getTooltip());
                 bw->setGroup(bp->getGroup());
                 bw->setDefaultLockType(bp->getLockType());
-                variables.append(bw);
                 bw->setUpdated(true);
+                variables.append(bw);
                 currentWidget->layout()->addWidget(bw);
             } else if (dynamic_cast<Parser::SamplerParameter*>(ps[i])) {
                 Parser::SamplerParameter* sp = dynamic_cast<Parser::SamplerParameter*>(ps[i]);
@@ -549,8 +551,8 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 //                 sw->setStatusTip(sp->getTooltip());
                 sw->setGroup(sp->getGroup());
                 sw->setDefaultLockType(Parser::AlwaysLocked);
-                variables.append(sw);
                 sw->setUpdated(true);
+                variables.append(sw);
                 currentWidget->layout()->addWidget(sw);
 
             } else {
@@ -588,6 +590,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 
     if (showGUI) (*showGUI) = (variables.count() != 0);
     setPresets(fs->presets);
+    updateGeometry();
   }
 
 }

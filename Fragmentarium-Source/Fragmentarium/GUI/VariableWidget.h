@@ -14,8 +14,6 @@
 #include <QDoubleSpinBox>
 #include <QHBoxLayout>
 #include <QOpenGLShaderProgram>
-// #include "SyntopiaCore/Math/Vector3.h"
-// #include "SyntopiaCore/Math/Vector4.h"
 
 #include "../Parser/Preprocessor.h"
 #include "SyntopiaCore/Logging/Logging.h"
@@ -41,6 +39,10 @@ namespace Fragmentarium {
         public:
             ComboSlider(QWidget* parent, QWidget* variableEditor, double defaultValue, double minimum, double maximum)
                 : QWidget(parent), variableEditor(variableEditor), defaultValue(defaultValue), minimum(minimum), maximum(maximum){
+    
+                setMinimumSize(160,20);
+                setMaximumSize(1024,20);
+                
                 QHBoxLayout* l = new QHBoxLayout(this);
                 l->setSpacing(2);
                 l->setContentsMargins(0,0,0,0);
@@ -54,6 +56,7 @@ namespace Fragmentarium {
                 slider->setValue(val*scale);
                 slider->setSingleStep(scale/1000);
                 slider->setPageStep(scale/100);
+                slider->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Minimum));
                 l->addWidget(slider);
 
                 spinner = new QDoubleSpinBox(this);
@@ -63,6 +66,8 @@ namespace Fragmentarium {
                 spinner->setValue(defaultValue);
                 spinner->setKeyboardTracking(false);
                 l->addWidget(spinner);
+                 
+                setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Minimum));
 
                 connect(spinner, SIGNAL(valueChanged(double)), this, SLOT(spinnerChanged(double)));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
@@ -198,6 +203,8 @@ namespace Fragmentarium {
                 spinner->setValue(defaultValue);
                 spinner->setKeyboardTracking(false);
                 l->addWidget(spinner);
+
+                setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Minimum));
 
                 connect(spinner, SIGNAL(valueChanged(int)), this, SLOT(spinnerChanged(int)));
                 connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));

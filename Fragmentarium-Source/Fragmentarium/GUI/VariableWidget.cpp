@@ -35,13 +35,15 @@ VariableWidget::VariableWidget(QWidget* parent, QWidget* variableEditor, QString
     lockButton->setFlat(true);
     lockButton->setStyleSheet("QPushButton {border: none; outline: none;}");
     lockButton->setIcon(QIcon(":/Icons/padlockb.png"));
-    lockButton->setFixedSize(22,16);
+    lockButton->setFixedSize(12,18);
     lockButton->setCheckable(true);
-    vl->addWidget(lockButton,0,Qt::AlignLeft | Qt::AlignTop);
+    lockButton->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum));
+    vl->addWidget(lockButton,0,Qt::AlignLeft | Qt::AlignVCenter);
     connect(lockButton, SIGNAL(toggled(bool)), this, SLOT(locked(bool)));
     
     QLabel* label = new QLabel(name,this);
-    vl->addWidget(label,0,Qt::AlignLeft | Qt::AlignTop);
+    label->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum));
+    vl->addWidget(label,0,Qt::AlignRight | Qt::AlignVCenter);
     
     widget = new QWidget(this);
     vl->addWidget(widget);
@@ -451,6 +453,8 @@ ColorWidget::ColorWidget(QWidget* parent, QWidget* variableEditor, QString name,
     
     colorChooser = new ColorChooser(parent, defaultValue);
     colorChooser->setObjectName( QString("%1").arg(name) );
+    colorChooser->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Minimum));
+
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
     QApplication::postEvent(widget, new QEvent(QEvent::LayoutRequest));
@@ -495,8 +499,7 @@ FloatColorWidget::FloatColorWidget(QWidget* parent, QWidget* variableEditor, QSt
     comboSlider->setObjectName( QString("%1Slider").arg(name) );
 
     colorChooser = new ColorChooser(parent, defaultColorValue);
-    colorChooser->setMinimumHeight(5);
-    colorChooser->setMinimumWidth(30);
+    colorChooser->setFixedSize(60,20);
     colorChooser->setObjectName( QString("%1Chooser").arg(name) );
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
@@ -679,7 +682,7 @@ BoolWidget::BoolWidget(QWidget* parent, QWidget* variableEditor, QString name, b
     checkBox->setChecked(defaultValue);
     checkBox->setObjectName( QString("%1").arg(name) );
     connect(checkBox, SIGNAL(clicked()),  this, SLOT(valueChanged()));
-    l->addWidget(checkBox);
+    l->addWidget(checkBox,1,Qt::AlignLeft | Qt::AlignVCenter);
 }
 
 QString BoolWidget::toString() {
