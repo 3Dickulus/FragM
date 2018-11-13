@@ -39,6 +39,11 @@ function printAverages(w,h,m,s) {
     print( (w)+"\t"+(h)+"\t"+(m)+"\t"+((app.getTileAVG()/1000)/s).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) );
 }
 
+// not saving frag files
+app.setAutoSave(false);
+// not using unique ID in file name
+app.setUniqueID(false);
+
 // false = save images
 // true = open a preview window for EACH image (be careful)
 app.setPreview(false);
