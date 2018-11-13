@@ -6,6 +6,8 @@
 // #include "MainWindow.h"
 #include "ui_PreferencesDialog.h"
 
+
+
 namespace Fragmentarium {
     namespace GUI {
 
@@ -16,7 +18,8 @@ namespace Fragmentarium {
             PreferencesDialog(QWidget*){
 	QSettings settings;
 	      m_ui.setupUi(this);
-	      m_ui.moveMainCheckBox->setChecked(settings.value("moveMain", true).toBool());
+          m_ui.logToFileCheckBox->setChecked(settings.value("logToFile", true).toBool());
+          m_ui.moveMainCheckBox->setChecked(settings.value("moveMain", true).toBool());
 	      m_ui.lineNumbersCheckBox->setChecked(settings.value("lineNumbers", true).toBool());
 	      m_ui.loopPlayCheckBox->setChecked(settings.value("loopPlay", false).toBool());
 	      m_ui.drawGLPathsCheckBox->setChecked(settings.value("drawGLPaths", true).toBool());
@@ -31,7 +34,7 @@ namespace Fragmentarium {
           m_ui.exrBinPathsLineEdit->setText(settings.value("exrBinPaths", "bin;/usr/bin;").toString());
 #endif // USE_OPEN_EXR
           m_ui.stylesheetLineEdit->setText(settings.value("editorStylesheet", "font: 9pt Courier;").toString());
-	    };
+          };
             ~PreferencesDialog(){
 	    };
 
@@ -48,7 +51,8 @@ namespace Fragmentarium {
 	void saveSettings()
 	{
 	    QSettings settings;
-		settings.setValue("moveMain", m_ui.moveMainCheckBox->isChecked());
+        settings.setValue("logToFile", m_ui.logToFileCheckBox->isChecked());
+        settings.setValue("moveMain", m_ui.moveMainCheckBox->isChecked());
 		settings.setValue("lineNumbers", m_ui.lineNumbersCheckBox->isChecked());
 		settings.setValue("loopPlay", m_ui.loopPlayCheckBox->isChecked());
 		settings.setValue("drawGLPaths", m_ui.drawGLPathsCheckBox->isChecked());
@@ -63,7 +67,7 @@ namespace Fragmentarium {
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
         settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
-        
+        settings.sync();
     }
 
     private:

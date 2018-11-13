@@ -68,7 +68,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     exrToolsMenu = 0;
 #endif
 
-    MaxRecentFiles = 5;
+    MaxRecentFiles = 15;//sabine
 
     lastStoredTime = 0;
     engine = 0;
@@ -91,6 +91,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
 void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindow* mainWindow)
 {
     QMenu *preprocessorMenu = new QMenu(tr("Host Preprocessor Commands"), 0);
+    preprocessorMenu->addAction("#define providesInit", textEdit , SLOT(insertText()));//sabine
     preprocessorMenu->addAction("#info sometext", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#include \"some.frag\"", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#camera 2D", textEdit , SLOT(insertText()));
@@ -2076,6 +2077,7 @@ void MainWindow::writeSettings()
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
+    settings.sync();
 }
 
 void MainWindow::openFile()
@@ -2676,7 +2678,7 @@ void MainWindow::setRecentFile(const QString &fileName)
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-      QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+      QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).absoluteFilePath());//sabine
         recentFileActions[i]->setText(text);
         QString absPath = QFileInfo(files[i]).absoluteFilePath();
         recentFileActions[i]->setData(absPath);
