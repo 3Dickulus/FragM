@@ -305,6 +305,17 @@ using namespace Imath;
         settings.setValue("preview", a);
         settings.sync();
       };
+      void setAutoSave( bool s ) {
+        QSettings settings;
+        settings.setValue("autosave", s);
+        settings.sync();
+      }
+      void setUniqueID( bool u ) {
+        QSettings settings;
+        settings.setValue("unique", u);
+        settings.sync();
+      }
+      
       void tileBasedRender();
       void setFrame(int value) {
         setStartFrame(value);

@@ -1,4 +1,4 @@
-// VideoDialog.h
+#pragma once
 
 #ifndef VIDEO_DIALOG_H
 #define VIDEO_DIALOG_H

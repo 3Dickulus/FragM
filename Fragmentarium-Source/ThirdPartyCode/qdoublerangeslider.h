@@ -1,3 +1,4 @@
+#pragma once
 #ifndef QDOUBLERANGESLIDER_H
 #define QDOUBLERANGESLIDER_H
 

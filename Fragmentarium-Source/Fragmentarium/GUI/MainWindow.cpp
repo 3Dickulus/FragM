@@ -544,7 +544,6 @@ void MainWindow::init()
 
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(32);
-    QSettings settings;
     fmt.setSwapInterval(0);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
@@ -1925,7 +1924,6 @@ void MainWindow::play() {
     stopAction->setEnabled(true);
     lastTime->restart();
     engine->setContinuous(true);
-    engine->setFocus();
     getTime();
     pausePlay=false;
 }
@@ -2076,6 +2074,7 @@ void MainWindow::writeSettings()
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
+    settings.sync();
 }
 
 void MainWindow::openFile()
@@ -2931,7 +2930,7 @@ void MainWindow::processGuiEvents() {
 
 void MainWindow::dumpShaderAsm() {
     if(engine->hasShader())
-        AsmBrowser::showPage(engine->shaderAsm(true), "Shader Program");
+        AsmBrowser::showPage(engine->shaderAsm(true), "Rendershader Program");
     if(engine->hasBufferShader())
         AsmBrowser::showPage(engine->shaderAsm(false), "Buffershader Program");
 }

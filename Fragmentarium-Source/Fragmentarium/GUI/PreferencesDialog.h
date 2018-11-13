@@ -63,7 +63,7 @@ namespace Fragmentarium {
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
         settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
-        
+        settings.sync();
     }
 
     private:

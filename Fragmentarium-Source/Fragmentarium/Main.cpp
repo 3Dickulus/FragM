@@ -126,8 +126,6 @@ int main(int argc, char *argv[])
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
-    QSettings settings;
-
     Fragmentarium::GUI::MainWindow *mainWin;
     mainWin = new Fragmentarium::GUI::MainWindow(&splash);
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
