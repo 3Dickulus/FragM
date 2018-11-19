@@ -1374,6 +1374,8 @@ retry:
 
             Array2D<Rgba> pixels (tileHeight, tileWidth);
 
+            QTime refresh;
+            refresh.start();
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
               QTime tiletime;
@@ -1382,7 +1384,7 @@ retry:
               if (!progress.wasCanceled()) {
 
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh);
 
                     if (padding>0.0)  {
                         int w = im.width();
@@ -1445,6 +1447,8 @@ retry:
 #endif
         {
             
+            QTime refresh;
+            refresh.start();
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
                 QTime tiletime;
@@ -1452,7 +1456,7 @@ retry:
                 
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh);
                     if (padding>0.0)  {
                         int nw = (int)(tileWidth / (1.0 + padding));
                         int nh = (int)(tileHeight / (1.0 + padding));

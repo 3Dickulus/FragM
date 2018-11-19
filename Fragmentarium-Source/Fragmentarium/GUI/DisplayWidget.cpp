@@ -1631,7 +1631,7 @@ void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 }
 #endif
 
-void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im ) {
+void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im, QTime &refresh ) {
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -1682,16 +1682,20 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
         if ( !progress->wasCanceled() ) {
 
-            progress->setValue ( *steps );
-            progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
-                                    .arg ( tile,tileField,10, QChar ( '0' ) )
-                                    .arg ( i,subField,10,QChar ( '0' ) )
-                                    .arg ( frametile )
-                                    .arg ( framesize ) 
-                                    .arg ( (tileAVG/(tile+1))/1000.0 )
-                                    .arg ( renderETA ) );
+            // 4Hz display update frequency should be enough for humans
+            if ( refresh.elapsed() > 1000/4 ) {
+                refresh.restart();
+                progress->setValue ( *steps );
+                progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
+                                        .arg ( tile,tileField,10, QChar ( '0' ) )
+                                        .arg ( i,subField,10,QChar ( '0' ) )
+                                        .arg ( frametile )
+                                        .arg ( framesize )
+                                        .arg ( (tileAVG/(tile+1))/1000.0 )
+                                        .arg ( renderETA ) );
 
-            mainWindow->processGuiEvents();
+                mainWindow->processGuiEvents();
+            }
             
             ( *steps ) ++;
 
