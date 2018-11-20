@@ -1123,9 +1123,12 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileNam
     QString name = fileName;
 
     if (timeSteps > 1) {
+        int digits = 5;
+        if (timeSteps > 100000) digits = 6; // possible, feature-film length
+        if (timeSteps > 1000000) digits = 7; // unlikely
         int lastPoint = fileName.lastIndexOf(".");
         name = QString("%1.%2.%3").arg(fileName.left(lastPoint))
-               .arg((int)timeStep,5,10,QChar('0'))
+               .arg(timeStep,digits,10,QChar('0'))
                .arg(fileName.right(fileName.size()-lastPoint-1));
     }
     return name;
