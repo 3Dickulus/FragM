@@ -357,8 +357,9 @@ using namespace Imath;
       void play();
       void stop();
       // for benchmark script
-      int getTileAVG() {return engine->tileAVG;};
-      int getRenderAVG(){return engine->renderAVG;};
+      double getSubAVG()  {return engine->subTime   / (double) engine->subCount;};
+      double getTileAVG() {return engine->tileTime  / (double) engine->tileCount;};
+      double getFrameAVG(){return engine->frameTime / (double) engine->frameCount;};
 
       void dumpShaderAsm();
 

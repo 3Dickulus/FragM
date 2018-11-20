@@ -1290,11 +1290,15 @@ retry:
         timeSteps = endTime;
     }
 
-    int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
-    int steps = startTime*maxTiles*maxTiles*maxSubframes;
-    
-    engine->tileAVG = 0;
-    engine->renderAVG = 0;
+    int64_t totalSteps = (int64_t)timeSteps*maxTiles*maxTiles*maxSubframes;
+    int64_t steps = (int64_t)startTime*maxTiles*maxTiles*maxSubframes;
+
+    engine->subCount = 0;
+    engine->subTime = 0;
+    engine->tileCount = 0;
+    engine->tileTime = 0;
+    engine->frameCount = 0;
+    engine->frameTime = 0;
     engine->renderETA =  "";
     engine->framesToRender = endTime - startTime;
 
@@ -1307,6 +1311,10 @@ retry:
     progress.show();
     
     processGuiEvents();
+
+    // reset statistics
+    QTime totalTime;
+    totalTime.start();
 
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
@@ -1384,7 +1392,7 @@ retry:
               if (!progress.wasCanceled()) {
 
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh, totalTime);
 
                     if (padding>0.0)  {
                         int w = im.width();
@@ -1421,23 +1429,12 @@ retry:
                     }
                 } else {
                   stopScript();
-                  tile = maxTiles*maxTiles;
+                  tile = maxTiles*maxTiles - 1;
                 }
-                if((maxTiles*maxTiles) == 1)
-                    engine->tileAVG = tiletime.elapsed();
-                else
-                    engine->tileAVG += tiletime.elapsed();
-                // calculate the ETA for one frame
-                if(!od.doAnimation() || timeStep == startTime) {
-                  int estRenderMS = ((maxTiles*maxTiles)-tile)*(engine->tileAVG/(tile+1));
-                  QTime t(0,0,0,0);
-                  t=t.addMSecs(estRenderMS);
-                  engine->renderETA=t.toString("hh:mm:ss");
-                  
-                  if( estRenderMS > 86400000 ) // takes longer than 24 hours
-                    engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
-                }
-                
+
+                engine->tileCount += 1;
+                engine->tileTime = totalTime.elapsed();
+
             }
 
             imageSaved = out.isValidLevel(0,0);
@@ -1456,7 +1453,7 @@ retry:
                 
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh);
+                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, refresh, totalTime);
                     if (padding>0.0)  {
                         int nw = (int)(tileWidth / (1.0 + padding));
                         int nh = (int)(tileHeight / (1.0 + padding));
@@ -1493,48 +1490,17 @@ retry:
                         }
                 } else {
                     stopScript();
-                    tile = maxTiles*maxTiles;
+                    tile = maxTiles*maxTiles - 1;
                 }
-                
-                if((maxTiles*maxTiles) == 1)
-                    engine->tileAVG = tiletime.elapsed();
-                else
-                    engine->tileAVG += tiletime.elapsed();
-                // calculate the ETA for one frame
-                if(!od.doAnimation() || timeStep == startTime) {
-                    int estRenderMS = ((maxTiles*maxTiles)-tile)*(engine->tileAVG/(tile+1));
-                    QTime t(0,0,0,0);
-                    t=t.addMSecs(estRenderMS);
-                    engine->renderETA=t.toString("hh:mm:ss");
 
-                    if( estRenderMS > 86400000 ) // takes longer than 24 hours
-                      engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
-                }
+                engine->tileCount += 1;
+                engine->tileTime = totalTime.elapsed();
+
                 engine->update();
             }
         }
-        
+
         pause ? stop() : play();
-        
-        engine->tileAVG /= maxTiles*maxTiles;
-        if((maxTiles*maxTiles) == 1)
-            engine->renderAVG = frametime.elapsed();
-        else
-            engine->renderAVG += frametime.elapsed();
-        
-        if(od.doAnimation() && timeStep != startTime) {
-            int estRenderMS;
-            if((maxTiles*maxTiles) == 1)
-                estRenderMS = engine->renderAVG * (timeSteps-timeStep);
-            else
-                estRenderMS = (engine->renderAVG/timeStep) * (timeSteps-timeStep);
-          QTime t(0,0,0,0);
-          t=t.addMSecs(estRenderMS);
-          engine->renderETA=t.toString("hh:mm:ss");
-          
-          if( estRenderMS > 86400000 ) // takes longer than 24 hours
-            engine->renderETA = QString(" %1:%2").arg((int)( ((double)estRenderMS / 86400000) )).arg(engine->renderETA);
-        }
 
         // Now assemble image
         if (!progress.wasCanceled() &&
@@ -1599,6 +1565,10 @@ retry:
             }
             else WARNING(tr("Save file failed! : ") + name);
         }
+
+        engine->frameCount += 1;
+        engine->frameTime = totalTime.elapsed();
+
     }
 
     engine->tilesCount = 0;

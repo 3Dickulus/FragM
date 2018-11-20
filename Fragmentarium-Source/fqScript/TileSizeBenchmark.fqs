@@ -36,7 +36,7 @@ function setFilenameNumber( i ) {
 }
 
 function printAverages(w,h,m,s) {
-    print( (w)+"\t"+(h)+"\t"+(m)+"\t"+((app.getTileAVG()/1000)/s).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) );
+    print( (w)+"\t"+(h)+"\t"+(m)+"\t"+(app.getSubAVG()/1000).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getFrameAVG()/1000).toFixed(9) );
 }
 
 // not saving frag files

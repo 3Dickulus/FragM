@@ -102,7 +102,7 @@ namespace Fragmentarium {
       ~DisplayWidget();
       
       void clearTileBuffer();
-      void renderTile(double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int* steps, QImage *im, QTime &refresh);
+      void renderTile(double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int64_t* steps, QImage *im, QTime &refresh, QTime &totalTime);
       
       /// Use this whenever a redraw is required.
       /// Calling this function multiple times will still only result in one redraw
@@ -199,9 +199,10 @@ namespace Fragmentarium {
       QString renderer;
       
       QString renderETA;
-      int renderAVG;
       int framesToRender;
-      int tileAVG;
+      int64_t subTime, subCount;
+      int64_t tileTime, tileCount;
+      int64_t frameTime, frameCount;
       
       int subframeCounter;
       int tilesCount;

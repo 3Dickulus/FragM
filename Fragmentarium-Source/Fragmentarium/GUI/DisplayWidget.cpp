@@ -29,6 +29,20 @@ namespace GUI {
 
 using namespace Parser;
 
+// use int64_t to allow renders longer than 24.8 days without overflowing
+int64_t computeETA( int64_t elapsed, int64_t total, int64_t current ) {
+    return elapsed * (total - current) / (double) current;
+}
+
+QString formatTime( int64_t estRenderMS ) {
+    QTime t(0,0,0,0);
+    const int day = 24 * 60 * 60 * 1000;
+    int days = estRenderMS / day;
+    estRenderMS %= day;
+    t=t.addMSecs((int) estRenderMS);
+    return QString(" %1:%2").arg(days).arg(t.toString("hh:mm:ss.zzz"));
+}
+
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget ( parent ), mainWindow ( mainWin ) {
 
@@ -1631,7 +1645,7 @@ void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 }
 #endif
 
-void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im, QTime &refresh ) {
+void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int64_t *steps, QImage *im, QTime &refresh, QTime &totalTime ) {
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -1679,27 +1693,33 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
     for ( int i = 0; i< subframes; i++ ) {
 
-
         if ( !progress->wasCanceled() ) {
 
             // 4Hz display update frequency should be enough for humans
             if ( refresh.elapsed() > 1000/4 ) {
                 refresh.restart();
+                int64_t eta = computeETA( totalTime.elapsed(), progress->maximum(), *steps );
+                renderETA = formatTime( eta );
                 progress->setValue ( *steps );
-                progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
+                progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\navg/sub:%5\navg/tile:%6\navg/frame:%7\nETA:%8" )
                                         .arg ( tile,tileField,10, QChar ( '0' ) )
                                         .arg ( i,subField,10,QChar ( '0' ) )
                                         .arg ( frametile )
                                         .arg ( framesize )
-                                        .arg ( (tileAVG/(tile+1))/1000.0 )
+                                        .arg ( subTime / (double) subCount / 1000.0 )
+                                        .arg ( tileTime / (double) tileCount / 1000.0 )
+                                        .arg ( frameTime / (double) frameCount / 1000.0 )
                                         .arg ( renderETA ) );
-
                 mainWindow->processGuiEvents();
             }
             
             ( *steps ) ++;
 
             drawToFrameBufferObject ( hiresBuffer, false );
+
+            subCount += 1;
+            subTime = totalTime.elapsed();
+
         }
     }
 
