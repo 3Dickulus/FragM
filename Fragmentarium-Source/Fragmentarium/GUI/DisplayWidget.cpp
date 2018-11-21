@@ -1631,7 +1631,7 @@ void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 }
 #endif
 
-void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im ) {
+void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, int h, int tile, int tileMax, QProgressDialog* progress, int *steps, QImage *im, const QTime &totalTime ) {
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -1681,6 +1681,24 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
 
         if ( !progress->wasCanceled() ) {
+
+            // compute ETA in ms
+            int64_t total = progress->maximum();
+            int64_t current = *steps;
+            int64_t elapsed = totalTime.elapsed();
+            int64_t eta = elapsed * (total - current) / (current + !current);
+
+            // format ETA to string
+            const int hour = 60 * 60 * 1000;
+            const int day = 24 * hour;
+            int days = eta / day;
+            eta %= day;
+            bool hours = eta >= hour;
+            QTime t(0,0,0,0);
+            t=t.addMSecs((int) eta);
+            if (days) renderETA = QString("%1:%2").arg(days).arg(t.toString("hh:mm:ss"));
+            else if (hours) renderETA = t.toString("hh:mm:ss");
+            else renderETA = t.toString("mm:ss");
 
             progress->setValue ( *steps );
             progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
