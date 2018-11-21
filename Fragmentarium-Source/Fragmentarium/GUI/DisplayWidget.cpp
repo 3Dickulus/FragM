@@ -1695,8 +1695,8 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
         if ( !progress->wasCanceled() ) {
 
-            // 4Hz display update frequency should be enough for humans
-            if ( refresh.elapsed() > 1000/4 ) {
+            // 30Hz display update frequency should be enough for humans
+            if ( refresh.elapsed() > 1000/30 ) {
                 refresh.restart();
                 int64_t eta = computeETA( totalTime.elapsed(), progress->maximum(), *steps );
                 renderETA = formatTime( eta );
