@@ -1682,8 +1682,8 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
         if ( !progress->wasCanceled() ) {
 
-            // 4Hz display update frequency should be enough for humans
-            if ( refresh.elapsed() > 1000/4 ) {
+            // 30Hz display update frequency should be enough for humans
+            if ( refresh.elapsed() > 1000/30 ) {
                 refresh.restart();
                 progress->setValue ( *steps );
                 progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
