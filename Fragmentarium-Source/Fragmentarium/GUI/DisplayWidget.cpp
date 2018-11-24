@@ -1709,8 +1709,6 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
                                     .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
 
-            mainWindow->processGuiEvents();
-            
             ( *steps ) ++;
 
             drawToFrameBufferObject ( hiresBuffer, false );
@@ -1877,34 +1875,7 @@ void DisplayWidget::timerSignal() {
 
 void DisplayWidget::showEvent(QShowEvent * ) {
 
-    // Show info first... when NO-auto-run
-    INFO ( vendor + " " + renderer );
-
     requireRedraw ( true );
-
-    // report the version and profile that was actually created in the engine
-    int prof = context()->format().profile();
-    QString s1 = QString("Using GL version %1.%2").arg(context()->format().majorVersion()).arg(context()->format().minorVersion());
-    INFO(s1);
-    QString s2 = QString("Using GL profile %1").arg(prof==0 ? "None" : prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "oops");
-    INFO(s2);
-    // report to console
-    if( verbose ) {
-        qDebug() << s1;
-        qDebug() << s2;
-    }
-    
-    QStringList imgFileExtensions;
-
-    QList<QByteArray> a = QImageWriter::supportedImageFormats();
-#ifdef USE_OPEN_EXR
-    a.append ( "exr" );
-#endif
-    foreach ( QByteArray s, a ) {
-        imgFileExtensions.append ( QString ( s ) );
-    }
-    INFO ( tr("Available output formats: ") + imgFileExtensions.join ( ", " ) );
-
 }
 
 void DisplayWidget::wheelEvent ( QWheelEvent* ev ) {
