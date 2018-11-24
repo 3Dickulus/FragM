@@ -68,7 +68,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     exrToolsMenu = 0;
 #endif
 
-    MaxRecentFiles = 5;
+    maxRecentFiles = 5;
 
     lastStoredTime = 0;
     engine = 0;
@@ -585,8 +585,6 @@ void MainWindow::init()
     f->layout()->addWidget(splitter);
     setCentralWidget(f);
 
-    createActions();
-
     QDir d(getExamplesDir());
 
     setDockOptions(AnimatedDocks | AllowTabbedDocks);
@@ -636,7 +634,6 @@ void MainWindow::init()
 
     connect(this->tabBar, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
-    readSettings();
 
     {
         QSettings settings;
@@ -669,6 +666,10 @@ void MainWindow::init()
         }
         settings.setValue("isStarting", true);
     }
+
+    readSettings();
+
+    createActions();
 
     createToolBars();
     createStatusBar();
@@ -979,7 +980,7 @@ void MainWindow::createActions()
     faqAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("Fragmentarium FAQ (web link)"), this);
     connect(faqAction, SIGNAL(triggered()), this, SLOT(launchFAQ()));
 
-    for (int i = 0; i < MaxRecentFiles; ++i) {
+    for (int i = 0; i < maxRecentFiles; ++i) {
         QAction* a = new QAction(this);
         a->setVisible(false);
         connect(a, SIGNAL(triggered()), this, SLOT(openFile()));
@@ -999,7 +1000,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAction);
 
     recentFileSeparator = fileMenu->addSeparator();
-    for (int i = 0; i < MaxRecentFiles; ++i) fileMenu->addAction(recentFileActions[i]);
+    for (int i = 0; i < maxRecentFiles; ++i) fileMenu->addAction(recentFileActions[i]);
     fileMenu->addSeparator();
     fileMenu->addAction(closeAction);
     fileMenu->addAction(exitAction);
@@ -2020,6 +2021,7 @@ void MainWindow::readSettings()
         fullScreenEnabled = settings.value("fullScreenEnabled", false).toBool();
         if(fullScreenEnabled) { fullScreenEnabled=false; toggleFullScreen(); }
     }
+    maxRecentFiles = settings.value("maxRecentFiles", 5).toInt();
     renderFPS = settings.value("fps", 25).toInt();
     timeMax = settings.value("timeMax", 10).toInt();
     wantGLPaths = settings.value("drawGLPaths", true).toBool();
@@ -2043,6 +2045,7 @@ void MainWindow::writeSettings()
     settings.setValue("splitterSizes", splitter->saveState());
     settings.setValue("fullScreenEnabled", fullScreenEnabled);
     settings.setValue("maxSubframes", getSubFrameMax());
+    settings.setValue("maxRecentFiles", maxRecentFiles);
     settings.setValue("fps", renderFPS);
     settings.setValue("timeMax", timeMax);
     settings.setValue("drawGLPaths", wantGLPaths);
@@ -2469,6 +2472,7 @@ void MainWindow::tabChanged(int index) {
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
 
     clearTextures();
+    
     clearKeyFrames();
     needRebuild(true);
 
@@ -2521,6 +2525,8 @@ void MainWindow::closeTab(int index) {
     initializeFragment();
     TextEdit *te = getTextEdit();
     variableEditor->setSettings(te->lastSettings());
+    // this bit of fudge preserves textures ???
+    initializeFragment();
 }
 
 void MainWindow::clearKeyFrames() {
@@ -2682,11 +2688,11 @@ void MainWindow::setRecentFile(const QString &fileName)
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > MaxRecentFiles) files.removeLast();
+    while (files.size() > maxRecentFiles) files.removeLast();
 
     settings.setValue("recentFileList", files);
 
-    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+    int numRecentFiles = qMin(files.size(), (int)maxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
       QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
@@ -2696,7 +2702,7 @@ void MainWindow::setRecentFile(const QString &fileName)
         recentFileActions[i]->setVisible(true);
     }
 
-    for (int j = numRecentFiles; j < MaxRecentFiles; ++j) recentFileActions[j]->setVisible(false);
+    for (int j = numRecentFiles; j < maxRecentFiles; ++j) recentFileActions[j]->setVisible(false);
 
     recentFileSeparator->setVisible(numRecentFiles > 0);
 }

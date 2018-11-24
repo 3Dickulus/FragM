@@ -183,7 +183,7 @@ using namespace Imath;
       int renderFPS;
       bool wantGLPaths;
       bool wantLineNumbers;
-      int MaxRecentFiles;
+      int maxRecentFiles;
       
       void needRebuild(bool r) {
         rebuildRequired = r;
@@ -224,6 +224,7 @@ using namespace Imath;
     // all public slots are available as script commands
     public slots:
       void loadFragFile(const QString &fileName);
+
       void setParameter(QString settings) {
         variableEditor->setSettings(settings);
       };
