@@ -114,11 +114,10 @@ using namespace Imath;
       
     public:
       MainWindow(QSplashScreen* splashWidget);
-      virtual ~MainWindow() {
-        if(keyframeMap.count() > 0) keyframeMap.clear();
-        if(easingMap.count() > 0) easingMap.clear();
-      };
+      virtual ~MainWindow() {};
+  
       double getTime();
+      
       void setLastStoredTime(float time) {
         lastStoredTime = time;
       }
@@ -210,7 +209,7 @@ using namespace Imath;
         scriptText = text;
         executeScript();
       };
-      void setVerbose( bool v ) { getEngine()->setVerbose(v); getVariableEditor()->setVerbose(v); };
+      void setVerbose( bool v ) { verbose = v; getEngine()->setVerbose(v); getVariableEditor()->setVerbose(v); };
 
       QString langID;
      
@@ -218,8 +217,8 @@ using namespace Imath;
       void dragEnterEvent(QDragEnterEvent *ev);
       void dropEvent(QDropEvent *ev);
       void closeEvent(QCloseEvent* ev);
-
       void keyReleaseEvent(QKeyEvent* ev);
+
       int timeMax;
       
     // all public slots are available as script commands
@@ -547,6 +546,7 @@ using namespace Imath;
       int cmdScriptLineNumber;
       
       bool exrMode;
+      bool verbose;
 /// BEGIN 3DTexture
 //       QString voxelFileName;
 /// END 3DTexture
@@ -556,7 +556,6 @@ using namespace Imath;
       QStringList exrBinaryPath;
 #endif // USE_OPEN_EXR
       
-      QString progressiveCameraSettings;
       QMap<int, KeyFrameInfo*> keyframeMap;
       QMap<int, EasingInfo*> easingMap;
     };

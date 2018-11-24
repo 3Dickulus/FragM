@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181027, "");
+    version = Version(2, 5, 0, 181123, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -178,6 +178,19 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     ev->accept();
 
     writeSettings();
+    
+    if(keyframeMap.count() > 0) keyframeMap.clear();
+    if(easingMap.count() > 0) easingMap.clear();
+    
+    QStringList openFiles;
+    if(tabInfo.size() > 0) {
+        for (int i = 0; i < tabInfo.size(); i++) {
+            openFiles << tabInfo[i].filename;
+        }
+    }
+
+    QSettings().setValue("openFiles", openFiles);
+    QSettings().sync();
 }
 
 void MainWindow::newFile()
@@ -1124,8 +1137,8 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileNam
 
     if (timeSteps > 1) {
         int digits = 5;
-        if (timeSteps > 100000) digits = 6; // possible, feature-film length
-        if (timeSteps > 1000000) digits = 7; // unlikely
+        if (timeSteps > 99999) digits = 6; // possible, feature-film length
+        if (timeSteps > 999999) digits = 7; // unlikely
         int lastPoint = fileName.lastIndexOf(".");
         name = QString("%1.%2.%3").arg(fileName.left(lastPoint))
                .arg(timeStep,digits,10,QChar('0'))
@@ -1136,6 +1149,11 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileNam
 
 void MainWindow::tileBasedRender() {
 
+    if (!engine->hasShader()) {
+        WARNING(tr("Build the fragment first!"));
+        return;
+    }
+        
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
@@ -1951,12 +1969,9 @@ void MainWindow::renderModeChanged() {
     QObject* o = QObject::sender();
     lastStoredTime = getTime();
     if (o == 0 || o == progressiveButton) {
-        if(!progressiveCameraSettings.isEmpty() ) setParameter(progressiveCameraSettings);
         engine->setState(DisplayWidget::Progressive);
         getTime();
     } else if (o == animationButton) {
-        // copy to return to the working view
-        progressiveCameraSettings = getCameraSettings();
         engine->setState(DisplayWidget::Animation);
         lastTime->restart();
         getTime();
@@ -2073,12 +2088,13 @@ void MainWindow::loadFragFile(const QString &fileName)
     QString inputText = getTextEdit()->toPlainText();
     if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
     if (QSettings().value("autorun", true).toBool()) {
-        bool requiresRecompile = variableEditor->setDefault();
         rebuildRequired = initializeFragment();
+        bool requiresRecompile = variableEditor->setDefault();
         if (requiresRecompile || rebuildRequired) {
             if(!initializeFragment())
                 INFO(tr("Build to update locking..."));
         }
+        initializeFragment();
     }
     QSettings settings;
     settings.setValue("isStarting", false);
@@ -2175,13 +2191,37 @@ void MainWindow::highlightBuildButton(bool value) {
 
 bool MainWindow::initializeFragment() {
 
+//     if(sender() != 0) // == 0 when not called by "Build" button
+    logger->getListWidget()->clear();
+
+    // Show info first...
+    INFO ( engine->vendor + " " + engine->renderer );
+    // report the version and profile that was actually created in the engine
+    int prof = engine->context()->format().profile();
+    QString s1 = QString("Using GL version %1.%2 %3").
+    arg(engine->context()->format().majorVersion()).
+    arg(engine->context()->format().minorVersion()).
+    arg(prof==0 ? "No profile" : prof == 1 ? "Core profile" : prof == 2 ? "Compatibility profile" : "oops!");
+    INFO(s1);
+    INFO("");
+   
+    QStringList imgFileExtensions;
+
+    QList<QByteArray> a = QImageWriter::supportedImageFormats();
+#ifdef USE_OPEN_EXR
+    a.append ( "exr" );
+#endif
+    foreach ( QByteArray s, a ) {
+        imgFileExtensions.append ( QString ( s ) );
+    }
+    INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
+    INFO("");
+
     DisplayWidget::DrawingState oldState = engine->getState();
     bool pause = pausePlay;
     engine->setState(DisplayWidget::Progressive);
     stop();
 
-    logger->getListWidget()->clear();
-    
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
@@ -2353,10 +2393,11 @@ Target = 0,0,0\r\n\
 Up = -0.1207781,0.8478234,0.5163409\r\n\
 #endpreset\r\n");
 
-    textEdit->setPlainText(s);
 
     bool loadingSucceded = false;
-    if (!filename.isEmpty()) {
+    if (filename.isEmpty()) 
+        textEdit->setPlainText(s);
+    else {
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
             textEdit->setPlainText(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
@@ -2427,6 +2468,7 @@ void MainWindow::tabChanged(int index) {
     stackedTextEdits->setCurrentWidget(ti.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
 
+    clearTextures();
     clearKeyFrames();
     needRebuild(true);
 
@@ -2664,8 +2706,9 @@ void MainWindow::setSplashWidgetTimeout(QSplashScreen* w) {
     QTimer::singleShot(2000, this, SLOT(removeSplash()));
     // test for nVidia card and GL > 4.0
     if( !(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-            QMessageBox::critical(this, tr("OpenGL features missing"),
-                                  tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+            WARNING( tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+//             QMessageBox::critical(this, tr("OpenGL features missing"),
+//                                   tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
         if(asmAction)editMenu->removeAction(asmAction);
     }
 
