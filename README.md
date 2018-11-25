@@ -6,15 +6,18 @@ Continuous integration
 ----------------------
 [![Release][release-image]][releases]
 [![License][license-image]][license]
-[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
 
-[release-image]: https://img.shields.io/badge/release-2.5.0-green.svg?style=flat
-[releases]: https://github.com/3Dickulus/FragM/releases/latest
+[release-image]: https://img.shields.io/badge/release-2.0.0-green.svg?style=flat
+[releases]: https://github.com/3Dickulus/FragM/releases
 
 [license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat
 [license]: https://github.com/3Dickulus/FragM/blob/master/LICENSE
 
+[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
+[![Coverity Status][coverity-image]][coverity-scan]
 
+[coverity-image]: https://scan.coverity.com/projects/14365/badge.svg?flat=1
+[coverity-scan]: https://scan.coverity.com/projects/3dickulus-fragm
  
 # Changes since v0.9.5
 + Stops playing/rendering at the end of animation
@@ -82,20 +85,10 @@ Continuous integration
 + fixed Easing Curve Ping Pong Loop bug
 
 # These came about after collaborating with Matt Benesi
-+ Added special "feedback array" uniform so frag code can get mouse click locations
-+ enabled screenTo3D function, read out object XYZ @ mouse pos in status bar tnx M Benesi
++ enabled screenTo3D function, read out object XYZ @ mouse pos in status bar tnx MB
 + enabled MiddleButton (Wheel) click = center view at this location
 + Shift+Tilde key resets camera to look at origin 0,0,0
 + Shift+Alt+LMB rotates around target
-
-# These have been redacted due to lack of use may be brought back if there is demand
-+ CTRL+LMB record mouse pos and increment feedback array counter
-+ CTRL+Alt+LMB record mouse pos to feedback array
-+ CTRL+SHIFT+LMB erase last mouse pos from feedback array and decrement counter
-+ added zappa toolbar when all the fedback vars are detected
-+ added zaplock, when checked normal controls are locked out and zap control is enabled
-+ added zap index selection so you can select which zap gets affected by mouse and wheel
-+ added Zap Clr button to reset/clear the feedback arrays
 
 # Most recent
 + CTRL+MMB sets light pos when using DE-Kn2.frag (uniform vec3 LightPos in frag)
@@ -150,7 +143,7 @@ Continuous integration
 # Testing on Mac
 + OSX 10.11 GCC 4.8 Qt-5.9.1 OpenEXR 2.2
 
-# Version bump 2.5.0-180909
+# 2.5.0-180909
 
 + Removed deprecated QGLWidget now using QOpenGL variants
 + Shift+Right mouse button: shows more menus when in fullscreen mode.
@@ -165,6 +158,16 @@ Continuous integration
 + Progressive mode remembers last view when switching from Animation mode
 + "New" provides minimum working frag code
 + keyframe and easingcurves are handled with QMap<T,T> lists
+
+# 2.5.0.181123 https://fractalforums.org/fragmentarium/17/feature-request-ideas/2321 (claude)
+
++ splash only shows on first run or if no tabs are open when program exits
++ AsmBrowser warning in log instead of popup
++ at startup reloads frags that were open last time
++ optimized ETA a bit better reporting
++ raised maximum subframe limit in hires and animation dialog
++ enhanced numbered filename padding for animation rendering
++ reload file menu option
 
 #  Tested on Linux desktop
 +  Compiled with gcc (SuSE Leap 42.3) Qt 5.6.2
