@@ -47,6 +47,7 @@ using namespace Imath;
       TextEdit* textEdit = 0;
       bool unsaved = true;
       bool hasBeenSavedOnce = false;
+      int tabIndex;
     };
     
     // Information about a keyframe
@@ -428,7 +429,8 @@ using namespace Imath;
       void setupScriptEngine(void);
       void saveCmdScript();
       void loadCmdScript();
-      
+      void reloadFrag();
+      void reloadFragFile( int );
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
       
     private:
@@ -443,6 +445,7 @@ using namespace Imath;
       void setRecentFile(const QString &fileName);
       TextEdit* insertTabPage(QString filename);
       void init();
+      void buildExamplesMenu();
       void createActions();
       void createMenus();
       void createToolBars();
@@ -489,6 +492,7 @@ using namespace Imath;
       int lastStoredTime;
       QAction *newAction;
       QAction *openAction;
+      QAction *reloadAction;
       QAction *saveAction;
       QAction *saveAsAction;
       QAction *closeAction;
@@ -559,6 +563,7 @@ using namespace Imath;
       
       QMap<int, KeyFrameInfo*> keyframeMap;
       QMap<int, EasingInfo*> easingMap;
+
     };
     
   }

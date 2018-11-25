@@ -688,7 +688,7 @@ initTools();
     play();
     
     veDockChanged((width() > height()*2));
-
+    
 }
 
 #ifdef USE_OPEN_EXR
@@ -857,6 +857,11 @@ void MainWindow::createActions()
     openAction->setStatusTip(tr("Open an existing file"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
+    reloadAction = new QAction(QIcon(":/Icons/open.png"), tr("&Reload..."), this);
+    reloadAction->setShortcut(tr("Ctrl+R"));
+    reloadAction->setStatusTip(tr("Reload file in current tab"));
+    connect(reloadAction, SIGNAL(triggered()), this, SLOT(reloadFrag()));
+
     saveAction = new QAction(QIcon(":/Icons/save.png"), tr("&Save"), this);
     saveAction->setShortcut(tr("Ctrl+S"));
     saveAction->setStatusTip(tr("Save the script to disk"));
@@ -996,6 +1001,7 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAction);
     fileMenu->addAction(openAction);
+    fileMenu->addAction(reloadAction);
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
 
@@ -1050,8 +1056,43 @@ void MainWindow::createMenus()
     parametersMenu->addSeparator();
 
     // -- Examples Menu --
-    QStringList filters;
     examplesMenu = menuBar()->addMenu(tr("&Examples"));
+    buildExamplesMenu();
+
+    // RMB in menu bar for "windows" menu access
+    QMenu* mc = createPopupMenu();
+    mc->setTitle(tr("Windows"));
+    menuBar()->addMenu(mc);
+    
+    helpMenu = menuBar()->addMenu(tr("&Help"));
+
+    helpMenu->addAction(aboutAction);
+    helpMenu->addAction(welcomeAction);
+    helpMenu->addAction(controlAction);
+    helpMenu->addAction(scriptingGeneralAction);
+    helpMenu->addAction(scriptingParameterAction);
+    helpMenu->addAction(scriptingHiresAction);
+    helpMenu->addAction(scriptingControlAction);
+
+    helpMenu->addSeparator();
+    helpMenu->addMenu(mc); // "windows" menu
+    helpMenu->addAction(clearTexturesAction);
+    helpMenu->addSeparator();
+
+    helpMenu->addAction(sfHomeAction);
+    helpMenu->addAction(referenceAction);
+    helpMenu->addAction(referenceAction2);
+    helpMenu->addAction(galleryAction);
+    helpMenu->addAction(glslHomeAction);
+    helpMenu->addAction(faqAction);
+    helpMenu->addAction(introAction);
+
+    createOpenGLContextMenu();
+
+}
+
+void MainWindow::buildExamplesMenu() {
+    QStringList filters;
     // Scan examples dir...
     QDir d(getExamplesDir());
     filters.clear();
@@ -1062,6 +1103,8 @@ void MainWindow::createMenus()
         a->setEnabled(false);
         examplesMenu->addAction(a);
     } else {
+        // first we clean it
+        examplesMenu->clear();
         // we will recurse the dirs...
         QStack<QString> pathStack;
         pathStack.append(QDir(getExamplesDir()).absolutePath());
@@ -1100,37 +1143,6 @@ void MainWindow::createMenus()
             }
         }
     }
-
-    // RMB in menu bar for "windows" menu access
-    QMenu* mc = createPopupMenu();
-    mc->setTitle(tr("Windows"));
-    menuBar()->addMenu(mc);
-    
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-
-    helpMenu->addAction(aboutAction);
-    helpMenu->addAction(welcomeAction);
-    helpMenu->addAction(controlAction);
-    helpMenu->addAction(scriptingGeneralAction);
-    helpMenu->addAction(scriptingParameterAction);
-    helpMenu->addAction(scriptingHiresAction);
-    helpMenu->addAction(scriptingControlAction);
-
-    helpMenu->addSeparator();
-    helpMenu->addMenu(mc); // "windows" menu
-    helpMenu->addAction(clearTexturesAction);
-    helpMenu->addSeparator();
-
-    helpMenu->addAction(sfHomeAction);
-    helpMenu->addAction(referenceAction);
-    helpMenu->addAction(referenceAction2);
-    helpMenu->addAction(galleryAction);
-    helpMenu->addAction(glslHomeAction);
-    helpMenu->addAction(faqAction);
-    helpMenu->addAction(introAction);
-
-    createOpenGLContextMenu();
-
 }
 
 QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileName) {
@@ -2077,12 +2089,37 @@ void MainWindow::openFile()
     }
 }
 
+void MainWindow::reloadFrag()
+{
+    int index = tabBar->currentIndex();
+    reloadFragFile( index );
+}
+
+void MainWindow::reloadFragFile( int index )
+{
+    QString filename = tabInfo[index].filename;
+    TextEdit* te = getTextEdit();
+
+    QFile file(filename);
+        if (!file.open(QFile::ReadOnly | QFile::Text)) {
+            WARNING(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
+        } else {
+            te->clear();
+            QTextStream in(&file);
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            te->setPlainText(in.readAll());
+            QApplication::restoreOverrideCursor();
+            INFO(tr("Reloaded file: %1").arg(filename));
+        }
+
+}
+
 void MainWindow::loadFragFile(const QString &fileName)
 {
   if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
 
     insertTabPage(fileName);
-
+    
     DisplayWidget::DrawingState oldstate = engine->getState();
     engine->setState(DisplayWidget::Progressive);
     bool pp = pausePlay;
@@ -2448,6 +2485,8 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
 
     QString tabTitle = QString("%1%3").arg(strippedName(displayName)).arg(!loadingSucceded? "*" : "");
     tabBar->setCurrentIndex(tabBar->addTab(strippedName(tabTitle)));
+    
+    tabInfo.last().tabIndex = tabBar->currentIndex();
 
     connect(textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
 
