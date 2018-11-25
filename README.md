@@ -81,13 +81,15 @@ Continuous integration
 + All motion actions are now scaled to step size, set with shift->wheel or keypad 1-2-3, 5 resets to default
 + fixed Easing Curve Ping Pong Loop bug
 
-# These came about after collaborating with Matt Benesi
+These came about after collaborating with Matt Benesi
+----------------------
 + enabled screenTo3D function, read out object XYZ @ mouse pos in status bar tnx M Benesi
 + enabled MiddleButton (Wheel) click = center view at this location
 + Shift+Tilde key resets camera to look at origin 0,0,0
 + Shift+Alt+LMB rotates around target
 
-# These have been redacted due to lack of use may be brought back if there is demand
+These have been redacted due to lack of use may be brought back if there is demand
+----------------------
 + Added special "feedback array" uniform so frag code can get mouse click locations
 + CTRL+LMB record mouse pos and increment feedback array counter
 + CTRL+Alt+LMB record mouse pos to feedback array
