@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181123, "");
+    version = Version(2, 5, 0, 181129, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -279,7 +279,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ev) {
 
 void MainWindow::clearTextures()
 {
-    engine->clearTextureCache();
+    engine->clearTextureCache(0);
 }
 
 void MainWindow::bufferSpinBoxChanged(int)
@@ -2231,7 +2231,8 @@ void MainWindow::highlightBuildButton(bool value) {
 
 bool MainWindow::initializeFragment() {
 
-//     if(sender() != 0) // == 0 when not called by "Build" button
+//     if(sender() != 0) // != 0 when called by "Build" button
+    
     logger->getListWidget()->clear();
 
     // Show info first...
@@ -2510,8 +2511,6 @@ void MainWindow::tabChanged(int index) {
     stackedTextEdits->setCurrentWidget(ti.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
 
-    clearTextures();
-    
     clearKeyFrames();
     needRebuild(true);
 

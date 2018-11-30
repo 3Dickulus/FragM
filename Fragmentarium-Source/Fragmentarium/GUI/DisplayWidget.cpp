@@ -404,7 +404,9 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
             if(uLoc != -1) {
                 if(uLoc == 0)foundFirstUniform=true;
                 if(foundFirstUniform==true) asmList << asmTxt;
-            } else { if( foundFirstUniform==true ) foundLastUniform=true; }
+            } else {
+                if( foundFirstUniform==true ) foundLastUniform=true;
+            }
 
             asmTxt="";
         }
@@ -446,8 +448,6 @@ QStringList DisplayWidget::shaderAsm ( bool w ) {
 }
 
 void DisplayWidget::initFragmentShader() {
-
-    QImage im;
 
     if ( shaderProgram ) {
         shaderProgram->release();
@@ -527,14 +527,19 @@ void DisplayWidget::initFragmentShader() {
         WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
     }
 
-    GLuint textureID=u;
+    QMap<QString, bool> textureCacheUsed;
+
 
     QMapIterator<QString, QString> it( fragmentSource.textures );
-    while( it.hasNext() ) { it.next();
+    while( it.hasNext() ) {
+        it.next();
+
+        GLuint textureID=u;
 
         QString textureName = it.key();
         QString texturePath = it.value();
         bool loaded = false;
+        if(!texturePath.isEmpty()) {
         int l = shaderProgram->uniformLocation ( textureName );
         if ( l != -1 ) { // found named texture in shader program
             
@@ -548,20 +553,22 @@ void DisplayWidget::initFragmentShader() {
             GLuint index = shaderProgram->uniformLocation ( textureName );
             glGetActiveUniform( shaderProgram->programId(), index, bufSize, &length, &size, &type, name);
             
+                // set current texture
+                glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
+
             // check cache first
             if ( TextureCache.contains ( texturePath ) ) {
                 textureID = TextureCache[texturePath];
                 textureCacheUsed[texturePath] = true;
                 glBindTexture ((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
                 loaded = true;
+                    INFO(QString ( "Used texture from cache ID: %1 %2" ).arg ( textureID ).arg(texturePath));
             } else { // if not in cache then create one and try to load and add to cache
-                // set current texture
-                glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
                 glPixelStorei ( GL_UNPACK_ALIGNMENT, 4 ); // byte alignment 4 bytes = 32 bits
                 // allocate a texture id
                 glGenTextures ( 1, &textureID );
 
-                if(verbose) qDebug() << QString ( "Allocated texture ID: %1" ).arg ( textureID );
+                    INFO(QString ( "Allocated texture ID: %1 %2" ).arg ( textureID ).arg(texturePath));
                 
                 glBindTexture ( (type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
 
@@ -630,7 +637,8 @@ void DisplayWidget::initFragmentShader() {
                 }
 #endif
 #endif
-                else if ( im.load ( texturePath ) ) { // Qt format image, Qt 5+ loads EXR format on linux
+                    else { // Qt format image, Qt 5+ loads EXR format on linux
+                        QImage im(texturePath);
                     
                     if(type == GL_SAMPLER_CUBE) {
                         QImage t = im.convertToFormat(QImage::Format_RGBA8888);
@@ -679,47 +687,46 @@ vec3  backgroundColor(vec3 dir) {
                     setGlTexParameter ( map );
                 }
 
-                if(verbose) qDebug() << QString("Setting uniform %1 to active texture %2").arg(textureName).arg(u);
+                    if(verbose) DBOUT << QString("Setting shader texture %1:%2 to %3").arg(u).arg(textureName).arg(texturePath);
                 
                 shaderProgram->setUniformValue ( l, ( GLuint ) u );
-                u++;
             } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
         } else WARNING ( tr("Unused sampler uniform: ") + textureName );
-        
+        }
+                    u++;
     }
     initBufferShader();
     
         // Check for unused textures
-        QMapIterator<QString, int> i ( TextureCache );
-        while ( i.hasNext() ) {
-            i.next();
-            if ( !textureCacheUsed.contains ( i.key() ) ) {
-                INFO ( tr("Removing unused texture from cache: ") +i.key() );
+    clearTextureCache(&textureCacheUsed);
 
-                if( glIsTexture( i.value() ) ) {
-                    glDeleteTextures(1, (GLuint*)&i.value() );
-                    TextureCache.remove ( i.key() );
-                }
-            }
-        }
 }
 
-void DisplayWidget::clearTextureCache () {
+void DisplayWidget::clearTextureCache(QMap<QString, bool>* textureCacheUsed) {
 
-        QMapIterator<QString, int> i ( TextureCache );
+    // Check for unused textures
+    if (textureCacheUsed != 0) {
+        QMutableMapIterator<QString, int> i(TextureCache);
         while ( i.hasNext() ) {
             i.next();
-            INFO ( tr("Removing texture from cache: ") +i.key() );
-
-            if( glIsTexture( i.value() ) ) {
-                glDeleteTextures(1, (GLuint*)&i.value() );
-                TextureCache.remove ( i.key() );
-                textureCacheUsed.remove ( i.key() );
+            if (!textureCacheUsed->contains(i.key())) {
+                INFO("Removing texture from cache: " +i.key());
+                GLuint id = i.value();
+                glDeleteTextures(1, &id);
+                i.remove();
             }
             
         }
-
+    } else { // clear cache and textures
+        QMapIterator<QString, int> i(TextureCache);
+        while (i.hasNext()) {
+            i.next();
+            INFO("Removing texture from cache: " +i.key());
+            GLuint id = i.value();
+            glDeleteTextures(1, &id);
+        }
         TextureCache.clear();
+}
 }
 
 
@@ -1289,7 +1296,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         
         if(foundDouble) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
-    if(subframeCounter == 1 && verbose) qDebug() << " ";
+    if(subframeCounter == 1 && verbose) DBOUT << count << " active uniforms initialized";
     
 }
 
