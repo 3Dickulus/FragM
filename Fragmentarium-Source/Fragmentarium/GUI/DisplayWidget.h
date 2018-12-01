@@ -131,6 +131,7 @@ namespace Fragmentarium {
         return (bufferShaderProgram!=0);
       }
       void initFragmentShader();
+      void initFragmentTextures();
       void initBufferShader();
       void setContinuous(bool value) {
         continuous = value;

@@ -2131,10 +2131,9 @@ void MainWindow::loadFragFile(const QString &fileName)
         rebuildRequired = initializeFragment();
         bool requiresRecompile = variableEditor->setDefault();
         if (requiresRecompile || rebuildRequired) {
-            if(!initializeFragment())
-                INFO(tr("Build to update locking..."));
+            INFO(tr("Rebuilding to update locked uniforms..."));
+            initializeFragment();
         }
-        initializeFragment();
     }
     QSettings settings;
     settings.setValue("isStarting", false);
@@ -2525,11 +2524,9 @@ void MainWindow::tabChanged(int index) {
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        variableEditor->setSettings(te->lastSettings());
-        initializeFragment();
+        if(!variableEditor->setSettings(te->lastSettings()))
+            initializeFragment();
     }
-    // this makes textures persistent ???
-    initializeFragment();
 }
 
 void MainWindow::closeTab() {
@@ -2560,11 +2557,9 @@ void MainWindow::closeTab(int index) {
     // if no more tabs don't try to reset to last saved settings
     if (tabBar->currentIndex() == -1) return;
     // this bit of fudge resets the tab to its last settings
-    initializeFragment();
     TextEdit *te = getTextEdit();
-    variableEditor->setSettings(te->lastSettings());
-    // this bit of fudge preserves textures ???
-    initializeFragment();
+    if(!variableEditor->setSettings(te->lastSettings()))
+        initializeFragment(); // this bit of fudge preserves textures ???
 }
 
 void MainWindow::clearKeyFrames() {

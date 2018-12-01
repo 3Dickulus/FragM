@@ -180,7 +180,13 @@ void DisplayWidget::setFragmentShader ( FragmentSource fs ) {
     INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
 
     requireRedraw ( true );
-    initFragmentShader();    
+    
+    initFragmentShader();
+
+    if( fs.textures.count() != 0 ) initFragmentTextures();
+
+    initBufferShader();
+
 }
 
 void DisplayWidget::requireRedraw ( bool clear ) {
@@ -504,12 +510,11 @@ void DisplayWidget::initFragmentShader() {
         return;
     }
 
-    // Setup textures.
-    int u = 0;
+    // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
         makeCurrent();
         // Bind first texture to backbuffer
-        glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
+        glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
         int l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
               GLuint i = backBuffer->texture();
@@ -517,152 +522,16 @@ void DisplayWidget::initFragmentShader() {
               if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
-              shaderProgram->setUniformValue ( l, ( GLuint ) u );
-              if(verbose && subframeCounter == 1) qDebug() << QString("Binding back buffer (ID: %1) to active texture %2").arg(backBuffer->texture()).arg(u);
-              if(verbose && subframeCounter == 1) qDebug() << QString("Setting uniform backbuffer to active texture %2").arg(u);
+              shaderProgram->setUniformValue ( l, ( GLuint ) 0 );
+              if(verbose && subframeCounter == 1) qDebug() << QString("Binding backbuffer (ID: %1) to active texture 0").arg(backBuffer->texture());
         }
-        u++;
     } else {
         WARNING ( tr("Trying to use a backbuffer, but no bufferType set.") );
         WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
     }
 
-    QMap<QString, bool> textureCacheUsed;
+}
 
-
-    QMapIterator<QString, QString> it( fragmentSource.textures );
-    while( it.hasNext() ) {
-        it.next();
-
-        GLuint textureID=u;
-
-        QString textureName = it.key();
-        QString texturePath = it.value();
-        bool loaded = false;
-        if(!texturePath.isEmpty()) {
-        int l = shaderProgram->uniformLocation ( textureName );
-        if ( l != -1 ) { // found named texture in shader program
-            
-            // 2D or Cube ?
-            GLsizei bufSize = 256;
-            GLsizei length;
-            GLint size;
-            GLenum type;
-            GLchar name[bufSize];
-
-            GLuint index = shaderProgram->uniformLocation ( textureName );
-            glGetActiveUniform( shaderProgram->programId(), index, bufSize, &length, &size, &type, name);
-            
-                // set current texture
-                glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
-
-            // check cache first
-            if ( TextureCache.contains ( texturePath ) ) {
-                textureID = TextureCache[texturePath];
-                textureCacheUsed[texturePath] = true;
-                glBindTexture ((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
-                loaded = true;
-                    INFO(QString ( "Used texture from cache ID: %1 %2" ).arg ( textureID ).arg(texturePath));
-            } else { // if not in cache then create one and try to load and add to cache
-                glPixelStorei ( GL_UNPACK_ALIGNMENT, 4 ); // byte alignment 4 bytes = 32 bits
-                // allocate a texture id
-                glGenTextures ( 1, &textureID );
-
-                    INFO(QString ( "Allocated texture ID: %1 %2" ).arg ( textureID ).arg(texturePath));
-                
-                glBindTexture ( (type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
-
-                if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
-                    HDRLoaderResult result;
-                    if ( HDRLoader::load ( texturePath.toLatin1().data(), result ) ) {
-                        if(type == GL_SAMPLER_CUBE) {
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*2*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*3*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
-                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
-                        } else
-                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
-                        loaded = true;
-                    }
-                }
-#ifdef USE_OPEN_EXR
-#ifdef Q_OS_WIN
-                else if ( texturePath.endsWith ( ".exr", Qt::CaseInsensitive ) ) { // is EXR format image ?
-                    //
-                    // Read an RGBA image using class RgbaInputFile:
-                    //
-                    //    - open the file
-                    //    - allocate memory for the pixels
-                    //    - describe the memory layout of the pixels
-                    //    - read the pixels from the file
-                    //
-                    RgbaInputFile file ( texturePath.toLatin1().data() );
-                    Box2i dw = file.dataWindow();
-
-                    if ( file.isComplete() ) {
-                        int w  = dw.max.x - dw.min.x + 1;
-                        int h = dw.max.y - dw.min.y + 1;
-                        int s;
-                        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
-                        s /= 4;
-                        if ( w>s || h>s ) {
-                            WARNING ( tr( "Exrloader found EXR image: %1 x %2 is too large! max %3x%3" ).arg ( w ).arg ( h ).arg ( s ) );
-                            continue;
-                        }
-                        Array2D<Rgba>pixels ( w, 1 );
-
-                        float *cols = new float[w*h*4];
-                        while ( dw.min.y <= dw.max.y ) {
-                            file.setFrameBuffer ( &pixels[0][0] - dw.min.x - dw.min.y * w, 1, w );
-                            file.readPixels ( dw.min.y, dw.min.y );
-                            // process scanline (pixels)
-                            for ( int i = 0; i<w; i++ ) {
-                                // convert 3D array to 1D
-                                int indx = ( dw.min.y*w+i ) *4;
-                                cols[indx]=pixels[0][i].r;
-                                cols[indx+1]=pixels[0][i].g;
-                                cols[indx+2]=pixels[0][i].b;
-                                cols[indx+3]=pixels[0][i].a;
-                            }
-                            dw.min.y ++;
-                        }
-                        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA , w, h, 0, GL_RGBA, GL_FLOAT, cols );
-                        loaded = true;
-                        delete [] cols;
-                        cols = 0;
-                    } else
-                        WARNING ( tr("Exrloader found EXR image: %1 is not complete").arg ( texturePath ) );
-                }
-#endif
-#endif
-                    else { // Qt format image, Qt 5+ loads EXR format on linux
-                        QImage im(texturePath);
-                    
-                    if(type == GL_SAMPLER_CUBE) {
-                        QImage t = im.convertToFormat(QImage::Format_RGBA8888);
-                        
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*2) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*3) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
-                        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
-                    } else {
-                      QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
-                      glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
-                    }
-                    
-                    loaded = true;
-                }
-                // add to cache
-                if ( loaded ) {
-                    TextureCache[texturePath] = textureID;
-                    textureCacheUsed[texturePath] = true;
-                }
-            }
-            if ( loaded ) {
 /*
 #define providesBackground
 #group Skybox
@@ -671,33 +540,167 @@ vec3  backgroundColor(vec3 dir) {
     return textureCube(skybox, dir).rgb;
 }
 */
-                if(type == GL_SAMPLER_CUBE) {
-                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
 
-                } else if ( fragmentSource.textureParams.contains ( textureName ) ) { // set texparms
-                    setGlTexParameter ( fragmentSource.textureParams[textureName] );
-                } else { // User did not set texparms Disable mip-mapping per default.
-                    QMap<QString, QString> map;
-                    map.insert ( "GL_TEXTURE_MAG_FILTER","GL_LINEAR" );
-                    map.insert ( "GL_TEXTURE_MIN_FILTER","GL_LINEAR" );
-                    setGlTexParameter ( map );
+void DisplayWidget::initFragmentTextures() {
+    
+    int u = 1; // the backbuffer is always 0 while textures from user uniforms start at 1
+    QMap<QString, bool> textureCacheUsed;
+
+    QMapIterator<QString, QString> it( fragmentSource.textures );
+    while( it.hasNext() ) {
+        it.next();
+
+        GLuint textureID;
+
+        QString textureName = it.key();
+        QString texturePath = it.value();
+        bool loaded = false;
+        if(!texturePath.isEmpty()) {
+            int l = shaderProgram->uniformLocation ( textureName );
+            if ( l != -1 ) { // found named texture in shader program
+                
+                // 2D or Cube ?
+                GLsizei bufSize = 256;
+                GLsizei length;
+                GLint size;
+                GLenum type;
+                GLchar name[bufSize];
+
+                GLuint index = shaderProgram->uniformLocation ( textureName );
+                glGetActiveUniform( shaderProgram->programId(), index, bufSize, &length, &size, &type, name);
+                
+                // set current texture
+                glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
+
+                // check cache first
+                if ( !TextureCache.contains ( texturePath ) ) {
+                    // if not in cache then create one and try to load and add to cache
+                    glPixelStorei ( GL_UNPACK_ALIGNMENT, 4 ); // byte alignment 4 bytes = 32 bits
+                    // allocate a texture id
+                    glGenTextures ( 1, &textureID );
+
+                    if(verbose) qDebug() << QString ( "Allocating texture ID: %1 %2" ).arg ( textureID ).arg(texturePath);
+                    
+                    glBindTexture ( (type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
+
+                    if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
+                        HDRLoaderResult result;
+                        loaded = HDRLoader::load ( texturePath.toLatin1().data(), result );
+                        if(type == GL_SAMPLER_CUBE) {
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*2*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*3*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
+                        } else {
+                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
+                        }
+                    }
+#ifdef USE_OPEN_EXR
+#ifdef Q_OS_WIN
+                    else if ( texturePath.endsWith ( ".exr", Qt::CaseInsensitive ) ) { // is EXR format image ?
+                        //
+                        // Read an RGBA image using class RgbaInputFile:
+                        //
+                        //    - open the file
+                        //    - allocate memory for the pixels
+                        //    - describe the memory layout of the pixels
+                        //    - read the pixels from the file
+                        //
+                        RgbaInputFile file ( texturePath.toLatin1().data() );
+                        Box2i dw = file.dataWindow();
+
+                        if ( file.isComplete() ) {
+                            int w  = dw.max.x - dw.min.x + 1;
+                            int h = dw.max.y - dw.min.y + 1;
+                            int s;
+                            glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+                            s /= 4;
+                            if ( w>s || h>s ) {
+                                WARNING ( tr( "Exrloader found EXR image: %1 x %2 is too large! max %3x%3" ).arg ( w ).arg ( h ).arg ( s ) );
+                                continue;
+                            }
+                            Array2D<Rgba>pixels ( w, 1 );
+
+                            float *cols = new float[w*h*4];
+                            while ( dw.min.y <= dw.max.y ) {
+                                file.setFrameBuffer ( &pixels[0][0] - dw.min.x - dw.min.y * w, 1, w );
+                                file.readPixels ( dw.min.y, dw.min.y );
+                                // process scanline (pixels)
+                                for ( int i = 0; i<w; i++ ) {
+                                    // convert 3D array to 1D
+                                    int indx = ( dw.min.y*w+i ) *4;
+                                    cols[indx]=pixels[0][i].r;
+                                    cols[indx+1]=pixels[0][i].g;
+                                    cols[indx+2]=pixels[0][i].b;
+                                    cols[indx+3]=pixels[0][i].a;
+                                }
+                                dw.min.y ++;
+                            }
+                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA , w, h, 0, GL_RGBA, GL_FLOAT, cols );
+                            loaded = true;
+                            delete [] cols;
+                            cols = 0;
+                        } else
+                            WARNING ( tr("Exrloader found EXR image: %1 is not complete").arg ( texturePath ) );
+                    }
+#endif
+#endif
+                    else { // Qt format image, Qt 5+ loads EXR format on linux
+                        QImage im;
+                        loaded = im.load(texturePath);
+                        
+                        if(type == GL_SAMPLER_CUBE) {
+                            QImage t = im.convertToFormat(QImage::Format_RGBA8888);
+                            
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*1) );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*2) );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*3) );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
+                            glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
+                        } else {
+                            QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
+                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+                        }
+                    }
+                    if ( loaded ) {
+                        // add to cache
+                        TextureCache[texturePath] = textureID;
+                        textureCacheUsed[texturePath] = true;
+                    }
+                } else { // use cache
+                    textureID = TextureCache[texturePath];
+                    textureCacheUsed[texturePath] = true;
+                    glBindTexture ((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
+                    loaded = true;
                 }
 
-                    if(verbose) DBOUT << QString("Setting shader texture %1:%2 to %3").arg(u).arg(textureName).arg(texturePath);
-                
-                shaderProgram->setUniformValue ( l, ( GLuint ) u );
-            } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
-        } else WARNING ( tr("Unused sampler uniform: ") + textureName );
-        }
-                    u++;
+                if ( loaded ) {
+                    if(type == GL_SAMPLER_CUBE) {
+                        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+
+                    } else if ( fragmentSource.textureParams.contains ( textureName ) ) { // set texparms
+                        setGlTexParameter ( fragmentSource.textureParams[textureName] );
+                    } else { // User did not set texparms Disable mip-mapping per default.
+                        QMap<QString, QString> map;
+                        map.insert ( "GL_TEXTURE_MAG_FILTER","GL_LINEAR" );
+                        map.insert ( "GL_TEXTURE_MIN_FILTER","GL_LINEAR" );
+                        setGlTexParameter ( map );
+                    }
+
+                    shaderProgram->setUniformValue ( l, ( GLuint ) u );
+                } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
+            } else WARNING ( tr("Unused sampler uniform: ") + textureName );
+        } u++;
     }
-    initBufferShader();
     
-        // Check for unused textures
+    // Check for unused textures
     clearTextureCache(&textureCacheUsed);
 
 }
@@ -726,7 +729,7 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool>* textureCacheUsed) {
             glDeleteTextures(1, &id);
         }
         TextureCache.clear();
-}
+    }
 }
 
 
@@ -1296,7 +1299,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         
         if(foundDouble) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
-    if(subframeCounter == 1 && verbose) DBOUT << count << " active uniforms initialized";
+    if(subframeCounter == 1 && verbose) qDebug() << count << " active uniforms initialized";
     
 }
 
@@ -1370,12 +1373,11 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
         glBindTexture ( GL_TEXTURE_2D,i );
         l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
+            if(verbose && subframeCounter == 1) qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
             }
             shaderProgram->setUniformValue ( l, 0 );
-            if(verbose && subframeCounter == 1) qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
-            if(verbose && subframeCounter == 1) qDebug() << QString("Setting uniform backbuffer to active texture %2").arg(0);
         }
 
         l = shaderProgram->uniformLocation ( "subframe" );
