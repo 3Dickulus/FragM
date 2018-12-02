@@ -16,7 +16,7 @@ IF(UNIX AND NOT APPLE)
         )
 ENDIF ()
 
-set ( CMAKE_BUILD_TYPE Debug )
+set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
