@@ -180,9 +180,12 @@ void DisplayWidget::setFragmentShader ( FragmentSource fs ) {
     INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
 
     requireRedraw ( true );
-    
+
     initFragmentShader();
 
+    if(shaderProgram == 0) //something went wrong so do not try to setup textures or buffer shader
+        return;
+    
     if( fs.textures.count() != 0 ) initFragmentTextures();
 
     initBufferShader();
@@ -543,7 +546,7 @@ vec3  backgroundColor(vec3 dir) {
 
 void DisplayWidget::initFragmentTextures() {
     
-    int u = 1; // the backbuffer is always 0 while textures from user uniforms start at 1
+    int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
     QMap<QString, bool> textureCacheUsed;
 
     QMapIterator<QString, QString> it( fragmentSource.textures );
@@ -585,7 +588,7 @@ void DisplayWidget::initFragmentTextures() {
 
                     if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
                         HDRLoaderResult result;
-                        loaded = HDRLoader::load ( texturePath.toLatin1().data(), result );
+                        loaded = HDRLoader::load ( texturePath.toLocal8Bit(), result );
                         if(type == GL_SAMPLER_CUBE) {
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
@@ -598,7 +601,6 @@ void DisplayWidget::initFragmentTextures() {
                         }
                     }
 #ifdef USE_OPEN_EXR
-#ifdef Q_OS_WIN
                     else if ( texturePath.endsWith ( ".exr", Qt::CaseInsensitive ) ) { // is EXR format image ?
                         //
                         // Read an RGBA image using class RgbaInputFile:
@@ -617,7 +619,7 @@ void DisplayWidget::initFragmentTextures() {
                             int s;
                             glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
                             s /= 4;
-                            if ( w>s || h>s ) {
+                            if ( w>s || h>(s*6) ) {
                                 WARNING ( tr( "Exrloader found EXR image: %1 x %2 is too large! max %3x%3" ).arg ( w ).arg ( h ).arg ( s ) );
                                 continue;
                             }
@@ -638,14 +640,22 @@ void DisplayWidget::initFragmentTextures() {
                                 }
                                 dw.min.y ++;
                             }
-                            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA , w, h, 0, GL_RGBA, GL_FLOAT, cols );
+                            if(type == GL_SAMPLER_CUBE) {
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*0) );
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*1) );
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*2) );
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*3) );
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*4) );
+                                glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w*w*4)*5) );
+                            } else {
+                                glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA , w, h, 0, GL_RGBA, GL_FLOAT, cols );
+                            }
                             loaded = true;
                             delete [] cols;
                             cols = 0;
                         } else
                             WARNING ( tr("Exrloader found EXR image: %1 is not complete").arg ( texturePath ) );
                     }
-#endif
 #endif
                     else { // Qt format image, Qt 5+ loads EXR format on linux
                         QImage im;
@@ -695,9 +705,10 @@ void DisplayWidget::initFragmentTextures() {
                     }
 
                     shaderProgram->setUniformValue ( l, ( GLuint ) u );
+                    u++;
                 } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
             } else WARNING ( tr("Unused sampler uniform: ") + textureName );
-        } u++;
+        }
     }
     
     // Check for unused textures
