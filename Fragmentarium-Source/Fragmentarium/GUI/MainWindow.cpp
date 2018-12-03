@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181129, "");
+    version = Version(2, 5, 0, 181202, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -2134,9 +2134,10 @@ void MainWindow::loadFragFile(const QString &fileName)
             INFO(tr("Rebuilding to update locked uniforms..."));
             initializeFragment();
         }
+        initializeFragment(); // makes textures persist
     }
-    QSettings settings;
-    settings.setValue("isStarting", false);
+    
+    QSettings().setValue("isStarting", false);
     engine->setState(oldstate);
     pp?stop():play();
   }
@@ -2527,6 +2528,7 @@ void MainWindow::tabChanged(int index) {
         if(!variableEditor->setSettings(te->lastSettings()))
             initializeFragment();
     }
+    initializeFragment(); // makes textures persist
 }
 
 void MainWindow::closeTab() {
@@ -2558,8 +2560,8 @@ void MainWindow::closeTab(int index) {
     if (tabBar->currentIndex() == -1) return;
     // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
-    if(!variableEditor->setSettings(te->lastSettings()))
-        initializeFragment(); // this bit of fudge preserves textures ???
+    variableEditor->setSettings(te->lastSettings());
+    initializeFragment(); // this bit of fudge preserves textures ???
 }
 
 void MainWindow::clearKeyFrames() {
