@@ -1,4 +1,5 @@
 #group Thorn
+#include "MathUtils.frag"
 #include "Progressive2DJulia.frag"
 
 // Thorn fractal (first seen at Softology's blog)

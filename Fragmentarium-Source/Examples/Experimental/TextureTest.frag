@@ -1,3 +1,4 @@
+#include "MathUtils.frag"
 #include "Progressive2D.frag"
 
 #info SimpleTexture demo.
@@ -12,9 +13,9 @@ The deformation is a modified version of
 */
 
 uniform float time;
-uniform sampler2D texture; file[texture2.jpg]
+uniform sampler2D tex; file[texture2.jpg]
 // You can use multiple textures:
-// uniform sampler2D texture2; file[texture.jpg]
+// uniform sampler2D texture2; file[tex.jpg]
 uniform vec2 params; slider[(-1,-1),(-0.5,0.24),(1,1)]
 
 vec3 a(vec2 z, float t) {
@@ -27,7 +28,7 @@ vec3 a(vec2 z, float t) {
 	uv.x = 0.2*t + (r1-r2)*0.25;
 	uv.y = tan(2.0*(a1-a2));
 	float w = r1*r2*0.8;
-	vec3 col = texture2D(texture,uv).xyz;
+	vec3 col = texture2D(tex,uv).xyz;
 	return vec3(col/(.1+w));
 }
 
@@ -59,6 +60,6 @@ Exposure = 0.6522
 AARange = 2
 AAExp = 1
 GaussianAA = true
-texture = texture2.jpg
+tex = texture2.jpg
 params = -0.5,0.24
 #endpreset

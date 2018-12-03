@@ -147,5 +147,31 @@ vec3 color(vec3 ro, vec3 rd)
 	return clamp(tcol,0.0,1.0);
 }	 
 
-
-
+#preset Default
+FOV = 0.62536
+Eye = 3.046938,0.102767,-1.376037
+Target = 1.251247,-0.0519677,-0.3839965
+Up = -0.0660836,0.9567611,0.0296142
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 0.6522
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2
+sunDirection = 0.25,1,-0.5
+sunColor = 1,1,0.5
+skyColor = 0.3,0.6,1
+floorColor = 0.125,0.19,0.12
+mengerColor = 0.75,0.75,0.75
+mengerReflect = 0.3055556
+ballColor = 0.7,0.2,0.2
+ballReflect = 0.4166667
+RayBounces = 3
+MaxRaySteps = 164
+#endpreset

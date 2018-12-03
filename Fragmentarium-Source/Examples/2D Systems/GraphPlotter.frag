@@ -1,5 +1,6 @@
 // An implementation of a Graph Plotter.
 // Shows how GLSL is useful to avoid anti-aliasing when drawing high-frequency plots.
+#include "MathUtils.frag"
 #include "Progressive2D.frag"
 #info Plotter
 #group Plotter2D

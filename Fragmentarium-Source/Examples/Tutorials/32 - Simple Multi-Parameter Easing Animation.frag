@@ -113,10 +113,6 @@ float DE(vec3 pos) {
 	*/
 }
 
-float dummy(vec3 p){
-p*=time;
-return time;
-}
 
 #preset Default
 FOV = 0.62536
@@ -188,18 +184,3 @@ Cycles1:CosineCurve:44:1:24:1:240:0.3:1:1.7:1:0
 Power1:SineCurve:43:1:6:20:220:0.3:1:1.7:1:0
 RotAngle1:OutInBack:36:0:360:40:200:0.3:1:1.7:1:0
 #endpreset
-
-#preset KeyFrame.001
-FOV = 0.62536
-Eye = 2.42106,0.501576,0.263686
-Target = -6.2468,-0.836125,-0.622262
-Up = 0,1,0
-#endpreset
-
-#preset KeyFrame.002
-FOV = 0.62536
-Eye = 2.42106,0.501576,0.263686
-Target = -6.2468,-0.836125,-0.622262
-Up = 0,1,0
-#endpreset
-

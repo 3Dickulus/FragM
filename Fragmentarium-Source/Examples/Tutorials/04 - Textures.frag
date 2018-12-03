@@ -1,3 +1,4 @@
+#include "MathUtils.frag"
 #include "Progressive2D.frag"
 
 // It is possible to read from external bitmaps with Fragmentarium using textures.

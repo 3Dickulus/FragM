@@ -1,3 +1,4 @@
+#include "MathUtils.frag"
 #include "Progressive2D.frag"
 #info Mandelbrot with Distance Estimation
 #group Mandelbrot

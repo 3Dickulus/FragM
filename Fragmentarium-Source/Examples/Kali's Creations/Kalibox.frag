@@ -11,6 +11,7 @@ uniform float MinRad2;  slider[0,0.25,2.0]
 uniform float Scale;  slider[-3.0,1.3,3.0]
 uniform vec3 Trans; slider[(-5,-5,-5),(0.5,0.5,0.5),(5,5,5)]
 uniform vec3 Julia; slider[(-5,-5,-5),(-1,-1,-1),(0,0,0)]
+uniform bool DoJulia; checkbox[true]
 vec4 scale = vec4(Scale, Scale, Scale, abs(Scale)) / MinRad2;
 
 uniform vec3 RotVector; slider[(0,0,0),(1,1,1),(1,1,1)]
@@ -35,7 +36,7 @@ float DE(vec3 pos) {
 		float r2 = dot(p.xyz, p.xyz);
 		if (i<ColorIterations) orbitTrap = min(orbitTrap, abs(vec4(p.xyz,r2)));
 		p *= clamp(max(MinRad2/r2, MinRad2), 0.0, 1.0);  // dp3,div,max.sat,mul
-		p = p*scale + p0;
+		p = p*scale + (DoJulia ? p0 : vec4(0.0));
 	
 	}
 	return ((length(p.xyz) - absScalem1) / p.w - AbsScaleRaisedTo1mIters);

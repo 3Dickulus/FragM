@@ -1,3 +1,4 @@
+#include "MathUtils.frag"
 #include "Complex.frag"
 #include "Progressive2DJulia.frag"
 

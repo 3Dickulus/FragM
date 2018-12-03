@@ -2,8 +2,7 @@
 #define providesInit
 #include "MathUtils.frag"
 #include "ColorPalette.frag"
-#include "DE-Raytracer.frag"
-
+#include "DE-Kn2cr11.frag"
 #group KaliBox
 
 uniform int Iterations;  slider[0,17,300]
@@ -13,6 +12,7 @@ uniform float MinRad2;  slider[0,0.25,2.0]
 uniform float Scale;  slider[-3.0,1.3,3.0]
 uniform vec3 Trans; slider[(-5,-5,-5),(0.5,0.5,0.5),(5,5,5)]
 uniform vec3 Julia; slider[(-5,-5,-5),(-1,-1,-1),(0,0,0)]
+uniform bool DoJulia; checkbox[true]
 
 uniform vec3 RotVector; slider[(0,0,0),(1,1,1),(1,1,1)]
 uniform float RotAngle; slider[0.00,0,180]
@@ -35,7 +35,8 @@ float DE(vec3 pos) {
 		p.xyz=abs(p.xyz)+Trans;
 		float r2 = dot(p.xyz, p.xyz);
 		p *= clamp(max(MinRad2/r2, MinRad2), 0.0, 1.0);  
-		p = p*scale + vec4(Julia,0);
+		p = p*scale;
+		p += (DoJulia ? vec4(Julia,0) : vec4(0.0));
 	
 	}
 	return (length(p.xyz) - absScalem1) / p.w - AbsScaleRaisedTo1mIters;
@@ -50,7 +51,8 @@ float Coloring(vec3 p) {
 		r1 = r2;
 		r2 = dot(p, p);
 		p *= clamp(max(MinRad2/r2, MinRad2), 0.0, 1.0);  
-		p = p* Scale/MinRad2 + Julia;
+		p = p* Scale/MinRad2;
+		p += (DoJulia ? vec4(Julia,0) : vec4(0.0));
 		expsmooth+=exp(-1.0/abs(r1-r2));	
 	}
 	return expsmooth;

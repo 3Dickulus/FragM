@@ -3,9 +3,9 @@
 #define providesInit
 const float pi=2.*1.570796326794897;
 const float pi2=2.*pi;
+#include "MathUtils.frag"
 //#include "Fast-Raytracerexp.frag"
 #include "DE-Kn2ColorandHeightmap.frag"
-#include "MathUtils.frag"
 #group Menger
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:
 // http://www.fractalforums.com/3d-fractal-generation/kaleidoscopic-%28escape-time-ifs%29/
@@ -385,7 +385,6 @@ Sharp3to0 = false
 Dist3to0 = 1
 orbitStrengthXYZR = 1,1,1,1
 ifTexture = true
-tex = C:/Documents and Settings/Amintor/Desktop/Fragmentarium-1.0.13-Qt_5_3_2_MinGW/glitter_glow_texture_ix_by_hauntingmewithstock.jpg
 TextSpeedMult = 1
 TextureSpeed = 1
 intensity = 2.6
@@ -477,7 +476,7 @@ Sharp3to0 = false
 Dist3to0 = 1
 orbitStrengthXYZR = 1,1,1,1
 ifTexture = true
-tex = C:/Documents and Settings/Amintor/Desktop/Fragmentarium-1.0.13-Qt_5_3_2_MinGW/glitter_glow_texture_ix_by_hauntingmewithstock.jpg
+tex = MB-FS-tex/glitter_glow_texture_ix_by_hauntingmewithstock.jpg
 TextSpeedMult = 1
 TextureSpeed = 1
 intensity = 2.6

@@ -1,4 +1,5 @@
 #info Notice: set Render mode to Continous
+#include "MathUtils.frag"
 #include "Progressive2D.frag"
 #info Mandelbrot
 #group Mandelbrot

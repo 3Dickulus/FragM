@@ -1,8 +1,9 @@
 #info Menger Distance Estimator.
 #define providesInit
 #include "MathUtils.frag"
-#include "DE-Raytracer.frag"
+//#include "DE-Raytracer.frag"
 //#include "Fast-Raytracer.frag"
+#include "DE-Kn2cr11.frag"
 #group Menger
 // Based on Knighty's Kaleidoscopic IFS 3D Fractals, described here:
 // http://www.fractalforums.com/3d-fractal-generation/kaleidoscopic-%28escape-time-ifs%29/
@@ -46,7 +47,7 @@ uniform int Iterations;  slider[0,8,100]
 uniform int ColorIterations;  slider[0,8,100]
 //float sr13=sqrt(1./3.);
 //float sr23=sqrt (2./3.);
-float magic=.955316618124509278164;
+float magic=0.955316618124509278164;
 void tetralixinator (inout vec3 z) {
 	//rotate y and z by sqrt(1/3) and sqrt(2/3)
 	///float r1=z.y*sr23-z.z*sr13;
@@ -198,70 +199,29 @@ float DE(vec3 z)
 
 #preset Default
 FOV = 0.4
-Eye = 2.803797,2.012923,-2.72889
-Target = -3.568471,-2.561902,3.473134
-Up = -0.1934184,0.8739289,0.4459123
-EquiRectangular = false
-AutoFocus = false
-FocalPlane = 1
-Aperture = 0
-Gamma = 2
-ToneMapping = 4
-Exposure = 1
-Brightness = 1
-Contrast = 1
-Saturation = 1
-GaussianWeight = 1
-AntiAliasScale = 2
-DepthToAlpha = false
-ShowDepth = false
-DepthMagnitude = 1
-Detail = -2.3
-DetailAO = -0.5
-FudgeFactor = 1
-MaxDistance = 1000
-MaxRaySteps = 56
-Dither = 0.5
-NormalBackStep = 1
-AO = 0,0,0,0.7
-Specular = 0.4
-SpecularExp = 16
-SpecularMax = 10
-SpotLight = 1,1,1,0.4
-SpotLightDir = 0.1,0.1
+Eye = 2.917116,2.792663,-2.721894
+Target = -2.905603,-3.183696,2.789822
+Up = -0.2999995,0.788054,0.5375604
 CamLight = 1,1,1,1
-CamLightMin = 0
-Glow = 1,1,1,0
-GlowMax = 20
-Fog = 0
-HardShadow = 0
-ShadowSoft = 2
-QualityShadows = false
-Reflection = 0
-DebugSun = false
 BaseColor = 1,1,1
-OrbitStrength = 0
+OrbitStrength = 1
 X = 0.5,0.6,0.6,0.7
 Y = 1,0.6,0,0.4
 Z = 0.8,0.78,1,0.5
 R = 0.4,0.7,1,0.12
 BackgroundColor = 0.6,0.6,0.45
 GradientBackground = 0.3
-CycleColors = false
-Cycles = 1.1
-EnableFloor = false
-FloorNormal = 0,0,1
-FloorHeight = 0
-FloorColor = 1,1,1
+CycleColors = true
+Cycles = 3.027273
 Scale = 3
-s = 0.005
-Total_Sphere_Iter = 11
-SphereiterationT1 = 12
-SphereiterationT2 = 12
-SphereiterationT3 = 12
-Total_unSphere_Iter = 11
-unSphereiterationT1 = 12
-unSphereiterationT2 = 12
+s = 0.0026786
+Total_Sphere_Iter = 8
+SphereiterationT1 = 1
+SphereiterationT2 = 3
+SphereiterationT3 = 3
+Total_unSphere_Iter = 0
+unSphereiterationT1 = 6
+unSphereiterationT2 = 4
 unSphereiterationT3 = 12
 Sphere = false
 HoleSphere = false
@@ -275,6 +235,96 @@ tetralixinatorer = false
 test = false
 Iterations = 8
 ColorIterations = 8
+DepthToAlpha = false
+Detail = -2.3
+FudgeFactor = 1
+NormalBackStep = 1
+EquiRectangular = false
+FocalPlane = 1
+Aperture = 0
+InFocusAWidth = 0
+DofCorrect = true
+ApertureNbrSides = 7
+ApertureRot = 0
+ApStarShaped = false
+Gamma = 1
+ToneMapping = 1
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+GaussianWeight = 1
+AntiAliasScale = 2.5
+Bloom = false
+BloomIntensity = 0
+BloomPow = 2
+BloomTaps = 4
+BloomStrong = 1
+MaxDistance = 20
+DetailAO = -0.7368421
+coneApertureAO = 0.5
+FudgeAO = 1
+AO_ambient = 0.7
+AO_camlight = 1
+AO_pointlight = 1
+AoCorrect = 0
+Specular = 0.3188406
+SpecularExp = 8
+AmbiantLight = 1,1,1,1
+Reflection = 0,0,0
+SpotLight = 1,1,1,0.4
+LightSize = 0.1
+LightFallOff = 0
+LightGlowRad = 0
+LightGlowExp = 1
+HardShadow = 0
+ShadowBlur = 0
+perf = false
+SSS = false
+sss1 = 0.1
+sss2 = 0.5
+HF_Fallof = 5
+HF_Const = 0.0151515
+HF_Intensity = 0.02
+HF_Dir = 0,-1,0
+HF_Offset = -2.45283
+HF_Color = 1,1,1,0
+HF_Scatter = 0
+HF_Anisotropy = 0,0,0
+HF_FogIter = 1
+HF_CastShadow = false
+EnCloudsDir = false
+CloudScale = 1
+CloudFlatness = 0
+CloudTops = 1
+CloudBase = -1
+CloudDensity = 1
+CloudRoughness = 1
+CloudContrast = 1
+CloudColor = 0.65,0.68,0.7
+CloudColor2 = 0.07,0.17,0.24
+SunLightColor = 0.7,0.5,0.3
+Cloudvar1 = 0.99
+Cloudvar2 = 1
+CloudIter = 5
+CloudBgMix = 1
+WindDir = 0,0,1
+WindSpeed = 1
+ShowDepth = false
+DepthMagnitude = 1
+RefineSteps = 4
+MaxRaySteps = 56
+Dither = 0.5
+maxIterAO = 20
+ReflectionsNumber = 0
+SpotGlow = true
+LightPos = 3,3,-3
+ShadowSoft = 2
+EnableFloor = false
+FloorNormal = 0,0,1
+FloorHeight = 0
+FloorColor = 1,1,1
+CloudDir = 0,0,1
 #endpreset
 
 #preset Balls

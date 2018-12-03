@@ -283,10 +283,10 @@ float DEF2(vec3 p) {
 #define MIN_EPS 2./16777216.
 
 
-float rand(vec2 co){
-	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
+// float rand(vec2 co){
+// 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+// 	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+// }
 
 #ifdef USE_EIFFIE_SHADOW
 // Uses the soft-shadow approach by Eiffie:
@@ -901,9 +901,9 @@ uniform vec3 WindDir; slider[(-1.0,-1.0,-1.0),(0.0,0.0,1.0),(1.0,1.0,1.0)]
 //wind speed
 uniform float WindSpeed; slider[0.0,1.0,2.0]
 
-float rand(vec3 co){// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
-}
+// float rand(vec3 co){// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+// 	return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
+// }
 
 float cnoyz(vec3 co){
 	vec3 d=smoothstep(0.0,1.0,fract(co));

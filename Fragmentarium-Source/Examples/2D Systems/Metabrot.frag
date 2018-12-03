@@ -1,5 +1,6 @@
 #version 400 compatibility
 #define USE_DOUBLE
+#include "MathUtils.frag"
 #include "Complex.frag"
 #include "Progressive2D-4.frag"
 #info MetaBrot inspired by the good folks at FractalForums.com 2013-2017

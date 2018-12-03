@@ -1,5 +1,5 @@
-#version 400 compatibility
 
+#include "MathUtils.frag"
 #include "Complex.frag"
 #include "Progressive2D.frag"
 #info BurningShirp inspired by the good folks at FractalForums.com 2013-2017

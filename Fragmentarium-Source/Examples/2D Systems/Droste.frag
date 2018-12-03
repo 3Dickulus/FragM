@@ -1,5 +1,6 @@
-#include "Progressive2D.frag"
+#include "MathUtils.frag"
 #include "Complex.frag"
+#include "Progressive2D.frag"
 
 // A Escher/Droste transformation.
 //
@@ -9,6 +10,9 @@
 // The image is of my youngest daughter, Vigga. 
 uniform float r1; slider[0,0.5,2]
 uniform float r2; slider[0,1,2]
+uniform sampler2D MyTexture; file[vigga.jpg]
+uniform float time;
+uniform float Branches; slider[0,1,8]
 
 #define PI 3.14159265
 
@@ -20,10 +24,6 @@ float map(float value, float istart, float istop, float ostart, float ostop) {
 	return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
 
-uniform sampler2D texture; file[texture2.jpg]
-
-uniform float time;
-uniform float Branches; slider[0,1,8]
 vec3 color(vec2 z) {
 	float scale = r1/r2;
 
@@ -37,7 +37,7 @@ vec3 color(vec2 z) {
 	float npower = max(nearestPower(z.x,scale),nearestPower(z.y,scale));
 	z.x = map(z.x,-npower,npower,-1.0,1.0);
 	z.y = map(z.y,-npower,npower,-1.0,1.0);
-	return  texture2D(texture,z*0.5+vec2(0.5)).xyz;//+ grid(z);
+	return  texture2D(MyTexture,z*0.5+vec2(0.5)).xyz;//+ grid(z);
 }
 
 #preset Default
@@ -49,7 +49,7 @@ TrigIter = 5
 TrigLimit = 1.1
 r1 = 1.065421
 r2 = 2
-texture = vigga.jpg NotLocked
+MyTexture = vigga.jpg
 Branches = 1
 #endpreset
 

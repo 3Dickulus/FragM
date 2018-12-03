@@ -1,4 +1,5 @@
 #group Ducks
+#include "MathUtils.frag"
 #include "Progressive2DJulia.frag"
 #include "Complex.frag"
 #info Ducks (Samuel Monnier)
