@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     QApplication *app = new QApplication(argc, argv);
 
-    app->setApplicationVersion("2.5.0.181202");
+    app->setApplicationVersion("2.5.0.181204");
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;
