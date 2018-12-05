@@ -38,7 +38,6 @@ HEADERS += $$PWD/./Fragmentarium/GUI/CameraControl.h \
            $$PWD/./SyntopiaCore/Exceptions/Exception.h \
            $$PWD/./SyntopiaCore/Logging/ListWidgetLogger.h \
            $$PWD/./SyntopiaCore/Logging/Logging.h \
-           $$PWD/./SyntopiaCore/Misc/ColorUtils.h \
            $$PWD/./SyntopiaCore/Misc/MiniParser.h \
            $$PWD/./SyntopiaCore/Misc/Misc.h \
            $$PWD/./SyntopiaCore/Misc/Version.h \
