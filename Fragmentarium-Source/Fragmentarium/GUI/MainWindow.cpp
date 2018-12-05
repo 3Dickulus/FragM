@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181202, "");
+    version = Version(2, 5, 0, 181204, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -1420,7 +1420,7 @@ retry:
 
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
+processGuiEvents();
                     if (padding>0.0)  {
                         int w = im.width();
                         int h = im.height();
@@ -1480,6 +1480,7 @@ retry:
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+processGuiEvents();
                     if (padding>0.0)  {
                         int nw = (int)(tileWidth / (1.0 + padding));
                         int nh = (int)(tileHeight / (1.0 + padding));
@@ -2701,7 +2702,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
 }
 
 void MainWindow::dropEvent(QDropEvent *ev) {
-    if (ev->mimeData()->hasUrls()) {
+    if (ev->mimeData()->hasUrls() && ev->source() == 0) {
         QList<QUrl> urls = ev->mimeData()->urls();
         for (int i = 0; i < urls.size() ; i++) {
             QString file = urls[i].toLocalFile();

@@ -1888,9 +1888,6 @@ void DisplayWidget::timerSignal() {
             }
         }
     }
-
-    mainWindow->processGuiEvents();
-
 }
 
 void DisplayWidget::showEvent(QShowEvent * ) {
