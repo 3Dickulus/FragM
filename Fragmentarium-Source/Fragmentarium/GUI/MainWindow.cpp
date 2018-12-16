@@ -79,7 +79,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181204, "");
+    version = Version(2, 5, 0, 181216, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -242,10 +242,11 @@ void MainWindow::insertPreset() {
             getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getSettings() + "\n#endpreset\n");
         }
 
-        needRebuild(true);
-        initializeFragment();
-        variableEditor->setPreset(newPresetName);
- 
+        needRebuild(ok);
+        initializeFragment(); // once to add the new preset to the list
+        variableEditor->setPreset(newPresetName); // apply the settings
+        initializeFragment(); // once to initialize any textures
+
         INFO(tr("Added %1").arg(newPresetName));
     }
 }
@@ -747,9 +748,9 @@ void MainWindow::initTools() {
 
 void MainWindow::runTool() {
     QString cmnd = sender()->objectName();
-        // execute once with -h option and capture the output
-        cmnd += " -h &> .htxt"; // > filename 2>&1
-        system( cmnd.toStdString().c_str() );
+    // execute once with -h option and capture the output
+    cmnd += " -h &> .htxt"; // > filename 2>&1
+    if(system( cmnd.toStdString().c_str() ) != -1) {
 
         // open the resulting textfile and parse for command information
         QFile file(".htxt");
@@ -770,13 +771,14 @@ void MainWindow::runTool() {
             detailedText += QString(line);
         }
         file.remove();
-        
+
         // display for user
         QMessageBox msgBox(this);
         msgBox.setText(helpText);
         msgBox.setDetailedText(detailedText);
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
+    }
 }
 
 #endif // USE_OPEN_EXR
@@ -1334,14 +1336,16 @@ retry:
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
     progress.setValue ( 0 );
-    progress.resize(300, 120);
     progress.move((width()-progress.width())/2,(height()-progress.height())/2);
     progress.setWindowModality(Qt::WindowModal);
     progress.setValue(steps);
+    QLabel *lab; lab = new QLabel();
+    lab->setTextFormat(Qt::RichText);
+    lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
+    progress.setLabel(lab);
     progress.show();
+    progress.resize(300, 120);
     
-    processGuiEvents();
-
     QTime totalTime;
     totalTime.start();
 
@@ -1420,7 +1424,7 @@ retry:
 
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-processGuiEvents();
+
                     if (padding>0.0)  {
                         int w = im.width();
                         int h = im.height();
@@ -1480,7 +1484,7 @@ processGuiEvents();
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-processGuiEvents();
+
                     if (padding>0.0)  {
                         int nw = (int)(tileWidth / (1.0 + padding));
                         int nh = (int)(tileHeight / (1.0 + padding));
@@ -2134,6 +2138,7 @@ void MainWindow::loadFragFile(const QString &fileName)
         if (requiresRecompile || rebuildRequired) {
             INFO(tr("Rebuilding to update locked uniforms..."));
             initializeFragment();
+            variableEditor->setDefault();
         }
         initializeFragment(); // makes textures persist
     }
@@ -2526,7 +2531,7 @@ void MainWindow::tabChanged(int index) {
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if(!variableEditor->setSettings(te->lastSettings()))
+        if(!te->lastSettings().isEmpty() && !variableEditor->setSettings(te->lastSettings()))
             initializeFragment();
     }
     initializeFragment(); // makes textures persist
@@ -2710,7 +2715,19 @@ void MainWindow::dropEvent(QDropEvent *ev) {
             if (file.toLower().endsWith(".fragparams")) loadParameters(file);
             else if (file.toLower().endsWith(".frag")) loadFragFile(file);
             else if (file.toLower().endsWith(".png")) {
-              variableEditor->setSettings(QImage(file).text("frAg"));
+                // get the frAg parameters
+                QString fromPNG = QImage(file).text("frAg");
+                // no params ?
+                if(fromPNG.isEmpty() )
+                    // try the old tag
+                    fromPNG = QImage(file).text("fRAg");
+
+                if(fromPNG.isEmpty())
+                    // if empty say so
+                    INFO(tr("No parameters found in file."));
+                else
+                    // use the params found in png
+                    variableEditor->setSettings(fromPNG);
             }
             else INFO(tr("Must be a .frag or .fragparams file."));
         }
