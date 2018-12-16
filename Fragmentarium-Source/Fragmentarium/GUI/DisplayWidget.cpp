@@ -90,7 +90,7 @@ void DisplayWidget::initializeGL() {
 
 void DisplayWidget::updateRefreshRate() {
     QSettings settings;
-    int i = settings.value ( "refreshRate", 20 ).toInt();
+    int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if ( !timer ) {
         timer = new QTimer();
         connect ( timer, SIGNAL ( timeout() ), this, SLOT ( timerSignal() ) );
@@ -1419,11 +1419,11 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
+    glFinish(); // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
     
-    glFinish(); // wait for GPU to return control
 
     if (cameraControl->getID() == "3D") {
         // draw splines using depth buffer for occlusion... or not
@@ -1571,8 +1571,8 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
     glPopAttrib();
-
     glFinish(); // wait for GPU to return control
+
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
@@ -1684,21 +1684,15 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
     }
 
-    QString tmp = QString ( "%1" ).arg ( tileMax*tileMax );
-    int tileField = tmp.length();
-    tmp = QString ( "%1" ).arg ( subframes+1 );
-    int subField = tmp.length();
     QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
     QString framesize = QString("%1x%2").arg ( tileMax*w ).arg ( tileMax*h );
     
     progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
                                     .arg ( ( int ) ( time*renderFPS ) ).arg ( framesToRender )
                                     .arg ( time, 8, 'g', 3, QChar ( ' ' )  )
-        
     );
 
     for ( int i = 0; i< subframes; i++ ) {
-
 
         if ( !progress->wasCanceled() ) {
 
@@ -1721,11 +1715,15 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
             else renderETA = t.toString("mm:ss");
 
             progress->setValue ( *steps );
-            progress->setLabelText ( tr( "Tile:%1.%2\nof %3\nSize:%4\n avg sec/tile:%5 ETA:%6" )
-                                    .arg ( tile,tileField,10, QChar ( '0' ) )
-                                    .arg ( i,subField,10,QChar ( '0' ) )
+            progress->setLabelText ( tr( "<table width=\"100%\"> \
+            <tr><td>Total</td><td>%1</td><td>Final Size: %2</td></tr> \
+            <tr><td>Current</td><td>Tile: %3</td><td>Sub: %4</td></tr> \
+            <tr><td>Avg sec/tile</td><td>%5</td><td>ETA: %6</td></tr> \
+            </table>" )
                                     .arg ( frametile )
                                     .arg ( framesize ) 
+                                    .arg ( tile )
+                                    .arg ( i )
                                     .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
 
@@ -1840,6 +1838,7 @@ void DisplayWidget::updatePerspective() {
 
 void DisplayWidget::timerSignal() {
 
+
     static QWidget* lastFocusedWidget = QApplication::focusWidget();
     if ( QApplication::focusWidget() !=lastFocusedWidget && cameraControl ) {
         cameraControl->releaseControl();
@@ -1859,6 +1858,7 @@ void DisplayWidget::timerSignal() {
             // we're done rendering
         } else {
             if(buttonDown) return;
+
             QTime t = QTime::currentTime();
             
             // render
