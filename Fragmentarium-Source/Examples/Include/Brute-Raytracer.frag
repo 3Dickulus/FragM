@@ -184,11 +184,11 @@ gl_FragDepth = 1.;
 	}
 
 	if (DepthToAlpha)
-	  gl_FragDepth = 1.0/(length( from + direction * dist)/length(dir));
+	  gl_FragDepth = 1.0/(length( closest)/length(dir));
 	else
 	gl_FragDepth = ( (1000.0 / (1000.0 - 0.00001)) +
 	  (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-	  clamp(length( from + direction * dist)/length(dir), 0.00001, 1000.0) );
+	  clamp(length( closest)/length(dir), 0.00001, 1000.0) );
 
 	return vec4(hitColor,closest);
 }
