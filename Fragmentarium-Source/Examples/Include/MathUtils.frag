@@ -112,15 +112,23 @@ vec2 rand2(vec2 pos){
     // I use two hash calls to untangle pos.x and pos.y
 	return vec2(float(wang_hash(wang_hash(ix)+iy)) / 4294967296.0, float(wang_hash(wang_hash(iy)+ix)) / 4294967296.0);
 }
+
 #else
 float rand(float v) {
 // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
 	return fract(sin(dot(v ,78.233)) * 43758.5453);
 }
+
 float rand(vec2 pos) {
 // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
     return fract(sin(dot(pos.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
+
+//for iq-clouds
+float rand(vec3 co){
+        // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+        return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
+        }
 
 vec2 rand2(vec2 co){
 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
@@ -128,4 +136,5 @@ vec2 rand2(vec2 co){
 	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
 		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
 }
+
 #endif
