@@ -698,15 +698,13 @@ uniform vec3 WindDir; slider[(-1.0,-1.0,-1.0),(0.0,0.0,1.0),(1.0,1.0,1.0)]
 //wind speed
 uniform float WindSpeed; slider[0.0,1.0,2.0]
 
+#ifndef WANG_HASH
 float rand(vec3 co){
-#ifdef WANG_HASH
-        // modified for seeding with wang hash function
-        return fract(sin(dot(wang_hash_fp(co)*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
-#else
         // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
         return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
+        }
 #endif
-}
+
 
 float cnoyz(vec3 co){
 	vec3 d=smoothstep(0.0,1.0,fract(co));
