@@ -35,6 +35,9 @@
 // -SoC? Global illumination? (maybe needs complete refactoring and/or removing InFocusAWidth which may complicate things)
 
 #include "3DKn-1.0.5.frag"
+//#ifdef USE_TERRAIN
+//#include "Terrain.frag"
+//#endif
 
 #group Post
 // for rendering depth to alpha channel in EXR images
@@ -174,27 +177,15 @@ float DEL2(vec3 pos, inout float lightde) {
 vec3 normal(vec3 pos, float normalDistance);
 
 #else
-#if 0
 vec3 normal(vec3 pos, float normalDistance) {
 	normalDistance = max(normalDistance*0.5, 1.0e-5);
 	vec3 e = vec3(0.0,normalDistance,0.0);
 	vec3 n = vec3(DE(pos+e.yxx)-DE(pos-e.yxx),
 		DE(pos+e.xyx)-DE(pos-e.xyx),
 		DE(pos+e.xxy)-DE(pos-e.xxy));
-	n =  normalize(n);
-	return n;
-}
-#else
-vec3 normal(vec3 pos, float normalDistance) {
-	normalDistance = max(normalDistance*0.5, 1.0e-5);
-	vec3 e = vec3(0.0,normalDistance,0.);
-	vec3 n = vec3(DE(pos+e.yxx)-DE(pos-e.yxx),
-		DE(pos+e.xyx)-DE(pos-e.xyx),
-		DE(pos+e.xxy)-DE(pos-e.xxy));
 	n = normalize(n);
 	return n==n ? n : vec3(0.0);
 }
-#endif
 #endif
 
 #ifdef providesBackground
@@ -203,7 +194,7 @@ vec3  backgroundColor(vec3 dir);
 
 #group Floor
 
-uniform bool EnableFloor; checkbox[false] Locked
+uniform bool EnableFloor; checkbox[false] NotLocked
 uniform vec3 FloorNormal; slider[(-1,-1,-1),(0,0,1),(1,1,1)]
 uniform float FloorHeight; slider[-5,0,5]
 uniform vec3 FloorColor; color[1,1,1]
@@ -268,8 +259,12 @@ vec3 ptLightGlow(float glow){
 
 
 float DEF(vec3 p) {
+//#ifdef USE_TERRAIN
+//	float d = min(DE(p),surf(p));
+//#else
 	float d = DE(p) ;
-	if (EnableFloor) {
+//#endif
+if (EnableFloor) {
 		floorDist = abs(dot(floorNormal,p)-FloorHeight);
 		if (d<floorDist) {
 			fSteps++;
@@ -356,15 +351,6 @@ vec2 seed = viewCoord*(float(subframe)+1.0);
 vec2 rand2n() {//there are too much rand versions out there. I'll need to clean things up.
     seed+=vec2(-1,1);
     return rand2(seed);
-    // modified for wang hash function
-// #ifdef WANG_HASH
-//     return vec2(fract(sin(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(12.9898,78.233)))) * 3758.5453),
-//                 fract(cos(dot(wang_hash_fp(seed) ,wang_hash_fp(vec2(4.898,7.23)))) * 43421.631));
-// #else
-//         // implementation based on: lumina.sourceforge.net/Tutorials/Noise.html
-//     return vec2(fract(sin(dot(seed ,vec2(12.9898,78.233))) * 43758.5453),
-//                 fract(cos(dot(seed ,vec2(4.898,7.23))) * 43421.631));
-// #endif
 };
 
 vec3 ortho(vec3 v) {
@@ -699,16 +685,6 @@ uniform vec3 WindDir; slider[(-1.0,-1.0,-1.0),(0.0,0.0,1.0),(1.0,1.0,1.0)]
 //wind speed
 uniform float WindSpeed; slider[0.0,1.0,2.0]
 
-// float rand(vec3 co){
-// #ifdef WANG_HASH
-//         // modified for seeding with wang hash function
-//         return fract(sin(dot(wang_hash_fp(co),wang_hash_fp(vec3(12.9898,78.233,112.166)))) * 3758.5453);
-// #else
-//         // implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-//         return fract(sin(dot(co*0.123,vec3(12.9898,78.233,112.166))) * 43758.5453);
-// #endif
-// }
-
 float cnoyz(vec3 co){
 	vec3 d=smoothstep(0.0,1.0,fract(co));
 	co=floor(co);
@@ -742,18 +718,20 @@ vec4 integrateClouds( in vec4 sum, in float dif, in float den, in float t )
     vec4 col = vec4( mix(1.15*vec3(1.0,0.95,0.8), CloudColor2, den ), den );
     col.xyz *= lin;
 	col=clamp(col,0.0,1.0);
-	if(CloudBgMix>0) {col.xyz = mix( col.xyz, BackgroundColor, CloudBgMix-exp(-0.0025*t*t));}
+	if(CloudBgMix>0.0) {col.xyz = mix( col.xyz, BackgroundColor, CloudBgMix-exp(-0.0025*t*t));}
     col.a *= mix(0.9,0.0,clamp(t*t/(MaxDistance*MaxDistance),0.0,1.0));
     col.rgb *= col.a;
     return sum + col*(1.0-sum.a);
 }
+
+uniform float time;
 
 vec4 clouds(vec3 p0, vec3 p1){
         vec3 ro=p0 + ((WindDir*WindSpeed)*time),rd=normalize(p1-p0),cloudDir=normalize(HF_Dir);
         if(EnCloudsDir){ cloudDir=normalize(CloudDir);
 	}
 	vec4 sum = vec4(0.0);
-	float t=0.1*CloudScale*rand(vec3(gl_FragCoord.xyy+subframe*30.0)),maxT=length(p1-p0);
+	float t=0.1*CloudScale*rand(vec3(gl_FragCoord.xyy+float(subframe)*30.0)),maxT=length(p1-p0);
 	bool goingUp=(dot(rd,cloudDir)>0.0);
 	while(t<maxT) {
 		vec3  pos = ro + t*rd;
