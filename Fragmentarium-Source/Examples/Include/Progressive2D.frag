@@ -63,19 +63,19 @@ void init(); // forward declare
 
 uniform int subframe;
 
-vec2 rand(vec2 co){
-	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
-	return
-	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
-		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
-}
+// vec2 rand(vec2 co){
+// 	// implementation found at: lumina.sourceforge.net/Tutorials/Noise.html
+// 	return
+// 	vec2(fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453),
+// 		fract(cos(dot(co.xy ,vec2(4.898,7.23))) * 23421.631));
+// }
 
 uniform sampler2D backbuffer;
 
 
 vec2 uniformDisc(vec2 co) {
 	if (co == vec2(0.0)) return vec2(0.0);
-	vec2 r = rand(co);
+	vec2 r = rand2(co);
 	return sqrt(r.y)*vec2(cos(r.x*6.28),sin(r.x*6.28));
 }
 
