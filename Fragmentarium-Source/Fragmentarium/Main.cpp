@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     qApp->addLibraryPath("platforms");
 #endif
 
+
     Q_INIT_RESOURCE(Fragmentarium);
 
 
@@ -33,8 +34,8 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName(QString("Fragmentarium"));
 
     QApplication *app = new QApplication(argc, argv);
-
-    app->setApplicationVersion("2.5.0.181204");
+   
+    app->setApplicationVersion("2.5.0.181216");
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;
