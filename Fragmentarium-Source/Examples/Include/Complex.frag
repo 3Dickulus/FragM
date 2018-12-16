@@ -81,7 +81,7 @@ double sin( double x ){
 	double s = x;
 
 	if(isnan(x) || isinf(x))
-		return 0.0;
+		return 0.0LF;
 
   while(abs(s) > TrigLimit){
 		s = s/3.0;
@@ -111,7 +111,7 @@ double cos( double x ){
 	double s = x;
 
 	if(isnan(x) || isinf(x))
-		return 0.0;
+		return 0.0LF;
 
   while(abs(s) > TrigLimit){
 		s = s/3.0;
@@ -147,7 +147,7 @@ double cos( double x ){
     u = u * x + 9.9999999999999638e-1LF;
     u = u * x + 1.0LF;
 	if(isnan(u) || isinf(u))
-		return 0.0;
+		return 0.0LF;
     return u;
 }
 
@@ -156,7 +156,7 @@ double exp(double x){
 	int n;
    double f;
    double e_accum = M_E;
-   double answer = 1.0;
+   double answer = 1.0LF;
 	bool invert_answer = true;
 
 	// if x is negative, convert to positive and take inverse at end
@@ -214,7 +214,7 @@ double atan_approx(double x)
     u = u * x + 9.9986632946592026e-1LF;
     u = u * x + -9.8393942267841755e-131LF;
 	if(isnan(u) || isinf(u))
-		return 0.0;
+		return 0.0LF;
     return u;
 }
 
