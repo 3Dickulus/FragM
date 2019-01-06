@@ -122,7 +122,7 @@ namespace Fragmentarium {
       
     public:
       MainWindow(QSplashScreen* splashWidget);
-      virtual ~MainWindow() {};
+      virtual ~MainWindow() { delete fragWatch; fragWatch=0; };
   
       double getTime();
       
@@ -227,6 +227,8 @@ namespace Fragmentarium {
       void closeEvent(QCloseEvent* ev);
       void keyReleaseEvent(QKeyEvent* ev);
       
+      void addToWatch( QStringList fileList );
+
       int timeMax;
       
     // all public slots are available as script commands
@@ -412,6 +414,7 @@ namespace Fragmentarium {
       void launchIntro();
       void launchReferenceHome();
       void launchReferenceHome2();
+      void launchDocumentation();
       void openFile();
       void newFile();
       void insertPreset();
@@ -438,6 +441,7 @@ namespace Fragmentarium {
       void loadCmdScript();
       void reloadFrag();
       void reloadFragFile( int );
+      void reloadFragFile( QString );
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
       
     private:
@@ -473,6 +477,7 @@ namespace Fragmentarium {
       QAction* faqAction;
       QAction* referenceAction;
       QAction* referenceAction2;
+      QAction* referenceAction3;
       QAction* galleryAction;
       QAction* scriptingGeneralAction;
       QAction* scriptingParameterAction;
@@ -571,6 +576,7 @@ namespace Fragmentarium {
       QMap<int, KeyFrameInfo*> keyframeMap;
       QMap<int, EasingInfo*> easingMap;
 
+      QFileSystemWatcher *fragWatch;
     };
     
   }

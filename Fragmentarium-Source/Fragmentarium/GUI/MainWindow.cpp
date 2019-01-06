@@ -77,6 +77,9 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     fullScreenEnabled = false;
 
     QDir::setCurrent(QCoreApplication::applicationDirPath ()); // Otherwise we cannot find examples + templates
+    fragWatch = new QFileSystemWatcher();
+    connect(fragWatch, SIGNAL(fileChanged(QString)), this, SLOT(reloadFragFile(QString)));
+    
     init();
 }
 
@@ -2139,6 +2142,8 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
+    fragWatch->removePath(fileName);
+    
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Fragmentarium"),
@@ -2152,6 +2157,7 @@ bool MainWindow::saveFile(const QString &fileName)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     out << getTextEdit()->toPlainText();
     QApplication::restoreOverrideCursor();
+    out.flush();
     
     tabInfo[tabBar->currentIndex()].hasBeenSavedOnce = true;
     tabInfo[tabBar->currentIndex()].unsaved = false;
@@ -2160,6 +2166,8 @@ bool MainWindow::saveFile(const QString &fileName)
 
     statusBar()->showMessage(tr("File saved"), 2000);
     setRecentFile(fileName);
+
+    fragWatch->addPath(fileName);
 
     return true;
 }
@@ -2216,6 +2224,11 @@ void MainWindow::highlightBuildButton(bool value) {
         w->setAutoFillBackground(false);
     }
     needRebuild(value);
+}
+
+void MainWindow::addToWatch( QStringList fileList ) {
+//     DBOUT << fileList;
+    fragWatch->addPaths(fileList);
 }
 
 bool MainWindow::initializeFragment() {
