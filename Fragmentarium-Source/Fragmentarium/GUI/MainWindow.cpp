@@ -548,17 +548,7 @@ void MainWindow::init()
 
     stackedTextEdits = new QStackedWidget(splitter);
 
-    QSurfaceFormat fmt;
-    fmt.setDepthBufferSize(32);
-    fmt.setSwapInterval(0);
-    fmt.setRenderableType(QSurfaceFormat::OpenGL);
-    fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-
-    QSurfaceFormat::setDefaultFormat(fmt);
-
     engine = new DisplayWidget(this, splitter);
-    engine->setFormat(fmt);
-    engine->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
     engine->show();
     
     tabBar = new QTabBar(this);
