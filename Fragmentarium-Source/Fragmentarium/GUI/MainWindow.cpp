@@ -2110,6 +2110,44 @@ void MainWindow::reloadFragFile( int index )
 
 }
 
+/// fragWatch
+void MainWindow::reloadFragFile( QString f )
+{
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Warning);
+    QAbstractButton* a = msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
+    msgBox.addButton(tr("Ignore"),QMessageBox::RejectRole);
+
+    bool autoRead = QSettings().value("autoload", false).toBool();
+
+    if (!autoRead) {
+        QString s = QString("It looks like the file: %1\n has been changed by another program.\n"
+                            "Would you like to reload it?").arg(f.split(QDir::separator()).last());
+        msgBox.setText(s);
+
+        msgBox.exec();
+        autoRead = (msgBox.clickedButton() == a);
+    }
+
+    if (autoRead) {
+        for (int i = 0; i < tabInfo.size(); i++) {
+            if (tabInfo[i].filename == f) {
+                tabBar->setCurrentIndex(i);
+                if(!tabInfo[i].unsaved) {
+                    reloadFrag();
+                } else {
+                    QMessageBox::warning(this, tr("Fragmentarium"),
+                             tr("Will not read file %1:\n%2.")
+                             .arg(f.split(QDir::separator()).last())
+                             .arg(tr("Conflict with changes in the editor!")));
+                }
+                break;
+            }
+        }
+    }
+
+}
+
 void MainWindow::loadFragFile(const QString &fileName)
 {
   if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
@@ -2917,6 +2955,24 @@ void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u) {
     }
     variableEditor->setSettings(r);
     variableEditor->blockSignals(false);
+}
+
+QString MainWindow::getPresetNames( bool keyframesORpresets ) {
+
+    int c = variableEditor->getPresetCount(); // total preset count including keyframes
+    QStringList k, p;
+
+    if(c>1)
+        for(int i =0; i<c; i++) {
+            QString presetname = variableEditor->getPresetName(i);
+            if(!presetname.isEmpty()) {
+                if(presetname.contains("KeyFrame", Qt::CaseInsensitive)) // found a keyframe
+                    k << presetname;
+                else
+                    p << presetname;
+            }
+        }
+    return keyframesORpresets ? k.join(" ") : p.join(" ");
 }
 
 void MainWindow::initKeyFrameControl() {

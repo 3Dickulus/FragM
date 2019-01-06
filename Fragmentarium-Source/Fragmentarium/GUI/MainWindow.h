@@ -374,6 +374,9 @@ namespace Fragmentarium {
 
       QString getVersion() { return version.toLongString(); };
 
+      QString getPresetNames( bool keyframesORpresets );
+
+
     private slots:
 #ifdef USE_OPEN_EXR
   void initTools();
