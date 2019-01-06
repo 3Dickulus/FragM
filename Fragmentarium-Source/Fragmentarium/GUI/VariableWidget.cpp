@@ -212,7 +212,8 @@ void Float2Widget::setValue(QVector3D v) {
 void Float2Widget::fromString(QString string) {
     double f1,f2;
     MiniParser(string).getDouble(f1).getDouble(f2);
-    setValue(QVector2D(f1,f2));
+    comboSlider1->setValue(f1);
+    comboSlider2->setValue(f2);
 }
 
 void Float2Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -355,7 +356,9 @@ QString Float3Widget::toString() {
 void Float3Widget::fromString(QString string) {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
-    setValue(QVector3D(f1,f2,f3));
+    comboSlider1->setValue(f1);
+    comboSlider2->setValue(f2);
+    comboSlider3->setValue(f3);
 }
 
 void Float3Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -431,7 +434,10 @@ QString Float4Widget::toString() {
 void Float4Widget::fromString(QString string) {
     double f1,f2,f3,f4;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
-    setValue(QVector4D(f1,f2,f3,f4));
+    comboSlider1->setValue(f1);
+    comboSlider2->setValue(f2);
+    comboSlider3->setValue(f3);
+    comboSlider4->setValue(f4);
 }
 
 void Float4Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -463,10 +469,13 @@ ColorWidget::ColorWidget(QWidget* parent, QWidget* variableEditor, QString name,
 QString ColorWidget::toString() {
     int p = FDEC;
     if(isDouble()) p = DDEC;
+
+    QVector3D c = colorChooser->getValue();
+    
     return QString("%1,%2,%3")
-           .arg(QString::number(colorChooser->getValue()[0],'g',p))
-           .arg(QString::number(colorChooser->getValue()[1],'g',p))
-           .arg(QString::number(colorChooser->getValue()[2],'g',p));
+           .arg(QString::number(c.x(),'g',p))
+           .arg(QString::number(c.y(),'g',p))
+           .arg(QString::number(c.z(),'g',p));
 }
 
 void ColorWidget::fromString(QString string) {
@@ -479,8 +488,8 @@ void ColorWidget::fromString(QString string) {
 void ColorWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
     int l = uniformLocation(shaderProgram);
     if (l != -1) {
-        shaderProgram->setUniformValue(l, (float)(colorChooser->getValue()[0])
-                                       ,(float)(colorChooser->getValue()[1]),(float)(colorChooser->getValue()[2]));
+        QVector3D c = colorChooser->getValue();
+        shaderProgram->setUniformValue(l, c.x(), c.y(), c.z());
     }
 }
 
@@ -510,11 +519,13 @@ FloatColorWidget::FloatColorWidget(QWidget* parent, QWidget* variableEditor, QSt
 QString FloatColorWidget::toString() {
     int p = FDEC;
     if(isDouble()) p = DDEC;
+    QVector3D c = colorChooser->getValue();
+    double v = comboSlider->getValue();
     return QString("%1,%2,%3,%4")
-           .arg(QString::number(colorChooser->getValue().x(),'g',p))
-           .arg(QString::number(colorChooser->getValue().y(),'g',p))
-           .arg(QString::number(colorChooser->getValue().z(),'g',p))
-           .arg(QString::number(comboSlider->getValue(),'g',p));
+           .arg(QString::number(c.x(),'g',p))
+           .arg(QString::number(c.y(),'g',p))
+           .arg(QString::number(c.z(),'g',p))
+           .arg(QString::number( v,'g',p));
 
 }
 
@@ -530,11 +541,9 @@ void FloatColorWidget::fromString(QString string) {
 void FloatColorWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
     int l = uniformLocation(shaderProgram);
     if (l != -1) {
-        shaderProgram->setUniformValue(l, (float)(colorChooser->getValue()[0]),
-                                          (float)(colorChooser->getValue()[1]),
-                                          (float)(colorChooser->getValue()[2]),
-                                          (float)(comboSlider->getValue())
-                                      );
+        QVector3D c = colorChooser->getValue();
+        double v = comboSlider->getValue();
+        shaderProgram->setUniformValue(l,  c.x(), c.y(), c.z(), (float)v );
     }
 }
 

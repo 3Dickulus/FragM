@@ -245,16 +245,16 @@ namespace Fragmentarium {
         variableEditor->setSettings( QString("%1 = %2\n").arg(setting).arg(v) );
       };
       void setParameter(QString setting, double v) {
-        variableEditor->setSettings( QString("%1 = %2\n").arg(setting).arg(v) );
+        variableEditor->setSettings( QString("%1 = %2\n").arg(setting).arg(v, 0, 'g', DDEC) );
       };
       void setParameter(QString setting, double x, double y) {
-        variableEditor->setSettings( QString("%1 = %2,%3\n").arg(setting).arg(x).arg(y) );
+        variableEditor->setSettings( QString("%1 = %2,%3\n").arg(setting).arg(x, 0, 'g', DDEC).arg(y, 0, 'g', DDEC) );
       };
       void setParameter(QString setting, double x, double y, double z) {
-        variableEditor->setSettings( QString("%1 = %2,%3,%4\n").arg(setting).arg(x).arg(y).arg(z) );
+        variableEditor->setSettings( QString("%1 = %2,%3,%4\n").arg(setting).arg(x, 0, 'g', DDEC).arg(y, 0, 'g', DDEC).arg(z, 0, 'g', DDEC) );
       };
       void setParameter(QString setting, double x, double y, double z, double w) {
-        variableEditor->setSettings( QString("%1 = %2,%3,%4,%5\n").arg(setting).arg(x).arg(y).arg(z).arg(w) );
+        variableEditor->setSettings( QString("%1 = %2,%3,%4,%5\n").arg(setting).arg(x, 0, 'g', DDEC).arg(y, 0, 'g', DDEC).arg(z, 0, 'g', DDEC).arg(w, 0, 'g', DDEC) );
       };
       QString getParameter(QString name) {
         QStringList s = getSettings().split("\n");

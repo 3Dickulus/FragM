@@ -26,8 +26,8 @@ namespace Fragmentarium {
     namespace GUI {
 
 // decimal places for float and double
-#define FDEC 7
-#define DDEC 14
+#define FDEC 9
+#define DDEC 18
         
         using namespace SyntopiaCore::Logging;
         using namespace Fragmentarium::Parser;
@@ -104,7 +104,14 @@ namespace Fragmentarium {
             int getPong() { return m_pong; }
 
         public slots:
-            void setValue(double d) { spinner->setValue(d); }
+            void setValue(double d) {
+                spinner->setValue(d);
+                bool clamping = (d < minimum || d > maximum);
+                if(clamping) {
+                    QString msg = QString( tr("Clamping") + " " + objectName() + " " + tr("to min/max range!") );
+                    WARNING( msg );
+                }
+            }
 
         signals:
             void changed();
@@ -154,7 +161,9 @@ namespace Fragmentarium {
 
             void setColor(QVector3D v) {
                 QPalette p = palette();
-                p.setColor(backgroundRole(), QColor(v[0]*255.0,v[1]*255.0,v[2]*255.0));
+                QColor c;
+                c.setRgbF(v.x(),v.y(),v.z());
+                p.setColor(backgroundRole(), c);
                 setAutoFillBackground( true );
                 setPalette(p);
                 value = v;
@@ -163,10 +172,11 @@ namespace Fragmentarium {
             QVector3D getValue() { return value; }
 
             void mouseReleaseEvent(QMouseEvent*) {
-                QColor initial = QColor((int)(value[0]*255),(int)(value[1]*255),(int)(value[2]*255));
+                QColor initial;
+                initial.setRgbF( value.x(), value.y(), value.z() );
                 QColor c = QColorDialog::getColor(initial, this, tr("Choose color"));
                 if (c.isValid()) {
-                    value = QVector3D(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
+                    value = QVector3D(c.redF(), c.greenF(), c.blueF());
                     setColor(value);
                     emit changed();
                 }
