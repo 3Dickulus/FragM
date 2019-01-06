@@ -179,8 +179,21 @@ These have been redacted due to lack of use may be brought back if there is dema
 + enhanced numbered filename padding for animation rendering
 + reload file menu option
 
+2.5.0.181222
+
++ Edit fqScript is now CTRL+E
++ added wiki to help menu
++ added reload feature
++ added file watcher
++ autoload on external change option
++ log warn if value from preset gets clamped
++ some precision fixes for script and widgets
++ added setUserUniform code to sampler widget using texID
++ added getPresetNamesList function for fqScript, returns keyframe list or normal presets list
+
+
 #  Tested on Linux desktop
-+  Compiled with gcc (SuSE Leap 42.3) Qt 5.6.2
++  Compiled with gcc (SuSE Leap 42.3) Qt 5.9.2
 
 #  Tested on Windows 10
 +  Compiled with MinGW 4.9.2 Qt 5.6.2
