@@ -93,7 +93,7 @@ void VariableWidget::setDefaultLockType(LockType lt) {
 }
 
 void VariableWidget::setLockType(LockType lt) {
-    if (lt == Locked) {
+    if (lt == Locked || lt == AlwaysLocked) {
         locked(true);
     } else {
         locked(false);
@@ -599,6 +599,7 @@ SamplerWidget::SamplerWidget(FileManager* fileManager, QWidget* parent, QWidget*
     connect(pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
     textChanged("");
 
+    texID=0;
 }
 
 void SamplerWidget::textChanged(const QString& ) {
@@ -650,8 +651,14 @@ void SamplerWidget::fromString(QString string) {
     comboBox->setEditText(string.trimmed());
 }
 
-void SamplerWidget::setUserUniform(QOpenGLShaderProgram* /*shaderProgram*/) {
-
+void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProg) {
+    if(texID) {
+         int l = uniformLocation(shaderProg);
+         if(l != -1) {
+            shaderProg->setUniformValue(l , texID);
+//             DBOUT << shaderProg->programId() << " TextureCache[" << texID << "] " << name;
+         }
+    }
 }
 
 void SamplerWidget::updateTextures(Parser::FragmentSource* fs,  FileManager* fileManager) {

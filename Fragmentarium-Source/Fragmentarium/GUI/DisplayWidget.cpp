@@ -558,11 +558,12 @@ void DisplayWidget::initFragmentTextures() {
 
         GLuint textureID;
 
-        QString textureName = it.key();
+        QString textureUniformName = it.key();
         QString texturePath = it.value();
         bool loaded = false;
         if(!texturePath.isEmpty()) {
-            int l = shaderProgram->uniformLocation ( textureName );
+//         DBOUT << textureUniformName << u << texturePath;
+            int l = shaderProgram->uniformLocation ( textureUniformName );
             if ( l != -1 ) { // found named texture in shader program
                 
                 // 2D or Cube ?
@@ -572,8 +573,7 @@ void DisplayWidget::initFragmentTextures() {
                 GLenum type;
                 GLchar name[bufSize];
 
-                GLuint index = shaderProgram->uniformLocation ( textureName );
-                glGetActiveUniform( shaderProgram->programId(), index, bufSize, &length, &size, &type, name);
+                glGetActiveUniform( shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
                 
                 // set current texture
                 glActiveTexture ( GL_TEXTURE0+u ); // non-standard (>OpenGL 1.3) gl extension
@@ -698,19 +698,21 @@ void DisplayWidget::initFragmentTextures() {
                         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
 
-                    } else if ( fragmentSource.textureParams.contains ( textureName ) ) { // set texparms
-                        setGlTexParameter ( fragmentSource.textureParams[textureName] );
+                    } else if ( fragmentSource.textureParams.contains ( textureUniformName ) ) { // set texparms
+                        setGlTexParameter ( fragmentSource.textureParams[textureUniformName] );
                     } else { // User did not set texparms Disable mip-mapping per default.
                         QMap<QString, QString> map;
                         map.insert ( "GL_TEXTURE_MAG_FILTER","GL_LINEAR" );
                         map.insert ( "GL_TEXTURE_MIN_FILTER","GL_LINEAR" );
                         setGlTexParameter ( map );
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
                     }
 
                     shaderProgram->setUniformValue ( l, ( GLuint ) u );
                     u++;
                 } else  WARNING ( tr("Not a valid texture: ") + QFileInfo ( texturePath ).absoluteFilePath() );
-            } else WARNING ( tr("Unused sampler uniform: ") + textureName );
+            } else WARNING ( tr("Unused sampler uniform: ") + textureUniformName );
         }
     }
     
@@ -735,7 +737,7 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool>* textureCacheUsed) {
             
         }
     } else { // clear cache and textures
-        QMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QString, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
             INFO("Removing texture from cache: " +i.key());
@@ -874,16 +876,17 @@ void DisplayWidget::makeBuffers() {
         backBuffer = 0;
     }
 
+    makeCurrent();
+    
     QOpenGLFramebufferObjectFormat fbof;
     fbof.setAttachment ( QOpenGLFramebufferObject::Depth );
     fbof.setInternalTextureFormat ( bufferType );
     fbof.setTextureTarget ( GL_TEXTURE_2D );
 
-    makeCurrent();
     // we must create both the backbuffer and previewBuffer
+    previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     clearBackBuffer();
-    previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
 
     if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -1306,14 +1309,24 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             if(!foundDouble) {
                 for( int n=0; n < vw.count(); n++) {
                     if(uniformName == vw[n]->getName()) {
+                    SamplerWidget *sw = dynamic_cast<SamplerWidget*>(vw[n]);
+                    if( sw != NULL) {
+                        QMapIterator<QString, QString> it( fragmentSource.textures );
+                        while( it.hasNext() ) {
+                            it.next();
+                            if(it.value().contains(sw->getValue())) {
+                                sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
+//                                 DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
+                            }
+                        }
+                    }
                         vw[n]->setIsDouble(false); // ensure sliders set to float decimals
                         vw[n]->setUserUniform(shaderProg);
                         break;
                     }
                 }
             }
-        
-        if(foundDouble) vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
+        else  vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
     if(subframeCounter == 1 && verbose) qDebug() << count << " active uniforms initialized";
     
@@ -1405,7 +1418,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
 
     // Setup User Uniforms
-    setShaderUniforms(shaderProgram);   
+    if(subframeCounter == 1) setShaderUniforms(shaderProgram);   
    
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );

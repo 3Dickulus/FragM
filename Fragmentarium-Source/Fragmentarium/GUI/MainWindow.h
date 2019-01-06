@@ -136,7 +136,7 @@ namespace Fragmentarium {
 // #endif // USE_OPEN_EXR
 /// END 3DTexture
 
-      void setUserUniforms(QOpenGLShaderProgram* shaderProgram);
+      void setUserUniforms(QOpenGLShaderProgram* shaderProg);
       QVector<VariableWidget*> getUserUniforms(){return variableEditor->getUserUniforms();};
 
       DisplayWidget* getEngine() {

@@ -170,7 +170,9 @@ void VariableEditor::resetUniforms(bool clear ) {
 
 void VariableEditor::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
     for (int i = 0; i < variables.count(); i++) {
-        if (!variables[i]->isSystemVariable()) variables[i]->setUserUniform(shaderProgram);
+        if (!variables[i]->isSystemVariable()) {
+            variables[i]->setUserUniform(shaderProgram);
+        }
     }
 }
 
@@ -648,7 +650,7 @@ bool VariableEditor::setSettings(QString text) {
     }
 
     if(requiresRecompile)
-    mainWindow->initializeFragment();
+        requiresRecompile = mainWindow->initializeFragment();
 
     foreach (QString s, maps.keys()) {
         WARNING(tr("Could not find: ") + s);

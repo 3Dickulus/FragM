@@ -13,8 +13,8 @@
 #include <QColorDialog>
 #include <QDoubleSpinBox>
 #include <QHBoxLayout>
-#include <QOpenGLShaderProgram>
 
+#include <QOpenGLShaderProgram>
 #include "../Parser/Preprocessor.h"
 #include "SyntopiaCore/Logging/Logging.h"
 #include "DisplayWidget.h"
@@ -322,6 +322,7 @@ namespace Fragmentarium {
             void setIsDouble( bool wd = false) {
                 wantDouble = wd;
             };
+            int texID;
 
         signals:
             void changed();

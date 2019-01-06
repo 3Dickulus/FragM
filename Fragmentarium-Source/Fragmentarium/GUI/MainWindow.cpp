@@ -778,10 +778,12 @@ void MainWindow::showWelcomeNote() {
 
 }
 
-void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
+void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProg) {
+    
+//         DBOUT << shaderProg->programId();
 
-    if (!variableEditor || !shaderProgram) return;    
-    variableEditor->setUserUniforms(shaderProgram);
+    if (!variableEditor || !shaderProg) return;    
+    variableEditor->setUserUniforms(shaderProg);
 }
 
 void MainWindow::variablesChanged(bool lockedChanged) {
@@ -2113,10 +2115,10 @@ void MainWindow::loadFragFile(const QString &fileName)
     QString inputText = getTextEdit()->toPlainText();
     if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
     if (QSettings().value("autorun", true).toBool()) {
-        rebuildRequired = initializeFragment();
+        rebuildRequired = initializeFragment(); // once to initialize presets
         bool requiresRecompile = variableEditor->setDefault();
         if (requiresRecompile || rebuildRequired) {
-            INFO(tr("Rebuilding to update locked uniforms..."));
+            INFO(tr("Rebuild to update locked uniforms..."));
             initializeFragment();
             variableEditor->setDefault();
         }
@@ -2217,7 +2219,13 @@ void MainWindow::highlightBuildButton(bool value) {
 
 bool MainWindow::initializeFragment() {
 
-//     if(sender() != 0) // != 0 when called by "Build" button
+    if (tabBar->currentIndex() == -1) {
+        WARNING(tr("No open tab"));
+        return false;
+    }
+
+//    if(sender() == 0) return false; // != 0 when called by "Build" button or TabChanged signal
+//     DBOUT << sender() << tabInfo[tabBar->currentIndex()].filename;
     
     logger->getListWidget()->clear();
 
@@ -2249,10 +2257,6 @@ bool MainWindow::initializeFragment() {
     engine->setState(DisplayWidget::Progressive);
     stop();
 
-    if (tabBar->currentIndex() == -1) {
-        WARNING(tr("No open tab"));
-        return false;
-    }
     QString inputText = getTextEdit()->toPlainText();
     if (inputText.startsWith("#donotrun")) {
         INFO(tr("Not a runnable fragment."));
@@ -2262,35 +2266,39 @@ bool MainWindow::initializeFragment() {
     QSettings settings;
     bool moveMain = settings.value("moveMain", true).toBool();
     //     readSettings();
-    QTime start = QTime::currentTime();
     fileManager.setOriginalFileName(filename);
 
     if(variableEditor->hasKeyFrames())
         clearKeyFrames();
 
     Preprocessor p(&fileManager);
-    QString camSet = getCameraSettings(); // BUG Fixs Up vector
+    // BUG Fixs Up vector
+    QString camSet = getCameraSettings();
     bool showGUI = false;
     highlightBuildButton(false);
     variableEditor->locksUseDefines( QSettings().value("useDefines", true).toBool() );
-    
-    try {
+    int ms = 0;
         FragmentSource fs = p.parse(inputText,filename,moveMain);
-        variableEditor->updateFromFragmentSource(&fs, &showGUI); // BUG Up vector gets trashed on Build or Save
+        addToWatch( QStringList(filename) );
+    // BUG Up vector gets trashed on Build or Save
+    variableEditor->updateFromFragmentSource(&fs, &showGUI);
         variableEditor->substituteLockedVariables(&fs);
         variableEditor->updateTextures(&fs, &fileManager);
+    try {
+        QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
+        ms = start.msecsTo(QTime::currentTime());
     } catch (Exception& e) {
         WARNING(e.getMessage());
         highlightBuildButton(true);
     }
-    if(getCameraSettings() != camSet) variableEditor->setSettings(camSet); // BUG Fixs Up vector
+    // BUG Fixs Up vector
+    if(getCameraSettings() != camSet) variableEditor->setSettings(camSet);
     editorDockWidget->setHidden(!showGUI);
     variableEditor->updateCamera(engine->getCameraControl());
     engine->requireRedraw(true);
     engine->resetTime();
 
-    int ms = start.msecsTo(QTime::currentTime());
     if (engine->hasShader()) {
         if(!engine->hasBufferShader())
             setSubframeMax(1);
@@ -2330,9 +2338,8 @@ bool MainWindow::initializeFragment() {
         return true;
     } else {
         WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
+    }
     return false;
-}
-
 }
 
 namespace {
