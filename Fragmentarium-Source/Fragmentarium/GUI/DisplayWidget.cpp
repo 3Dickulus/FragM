@@ -1627,44 +1627,53 @@ void DisplayWidget::clearGL() {
 }
 
 #ifdef USE_OPEN_EXR
-void DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
+bool DisplayWidget::getRGBAFtile ( Array2D<Rgba>&array, int w, int h ) {
 
   GLfloat *myImgdata = (GLfloat *)malloc( (h*w*4*sizeof(GLfloat)) );
   GLfloat *myDepths = (GLfloat *)malloc( (h*w*sizeof(GLfloat)) );
+  bool retOK = true;
   
     if ( !hiresBuffer->bind() ) {
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
+      retOK = false;
     }
     
     // read colour values from hiresBuffer
-    glReadPixels ( 0, 0, w, h, GL_RGBA, GL_FLOAT, myImgdata );
+    if(retOK) glReadPixels ( 0, 0, w, h, GL_RGBA, GL_FLOAT, myImgdata );
     
     if ( !hiresBuffer->release() ) {
       WARNING ( tr("Failed to release hiresBuffer FBO") );
+        retOK = false;
     }
     
-    if ( depthToAlpha ) {
+    if ( depthToAlpha && retOK ) {
       if ( !previewBuffer->bind() ) {
         WARNING ( tr("Failed to bind previewBuffer FBO") );
+        retOK = false;
       }
         // read depth values from previewBuffer
-        glReadPixels ( 0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, myDepths );
+        if(retOK) glReadPixels ( 0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, myDepths );
 
         if ( !previewBuffer->release() ) {
           WARNING ( tr("Failed to release previewBuffer FBO") );
+          retOK = false;
         }
     }
 
     // put them together as RGBZ or RGBA
+    if(retOK) {
     for ( int i = 0; i < h; i++ ) {
       for ( int j = 0; j < w; j++ ) {
         array[ ( h-1 )-i][j] = Rgba ( myImgdata[((i * w) + j) * 4 + 0], myImgdata[((i * w) + j) * 4 + 1], myImgdata[((i * w) + j) * 4 + 2],
                                       depthToAlpha ? myDepths[((i * w) + j) * 1 + 0] : myImgdata[((i * w) + j) * 4 + 3] );
         }
     }
+    }
     
     free(myImgdata);myImgdata=0;
     free(myDepths);myDepths=0;
+
+    return retOK;
     
 }
 #endif

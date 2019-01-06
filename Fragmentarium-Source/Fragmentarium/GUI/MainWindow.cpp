@@ -1358,7 +1358,7 @@ retry:
         QVector<QImage> cachedTileImages;
 
         QString name=fileName; // prevent double numbering in file name when under script control
-        if(!fileName.contains(QRegExp(".[0-9]{5,5}.")))
+        if(!fileName.contains(QRegExp(".[0-9]{5,7}.")))
             name=makeImgFileName(timeStep, timeSteps, fileName);
 
         if (od.doSaveFragment() || od.doAnimation()) {
@@ -1425,7 +1425,7 @@ retry:
                     int xoff = dx*tileWidth;
                     int yoff = dy*tileHeight;
 
-                    engine->getRGBAFtile( pixels, tileWidth, tileHeight );
+                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
                     Box2i range = out.dataWindowForTile (dx, dy);
                     out.setFrameBuffer (&pixels[-range.min.y][-range.min.x],
                                         1,  // xStride
@@ -1439,6 +1439,7 @@ retry:
                         QRect target(xoff, yoff, tileWidth, tileHeight);
                         QRect source(0, 0, tileWidth, tileHeight);
                         painter.drawImage(target, im, source);
+                    }
                     }
                 } else {
                   stopScript();

@@ -215,7 +215,7 @@ namespace Fragmentarium {
         exrMode = m;
       }
 
-      void getRGBAFtile(Imf::Array2D< Imf::Rgba >& array, int w, int h);
+      bool getRGBAFtile(Imf::Array2D< Imf::Rgba >& array, int w, int h);
       #endif
       
       void setVerbose(bool v) { verbose = v; };
