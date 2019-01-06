@@ -320,6 +320,11 @@ namespace Fragmentarium {
         settings.setValue("autosave", s);
         settings.sync();
       }
+      void setAutoLoad( bool l ) {
+        QSettings settings;
+        settings.setValue("autoload", l);
+        settings.sync();
+      }
       void setUniqueID( bool u ) {
         QSettings settings;
         settings.setValue("unique", u);

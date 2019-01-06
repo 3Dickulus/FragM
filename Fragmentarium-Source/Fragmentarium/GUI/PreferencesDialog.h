@@ -40,6 +40,7 @@ private slots:
         m_ui.drawGLPathsCheckBox->setChecked(settings.value("drawGLPaths", true).toBool());
         m_ui.splineOccCheckBox->setChecked(settings.value("splineOcc", true).toBool());
         m_ui.autoRunCheckBox->setChecked(settings.value("autorun", true).toBool());
+        m_ui.autoLoadCheckBox->setChecked(settings.value("autoload", false).toBool());
         m_ui.saveEasingCheckBox->setChecked(settings.value("saveEasing", true).toBool());
         m_ui.useDefinesCheckBox->setChecked(settings.value("useDefines", false).toBool());
         m_ui.refreshRateSpinBox->setValue(settings.value("refreshRate", 20).toInt());
@@ -61,6 +62,7 @@ private slots:
         settings.setValue("drawGLPaths", m_ui.drawGLPathsCheckBox->isChecked());
         settings.setValue("splineOcc", m_ui.splineOccCheckBox->isChecked());
         settings.setValue("autorun", m_ui.autoRunCheckBox->isChecked());
+        settings.setValue("autoload", m_ui.autoLoadCheckBox->isChecked());
         settings.setValue("saveEasing", m_ui.saveEasingCheckBox->isChecked());
         settings.setValue("useDefines", m_ui.useDefinesCheckBox->isChecked());
         settings.setValue("refreshRate",  m_ui.refreshRateSpinBox->value());

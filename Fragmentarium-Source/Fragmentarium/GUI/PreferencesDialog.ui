@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>612</height>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,6 +30,16 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+        <property name="toolTip">
+         <string>Some engines use non GL matrices.</string>
+        </property>
+        <property name="text">
+         <string>Draw spline paths for camera and target</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="autoRunCheckBox">
         <property name="toolTip">
@@ -40,55 +50,52 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="lineNumbersCheckBox">
         <property name="toolTip">
-         <string>Some engines use non GL matrices.</string>
+         <string>Enabling this might be helpful when debugging.</string>
         </property>
         <property name="text">
-         <string>Draw spline paths for camera and target</string>
+         <string>Add line numbers to the editing window.</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="splineOccCheckBox">
         <property name="text">
          <string>Spline Occlusion</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QCheckBox" name="lineNumbersCheckBox">
-        <property name="toolTip">
-         <string>Enabling this might be helpful when debugging.</string>
-        </property>
-        <property name="text">
-         <string>Add line numbers to the script editing window.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QCheckBox" name="loopPlayCheckBox">
-        <property name="text">
-         <string>Loop animation when playing</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
+      <item row="2" column="1">
        <widget class="QCheckBox" name="saveEasingCheckBox">
         <property name="text">
          <string>Presets contain easing curve settings</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="loopPlayCheckBox">
+        <property name="text">
+         <string>Loop animation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
        <widget class="QCheckBox" name="useDefinesCheckBox">
         <property name="text">
          <string>Locked uniforms use #define or const</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="autoLoadCheckBox">
+        <property name="text">
+         <string>Autoload on change</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -101,7 +108,7 @@
         </property>
        </spacer>
       </item>
-      <item row="9" column="0">
+      <item row="6" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="refreshRateLabel">
@@ -122,7 +129,7 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0">
+      <item row="7" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="animFrameRateLabel">
@@ -140,7 +147,7 @@
         </item>
        </layout>
       </item>
-      <item row="11" column="0">
+      <item row="8" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="includePathsLabel">
@@ -158,7 +165,7 @@
         </item>
        </layout>
       </item>
-      <item row="12" column="0">
+      <item row="9" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QLabel" name="exrBinPathsLabel">
@@ -176,7 +183,7 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0">
+      <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="stylesheetLabel">
@@ -194,7 +201,7 @@
         </item>
        </layout>
       </item>
-      <item row="14" column="0">
+      <item row="11" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="maxRecentFilesLabel">
@@ -215,7 +222,7 @@
         </item>
        </layout>
       </item>
-      <item row="15" column="0">
+      <item row="12" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
