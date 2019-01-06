@@ -183,7 +183,6 @@ These have been redacted due to lack of use may be brought back if there is dema
 
 + Edit fqScript is now CTRL+E
 + added wiki to help menu
-+ added reload feature
 + added file watcher
 + autoload on external change option
 + log warn if value from preset gets clamped
