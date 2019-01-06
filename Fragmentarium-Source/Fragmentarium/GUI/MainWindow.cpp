@@ -958,6 +958,10 @@ void MainWindow::createActions()
     referenceAction2->setStatusTip(tr("Open a Fragmentarium reference web page in a browser."));
     connect(referenceAction2, SIGNAL(triggered()), this, SLOT(launchReferenceHome2()));
 
+    referenceAction3 = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium Documentation (web link)"), this);
+    referenceAction3->setStatusTip(tr("Open a Fragmentarium reference web page in a browser."));
+    connect(referenceAction3, SIGNAL(triggered()), this, SLOT(launchDocumentation()));
+
     galleryAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Flickr Fragmentarium Group (web link)"), this);
     galleryAction->setStatusTip(tr("Opens the main Flickr group for Fragmentarium creations."));
     connect(galleryAction, SIGNAL(triggered()), this, SLOT(launchGallery()));
@@ -1069,6 +1073,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(sfHomeAction);
     helpMenu->addAction(referenceAction);
     helpMenu->addAction(referenceAction2);
+    helpMenu->addAction(referenceAction3);
     helpMenu->addAction(galleryAction);
     helpMenu->addAction(glslHomeAction);
     helpMenu->addAction(faqAction);
@@ -2580,6 +2585,12 @@ void MainWindow::clearKeyFrames() {
     // clear the spline data
     if(variableEditor->hasKeyFrames())
         clearKeyFrameControl();
+}
+
+void MainWindow::launchDocumentation() {
+    INFO(tr("Launching web browser..."));
+    bool s = QDesktopServices::openUrl(QUrl("https://en.wikibooks.org/wiki/Fractals/fragmentarium"));
+    if (!s) WARNING(tr("Failed to open browser..."));
 }
 
 void MainWindow::launchSfHome() {
