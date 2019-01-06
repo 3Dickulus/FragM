@@ -1,3 +1,4 @@
+#pragma once
 /****************************************************************************
 **
 ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -37,6 +38,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 
 #include <QtGui>
 #include <QDialog>

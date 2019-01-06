@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     qApp->addLibraryPath("./");
     qApp->addLibraryPath("./plugins");
+    qApp->addLibraryPath("iconengines");
+    qApp->addLibraryPath("imageformats");
     qApp->addLibraryPath("platforms");
 #endif
 
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
 
     QApplication *app = new QApplication(argc, argv);
    
-    app->setApplicationVersion("2.5.0.181216");
+    app->setApplicationVersion("2.5.0.181222");
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;

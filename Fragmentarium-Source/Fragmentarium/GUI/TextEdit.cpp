@@ -7,7 +7,6 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLabel>
-#include <QOpenGLShaderProgram>
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QAbstractScrollArea>

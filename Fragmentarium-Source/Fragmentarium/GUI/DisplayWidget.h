@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <QPropertyAnimation>
 #include <QAnimationGroup>
 #include <QVector>
@@ -43,8 +45,9 @@
 #include <QProgressDialog>
 #include <QPoint>
 #include <QList>
-#include <QOpenGLShaderProgram>
 #include <QMainWindow>
+
+#include <QOpenGLShaderProgram>
 #include "SyntopiaCore/Logging/ListWidgetLogger.h"
 #include "../Parser/Preprocessor.h"
 #include "CameraControl.h"
@@ -71,7 +74,6 @@
 
 #endif
 
-#include <iostream>
 
 namespace Fragmentarium {
   namespace GUI {
@@ -79,9 +81,11 @@ namespace Fragmentarium {
     #define DBOUT   qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
     
     #ifdef USE_OPEN_EXR
-    using namespace Imf;
-    using namespace Imath;
+    using namespace OPENEXR_IMF_NAMESPACE;
+    using namespace IMATH_NAMESPACE;
     #endif
+
+    using namespace SyntopiaCore::Logging;
     using namespace Parser;
     class MainWindow;
     class VariableWidget;

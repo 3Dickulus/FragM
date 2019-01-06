@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include <QCoreApplication>
+#include <QWidget>
 #include <QtGui>
 #include <QDir>
 #include <QMenu>
@@ -41,17 +44,6 @@
 #include "Preprocessor.h"
 #include "Misc.h"
 
-#include <iostream>
-
-#ifdef USE_OPEN_EXR
-using namespace Imf;
-using namespace Imath;
-#endif
-
-using namespace SyntopiaCore::Misc;
-using namespace SyntopiaCore::Logging;
-using namespace SyntopiaCore::Exceptions;
-using namespace Fragmentarium::Parser;
 
 namespace Fragmentarium {
 namespace GUI {
@@ -79,7 +71,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 181216, "");
+    version = Version(2, 5, 0, 181222, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -797,7 +789,7 @@ void MainWindow::showWelcomeNote() {
 }
 
 void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
-    
+
     if (!variableEditor || !shaderProgram) return;    
     variableEditor->setUserUniforms(shaderProgram);
 }
@@ -886,19 +878,17 @@ void MainWindow::createActions()
 
     cutAction = new QAction(QIcon(":/Icons/cut.png"), tr("Cu&t"), this);
     cutAction->setShortcut(tr("Ctrl+X"));
-    cutAction->setStatusTip(tr("Cut the current selection's contents to the "
-                               "clipboard"));
+    cutAction->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
     connect(cutAction, SIGNAL(triggered()), this, SLOT(cut()));
 
     copyAction = new QAction(QIcon(":/Icons/copy.png"), tr("&Copy"), this);
     copyAction->setShortcut(tr("Ctrl+C"));
-    copyAction->setStatusTip(tr("Copy the current selection's contents to the "
-                                "clipboard"));
+    copyAction->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
     connect(copyAction, SIGNAL(triggered()), this, SLOT(copy()));
 
     pasteAction = new QAction(QIcon(":/Icons/paste.png"), tr("&Paste"), this);
     pasteAction->setShortcut(tr("Ctrl+V"));
-    pasteAction->setStatusTip(tr("Paste the clipboard's contents into the current ""selection"));
+    pasteAction->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     connect(pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
 
     findAction = new QAction(QIcon(":/Icons/find.png"), tr("&Find"), this);
@@ -912,7 +902,7 @@ void MainWindow::createActions()
     connect(asmAction, SIGNAL(triggered()), this, SLOT(dumpShaderAsm()));
 
     scriptAction = new QAction(tr("&Edit Cmd Script"), this);
-    scriptAction->setShortcut(tr("Ctrl+R"));
+    scriptAction->setShortcut(tr("Ctrl+E"));
     scriptAction->setStatusTip(tr("Edit the currently loaded script"));
     connect(scriptAction, SIGNAL(triggered()), this, SLOT(editScript()));
 
@@ -2164,12 +2154,12 @@ bool MainWindow::saveFile(const QString &fileName)
                              .arg(file.errorString()));
         return false;
     }
-
+    
     QTextStream out(&file);
     QApplication::setOverrideCursor(Qt::WaitCursor);
     out << getTextEdit()->toPlainText();
     QApplication::restoreOverrideCursor();
-
+    
     tabInfo[tabBar->currentIndex()].hasBeenSavedOnce = true;
     tabInfo[tabBar->currentIndex()].unsaved = false;
     tabInfo[tabBar->currentIndex()].filename = fileName;
@@ -2350,8 +2340,8 @@ bool MainWindow::initializeFragment() {
         return true;
     } else {
         WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
-        return false;
-    }
+    return false;
+}
 
 }
 
@@ -2766,8 +2756,6 @@ void MainWindow::setSplashWidgetTimeout(QSplashScreen* w) {
     // test for nVidia card and GL > 4.0
     if( !(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
             WARNING( tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
-//             QMessageBox::critical(this, tr("OpenGL features missing"),
-//                                   tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
         if(asmAction)editMenu->removeAction(asmAction);
     }
 

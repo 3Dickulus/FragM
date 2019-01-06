@@ -6,7 +6,7 @@
 
     Info:		Load HDR image and convert to a set of float32 RGB triplet.
 ************************************************************************************/
-
+#pragma once
 class HDRLoaderResult {
 public:
     ~HDRLoaderResult() { delete[] cols; }

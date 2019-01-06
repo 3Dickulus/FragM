@@ -25,6 +25,7 @@
 ** 3Dickulus http://www.fractalforums.com/index.php?topic=16405.0         **
 ** Syntopia http://www.fractalforums.com/index.php?topic=17178.0          **
 ****************************************************************************/
+#pragma once
 
 #include <QTextDocument>
 #include <QTextStream>
@@ -197,7 +198,7 @@ protected:
             qDebug() << "./Misc/glsl.xml is not for GLSL sources.";
             return false;
         }
-        if (root.attribute("author") != "Robert Menzel (mail@renderingpipeline.com)")  {
+        if (!root.attribute("author").contains("Robert Menzel (mail@renderingpipeline.com)"))  {
             qDebug() << "This may be the wrong glsl.xml file!";
         }
 

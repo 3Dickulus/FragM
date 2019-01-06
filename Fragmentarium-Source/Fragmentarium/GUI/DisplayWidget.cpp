@@ -17,17 +17,8 @@
 #include "VariableWidget.h"
 #include "../../ThirdPartyCode/hdrloader.h"
 
-#ifdef USE_OPEN_EXR
-using namespace Imf;
-using namespace Imath;
-#endif
-
-using namespace SyntopiaCore::Logging;
-
 namespace Fragmentarium {
 namespace GUI {
-
-using namespace Parser;
 
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget ( parent ), mainWindow ( mainWin ) {
@@ -289,10 +280,10 @@ void DisplayWidget::setGlTexParameter ( QMap<QString, QString> map ) {
             if ( !ok ) wantedLevels = 128; // just an arbitrary small number, GL default = 1000
             glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
 
-if(context()->format().majorVersion() > 2)
-            glGenerateMipmap ( GL_TEXTURE_2D ); //Generate mipmaps here!!!
-else
-            glTexParameteri ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); //Generate mipmaps here!!!
+            if(context()->format().majorVersion() > 2)
+                glGenerateMipmap ( GL_TEXTURE_2D ); //Generate mipmaps here!!!
+            else
+                glTexParameteri ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); //Generate mipmaps here!!!
 
             // read back and test our value
             glGetTexParameteriv ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &levels );
@@ -1182,6 +1173,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
     GLuint programID = shaderProg->programId();
    
+//     DBOUT << programID;
+    
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 

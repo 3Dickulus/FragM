@@ -106,8 +106,8 @@ public:
       paintGroove(*painter, bbox);
 
       paintFilling(*painter, bbox, range, cutoffRange);
-      paintTicks(*painter, bbox, cutoffRange,
-                 rSlider->tickInterval() /*,rSlider->isLogarithmic()*/ );
+//       paintTicks(*painter, bbox, cutoffRange,
+//                  rSlider->tickInterval() /*,rSlider->isLogarithmic()*/ );
       paintMarker(*painter, bbox, range, cutoffRange, FIRST);
       paintMarker(*painter, bbox, range, cutoffRange, SECOND);
       return;
@@ -646,7 +646,6 @@ void QStyleRangeSlider::paintTicks(QPainter& p, const QRect& bbox,
                                    const QPair<int, int>& cutoffRange,
                                    float tickInterval /*, bool isLogarithmic*/ ) const
 {
-  return;
   int top = getGrooveY(bbox) + getGrooveHeight(bbox);
   int bottom = bbox.height();
 
@@ -989,7 +988,7 @@ const QStyleRangeSlider* qRangeSlider::styleRangeSlider() const
   if (!styleRangeSlider_)
     styleRangeSlider_ = new QStyleRangeSlider();
 
-  styleRangeSlider_->setRealStyle(style());
+  styleRangeSlider_->setRealStyle(qApp->style());
   return styleRangeSlider_;
 }
 

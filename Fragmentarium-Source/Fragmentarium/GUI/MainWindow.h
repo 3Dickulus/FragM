@@ -9,12 +9,14 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLabel>
-#include <QOpenGLShaderProgram>
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QAbstractScrollArea>
 #include <QTextBrowser>
 #include <QtScript/QtScript>
+
+#include <QOpenGLShaderProgram>
+#include <qfilesystemwatcher.h>
 
 #include "Highlighter.h"
 #include "DisplayWidget.h"
@@ -33,9 +35,14 @@ namespace Fragmentarium {
     #define DBOUT   qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__ 
     
 #ifdef USE_OPEN_EXR
-using namespace Imf;
-using namespace Imath;
+    using namespace OPENEXR_IMF_NAMESPACE;
+    using namespace IMATH_NAMESPACE;
 #endif
+
+    using namespace SyntopiaCore::Misc;
+    using namespace SyntopiaCore::Logging;
+    using namespace SyntopiaCore::Exceptions;
+    using namespace Fragmentarium::Parser;
 
     class TextEdit;
     
@@ -219,7 +226,7 @@ using namespace Imath;
       void dropEvent(QDropEvent *ev);
       void closeEvent(QCloseEvent* ev);
       void keyReleaseEvent(QKeyEvent* ev);
-
+      
       int timeMax;
       
     // all public slots are available as script commands

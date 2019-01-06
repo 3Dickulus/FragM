@@ -6,7 +6,7 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QStatusBar>
-#include <QOpenGLShaderProgram>
+#include <QVector3D>
 #include "SyntopiaCore/Logging/ListWidgetLogger.h"
 
 namespace Fragmentarium {

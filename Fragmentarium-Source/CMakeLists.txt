@@ -32,7 +32,7 @@ find_package ( Qt5LinguistTools )
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
 
 # ON if you have OpenEXR libs and include files
-OPTION ( USE_OPEN_EXR "Build with OpenEXR" OFF)
+OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
 OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
@@ -67,6 +67,16 @@ IF ( USE_OPEN_EXR )
 
     IF(UNIX AND NOT APPLE)
         find_package ( OpenEXR REQUIRED )
+        set( OpenEXR_LIBS
+            IlmImf
+            Half
+            Imath
+            Iex
+            IexMath
+            IlmThread
+        )
+        
+        set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
     ENDIF ()
 
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
@@ -120,9 +130,9 @@ IF ( USE_OPEN_EXR )
   
 ENDIF (USE_OPEN_EXR)
 
-SET ( CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra" )
+SET ( CMAKE_CXX_FLAGS " -std=c++11 -Wall -Wextra " )
 
-add_definitions ( -Wall )
+# add_definitions ( -Wall )
 
 include_directories (
     ${OPENGL_INCLUDE_DIR}
@@ -241,13 +251,19 @@ IF ( APPLE )
 ELSEIF ( UNIX )
   add_executable ( ${PROJECT_NAME} ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
-  set ( WIN32_EXECUTABLE ON )
   add_executable ( ${PROJECT_NAME} WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME}-console ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
 target_link_libraries ( ${PROJECT_NAME} ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
+IF ( WIN32 )
+target_link_libraries ( ${PROJECT_NAME}-console ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
+ENDIF ()
 
 qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
+IF ( WIN32 )
+qt5_use_modules(${PROJECT_NAME}-console OpenGL Widgets Gui Xml Script)
+ENDIF ()
 
 # Runtime support files
 IF(APPLE)
@@ -267,10 +283,10 @@ ELSEIF(UNIX)
     ${DESTINATION_NAME}
     )
 ELSEIF ( WIN32 )
-    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX} )
+    set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} )
     # Installation
     INSTALL ( TARGETS
-    ${PROJECT_NAME}
+    ${PROJECT_NAME} ${PROJECT_NAME}-console
     DESTINATION
     ${DESTINATION_NAME}
     )
@@ -320,12 +336,12 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
             SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
             SET(CPACK_RPM_PACKAGE_VERSION "2.5.0")
             SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-            SET(CPACK_RPM_PACKAGE_RELEASE "1")
+            SET(CPACK_RPM_PACKAGE_RELEASE "2")
             SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
             SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
             SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
-            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg")
-            SET(CPACK_RPM_PACKAGE_PREDEPENDS "openexr")
+            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
+            SET(CPACK_RPM_PACKAGE_PREDEPENDS "libilmbase12,libopenexr22")
             SET(CPACK_RPM_PACKAGE_DEPENDS "libQt5Core5, libQt5Gui5, libQt5OpenGL5, libQt5Script5, libQt5Widgets5, libQt5Xml5")
             SET(CPACK_GENERATOR "RPM")
         ENDIF()
@@ -335,11 +351,11 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
             SET(CPACK_DEBIAN_PACKAGE_NAME "fragmentarium")
             SET(CPACK_DEBIAN_PACKAGE_VERSION "2.5.0")
             SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-            SET(CPACK_DEBIAN_PACKAGE_RELEASE "0.0.3")
+            SET(CPACK_DEBIAN_PACKAGE_RELEASE "0.0.4")
             SET(CPACK_DEBIAN_PACKAGE_LICENSE "lgpl,gpl")
             SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
             SET(CPACK_DEBIAN_PACKAGE_VENDOR "digilantism")
-            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg")
+            SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
             SET(CPACK_DEBIAN_PACKAGE_PREDEPENDS "libilmbase12, libopenexr22")
             SET(CPACK_DEBIAN_PACKAGE_DEPENDS "qt57base, qt57script, qt57xml")
             SET(CPACK_DEBIAN_PACKAGE_PROVIDES "fragmentarium")

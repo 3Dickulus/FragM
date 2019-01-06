@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "language.dtd">
 <!-- the version of this file shows the largest supported OpenGL version, second digit is the minor patch level (Y.XP = supports GLSL X.Y0 with patchlevel P -->
-<language name="GLSL" section="Sources" extensions="*.glsl;*.vsh;*.vert;*.tcsh;*.tcs;*.tesh;*.tes;*.gsh;*.geo;*.geom;*.fsh;*.frag;*.csh;*.cs" mimetype="text/x-glslsrc" version="4.40" kateversion="2.4" author="Robert Menzel (mail@renderingpipeline.com)" license="LGPL">
+<language name="GLSL" section="Sources" extensions="*.glsl;*.vsh;*.vert;*.tcsh;*.tcs;*.tesh;*.tes;*.gsh;*.geo;*.geom;*.fsh;*.frag;*.csh;*.cs" mimetype="text/x-glslsrc" version="4.50" kateversion="2.4" author="Robert Menzel (mail@renderingpipeline.com), Nicolas Guillemot (nlguillemot@gmail.com)" license="LGPL"> 
 	<highlighting>
-
+	
 		<!-- ####################################################################################################### keywords -->
 		<list name="keywordsCompatibility">
 			<!-- compatibility mode, older GLSL versions -->
 			<item>attribute</item>
 			<item>varying</item>
 		</list>
-
+	
 		<list name="keywords110">
 			<!-- keywords in the GLSL spec, also keywordsCompatibility -->
 			<item>const</item>
@@ -31,7 +31,7 @@
 			<item>return</item>
 			<item>struct</item>
 		</list>
-
+		
 		<list name="keywords100ES">
 			<!-- also all of keywords110 -->
 			<item>invariant</item>
@@ -51,7 +51,7 @@
 			<item>case</item>
 			<item>default</item>
 		</list>
-
+		
 		<list name="keywords140">
 			<!-- also all of 130 -->
 			<item>layout</item>
@@ -72,13 +72,13 @@
 			<item>readonly</item>
 			<item>writeonly</item>
 		</list>
-
+		
 		<list name="keywords430">
 			<!-- also all of 420 -->
 			<item>buffer</item>
 			<item>shared</item>
 		</list>
-
+		
 		<list name="keywordsPrecision">
 			<!-- 100ES 420 -->
 			<item>lowp</item>
@@ -86,7 +86,7 @@
 			<item>highp</item>
 			<item>precision</item>
 		</list>
-
+		
 		<!-- ####################################################################################################### variables -->
 
 		<list name="keywordstypes100es">
@@ -110,7 +110,7 @@
 			<item>sampler2D</item>
 			<item>samplerCube</item>
 		</list>
-
+		
 		<list name="keywordstypes110">
 			<!-- also all of keywordstypes100es -->
 			<item>sampler1D</item>
@@ -118,7 +118,7 @@
 			<item>sampler1DShadow</item>
 			<item>sampler2DShadow</item>
 		</list>
-
+		
 		<list name="keywordstypes120">
 			<!-- also all of keywordstypes110 -->
 			<item>mat2x2</item>
@@ -156,7 +156,7 @@
 			<item>usampler1DArray</item>
 			<item>usampler2DArray</item>
 		</list>
-
+		
 		<list name="keywordstypes140">
 			<!-- also all of keywordstypes130 -->
 			<item>sampler2DRect</item>
@@ -167,7 +167,7 @@
 			<item>isamplerBuffer</item>
 			<item>usamplerBuffer</item>
 		</list>
-
+		
 		<list name="keywordstypes150">
 			<!-- also all of keywordstypes140 -->
 			<item>sampler2DMS</item>
@@ -177,7 +177,7 @@
 			<item>isampler2DMSArray</item>
 			<item>usampler2DMSArray</item>
 		</list>
-
+		
 		<list name="keywordsRemovedInES3">
 			<!-- what is in 330 but not in 300 es -->
 			<item>noperspective</item>
@@ -197,7 +197,7 @@
 			<item>isampler2DMSArray</item>
 			<item>usampler2DMSArray</item>
 		</list>
-
+		
 		<list name="keywordstypes400">
 			<!-- also all of keywordstypes150 -->
 			<item>double</item>
@@ -221,7 +221,7 @@
 			<item>isamplerCubeArray</item>
 			<item>usamplerCubeArray</item>
 		</list>
-
+		
 		<list name="keywordstypes420">
 			<!-- also all of keywordstypes400 -->
 			<item>atomic_uint</item>
@@ -259,7 +259,7 @@
 			<item>iimage2DMSArray</item>
 			<item>uimage2DMSArray</item>
 		</list>
-
+		
 		<list name="reservedkeywords">
 			<!-- reserved keywords in the GLSL spec for GLSL 430, also marked as reserved in older version! -->
 			<item>common</item>
@@ -302,7 +302,7 @@
 			<item>namespace</item>
 			<item>using</item>
 		</list>
-
+		
 		<!-- ####################################################################################################### layout -->
 		<list name="layoutqualifier300ES">
 			<!-- uniform and shader storage block layout qualifiers -->
@@ -349,7 +349,7 @@
 			<item>cw</item>
 			<item>ccw</item>
 			<item>point_mode</item>
-
+			
 			<item>invocations</item>
 			<item>index</item>
 			<item>stream</item>
@@ -360,6 +360,7 @@
 			<item>depth_greater</item>
 			<item>depth_less</item>
 			<item>depth_unchanged</item>
+			<item>early_fragment_tests</item>
 			<!-- Atomic Counter Layout Qualifiers, also: binding -->
 			<item>offset</item>
 			<item>binding</item>
@@ -414,7 +415,14 @@
 			<item>local_size_z</item>
 			<item>std430</item>
 		</list>
-
+		<list name="layoutqualifier440">
+			<item>align</item>
+			<item>component</item>
+			<item>xfb_buffer</item>
+			<item>xfb_stride</item>
+			<item>xfb_offset</item>
+		</list>
+		
 		<!-- ####################################################################################################### buildin variables -->
 		<list name="buildinvariables100ES">
 			<!--only these variables -->
@@ -560,7 +568,11 @@
 			<item>gl_GlobalInvocationID</item>
 			<item>gl_LocalInvocationIndex</item>
 		</list>
-
+		<list name="buildinvariables450">
+			<item>gl_HelperInvocation</item>
+			<item>gl_CullDistance</item>
+		</list>
+		
 		<!-- ####################################################################################################### buildin constants -->
 		<list name="buildinconstants100ES">
 			<item>gl_MaxVertexAttribs</item>
@@ -685,7 +697,15 @@
 			<item>gl_MaxComputeAtomicCounters</item>
 			<item>gl_MaxComputeAtomicCounterBuffers</item>
 		</list>
-
+		<list name="buildinconstants440">
+			<item>gl_MaxCombinedShaderOutputResources</item>
+		</list>
+		<list name="buildinconstants450">
+			<item>gl_MaxCullDistances</item>
+			<item>gl_MaxCombinedClipAndCullDistances</item>
+			<item>gl_MaxSamples</item>
+		</list>
+		
 		<!-- ####################################################################################################### buildin functions -->
 		<list name="buildinfunctionsDeprecatedES">
 			<item>texture2D</item>
@@ -695,7 +715,7 @@
 			<item>textureCube</item>
 			<item>textureCubeLod</item>
 		</list>
-
+		
 		<list name="buildinfunctionsDeprecated">
 			<!-- also buildinfunctionsDeprecatedES -->
 			<item>ftransform</item>
@@ -764,7 +784,7 @@
 			<item>all</item>
 			<item>not</item>
 		</list>
-
+			
 		<list name="buildinfunctions110">
 			<!-- also buildinfunctions100ES and buildinfunctionsDeprecated -->
 			<item>dFdx</item>
@@ -906,9 +926,17 @@
 			<item>memoryBarrierImage</item>
 			<item>groupMemoryBarrier</item>
 		</list>
-
-		<!-- ################################################################################################################
-		     ####################################################################################################### contexts
+		<list name="buildinfunctions450">
+			<item>dFdxCoarse</item>
+			<item>dFdyCoarse</item>
+			<item>fwidthCoarse</item>
+			<item>dFdxFine</item>
+			<item>dFdyFine</item>
+			<item>fwidthFine</item>
+		</list>
+		
+		<!-- ################################################################################################################ 
+		     ####################################################################################################### contexts 
 		     ################################################################################################################ -->
 		<contexts>
 			<!-- default -->
@@ -916,11 +944,11 @@
 			<context name="v110" attribute="Normaltext" lineEndContext="#stay">
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Reserved" String="layout" context="LayoutReserved"/>
-
+				
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Keyword"                 String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Reserved"                String="keywordsPrecision"      context="#stay" />
@@ -941,7 +969,7 @@
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
 				<keyword attribute="Reserved"          String="reservedkeywords"       context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariablesDeprecated"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables120"    context="#stay" />
@@ -950,7 +978,8 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants150"    context="#stay" />
@@ -958,7 +987,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Buildinfunctions"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -972,20 +1003,22 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
-
+				<Float attribute="Float" context="#stay"/>
+				<HlCOct attribute="Octal" context="#stay"/>
+				<HlCHex attribute="Hex"   context="#stay"/>
+				<Int    attribute="Decimal" context="#stay"/>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
-
+				
 				<StringDetect attribute="Preprocessor" String="#version" context="version" />
 			</context>
-
+			
 			<context name="version" attribute="Preprocessor" lineEndContext="#pop">
 				<!-- GLSL version detection -->
 				<StringDetect attribute="Preprocessor" String="100" context="v100ES" /> <!-- ES 2.0 -->
@@ -1001,13 +1034,14 @@
 				<StringDetect attribute="Preprocessor" String="420" context="v420" />
 				<StringDetect attribute="Preprocessor" String="430" context="v430" />
 				<StringDetect attribute="Preprocessor" String="440" context="v440" />
+				<StringDetect attribute="Preprocessor" String="450" context="v450" />
 			</context>
-
+			
 			<!-- ################################################################################################# GLSL version GLES 2 -->
 			<context name="v100ES" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Reserved" String="layout" context="LayoutReserved"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Keyword"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1028,7 +1062,7 @@
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables100ES"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables110"    context="#stay" />
@@ -1038,8 +1072,8 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
-
-
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants100ES"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants130"    context="#stay" />
@@ -1048,7 +1082,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1062,24 +1098,27 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay"/>
+				<HlCOct attribute="Octal" context="#stay"/>
+				<HlCHex attribute="Hex"   context="#stay"/>
+				<Int    attribute="Decimal" context="#stay"/>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 120 -->
 			<context name="v120" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Reserved" String="layout" context="LayoutReserved"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Keyword"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1099,9 +1138,9 @@
 				<keyword attribute="Reserved"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariablesDeprecated"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
@@ -1110,7 +1149,8 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants150"    context="#stay" />
@@ -1118,7 +1158,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Buildinfunctions"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1132,24 +1174,29 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"/>
+				<HlCHex attribute="Hex"   context="#stay"/>
+				<Int    attribute="Decimal" context="#stay"/>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 130 -->
 			<context name="v130" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Reserved" String="layout" context="LayoutReserved"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1169,9 +1216,9 @@
 				<keyword attribute="Reserved"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables140"    context="#stay" />
@@ -1179,8 +1226,9 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants150"    context="#stay" />
@@ -1188,7 +1236,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1202,24 +1252,29 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 140 -->
 			<context name="v140" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Reserved" String="layout" context="LayoutReserved"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1239,9 +1294,9 @@
 				<keyword attribute="Reserved"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1249,8 +1304,9 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants150"    context="#stay" />
@@ -1258,7 +1314,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1272,24 +1330,29 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 150 -->
 			<context name="v150" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout150"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1309,9 +1372,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1319,8 +1382,9 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1328,7 +1392,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1342,27 +1408,32 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- ################################################################################################# GLSL version GLES 3 -->
 			<context name="v300ES" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout300ES"/>
-
+				
 				<!-- override these keywords, it's not available in ES 3 -->
 				<keyword attribute="Reserved"                String="keywordsRemovedInES3"  context="#stay" />
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1382,9 +1453,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<StringDetect attribute="gl_ClipDistance" String="Reserved" context="#stay"/>
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
@@ -1393,8 +1464,9 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants300ES"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants130"    context="#stay" />
@@ -1403,7 +1475,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions300ES"    context="#stay" />
@@ -1418,24 +1492,29 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 330 -->
 			<context name="v330" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout330"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1455,9 +1534,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1465,8 +1544,9 @@
 				<keyword attribute="Reserved"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1474,7 +1554,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1488,24 +1570,29 @@
 				<keyword attribute="Reserved"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 400 -->
 			<context name="v400" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout400"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1525,9 +1612,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1535,8 +1622,9 @@
 				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1544,7 +1632,9 @@
 				<keyword attribute="Reserved"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1558,24 +1648,31 @@
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 410 -->
 			<context name="v410" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout400"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1595,9 +1692,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Reserved"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1605,8 +1702,9 @@
 				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1614,7 +1712,9 @@
 				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1628,24 +1728,31 @@
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 420 -->
 			<context name="v420" attribute="Normaltext" lineEndContext="#stay" >
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout420"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"                String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1665,9 +1772,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1675,8 +1782,9 @@
 				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1684,7 +1792,9 @@
 				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Reserved"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1698,24 +1808,29 @@
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
-
+			
 			<!-- #################################################################################################### GLSL version 430 -->
 			<context name="v430" attribute="Normaltext" lineEndContext="#stay">
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout430"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"               String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1735,9 +1850,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1745,8 +1860,9 @@
 				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"       String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1754,7 +1870,9 @@
 				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Reserved"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"       String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1768,17 +1886,22 @@
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
-
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
-
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
@@ -1786,7 +1909,7 @@
 			<context name="v440" attribute="Normaltext" lineEndContext="#stay">
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout440"/>
-
+				
 				<!-- language features -->
 				<keyword attribute="Reserved"               String="keywordsCompatibility"  context="#stay" />
 				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
@@ -1806,9 +1929,9 @@
 				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
 				<keyword attribute="Keywordstypes"          String="keywordstypes420"       context="#stay" />
-
+				
 				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
-
+				
 				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
@@ -1816,8 +1939,9 @@
 				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
 				<keyword attribute="Buildinvariables"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Reserved"     		    String="buildinvariables450"    context="#stay" />
 				<keyword attribute="Reserved"               String="buildinvariablesDeprecated"    context="#stay" />
-
+				
 				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
@@ -1825,7 +1949,9 @@
 				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants420"    context="#stay" />
 				<keyword attribute="Buildconstants"         String="buildinconstants430"    context="#stay" />
-
+				<keyword attribute="Buildconstants"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Reserved"         String="buildinconstants450"    context="#stay" />
+				
 				<keyword attribute="Reserved"               String="buildinfunctionsDeprecated"    context="#stay" />
 				<keyword attribute="Reserved"               String="buildinfunctionsDeprecatedES"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
@@ -1840,22 +1966,106 @@
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions420"    context="#stay" />
 				<keyword attribute="Buildinfunctions"       String="buildinfunctions430"    context="#stay" />
-
+				<keyword attribute="Reserved"       String="buildinfunctions450"    context="#stay" />
+				
 				<!-- numbers -->
-				<Float  attribute="Float"   context="#stay" />
-				<HlCOct attribute="Octal"   context="#stay" />
-				<HlCHex attribute="Hex"     context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
-
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 				<!-- comments -->
 				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
-
+				<!-- preprocessor -->
+				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
+			</context>			<!-- #################################################################################################### GLSL version 440 -->
+			<context name="v450" attribute="Normaltext" lineEndContext="#stay">
+				<!-- special rules for layouts -->
+				<StringDetect attribute="Keyword" String="layout" context="Layout450"/>
+				
+				<!-- language features -->
+				<keyword attribute="Reserved"               String="keywordsCompatibility"  context="#stay" />
+				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
+				<keyword attribute="Keyword"                String="keywords100ES"          context="#stay" />
+				<keyword attribute="Keyword"                String="keywords110"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords120"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords130"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords140"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords400"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords420"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords430"            context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes100es"     context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes110"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes120"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes130"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes140"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes420"       context="#stay" />
+				
+				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
+				
+				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables150"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables450"    context="#stay" />
+				<keyword attribute="Reserved"               String="buildinvariablesDeprecated"    context="#stay" />
+				
+				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants400"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants420"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants430"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants450"    context="#stay" />
+				
+				<keyword attribute="Reserved"               String="buildinfunctionsDeprecated"    context="#stay" />
+				<keyword attribute="Reserved"               String="buildinfunctionsDeprecatedES"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions110"    context="#stay" />
+				<!-- noise functions are marked as deprecated in 440 and always return 0 -->
+				<keyword attribute="Reserved"               String="buildinfunctions110Noise"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions120"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions130"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions140"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions150"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions330"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions420"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions430"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions450"    context="#stay" />
+				
+				<!-- numbers -->
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
+				<!-- comments -->
+				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
+				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
 			</context>
 			<!-- #################################################################################################################### -->
-
+			
 			<context name="LayoutReserved" attribute="Reserved" lineEndContext="#stay">
 				<DetectChar attribute="Reserved" context="LayoutOpenReserved" char="("/>
 			</context>
@@ -1873,7 +2083,11 @@
 				<keyword attribute="Reserved"        String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Reserved"        String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout330" attribute="Normaltext" lineEndContext="#stay">
@@ -1886,7 +2100,11 @@
 				<keyword attribute="Reserved"        String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Reserved"        String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout400" attribute="Normaltext" lineEndContext="#stay">
@@ -1899,7 +2117,11 @@
 				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Reserved"        String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout420" attribute="Normaltext" lineEndContext="#stay">
@@ -1912,7 +2134,11 @@
 				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Keyword"         String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Reserved"        String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout430" attribute="Normaltext" lineEndContext="#stay">
@@ -1925,7 +2151,11 @@
 				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Keyword"         String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Keyword"         String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Reserved"        String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout440" attribute="Normaltext" lineEndContext="#stay">
@@ -1938,7 +2168,28 @@
 				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Keyword"         String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Keyword"         String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
+			</context>
+			<!-- layout declarations -->
+			<context name="Layout450" attribute="Normaltext" lineEndContext="#stay">
+				<DetectChar attribute="Normaltext" context="LayoutOpen450" char="("/>
+			</context>
+			<context name="LayoutOpen450" attribute="Normaltext" lineEndContext="#stay">
+				<DetectChar attribute="Normaltext" context="#pop#pop" char=")"/>
+				<keyword attribute="Keyword"         String="layoutqualifier150"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier330"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier420"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier430"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
 			<context name="Layout300ES" attribute="Normaltext" lineEndContext="#stay">
@@ -1952,50 +2203,50 @@
 				<keyword attribute="Reserved"        String="layoutqualifier400"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier420"      context="#stay" />
 				<keyword attribute="Reserved"        String="layoutqualifier430"      context="#stay" />
-				<Int    attribute="Decimal" context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
-
+			
 			<!-- end of comments -->
 			<context name="CommentSingleLine" attribute="Comment" lineEndContext="#pop">
 			</context>
 			<context name="CommentMultiLine" attribute="Comment" lineEndContext="#stay">
 				<Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment"/>
 			</context>
-
+			
 			<!-- end of preprocessor tokens -->
 			<context name="Preprocessor" attribute="Preprocessor" lineEndContext="#pop">
 			</context>
 		</contexts>
-
-
-		<!-- ################################################################################################################
-		     ####################################################################################################### coloring
-		     // color                use Qt::Color names like "black" "blue" darkBlue" or rgb values "#334455" etc...
-		     // italic               true,false = 1,0
-		     // bold                 true,false = 1,0
-		     // underline            true,false = 1,0
-		     // strikeout            true,false = 1,0
+		
+		
+		<!-- ################################################################################################################ 
+		     ####################################################################################################### coloring 
 		     ################################################################################################################ -->
 		<itemDatas>
 			<!-- coloring definition -->
-			<itemData name="Normaltext"       defStyleNum="dsNormal"                            color="black"/>
-			<itemData name="Keyword"          defStyleNum="dsKeyword"  bold="1"                 color="darkMagenta"/>
-			<itemData name="Keywordstypes"    defStyleNum="dsKeyword"  bold="1"                 color="darkBlue"/>
-			<itemData name="Reserved"         defStyleNum="dsKeyword"  bold="1" strikeout="1"   color="black"/>
-			<itemData name="Buildinvariables" defStyleNum="dsDataType"                          color="darkYellow"/>
-			<itemData name="Buildconstants"   defStyleNum="dsDataType"                          color="darkMagenta"/>
-			<itemData name="Buildinfunctions" defStyleNum="dsKeyword"  bold="1"                 color="#886600"/>
-
-			<itemData name="Float"          defStyleNum="dsFloat"        color="#888800"/>
-			<itemData name="Octal"          defStyleNum="dsBaseN"        color="#888800"/>
-			<itemData name="Hex"            defStyleNum="dsBaseN"        color="#888800"/>
-			<itemData name="Decimal"        defStyleNum="dsDecVal"       color="#888800"/>
-
-			<itemData name="Preprocessor"   defStyleNum="dsDataType" bold="1"   color="blue"/>
-			<itemData name="Comment"        defStyleNum="dsComment"  italic="1" color="darkGreen"/>
+			<itemData name="Normaltext"                    defStyleNum="dsNormal"/>
+			<itemData name="Keyword"                       defStyleNum="dsKeyword"  bold="1"/>
+			<itemData name="Keywordstypes"                 defStyleNum="dsKeyword"/>
+			<itemData name="Reserved"                      defStyleNum="dsKeyword"  bold="1" strikeout="1"/>
+			<itemData name="Buildinvariables"              defStyleNum="dsDataType" bold="0"/>
+			<itemData name="Buildconstants"                defStyleNum="dsDataType" bold="0"/>
+			<itemData name="Buildinfunctions"              defStyleNum="dsKeyword"  bold="1"/>
+			
+			<itemData name="Float"          defStyleNum="dsFloat"/>
+			<itemData name="Octal"          defStyleNum="dsBaseN"/>
+			<itemData name="Hex"            defStyleNum="dsBaseN"/>
+			<itemData name="Decimal"        defStyleNum="dsDecVal"/>
+			
+			<itemData name="Identifier"     defStyleNum="dsNormal"/>
+			
+			<itemData name="Preprocessor"   defStyleNum="dsDataType" bold="1"/>
+			<itemData name="Comment"        defStyleNum="dsComment"/>
 		</itemDatas>
 	</highlighting>
-
+	
 	<general>
 		<comments>
 			<comment name="singleLine" start="//" />
@@ -2003,5 +2254,5 @@
 		</comments>
 		<keywords casesensitive="1" />
 	</general>
-
+	
 </language>
