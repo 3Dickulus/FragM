@@ -2118,18 +2118,18 @@ void MainWindow::reloadFragFile( QString f )
     QAbstractButton* a = msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
     msgBox.addButton(tr("Ignore"),QMessageBox::RejectRole);
 
-    bool autoRead = QSettings().value("autoload", false).toBool();
+    bool autoLoad = QSettings().value("autoload", false).toBool();
 
-    if (!autoRead) {
+    if (!autoLoad) {
         QString s = QString("It looks like the file: %1\n has been changed by another program.\n"
                             "Would you like to reload it?").arg(f.split(QDir::separator()).last());
         msgBox.setText(s);
 
         msgBox.exec();
-        autoRead = (msgBox.clickedButton() == a);
+        autoLoad = (msgBox.clickedButton() == a);
     }
 
-    if (autoRead) {
+    if (autoLoad) {
         for (int i = 0; i < tabInfo.size(); i++) {
             if (tabInfo[i].filename == f) {
                 tabBar->setCurrentIndex(i);
@@ -2598,6 +2598,8 @@ void MainWindow::closeTab(int index) {
         int answer = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("OK"), tr("Cancel"));
         if (answer == 1) return;
     }
+
+    fragWatch->removePath(t.filename);
 
     tabInfo.remove(index);
     tabBar->removeTab(index);
