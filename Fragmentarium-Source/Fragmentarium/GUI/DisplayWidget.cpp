@@ -83,7 +83,8 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     }
 
 void DisplayWidget::initializeGL() {
-         initializeOpenGLFunctions();
+    
+    initializeOpenGLFunctions();
     vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
     renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
     /// test for nVidia card and set the nV flag
@@ -214,6 +215,7 @@ void DisplayWidget::uniformsHasChanged() {
       depthToAlpha = btest->isChecked();
     }
   }
+  
   requireRedraw ( clearOnChange );
 }
 
@@ -1623,6 +1625,7 @@ void DisplayWidget::clearGL() {
     glColorMask ( GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE );
     glDepthMask ( GL_TRUE );
     glStencilMask ( 0xFFFFFFFF );
+    glClearDepthf(1.0f);
     glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 }
 

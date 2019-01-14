@@ -34,6 +34,9 @@ private slots:
 
     void readSettings() {
         QSettings settings;
+        m_ui.logToFileCheckBox->setChecked(settings.value("logToFile", true).toBool());
+        m_ui.logFilePathLineEdit->setText(settings.value("logFilePath", "fragm.log").toString());
+        m_ui.maxLogFileSizeSpinBox->setValue(settings.value("maxLogFileSize", 125).toInt());
         m_ui.moveMainCheckBox->setChecked(settings.value("moveMain", true).toBool());
         m_ui.lineNumbersCheckBox->setChecked(settings.value("lineNumbers", true).toBool());
         m_ui.loopPlayCheckBox->setChecked(settings.value("loopPlay", false).toBool());
@@ -56,6 +59,9 @@ private slots:
     void saveSettings()
     {
         QSettings settings;
+        settings.setValue("logToFile", m_ui.logToFileCheckBox->isChecked());
+        settings.setValue("logFilePath", m_ui.logFilePathLineEdit->text());
+        settings.setValue("maxLogFileSize", m_ui.maxLogFileSizeSpinBox->value());
         settings.setValue("moveMain", m_ui.moveMainCheckBox->isChecked());
         settings.setValue("lineNumbers", m_ui.lineNumbersCheckBox->isChecked());
         settings.setValue("loopPlay", m_ui.loopPlayCheckBox->isChecked());

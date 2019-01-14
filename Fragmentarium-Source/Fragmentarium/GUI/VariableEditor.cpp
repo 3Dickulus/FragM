@@ -649,8 +649,8 @@ bool VariableEditor::setSettings(QString text) {
         }
     }
 
-    if(requiresRecompile)
-        requiresRecompile = mainWindow->initializeFragment();
+//     if(requiresRecompile)
+//         requiresRecompile = mainWindow->initializeFragment();
 
     foreach (QString s, maps.keys()) {
         WARNING(tr("Could not find: ") + s);

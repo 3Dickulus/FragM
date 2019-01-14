@@ -476,6 +476,11 @@ namespace Fragmentarium {
       void createOpenGLContextMenu();
       QSpinBox* seedSpinBox;
       ListWidgetLogger* logger;
+      
+      bool loggingToFile;
+      QString logFilePath;
+      int maxLogFileSize;
+      
       QDockWidget* dockLog;
       QAction* fullScreenAction;
       QAction* screenshotAction;

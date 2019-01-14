@@ -80,6 +80,10 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     fragWatch = new QFileSystemWatcher();
     connect(fragWatch, SIGNAL(fileChanged(QString)), this, SLOT(reloadFragFile(QString)));
     
+    logFilePath = "fragm.log";
+    loggingToFile = false;
+    maxLogFileSize = 125000;
+
     init();
 }
 
@@ -541,7 +545,6 @@ void MainWindow::documentWasModified()
 
 void MainWindow::init()
 {
-
     lastTime = new QTime();
     lastTime->start();
 
@@ -654,6 +657,8 @@ void MainWindow::init()
     }
 
     readSettings();
+
+    if(loggingToFile) logger->setLogToFile();
 
     createActions();
 
@@ -2040,6 +2045,10 @@ void MainWindow::readSettings()
     variableEditor->updateGeometry();
     variableEditor->setSaveEasing(settings.value("saveEasing", true).toBool());
     fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";", QString::SkipEmptyParts));
+    loggingToFile = settings.value("logToFile", false).toBool();
+    logFilePath = settings.value("logFilePath", "fragm.log").toString();
+    maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
+    
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
 #endif // USE_OPEN_EXR
@@ -2456,6 +2465,7 @@ void MainWindow::cursorPositionChanged() {
     }
 
     statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber)+x, 5000);
+
 }
 
 TextEdit* MainWindow::insertTabPage(QString filename) {
@@ -2537,6 +2547,8 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     QString tabTitle = QString("%1%3").arg(strippedName(displayName)).arg(!loadingSucceded? "*" : "");
     tabBar->setCurrentIndex(tabBar->addTab(strippedName(tabTitle)));
     
+    tabBar->setTabToolTip(tabBar->currentIndex(),filename);
+    
     tabInfo.last().tabIndex = tabBar->currentIndex();
 
     connect(textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
@@ -2553,6 +2565,7 @@ void MainWindow::tabChanged(int index) {
     if (index < 0) return;
 
     TextEdit *te = getTextEdit();
+
     te->saveSettings( variableEditor->getSettings() );
 
     TabInfo ti = tabInfo[index];
@@ -2843,7 +2856,11 @@ void MainWindow::preferences() {
     pd.exec();
     readSettings();
     engine->updateRefreshRate();
-    getTextEdit()->setStyleSheet(editorStylesheet);
+    
+    if (tabBar->currentIndex() != -1) {
+      getTextEdit()->setStyleSheet(editorStylesheet);
+    }
+    
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_WIN
 initTools();
@@ -3063,10 +3080,7 @@ void MainWindow::processGuiEvents() {
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
-#ifdef Q_OS_UNIX
-  while(qApp->hasPendingEvents())
-#endif
-    qApp->processEvents();
+  qApp->processEvents();
 
 }
 
