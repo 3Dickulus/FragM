@@ -118,12 +118,20 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     QMenu *uniformMenu = new QMenu(tr("Special Uniforms"), 0);
     uniformMenu->addAction("uniform float time;", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform int subframe;", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec2 pixelSize;", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform int i; slider[0,1,2]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform float f; slider[0,1,2]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform vec2 pixelSize;", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec2 v; slider[(0,0),(1,1),(1,1)]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform vec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit , SLOT(insertText()));
+
+    if( (engine->format().majorVersion() > 3 && engine->format().minorVersion() >= 0) ) {
+        uniformMenu->addAction("uniform double f; slider[0,1,2]", textEdit , SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec2 v; slider[(0,0),(1,1),(1,1)]", textEdit , SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit , SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit , SLOT(insertText()));
+    }
+
     uniformMenu->addAction("uniform bool b; checkbox[true]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform sampler2D tex; file[tex.jpg]", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform samplerCube cubetex; file[cubetex.jpg]", textEdit , SLOT(insertText()));
@@ -139,7 +147,7 @@ void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindo
     QStringList filter;
     filter << "*.frag";
 //    readSettings();
-    QStringList files = mainWindow->getFileManager()->getFiles(filter);
+    QStringList files = getFileManager()->getFiles(filter);
     foreach (QString s, files) {
         includeMenu->addAction(QString("#include \"%1\"").arg(s),mainWindow, SLOT(insertText()));
     }
@@ -2162,6 +2170,7 @@ void MainWindow::loadFragFile(const QString &fileName)
   if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
 
     insertTabPage(fileName);
+    processGuiEvents();
     
     DisplayWidget::DrawingState oldstate = engine->getState();
     engine->setState(DisplayWidget::Progressive);
@@ -2174,7 +2183,7 @@ void MainWindow::loadFragFile(const QString &fileName)
         rebuildRequired = initializeFragment(); // once to initialize presets
         bool requiresRecompile = variableEditor->setDefault();
         if (requiresRecompile || rebuildRequired) {
-            INFO(tr("Rebuild to update locked uniforms..."));
+            INFO(tr("Rebuilding to update locked uniforms..."));
             initializeFragment();
             variableEditor->setDefault();
         }
@@ -2249,6 +2258,8 @@ void MainWindow::showPreprocessedScript() {
 //                            "#define mediump\n"
 //                            "#define lowp\n";
         variableEditor->substituteLockedVariables(&fs);
+        if(fs.bufferShaderSource)
+            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
         insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
         // suggested by FF user Sabine62 18/10/12
         QString fname = QString("Preprocessed_%1").arg(strippedName(filename));
@@ -2298,10 +2309,10 @@ bool MainWindow::initializeFragment() {
     // Show info first...
     INFO ( engine->vendor + " " + engine->renderer );
     // report the version and profile that was actually created in the engine
-    int prof = engine->context()->format().profile();
+    int prof = engine->format().profile();
     QString s1 = QString("Using GL version %1.%2 %3").
-    arg(engine->context()->format().majorVersion()).
-    arg(engine->context()->format().minorVersion()).
+    arg(engine->format().majorVersion()).
+    arg(engine->format().minorVersion()).
     arg(prof==0 ? "No profile" : prof == 1 ? "Core profile" : prof == 2 ? "Compatibility profile" : "oops!");
     INFO(s1);
     INFO("");
@@ -2349,6 +2360,8 @@ bool MainWindow::initializeFragment() {
     // BUG Up vector gets trashed on Build or Save
     variableEditor->updateFromFragmentSource(&fs, &showGUI);
         variableEditor->substituteLockedVariables(&fs);
+        if(fs.bufferShaderSource)
+            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
         variableEditor->updateTextures(&fs, &fileManager);
     try {
         QTime start = QTime::currentTime();

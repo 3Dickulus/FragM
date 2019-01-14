@@ -24,16 +24,17 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget ( parent ), mainWindow ( mainWin ) {
 
     QSurfaceFormat fmt;
-    fmt.setDepthBufferSize(32);
-    fmt.setRedBufferSize(32);
-    fmt.setGreenBufferSize(32);
-    fmt.setBlueBufferSize(32);
+//     fmt.setDepthBufferSize(32);
+//     fmt.setRedBufferSize(32);
+//     fmt.setGreenBufferSize(32);
+//     fmt.setBlueBufferSize(32);
     fmt.setSwapInterval(0);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-
+    fmt.setMajorVersion(4);
+    fmt.setMinorVersion(1);
+    fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     setFormat(fmt);
-    setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 
     verbose = false;
     clearOnChange = true;
