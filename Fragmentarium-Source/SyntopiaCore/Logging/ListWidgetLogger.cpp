@@ -3,6 +3,9 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QApplication>
+#include <QFile>
+#include <QTextStream>
+#include <QSettings>
 
 namespace SyntopiaCore {
     namespace Logging {
@@ -18,6 +21,44 @@ namespace SyntopiaCore {
             delete [] listWidget;
             listWidget = 0;
         }
+//sabine
+        namespace {
+            void customMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+                QHash<QtMsgType, QString> msgLevelHash({{QtDebugMsg, "Debug"}, {QtInfoMsg, "Info"}, {QtWarningMsg, "Warning"}, {QtCriticalMsg, "Critical"}, {QtFatalMsg, "Fatal"}});
+                QTime time = QTime::currentTime();
+                QString formattedTime = time.toString("hh:mm:ss.zzz");
+                QString logLevelName = msgLevelHash[type];
+                // are we in verbose mode ?
+                QString txt = QSettings().value("verbose", false).toBool() ?
+                              QString("%1 %2: %3 (%4)\n").arg(formattedTime).arg(logLevelName).arg(msg).arg(context.file) :
+                              QString(msg);
+                // setup our file
+                QFile outFile(QSettings().value("logFilePath", "fragm.log").toString());
+                // QIODevice::Text should ensure handling of CRLF issues
+                outFile.open(QIODevice::ReadWrite | QIODevice::Text);
+                // it should exist unless something went wrong
+                if(outFile.exists()) {
+                    //read in the file
+                    QString temp( outFile.readAll() );
+                    
+                    int fSize = QSettings().value("maxLogFileSize", 125).toInt() * 1024;
+                    if(outFile.size() > fSize)
+                        temp.remove( 0, outFile.size() - txt.size() );
+                    temp.append( txt );
+                    // set to overwrite
+                    outFile.seek(0);
+                    outFile.write( temp.toLocal8Bit() );
+                    // finalize
+                    outFile.flush();
+                }
+                outFile.close();
+            }
+        }
+
+        void ListWidgetLogger::setLogToFile() {
+            qInstallMessageHandler( customMessageOutput );
+        };
+//sabine      
 
         void ListWidgetLogger::log(QString message, LogLevel priority) {
 

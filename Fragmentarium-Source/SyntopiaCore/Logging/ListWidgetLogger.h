@@ -55,7 +55,9 @@ namespace SyntopiaCore {
 
             QListWidget* getListWidget() { return listWidget; }
 
-        private:
+            void setLogToFile();
+
+      private:
             QListWidget* listWidget;
             QWidget* parent;
         };
