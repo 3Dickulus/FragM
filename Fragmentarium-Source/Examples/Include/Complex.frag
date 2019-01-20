@@ -61,6 +61,8 @@ TODO:
 //
 //--------------------------------------------------------------------
 
+#extension GL_ARB_gpu_shader_int64 : enable
+
 // Trig functions
 
 #group Trig
@@ -157,7 +159,7 @@ double exp(double x){
    double f;
    double e_accum = M_E;
    double answer = 1.0LF;
-	bool invert_answer = true;
+	bool invert_answer = false;
 
 	// if x is negative, convert to positive and take inverse at end
    if(x < 0.0){
@@ -183,7 +185,7 @@ double exp(double x){
 		e_accum *= e_accum;
 	}
 	
-	answer *= exp_approx(x);
+	answer *= exp_approx(f);
 
    if(invert_answer)
 		answer = 1.0/answer;
@@ -311,9 +313,12 @@ dvec4 log( dvec4 n ) {
     return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
 }
 
+// requires #extension GL_ARB_gpu_shader_int64 : enable
 double pow(double a, double b) {
-    long tmp = long(9076650*(a-1) / (a+1+4*(sqrt(a)))*b + 1072632447);
-    return longBitsToDouble(tmp << 32);
+
+    int64_t tmp = int64_t(9076650*(a-1) / (a+1+4*(sqrt(a)))*b + 1072632447);
+    return packDouble2x32(uvec2(0,tmp));
+//     return exp(log(a) * b);
 }
 
 dvec2 pow(dvec2 A, dvec2 B)
