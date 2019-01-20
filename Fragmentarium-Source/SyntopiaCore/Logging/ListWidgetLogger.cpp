@@ -42,8 +42,8 @@ namespace SyntopiaCore {
                     QString temp( outFile.readAll() );
                     
                     int fSize = QSettings().value("maxLogFileSize", 125).toInt() * 1024;
-                    if(outFile.size() > fSize)
-                        temp.remove( 0, outFile.size() - txt.size() );
+                    if(outFile.size()+txt.size() > fSize)
+                        temp.remove( 0, txt.size() );
                     temp.append( txt );
                     // set to overwrite
                     outFile.seek(0);
