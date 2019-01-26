@@ -15,7 +15,7 @@ out vec2 viewCoord;
 // Use this to adjust clipping planes
 
 uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
-uniform double Zoom; slider[0,1,5000000] NotLockable
+uniform double log_Zoom; slider[0,1,5000000] NotLockable
 
 uniform vec2 pixelSize;
 
@@ -25,8 +25,8 @@ void main(void)
 	double ar = pixelSize.y/pixelSize.x;
 	gl_Position =  gl_Vertex;
 	viewCoord = gl_Vertex.xy;
-	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom)+  vec2(Center));
-	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/float(Zoom);
+	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(log_Zoom)+  vec2(Center));
+	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/float(log_Zoom);
 }
 
 #endvertex
