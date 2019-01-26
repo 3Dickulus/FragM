@@ -2150,8 +2150,11 @@ void MainWindow::reloadFragFile( QString f )
         for (int i = 0; i < tabInfo.size(); i++) {
             if (tabInfo[i].filename == f) {
                 tabBar->setCurrentIndex(i);
-                if(!tabInfo[i].unsaved) {
+                if(!tabInfo[i].unsaved) { // won't autoload if the frag is changed in the editor
                     reloadFrag();
+                    highlightBuildButton(true); // won't autoload again until this frag is built
+                    processGuiEvents(); // make sure gui is updated
+
                 } else {
                     QMessageBox::warning(this, tr("Fragmentarium"),
                              tr("Will not read file %1:\n%2.")
