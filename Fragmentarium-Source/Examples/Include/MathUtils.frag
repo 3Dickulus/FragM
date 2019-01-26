@@ -1,4 +1,12 @@
 #donotrun
+#ifdef WANG_HASH
+// required for Wang hash, placing this here means this file must be the first #included file
+#extension GL_ARB_shader_bit_encoding : enable
+#extension GL_EXT_gpu_shader4 : enable
+#extension GL_ARB_gpu_shader5 : enable
+#endif
+
+#extension GL_ARB_gpu_shader_int64 : enable
 
 // Standard matrices
 
@@ -48,10 +56,6 @@ mat4 scale4(float s) {
 
 #ifdef WANG_HASH
 // http://www.fractalforums.com/index.php?topic=22721.msg88910#msg88910
-// required for Wang hash
-#extension GL_ARB_shader_bit_encoding : enable
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
 uint wang_hash(uint seed)
 {
         seed = (seed ^ 61u) ^ (seed >> 16u);

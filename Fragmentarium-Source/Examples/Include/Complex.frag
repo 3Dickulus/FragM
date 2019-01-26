@@ -61,10 +61,8 @@ TODO:
 //
 //--------------------------------------------------------------------
 
-#extension GL_ARB_gpu_shader_int64 : enable
-
 // Trig functions
-
+const uint TrigIterMax = 20;
 #group Trig
 uniform int TrigIter;slider[0,5,20]
 uniform double TrigLimit;slider[0.001,1.1,1.5]
@@ -133,21 +131,21 @@ double cos( double x ){
 }
 
 /* Approximation of f(x) = exp(x)
- * on interval [ 0, 0.5 ]
+ * on interval [ 0, 1.0 ]
  * with a polynomial of degree 10.
  */
  double exp_approx( double x ) {
-    double u = 3.5438786726672135e-7LF;
-    u = u * x + 2.6579928825872315e-6LF;
-    u = u * x + 2.4868626682939294e-5LF;
-    u = u * x + 1.983843872760968e-4LF;
-    u = u * x + 1.3888965369092271e-3LF;
-    u = u * x + 8.3333320096674514e-3LF;
-    u = u * x + 4.1666666809276345e-2LF;
-    u = u * x + 1.6666666665771182e-1LF;
-    u = u * x + 5.0000000000028821e-1LF;
-    u = u * x + 9.9999999999999638e-1LF;
-    u = u * x + 1.0LF;
+    double u = 4.5714785424007307e-7;
+    u = u * x + 2.2861717525121477e-6;
+    u = u * x + 2.5459354562599535e-5;
+    u = u * x + 1.9784992840356075e-4;
+    u = u * x + 1.389195677460962e-3;
+    u = u * x + 8.3332264219304372e-3;
+    u = u * x + 4.1666689828374069e-2;
+    u = u * x + 1.6666666374456794e-1;
+    u = u * x + 5.0000000018885691e-1;
+    u = u * x + 9.9999999999524239e-1;
+    u = u * x + 1.0000000000000198;
 	if(isnan(u) || isinf(u))
 		return 0.0LF;
     return u;
@@ -193,44 +191,23 @@ double exp(double x){
 	return answer;
 }
 
-
 double tan(double x) {
     return sin(x)/cos(x);
 }
 
-/* Approximation of f(x) = atan(x)
- * on interval [ -1, 1 ]
- * with a polynomial of degree 10.
- */
-double atan_approx(double x)
+/* Approximation of f(x) = log(x)
+ * on interval [ 0.5, 1.0 ]
+ * with a polynomial of degree 7. */
+double log_approx(double x)
 {
-    double u = -5.2358956372931703e-129LF;
-    u = u * x + 2.0845114175438905e-2LF;
-    u = u * x + -1.4352617885833465e-128LF;
-    u = u * x + -8.51563508337138e-2LF;
-    u = u * x + 4.4982824080679609e-128LF;
-    u = u * x + 1.8015929463653335e-1LF;
-    u = u * x + -3.2151159799554032e-128LF;
-    u = u * x + -3.3030478550486476e-1LF;
-    u = u * x + 6.8552431842688999e-129LF;
-    u = u * x + 9.9986632946592026e-1LF;
-    u = u * x + -9.8393942267841755e-131LF;
-	if(isnan(u) || isinf(u))
-		return 0.0LF;
-    return u;
-}
-
-double atan(double y, double x){
-    double ay = abs(y), ax = abs(x);
-    bool inv = (ay > ax);
-    
-    double z;
-    if(inv) z = ax/ay; else z = ay/ax; // [0,1]
-    double th = atan_approx(z);        // [0,π/4]
-    if(inv) th = M_PI2 - th;           // [0,π/2]
-    if(x < 0.0) th = M_PI - th;        // [0,π]
-    if(y < 0.0) th = -th;              // [-π,π]
-    return th;
+    double u = 1.3419648079694775;
+    u = u * x + -8.159823646011416;
+    u = u * x + 2.1694837976736115e+1;
+    u = u * x + -3.3104943376189169e+1;
+    u = u * x + 3.2059105806949116e+1;
+    u = u * x + -2.0778140811001331e+1;
+    u = u * x + 9.8897820531599449;
+    return u * x + -2.9427826194103015;
 }
 
 // ln_ieee754(double x)
@@ -239,10 +216,12 @@ double atan(double y, double x){
 // modified for FragM by 3Dickulus @ FractalForums.org
 double log(double x)  {
 
+	x += 4.94065645841247E-308LF;
+	
 	double
 		Ln2Hi = 6.93147180369123816490e-01LF, /* 3fe62e42 fee00000 */
 		Ln2Lo = 1.90821492927058770002e-10LF, /* 3dea39ef 35793c76 */
-        L0    = 7.0710678118654752440e-01LF,  /* 1/sqrt(2) */
+		L0    = 7.0710678118654752440e-01LF,  /* 1/sqrt(2) */
 		L1    = 6.666666666666735130e-01LF,   /* 3FE55555 55555593 */
 		L2    = 3.999999999940941908e-01LF,   /* 3FD99999 9997FA04 */
 		L3    = 2.857142874366239149e-01LF,   /* 3FD24924 94229359 */
@@ -264,7 +243,7 @@ double log(double x)  {
     double f1 = frexp(x, ki);
     
     if (f1 < L0) {
-		f1 *= 2.0;
+		f1 += f1;
 		ki--;
 	}
 	
@@ -315,10 +294,36 @@ dvec4 log( dvec4 n ) {
 
 // requires #extension GL_ARB_gpu_shader_int64 : enable
 double pow(double a, double b) {
+ 
+//return exp(log(a) * b);
+ 
+        bool ltz = b<0;
+	if(ltz) b = abs(b);
+	
+	// put unpacked double bits into long int
+	uvec2 unpacked = unpackDouble2x32(a);
+	int64_t tmp = int64_t(unpacked.y) << 32 + unpacked.x;
 
-    int64_t tmp = int64_t(9076650*(a-1) / (a+1+4*(sqrt(a)))*b + 1072632447);
-    return packDouble2x32(uvec2(0,tmp));
-//     return exp(log(a) * b);
+	double r = 1.0;
+	int ex = int(b);
+	
+	// use the IEEE 754 trick for the fraction of the exponent
+	int64_t tmp2 = int64_t((b - ex) * (tmp - 4606921280493453312L)) + 4606921280493453312L;
+	unpacked.y = uint(tmp2 >> 32);
+	unpacked.x = uint(tmp2 - (int64_t(unpacked.y) << 32));
+	
+	// exponentiation by squaring
+	while (ex != 0) {
+		if ( (ex & 1) != 0) {
+			r *= a;
+		}
+		a *= a;
+		ex >>= 1;
+	}
+
+	r *= packDouble2x32(unpacked);
+	return ltz ? 1.0/r : r;
+
 }
 
 dvec2 pow(dvec2 A, dvec2 B)
@@ -330,6 +335,48 @@ dvec3 pow(dvec3 A, dvec3 B)
 {
     return dvec3( pow(A.x,B.x), pow(A.y,B.y), pow(A.z,B.z) );
 }
+/* Approximation of f(x) = atan(x)
+ * on interval [ -1, 1 ]
+ * with a polynomial of degree 10.
+ */
+double atan_approx(double x)
+{
+    double u = -5.2358956372931703e-129;
+    u = u * x + 2.0845114175438905e-2;
+    u = u * x + -1.4352617885833465e-128;
+    u = u * x + -8.51563508337138e-2;
+    u = u * x + 4.4982824080679609e-128;
+    u = u * x + 1.8015929463653335e-1;
+    u = u * x + -3.2151159799554032e-128;
+    u = u * x + -3.3030478550486476e-1;
+    u = u * x + 6.8552431842688999e-129;
+    u = u * x + 9.9986632946592026e-1;
+    u = u * x + -9.8393942267841755e-131;
+	if(isnan(u) || isinf(u))
+		return 0.0LF;
+    return u;
+}
+
+// const double c = (1.0LF + sqrt(17.0LF))/8.0LF;
+// const double c1 = c+1.0LF;
+
+double atan(double y, double x){
+ 
+    double ay = abs(y), ax = abs(x);
+    bool inv = (ay > ax);
+    
+    double z;
+    if(inv) z = ax/ay; else z = ay/ax; // [0,1]
+//     double zz = z * z;
+//     double zzz = z * zz;
+//     double th = M_PI2*(c*z + zz + zzz)/(1.0LF + c1*z + c1*zz + zzz);
+    double th = atan_approx(z);        // [0,π/4]
+    if(inv) th = M_PI2 - th;           // [0,π/2]
+    if(x < 0.0) th = M_PI - th;        // [0,π]
+    if(y < 0.0) th = -th;              // [-π,π]
+    return th;
+}
+
 
 #endif
 
