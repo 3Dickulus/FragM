@@ -404,6 +404,7 @@ namespace Fragmentarium {
             center = dynamic_cast<Float2Widget*>(ve->getWidgetFromName("Center"));
             if (!center) WARNING(QCoreApplication::translate("Camera2D","Could not find Center interface widget"));
             zoom = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("Zoom"));
+            if (!zoom) zoom = dynamic_cast<FloatWidget*>(ve->getWidgetFromName("log_Zoom"));
             if (!zoom) WARNING(QCoreApplication::translate("Camera2D","Could not find Zoom interface widget"));
         }
 
