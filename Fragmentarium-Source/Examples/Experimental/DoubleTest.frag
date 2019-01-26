@@ -2,6 +2,7 @@
 
 #define USE_DOUBLE
 
+#include "MathUtils.frag"
 #include "Complex.frag"
 #include "Progressive2D-4.frag"
 
