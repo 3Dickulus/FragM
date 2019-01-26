@@ -47,20 +47,19 @@ namespace Fragmentarium {
                 l->setSpacing(2);
                 l->setContentsMargins(0,0,0,0);
 
-                double val = defaultValue;
                 // 4294967295
                 scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1); 
 
                 slider = new QSlider(Qt::Horizontal,this);
                 slider->setRange(minimum*scale,maximum*scale);
-                slider->setValue(val*scale);
+                slider->setValue(defaultValue*scale);
                 slider->setSingleStep(scale/1000);
                 slider->setPageStep(scale/100);
                 slider->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Minimum));
                 l->addWidget(slider);
 
                 spinner = new QDoubleSpinBox(this);
-                spinner->setDecimals(7);
+                spinner->setDecimals(FDEC);
                 spinner->setMaximum(maximum);
                 spinner->setMinimum(minimum);
                 spinner->setValue(defaultValue);

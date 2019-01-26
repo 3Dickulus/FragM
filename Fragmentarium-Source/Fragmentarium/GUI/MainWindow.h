@@ -122,7 +122,7 @@ namespace Fragmentarium {
       
     public:
       MainWindow(QSplashScreen* splashWidget);
-      virtual ~MainWindow() { delete fragWatch; fragWatch=0; };
+      virtual ~MainWindow() { fragWatch->removePaths( fragWatch->files() ); delete fragWatch; fragWatch=0; };
   
       double getTime();
       
