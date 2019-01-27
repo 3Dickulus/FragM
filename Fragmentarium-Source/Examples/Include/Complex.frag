@@ -152,6 +152,7 @@ double cos( double x ){
 }
 
 double exp(double x){
+
 	int i;
 	int n;
    double f;
@@ -292,38 +293,10 @@ dvec4 log( dvec4 n ) {
     return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
 }
 
-// requires #extension GL_ARB_gpu_shader_int64 : enable
 double pow(double a, double b) {
  
-//return exp(log(a) * b);
+    return exp(log(a) * b);
  
-        bool ltz = b<0;
-	if(ltz) b = abs(b);
-	
-	// put unpacked double bits into long int
-	uvec2 unpacked = unpackDouble2x32(a);
-	int64_t tmp = int64_t(unpacked.y) << 32 + unpacked.x;
-
-	double r = 1.0;
-	int ex = int(b);
-	
-	// use the IEEE 754 trick for the fraction of the exponent
-	int64_t tmp2 = int64_t((b - ex) * (tmp - 4606921280493453312L)) + 4606921280493453312L;
-	unpacked.y = uint(tmp2 >> 32);
-	unpacked.x = uint(tmp2 - (int64_t(unpacked.y) << 32));
-	
-	// exponentiation by squaring
-	while (ex != 0) {
-		if ( (ex & 1) != 0) {
-			r *= a;
-		}
-		a *= a;
-		ex >>= 1;
-	}
-
-	r *= packDouble2x32(unpacked);
-	return ltz ? 1.0/r : r;
-
 }
 
 dvec2 pow(dvec2 A, dvec2 B)
