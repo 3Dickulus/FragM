@@ -58,8 +58,8 @@ install:
 
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libopenexr-dev
-      sudo apt-get -qq install libilmbase23
-      sudo apt-get -qq install libopenexr23
+      sudo apt-get -qq install libilmbase6
+      sudo apt-get -qq install libopenexr6
 
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
