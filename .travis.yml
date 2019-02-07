@@ -28,14 +28,6 @@ before_install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      sudo apt-get -qq update
-      sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install libopenexr-dev
-      sudo apt-get -qq install libilmbase12
-      sudo apt-get -qq install libopenexr22
-
-      sudo apt-get -qq install cmake
-      sudo apt-get -qq install extra-cmake-modules
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
       #sudo apt-get -qq install g++-4.8 libc6-i386
@@ -43,8 +35,16 @@ before_install:
       sudo apt-get -qq update
       sudo apt-get -qq install qt59creator
       
-      sudo apt-add-repository -y ppa:thomas-schiex/blender
+      sudo apt-add-repository -y ppa:irie/openexr
       sudo apt-get -qq update
+      sudo apt-get -qq install libilmbase-dev
+      sudo apt-get -qq install libilmbase11
+      sudo apt-get -qq install libopenexr-dev
+      sudo apt-get -qq install libopenexr21
+      sudo apt-add-repository -y ppa:george-edison55/cmake-3.x 
+      sudo apt-get -qq install cmake
+      sudo add-apt-repository -y ppa:ubuntu-sdk-team/tools-development
+      sudo apt-get -qq install extra-cmake-modules
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
