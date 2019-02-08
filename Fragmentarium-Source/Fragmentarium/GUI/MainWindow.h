@@ -258,6 +258,10 @@ namespace Fragmentarium {
       };
       QString getParameter(QString name) {
         QStringList s = getSettings().split("\n");
+        if(!s.contains(name)) {
+            WARNING(QString("Parameter %1 not found!").arg(name));
+            return "";
+        }
         return s.filter(name).at(0).split("=").at(1).trimmed();
       };
       void setAnimationLength(int m) {

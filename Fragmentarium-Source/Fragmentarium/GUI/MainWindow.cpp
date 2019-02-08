@@ -3034,7 +3034,8 @@ void MainWindow::initKeyFrameControl() {
         if(c>1) {
             for(int i =0; i<c; i++) {
                 QString presetname = variableEditor->getPresetName(i);
-                if(presetname.contains("KeyFrame", Qt::CaseInsensitive)) { /// found a keyframe, add to keyframeMap
+                QRegExp rx = QRegExp("KeyFrame\\.\\d\\d\\d");
+                if(rx.indexIn(presetname) != -1)  { /// found a keyframe, add to keyframeMap
                     QStringList p;
                     p << presetname << variableEditor->getPresetByName( presetname );
                     addKeyFrame( p );
