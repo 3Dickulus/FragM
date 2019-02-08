@@ -118,9 +118,8 @@ bool VariableWidget::fromSettingsString(QString string) {
         string.remove(s);
         LockType before = lockType;
         lockType.fromString(s);
-        if (before!=lockType) {
+        if (before!=lockType || isLocked()) {
             requiresRecompile = true;
-
         }
     }
 

@@ -647,6 +647,10 @@ bool VariableEditor::setSettings(QString text) {
         if (maps.contains(variables[i]->getName())) {
             
             requiresRecompile |= variables[i]->fromSettingsString(maps[variables[i]->getName()]);
+
+            if(variables[i]->getLockType() == Parser::Locked) {
+                            mainWindow->highlightBuildButton(true);
+            }
 //             if(verbose) qDebug() << "Found: "+variables[i]->getName();
             maps.remove(variables[i]->getName());
         }
