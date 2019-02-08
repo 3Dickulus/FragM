@@ -500,6 +500,11 @@ void MainWindow::showScriptingHelp()
     "<p><li><b>void setPreview(bool);</b></li>"
     "TRUE will preview frames in a window on the desktop instead of saving image files.<br>"
     "WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.</p>"
+    "<p><li><b>void setAutoSave(bool);</b></li>"
+    "TRUE will save files in subfolder.<br>"
+    "FALSE will use the path set by setOutputBaseFileName(String)</p>"
+    "<p><li><b>void setUniqueID(bool);</b></li>"
+    "Does the same thing as \"Add unique ID to filename\" in the HiResolution and Animation Dialog.<br></p>"
     "</ul>"
     "</p>");
   if( reqObj == "scriptingControlAction")
