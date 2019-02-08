@@ -263,7 +263,7 @@ namespace Fragmentarium {
             if (e->buttons() == Qt::RightButton) {
               if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // Translate in screen plane
-                QVector3D offset = (-upDown*dp.y()*mouseSpeed) + (rightDown*dp.x()*mouseSpeed);
+                QVector3D offset = (-upDown*dp.y()*mouseSpeed*2) + (rightDown*dp.x()*mouseSpeed);
                 eye->setValue(eyeDown+offset);
                 target->setValue(targetDown+offset);
                 return true;
@@ -544,10 +544,10 @@ namespace Fragmentarium {
             // Convert mouse pos to model coordinates
             QVector3D md = getModelCoord(-pos, centerValue, zoomValue, width,height);
             
-            if (steps>0.0) { DBOUT << "zooming in";
+            if (steps>0.0) {
                 zoom->setValue(zoomValue*factor);
                     center->setValue(md-(md-centerValue)*factor);
-            } else { DBOUT << "zooming out";
+            } else {
                     center->setValue(md-(md-centerValue)/factor);
                 zoom->setValue(zoomValue/factor);
             }
