@@ -96,6 +96,8 @@ protected:
             virtual void reset(bool fullReset);
             virtual double StepSize();
         private:
+            int height;
+            int width;
             double stepSize;
             Float2Widget* center;
             FloatWidget* zoom;

@@ -337,8 +337,7 @@ namespace Fragmentarium {
                 QVector3D direction = (target->getValue()-eye->getValue());
                 QVector3D dir = direction.normalized();
                 QVector3D offset = dir*stepSize*(steps);
-                QVector3D db2 = eye->getValue()+offset;
-                eye->setValue(db2);
+                eye->setValue(eye->getValue()+offset);
                 target->setValue(target->getValue()+offset);
                 return true;
             }
@@ -383,6 +382,8 @@ namespace Fragmentarium {
             zoomDown = 0.0;
             mouseDown = QVector3D(0,0,-1);
             reset(true);
+            width=1;
+            height=1;
         }
 
         QVector<VariableWidget*> Camera2D::addWidgets(QWidget* /*group*/, QWidget* /*parent*/) {
@@ -394,7 +395,8 @@ namespace Fragmentarium {
           INFO(QCoreApplication::translate("Camera2D","Camera: Click on 2D window for key focus. See Help Menu for more."));
         }
 
-        QVector3D Camera2D::transform(int /*width*/, int /*height*/) {
+        QVector3D Camera2D::transform(int w, int h) {
+            width = w; height = h;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             return QVector3D(1.0,1.0,1.0);
@@ -534,10 +536,20 @@ namespace Fragmentarium {
             double steps = e->delta()/120.0;
             double factor = 1.15f;
             if (!zoom) return false;
-            if (steps>0.0) {
-                zoom->setValue(zoom->getValue()*factor);
-            } else {
-                zoom->setValue(zoom->getValue()/factor);
+            
+            QVector3D pos = QVector3D(e->pos().x()/(0.5*double(width))-1.0,1.0-(e->pos().y()/(0.5*double(height))),0.0);
+            QVector3D centerValue = center->getValue();
+            double zoomValue = zoom->getValue();
+            
+            // Convert mouse pos to model coordinates
+            QVector3D md = getModelCoord(-pos, centerValue, zoomValue, width,height);
+            
+            if (steps>0.0) { DBOUT << "zooming in";
+                zoom->setValue(zoomValue*factor);
+                    center->setValue(md-(md-centerValue)*factor);
+            } else { DBOUT << "zooming out";
+                    center->setValue(md-(md-centerValue)/factor);
+                zoom->setValue(zoomValue/factor);
             }
             return true;
         }
