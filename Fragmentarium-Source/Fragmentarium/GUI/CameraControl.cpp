@@ -536,21 +536,12 @@ namespace Fragmentarium {
             double steps = e->delta()/120.0;
             double factor = 1.15f;
             if (!zoom) return false;
-            
-            QVector3D pos = QVector3D(e->pos().x()/(0.5*double(width))-1.0,1.0-(e->pos().y()/(0.5*double(height))),0.0);
-            QVector3D centerValue = center->getValue();
-            double zoomValue = zoom->getValue();
-            
-            // Convert mouse pos to model coordinates
-            QVector3D md = getModelCoord(-pos, centerValue, zoomValue, width,height);
-            
             if (steps>0.0) {
-                zoom->setValue(zoomValue*factor);
-                    center->setValue(md-(md-centerValue)*factor);
+                zoom->setValue(zoom->getValue()*factor);
             } else {
-                    center->setValue(md-(md-centerValue)/factor);
-                zoom->setValue(zoomValue/factor);
+                zoom->setValue(zoom->getValue()/factor);
             }
+
             return true;
         }
     }
