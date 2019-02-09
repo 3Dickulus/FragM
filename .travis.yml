@@ -88,7 +88,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      source /opt/qt55/bin/qt55-env.sh
+      source /opt/qt511/bin/qt511-env.sh
     fi
   - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
