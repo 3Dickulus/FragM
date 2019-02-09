@@ -109,14 +109,14 @@ before_script:
   - cd Fragmentarium-Source/build
 
 script:
-  #- |
+  - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
        make
        make package
     fi
-  #- |
+  - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
        #cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
