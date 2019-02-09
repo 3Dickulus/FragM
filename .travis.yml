@@ -71,12 +71,12 @@ install:
       sudo apt-get -qq install qtcreator
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install qtbase5-dev
-      sudo apt-get -qq install qtopengl5-dev
-      sudo apt-get -qq install qtwidgets5-dev
-      sudo apt-get -qq install qtgui5-dev
-      sudo apt-get -qq install qtxml5-dev
-      sudo apt-get -qq install qtscript5-dev
+      sudo apt-get -qq install qt5core5-dev
+      sudo apt-get -qq install qt5opengl5-dev
+      sudo apt-get -qq install qt5widgets5-dev
+      sudo apt-get -qq install qt5gui5-dev
+      sudo apt-get -qq install qt5xml5-dev
+      sudo apt-get -qq install qt5script5-dev
       sudo apt-get -qq install qttools5-dev
       
     fi
