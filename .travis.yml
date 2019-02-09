@@ -67,6 +67,7 @@ install:
     then
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
+      sudo apt-get -qq install libgl1-mesa-dev
       sudo apt-get -qq install qtcreator
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
