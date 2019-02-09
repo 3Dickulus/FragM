@@ -62,7 +62,7 @@ before_install:
     #fi
 
 install:
-  #- |
+  - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       sudo apt-get -qq install cmake
@@ -73,7 +73,7 @@ install:
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
-  #- |
+  - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #brew install qt5
@@ -93,13 +93,13 @@ install:
       ##brew install extra-cmake-modules
     #fi
 
-#before_script:
+before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       source /opt/qt59/bin/qt59-env.sh
     fi
-  #- |
+  - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #export PATH="$QTDIR/bin:$PATH"
@@ -109,7 +109,7 @@ install:
   - cd Fragmentarium-Source/build
 
 script:
-  - |
+  #- |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
@@ -123,7 +123,7 @@ script:
        #make install
     #fi
 
-#before_deploy:
+before_deploy:
   #- |
     #export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
     #export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
@@ -161,7 +161,7 @@ script:
   #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-#deploy:
+deploy:
   ### Linux master release
   #- provider: releases
     #api_key:
