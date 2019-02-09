@@ -30,25 +30,8 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
-      sudo add-apt-repository -y ppa:beineri/opt-qt592-xenial
-      sudo apt-get update -qq
-      
-      #sudo add-apt-repository -y ppa:ubuntu-sdk-team/tools-development
+      #sudo add-apt-repository -y ppa:beineri/opt-qt592-xenial
       #sudo apt-get update -qq
-      #sudo apt-get -qq install g++-4.8 libc6-i386
-      #sudo apt-add-repository -y ppa:beineri/opt-qt595-trusty
-      #sudo apt-get -qq update
-      #sudo apt-get -qq install cmake
-      #sudo apt-get -qq install qtcreator
-      #apt-get -qq install extra-cmake-modules
-      
-      #sudo apt-add-repository -y ppa:irie/openexr
-      #sudo apt-get -qq update
-      #sudo apt-get -qq install libilmbase-dev
-      #sudo apt-get -qq install libilmbase11
-      #sudo apt-get -qq install libopenexr-dev
-      #sudo apt-get -qq install libopenexr21
-      #sudo apt-add-repository -y ppa:george-edison55/cmake-3.x 
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -71,13 +54,6 @@ install:
       sudo apt-get -qq install extra-cmake-modules
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      #sudo apt-get -qq install qt5-default
-      #sudo apt-get -qq install libqt5core5a
-      #sudo apt-get -qq install libqt5gui5
-      #sudo apt-get -qq install libqt5opengl5
-      #sudo apt-get -qq install libqt5widgets5
-      #sudo apt-get -qq install libqt5xml5
-      #sudo apt-get -qq install libqt5script5
       sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-dev-tools
@@ -109,12 +85,12 @@ install:
     #fi
 
 before_script:
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    #then
-      #source /opt/qt59/bin/qt59-env.sh
-    #fi
-  #- |
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then
+      source /opt/qt55/bin/qt55-env.sh
+    fi
+  - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #export PATH="$QTDIR/bin:$PATH"
@@ -139,70 +115,70 @@ script:
     #fi
 
 before_deploy:
+  - |
+    export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+    export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+  # create debian package for linux and a disk image for OSX
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then
+      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
+      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
+    fi
   #- |
-    #export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-    #export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-  ## create debian package for linux and a disk image for OSX
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
-      #mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
-      ##wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
-      ##wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
-    #fi
-  ##- |
-    ##if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    ##then
 
-      ##cd ../../Fragmentarium-2.0.0
-      ##mv ./Examples ./Fragmentarium-2.0.0.app/Contents/MacOS/Examples
-      ##mv ./fqScript ./Fragmentarium-2.0.0.app/Contents/MacOS/fqScript
-      ##mv ./Misc ./Fragmentarium-2.0.0.app/Contents/MacOS/Misc
-      ##mv ./Languages ./Fragmentarium-2.0.0.app/Contents/MacOS/Languages
+      #cd ../../Fragmentarium-2.0.0
+      #mv ./Examples ./Fragmentarium-2.0.0.app/Contents/MacOS/Examples
+      #mv ./fqScript ./Fragmentarium-2.0.0.app/Contents/MacOS/fqScript
+      #mv ./Misc ./Fragmentarium-2.0.0.app/Contents/MacOS/Misc
+      #mv ./Languages ./Fragmentarium-2.0.0.app/Contents/MacOS/Languages
 
-      ##macdeployqt ./Fragmentarium-2.0.0.app
+      #macdeployqt ./Fragmentarium-2.0.0.app
 
-      ##cd ../
+      #cd ../
       
-      ##ditto -c -k ./Fragmentarium-2.0.0 ./Fragmentarium-2.0.0.zip
-      ##mv ./Fragmentarium-2.0.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
-      ##cd ./Fragmentarium-Source/build
-      ##wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
-    ##fi
+      #ditto -c -k ./Fragmentarium-2.0.0 ./Fragmentarium-2.0.0.zip
+      #mv ./Fragmentarium-2.0.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
+      #cd ./Fragmentarium-Source/build
+      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
+    #fi
   
-  ##add a tag
-  #- TIME_STRING=`date +%H%M%S`
-  #- export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
-  #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
-  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
+  #add a tag
+  - TIME_STRING=`date +%H%M%S`
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
+  - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
-  ### Linux master release
+  # Linux master release
+  - provider: releases
+    api_key:
+        secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
+    file:
+        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
+        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
+    skip_cleanup: true
+    on:
+        repo: 3Dickulus/FragM
+        branch: master
+        tags: false
+        condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
+
+  ### macOS master release
   #- provider: releases
     #api_key:
-        #secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
-    #file:
-        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
-        ##- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
-        ##- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
+      #secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
+    #file: 
+      #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
+      #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     #skip_cleanup: true
     #on:
         #repo: 3Dickulus/FragM
         #branch: master
         #tags: false
-        #condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
-
-  #### macOS master release
-  ##- provider: releases
-    ##api_key:
-      ##secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
-    ##file: 
-      ##- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
-      ##- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
-    ##skip_cleanup: true
-    ##on:
-        ##repo: 3Dickulus/FragM
-        ##branch: master
-        ##tags: false
-        ##condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
+        #condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 
