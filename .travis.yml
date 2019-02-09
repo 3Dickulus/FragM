@@ -85,12 +85,12 @@ install:
     #fi
 
 before_script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      source /opt/qt511/bin/qt511-env.sh
-    fi
-  - |
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #source /opt/qt511/bin/qt511-env.sh
+    #fi
+  #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #export PATH="$QTDIR/bin:$PATH"
