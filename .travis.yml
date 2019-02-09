@@ -78,7 +78,7 @@ install:
       #sudo apt-get -qq install libqt5widgets5
       #sudo apt-get -qq install libqt5xml5
       #sudo apt-get -qq install libqt5script5
-      sudo apt-get -qq install qttools5-dev
+      sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-dev-tools
       sudo apt-get -qq install qtscript5-dev
