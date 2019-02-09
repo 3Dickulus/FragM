@@ -71,6 +71,14 @@ install:
       sudo apt-get -qq install qtcreator
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
+      sudo apt-get -qq install qtbase5-dev
+      sudo apt-get -qq install qtopengl5-dev
+      sudo apt-get -qq install qtwidgets5-dev
+      sudo apt-get -qq install qtgui5-dev
+      sudo apt-get -qq install qtxml5-dev
+      sudo apt-get -qq install qtscript5-dev
+      sudo apt-get -qq install qttools5-dev
+      
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
