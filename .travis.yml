@@ -30,6 +30,8 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
+      sudo add-apt-repository -y ppa:beineri/opt-qt592-xenial
+      sudo apt-get update -qq
       
       #sudo add-apt-repository -y ppa:ubuntu-sdk-team/tools-development
       #sudo apt-get update -qq
@@ -67,18 +69,22 @@ install:
     then
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
-      sudo apt-get -qq install libgl1-mesa-dev
-      sudo apt-get -qq install qtcreator
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install qt5core5-dev
-      sudo apt-get -qq install qt5opengl5-dev
-      sudo apt-get -qq install qt5widgets5-dev
-      sudo apt-get -qq install qt5gui5-dev
-      sudo apt-get -qq install qt5xml5-dev
-      sudo apt-get -qq install qt5script5-dev
+      #sudo apt-get -qq install qt5-default
+      #sudo apt-get -qq install libqt5core5a
+      #sudo apt-get -qq install libqt5gui5
+      #sudo apt-get -qq install libqt5opengl5
+      #sudo apt-get -qq install libqt5widgets5
+      #sudo apt-get -qq install libqt5xml5
+      #sudo apt-get -qq install libqt5script5
       sudo apt-get -qq install qttools5-dev
-      
+      sudo apt-get -qq install qtbase5-dev
+      sudo apt-get -qq install qtbase5-dev-tools
+      sudo apt-get -qq install qtscript5-dev
+      sudo apt-get -qq install libqt5svg5-dev
+      sudo apt-get -qq install libqt5opengl5-dev
+      sudo apt-get -qq install libqt5xmlpatterns5-dev
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
