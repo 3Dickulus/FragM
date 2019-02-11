@@ -412,7 +412,7 @@ namespace Fragmentarium {
 
         namespace {
             QVector3D getModelCoord(QVector3D mouseCoord, QVector3D center, double zoom, int w, int h) {
-                double ar = h/((double)(w));
+                double ar = h/(double)w;
                 QVector3D coord = (mouseCoord/zoom+center);
                 coord.setX(ar*coord.x());
                 return coord;
@@ -534,14 +534,21 @@ namespace Fragmentarium {
         
         bool Camera2D::wheelEvent(QWheelEvent* e) {
             double steps = e->delta()/120.0;
-            double factor = 1.15f;
+            double factor = 1.15;
             if (!zoom) return false;
+            double zoomValue = zoom->getValue();
+            // Convert mouse pos to model coordinates
+            QVector3D centerValue = center->getValue();
+            QVector3D pos = QVector3D((e->pos().x()*(1.0/double(width)))-0.5,0.5-(e->pos().y()*(1.0/double(height))),0.0);
+            QVector3D md = pos/zoomValue+centerValue;
+            
             if (steps>0.0) {
-                zoom->setValue(zoom->getValue()*factor);
+                center->setValue(md);
+                zoom->setValue(zoomValue*factor);
             } else {
-                zoom->setValue(zoom->getValue()/factor);
+                center->setValue(md);
+                zoom->setValue(zoomValue/factor);
             }
-
             return true;
         }
     }
