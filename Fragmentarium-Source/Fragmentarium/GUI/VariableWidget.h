@@ -290,7 +290,7 @@ namespace Fragmentarium {
             QString toSettingsString();
             bool fromSettingsString(QString string);
             virtual QString toString() = 0;
-            virtual void fromString(QString string) = 0;
+            virtual bool fromString(QString string) = 0;
             virtual QString getUniqueName() = 0;
             void setSystemVariable(bool v) { systemVariable = v; }
             bool isSystemVariable() { return systemVariable; }
@@ -338,7 +338,7 @@ namespace Fragmentarium {
         public:
             SamplerWidget(FileManager* fileManager, QWidget* parent, QWidget* variableEditor, QString name, QString defaultValue);
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
             virtual void updateTextures(FragmentSource* fs, FileManager* fileManager);
             virtual void setLockType(LockType /*lt*/) { lockType = AlwaysLocked; } // cannot change this
@@ -382,7 +382,7 @@ namespace Fragmentarium {
                 return QString::number(comboSlider1->getValue(),'g',p);
             }
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
             double getValue() { return comboSlider1->getValue(); }
             void setValue(double f);
@@ -420,7 +420,7 @@ namespace Fragmentarium {
                 return QString::number(comboSlider1->getValue(),'g',p) + "," + QString::number(comboSlider2->getValue(),'g',p);
             }
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
 
             // Third component unused for these
@@ -464,7 +464,7 @@ namespace Fragmentarium {
                 return QString::number(comboSlider1->getValue(),'g',p) + "," + QString::number(comboSlider2->getValue(),'g',p) + "," + QString::number(comboSlider3->getValue(),'g',p);
             }
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             QVector3D getValue() { return QVector3D(comboSlider1->getValue(),comboSlider2->getValue(),comboSlider3->getValue()); }
             void setValue(QVector3D v);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -513,7 +513,7 @@ namespace Fragmentarium {
                 return QString::number(comboSlider1->getValue(),'g',p) + "," + QString::number(comboSlider2->getValue(),'g',p) + "," + QString::number(comboSlider3->getValue(),'g',p) + "," + QString::number(comboSlider4->getValue(),'g',p);
             }
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             QVector4D getValue() { return QVector4D(comboSlider1->getValue(),comboSlider2->getValue(),comboSlider3->getValue(),comboSlider4->getValue()); }
             void setValue(QVector4D v);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -562,7 +562,7 @@ namespace Fragmentarium {
 
             void setValue(QVector3D v);
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
             void reset() { colorChooser->setColor(defaultValue); }
             QString getLockedSubstitution() {
@@ -594,7 +594,7 @@ namespace Fragmentarium {
             }
             void setValue(QVector4D v);
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
             void reset() { comboSlider->setValue(defaultValue); colorChooser->setColor(defaultColorValue); }
             QString getLockedSubstitution() {
@@ -625,7 +625,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() { return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(min).arg(max); }
             virtual QString getValueAsText() { return QString::number(comboSlider->getValue()); };
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             int getValue(){ return comboSlider->getValue(); }
             void setValue( int i){ comboSlider->setValue(i); }
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -649,7 +649,7 @@ namespace Fragmentarium {
             virtual QString getUniqueName() { return QString("%1:%2").arg(group).arg(getName()); }
             virtual QString getValueAsText() { return (checkBox->isChecked()?"true":"false"); }
             virtual QString toString();
-            virtual void fromString(QString string);
+            virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
             void reset() { checkBox->setChecked(defaultValue); }
             QString getLockedSubstitution() { return "const bool " + name + " = " + (checkBox->isChecked() ? "true" : "false")+ ";"; }

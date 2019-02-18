@@ -123,14 +123,10 @@ bool VariableWidget::fromSettingsString(QString string) {
         }
     }
     
-    if(isLocked() && toString() != string.trimmed()) {
-        requiresRecompile = true;
-    }    
-
-    fromString(string.trimmed());
+    requiresRecompile = fromString(string.trimmed());
 
     if (requiresRecompile) {
-        locked( lockType == Locked );
+        locked( lockType == Locked || lockType == AlwaysLocked);
     }
 
     return requiresRecompile;
@@ -165,13 +161,14 @@ QString FloatWidget::toString() {
     return QString::number(f,'g',(isDouble() ? DDEC : FDEC));
 }
 
-void FloatWidget::fromString(QString string) {
+bool FloatWidget::fromString(QString string) {
     double f;
     MiniParser(string).getDouble(f);
     if ( f == getValue() ) {
-        return;
+        return false;
     }
     setValue(f);
+    return isLocked();
 }
 
 void FloatWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -214,11 +211,12 @@ void Float2Widget::setValue(QVector3D v) {
     comboSlider2->setValue(v.y());
 }
 
-void Float2Widget::fromString(QString string) {
+bool Float2Widget::fromString(QString string) {
     double f1,f2;
     MiniParser(string).getDouble(f1).getDouble(f2);
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
+    return isLocked();
 }
 
 void Float2Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -358,12 +356,13 @@ QString Float3Widget::toString() {
            .arg(QString::number(comboSlider3->getValue(),'g',p));
 }
 
-void Float3Widget::fromString(QString string) {
+bool Float3Widget::fromString(QString string) {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
     comboSlider3->setValue(f3);
+    return isLocked();
 }
 
 void Float3Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -436,13 +435,14 @@ QString Float4Widget::toString() {
            .arg(QString::number(comboSlider4->getValue(),'g',p));
 }
 
-void Float4Widget::fromString(QString string) {
+bool Float4Widget::fromString(QString string) {
     double f1,f2,f3,f4;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
     comboSlider3->setValue(f3);
     comboSlider4->setValue(f4);
+    return isLocked();
 }
 
 void Float4Widget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -483,11 +483,12 @@ QString ColorWidget::toString() {
            .arg(QString::number(c.z(),'g',p));
 }
 
-void ColorWidget::fromString(QString string) {
+bool ColorWidget::fromString(QString string) {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
     QVector3D c(f1,f2,f3);
     colorChooser->setColor(c);
+    return isLocked();
 }
 
 void ColorWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -534,13 +535,15 @@ QString FloatColorWidget::toString() {
 
 }
 
-void FloatColorWidget::fromString(QString string) {
+bool FloatColorWidget::fromString(QString string) {
+    if(toString() == string) return false;
     double f,f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f);
     QVector3D c(f1,f2,f3);
     colorChooser->setColor(c);
     comboSlider->setDecimals(isDouble() ? DDEC : FDEC);
     comboSlider->setValue(f);
+    return isLocked();
 }
 
 void FloatColorWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -572,10 +575,12 @@ QString IntWidget::toString() {
     return QString("%1").arg(comboSlider->getValue());
 }
 
-void IntWidget::fromString(QString string) {
+bool IntWidget::fromString(QString string) {
+    if(comboSlider->getValue() == string.toInt()) return false;
     int i;
     MiniParser(string).getInt(i);
     comboSlider->setValue(i);
+    return isLocked();
 }
 
 void IntWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
@@ -653,16 +658,18 @@ void SamplerWidget::buttonClicked() {
 }
 
 QString SamplerWidget::toString() {
-    return QString("%1").arg(comboBox->currentText());
+    return comboBox->currentText();
 }
 
 QString SamplerWidget::getValue() {
     return comboBox->currentText();
 }
 
-void SamplerWidget::fromString(QString string) {
+bool SamplerWidget::fromString(QString string) {
 //             INFO("'" + string + "'");
+    if(toString() == string) return false;
     comboBox->setEditText(string.trimmed());
+    return isLocked();
 }
 
 void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProg) {
@@ -710,10 +717,12 @@ QString BoolWidget::toString() {
     return (checkBox->isChecked()?"true":"false");
 }
 
-void BoolWidget::fromString(QString string) {
+bool BoolWidget::fromString(QString string) {
+    if(toString().toLower().trimmed() == string.toLower().trimmed()) return false;
     bool v = false;
     if (string.toLower().trimmed() == "true") v = true;
     checkBox->setChecked(v);
+    return isLocked();
 }
 
 void BoolWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram) {
