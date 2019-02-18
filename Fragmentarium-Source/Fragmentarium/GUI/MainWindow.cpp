@@ -83,6 +83,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     logFilePath = "fragm.log";
     loggingToFile = false;
     maxLogFileSize = 125000;
+    fullPathInRecentFilesList = false;
 
     init();
 }
@@ -2834,9 +2835,9 @@ void MainWindow::setRecentFile(const QString &fileName)
     int numRecentFiles = qMin(files.size(), (int)maxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-      QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
-        recentFileActions[i]->setText(text);
         QString absPath = QFileInfo(files[i]).absoluteFilePath();
+        QString text = QString("%1 %2").arg(i + 1).arg( fullPathInRecentFilesList ? absPath : QFileInfo(files[i]).fileName() );
+        recentFileActions[i]->setText(text);
         recentFileActions[i]->setData(absPath);
         recentFileActions[i]->setVisible(true);
     }

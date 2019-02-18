@@ -50,6 +50,7 @@ private slots:
         m_ui.fpsSpinBox->setValue(settings.value("fps", 25).toInt());
         m_ui.maxRecentFilesSpinBox->setValue(settings.value("maxRecentFiles", 5).toInt());
         m_ui.includePathsLineEdit->setText(settings.value("includePaths", "Examples/Include;").toString());
+        m_ui.fullPathInRecentFilesListCheckBox->setChecked(settings.value("fullPathInRecentFilesList", false).toBool());
 #ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText(settings.value("exrBinPaths", "bin;/usr/bin;").toString());
 #endif // USE_OPEN_EXR
@@ -75,6 +76,7 @@ private slots:
         settings.setValue("fps", m_ui.fpsSpinBox->value());
         settings.setValue("maxRecentFiles", m_ui.maxRecentFilesSpinBox->value());
         settings.setValue("includePaths", m_ui.includePathsLineEdit->text());
+        settings.setValue("fullPathInRecentFilesList", m_ui.fullPathInRecentFilesListCheckBox->isChecked());
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
