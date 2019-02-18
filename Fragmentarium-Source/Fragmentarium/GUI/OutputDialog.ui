@@ -369,7 +369,7 @@
         </sizepolicy>
        </property>
        <property name="clearButtonEnabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
