@@ -645,19 +645,13 @@ bool VariableEditor::setSettings(QString text) {
 
     for (int i = 0; i < variables.count(); i++) {
         if (maps.contains(variables[i]->getName())) {
-            
             requiresRecompile |= variables[i]->fromSettingsString(maps[variables[i]->getName()]);
-
-            if(variables[i]->getLockType() == Parser::Locked) {
-                            mainWindow->highlightBuildButton(true);
-            }
 //             if(verbose) qDebug() << "Found: "+variables[i]->getName();
             maps.remove(variables[i]->getName());
         }
     }
 
-//     if(requiresRecompile)
-//         requiresRecompile = mainWindow->initializeFragment();
+    childChanged(requiresRecompile);
 
     foreach (QString s, maps.keys()) {
         WARNING(tr("Could not find: ") + s);

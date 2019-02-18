@@ -111,19 +111,23 @@ QString VariableWidget::toSettingsString() {
 bool VariableWidget::fromSettingsString(QString string) {
 
     bool requiresRecompile = false;
-
+    
     const QRegExp lockTypeString("(AlwaysLocked|Locked|NotLocked|NotLockable)\\s*.?$");
     if (lockTypeString.indexIn(string)!=-1) {
         QString s = lockTypeString.cap(1);
         string.remove(s);
         LockType before = lockType;
         lockType.fromString(s);
-        if (before!=lockType || isLocked()) {
+        if (before!=lockType) {
             requiresRecompile = true;
         }
     }
+    
+    if(isLocked() && toString() != string.trimmed()) {
+        requiresRecompile = true;
+    }    
 
-    fromString(string);
+    fromString(string.trimmed());
 
     if (requiresRecompile) {
         locked( lockType == Locked );
