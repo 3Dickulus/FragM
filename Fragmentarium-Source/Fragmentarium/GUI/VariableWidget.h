@@ -168,6 +168,7 @@ namespace Fragmentarium {
                 setLineWidth(1);
             }
 
+        public slots:
             void setColor(QVector3D v) {
                 QPalette p = palette();
                 QColor c;
@@ -177,13 +178,8 @@ namespace Fragmentarium {
                 setPalette(p);
                 value = v;
             }
-
-            QVector3D getValue() { return value; }
-
-            void mouseReleaseEvent(QMouseEvent*) {
-                QColor initial;
-                initial.setRgbF( value.x(), value.y(), value.z() );
-                QColor c = QColorDialog::getColor(initial, this, tr("Choose color"));
+            
+            void setColor( QColor c ) {
                 if (c.isValid()) {
                     value = QVector3D(c.redF(), c.greenF(), c.blueF());
                     setColor(value);
@@ -191,10 +187,23 @@ namespace Fragmentarium {
                 }
             }
 
+            QVector3D getValue() { return value; }
+
+        private slots:
+            void mouseReleaseEvent(QMouseEvent*) {
+                QColor initial;
+                initial.setRgbF( value.x(), value.y(), value.z() );
+
+                qcd = new QColorDialog(initial);
+                connect(qcd,SIGNAL(currentColorChanged(QColor)),this,SLOT(setColor(QColor)));
+                if(!qcd->exec()) setColor(initial);
+            }
+
         signals:
             void changed();
 
         private:
+            QColorDialog *qcd;
             QVector3D defaultValue;
             QVector3D value;
         };
