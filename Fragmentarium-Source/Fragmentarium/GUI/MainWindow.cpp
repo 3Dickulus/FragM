@@ -2062,7 +2062,8 @@ void MainWindow::readSettings()
     loggingToFile = settings.value("logToFile", false).toBool();
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
-    
+    fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
+
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
 #endif // USE_OPEN_EXR
@@ -2095,7 +2096,9 @@ void MainWindow::writeSettings()
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
+    settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.sync();
+
 }
 
 void MainWindow::openFile()
@@ -2826,8 +2829,12 @@ void MainWindow::setRecentFile(const QString &fileName)
     QSettings settings;
 
     QStringList files = settings.value("recentFileList").toStringList();
+    fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList").toBool();
+    
     files.removeAll(fileName);
-    files.prepend(fileName);
+    if(!fileName.isEmpty())
+      files.prepend(fileName);
+    
     while (files.size() > maxRecentFiles) files.removeLast();
 
     settings.setValue("recentFileList", files);
@@ -2878,6 +2885,8 @@ void MainWindow::preferences() {
     pd.exec();
     readSettings();
     engine->updateRefreshRate();
+
+    setRecentFile("");
     
     if (tabBar->currentIndex() != -1) {
       getTextEdit()->setStyleSheet(editorStylesheet);
