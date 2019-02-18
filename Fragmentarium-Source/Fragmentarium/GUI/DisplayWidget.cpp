@@ -1743,9 +1743,9 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
 
             progress->setValue ( *steps );
             progress->setLabelText ( tr( "<table width=\"100%\"> \
-            <tr><td>Total</td><td>%1</td><td>Final Size: %2</td></tr> \
-            <tr><td>Current</td><td>Tile: %3</td><td>Sub: %4</td></tr> \
-            <tr><td>Avg sec/tile</td><td>%5</td><td>ETA: %6</td></tr> \
+            <tr><td>Total</td><td align=\"center\">%1</td><td>Final Size: %2</td></tr> \
+            <tr><td>Current</td><td align=\"center\">Tile: %3</td><td>Sub: %4</td></tr> \
+            <tr><td>Avg sec/tile</td><td align=\"center\">%5</td><td>ETA: %6</td></tr> \
             </table>" )
                                     .arg ( frametile )
                                     .arg ( framesize ) 
