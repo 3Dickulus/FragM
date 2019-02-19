@@ -1186,8 +1186,6 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
 
     GLuint programID = shaderProg->programId();
-   
-//     DBOUT << programID;
     
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
@@ -1233,7 +1231,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
         if(uniformValue.isEmpty()) uniformValue = "Unused variable widget";
 
-        QString tp;
+        QString tp = "Not found!";
         bool foundDouble = false;
 
           switch(type) {
@@ -1265,28 +1263,52 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
         if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
           double x,y,z,w;
-          GLuint index = glGetUniformLocation(programID, name);
+          GLint index = glGetUniformLocation(programID, name);
+          bool found = false;
+          if(index != -1)
           switch(type) {
-                case GL_DOUBLE:         tp = "DOUBLE"; foundDouble = true;
-                glUniform1d(index, uniformValue.toDouble());
+                case GL_DOUBLE:
+                    x = uniformValue.toDouble(&foundDouble);
+                    if( foundDouble ) {
+                        glUniform1d(index, x);
+                        tp = "DOUBLE";
+                    }
                 break;
-                case GL_DOUBLE_VEC2:    tp = "DOUBLE_VEC2"; foundDouble = true;
-                x = uniformValue.split(",").at(0).toDouble();
-                y = uniformValue.split(",").at(1).toDouble();
-                glUniform2d(index, x, y);
+                case GL_DOUBLE_VEC2:
+                    x = uniformValue.split(",").at(0).toDouble(&found);
+                    foundDouble |= found;
+                    y = uniformValue.split(",").at(1).toDouble(&found);
+                    foundDouble |= found;
+                    if(foundDouble) {
+                        glUniform2d(index, x, y);
+                        tp = "DOUBLE_VEC2";
+                    }
                 break;
-                case GL_DOUBLE_VEC3:    tp = "DOUBLE_VEC3"; foundDouble = true;
-                x = uniformValue.split(",").at(0).toDouble();
-                y = uniformValue.split(",").at(1).toDouble();
-                z = uniformValue.split(",").at(2).toDouble();
-                glUniform3d(index, x, y, z);
+                case GL_DOUBLE_VEC3:
+                    x = uniformValue.split(",").at(0).toDouble(&found);
+                    foundDouble |= found;
+                    y = uniformValue.split(",").at(1).toDouble(&found);
+                    foundDouble |= found;
+                    z = uniformValue.split(",").at(2).toDouble(&found);
+                    foundDouble |= found;
+                    if(foundDouble) {
+                        glUniform3d(index, x, y, z);
+                        tp = "DOUBLE_VEC3";
+                    }
                 break;
-                case GL_DOUBLE_VEC4:    tp = "DOUBLE_VEC4"; foundDouble = true;
-                x = uniformValue.split(",").at(0).toDouble();
-                y = uniformValue.split(",").at(1).toDouble();
-                z = uniformValue.split(",").at(2).toDouble();
-                w = uniformValue.split(",").at(3).toDouble();
-                glUniform4d(index, x, y, z, w);
+                case GL_DOUBLE_VEC4:
+                    x = uniformValue.split(",").at(0).toDouble(&found);
+                    foundDouble |= found;
+                    y = uniformValue.split(",").at(1).toDouble(&found);
+                    foundDouble |= found;
+                    z = uniformValue.split(",").at(2).toDouble(&found);
+                    foundDouble |= found;
+                    w = uniformValue.split(",").at(3).toDouble(&found);
+                    foundDouble |= found;
+                    if(foundDouble) {
+                        glUniform4d(index, x, y, z, w);
+                        tp = "DOUBLE_VEC4";
+                    }
                 break;
                 case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
                 case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
@@ -1302,12 +1324,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             }
         }
 
-            // type name and value to console
-            if(subframeCounter == 1 && verbose) qDebug() << tp << "\t" << uniformName << uniformValue;
-            // this sets User (32 bit) uniforms not handled above
-            if(!foundDouble) {
-                for( int n=0; n < vw.count(); n++) {
-                    if(uniformName == vw[n]->getName()) {
+        // type name and value to console
+        if(subframeCounter == 1 && verbose) qDebug() << tp << "\t" << uniformName << uniformValue;
+        // this sets User (32 bit) uniforms not handled above
+        if(!foundDouble) {
+            for( int n=0; n < vw.count(); n++) {
+                if(uniformName == vw[n]->getName()) {
                     SamplerWidget *sw = dynamic_cast<SamplerWidget*>(vw[n]);
                     if( sw != NULL) {
                         QMapIterator<QString, QString> it( fragmentSource.textures );
@@ -1319,12 +1341,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                             }
                         }
                     }
-                        vw[n]->setIsDouble(false); // ensure sliders set to float decimals
-                        vw[n]->setUserUniform(shaderProg);
-                        break;
-                    }
+                    vw[n]->setIsDouble(false); // ensure sliders set to float decimals
+                    vw[n]->setUserUniform(shaderProg);
+                    break;
                 }
             }
+        }
         else  vw[i]->setIsDouble(true); // this takes care of buffershader (Post) sliders :D
     }
     if(subframeCounter == 1 && verbose) qDebug() << count << " active uniforms initialized";
