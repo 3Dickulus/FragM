@@ -376,10 +376,10 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
             names.append(variables[i]->getName());
         }
     }
-    if (names.count()>0) {
+    
+    if (names.count()>0 && !fs->bufferShaderSource) {
         INFO(tr("%1 locked variables: %2").arg(map.count()).arg(names.join(",")));
     }
-
 
     for (int i = 0; i < fs->source.count(); i++) {
         QString s = fs->source[i];
