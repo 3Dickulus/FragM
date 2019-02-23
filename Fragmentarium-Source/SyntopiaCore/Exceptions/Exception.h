@@ -1,4 +1,5 @@
 #pragma once
+#include <QException>
 
 namespace SyntopiaCore {
     namespace Exceptions {
@@ -10,12 +11,14 @@ namespace SyntopiaCore {
         ///  (2) Catch by reference  ( try {} catch (Exception& e) {} )
         ///
         /// (Perhaps this ought to inherit from std::exception?)
-        class Exception {
+        class Exception : public QException {
 
         public:
             /// Constructor.
             Exception(QString message) : message(message) {}
 
+            void raise() const { throw *this; }
+            Exception *clone() const { return new Exception(*this); }
             /// Returns the error message.
             QString getMessage() const { return message; }
 
