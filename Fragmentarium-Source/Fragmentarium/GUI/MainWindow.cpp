@@ -71,7 +71,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190218, "");
+    version = Version(2, 5, 0, 190222, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -691,9 +691,7 @@ initTools();
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
     setupScriptEngine();
     play();
-    
-    veDockChanged((width() > height()*2));
-    
+    veDockChanged(true);
 }
 
 #ifdef USE_OPEN_EXR
@@ -1493,6 +1491,7 @@ retry:
                 
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
+                    
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
                     if (padding>0.0)  {
@@ -2199,13 +2198,13 @@ void MainWindow::loadFragFile(const QString &fileName)
             initializeFragment();
             variableEditor->setDefault();
         }
-        initializeFragment(); // makes textures persist
+//         initializeFragment(); // makes textures persist
     }
     
     QSettings().setValue("isStarting", false);
     engine->setState(oldstate);
     pp?stop():play();
-  }
+  } else if(scriptRunning()) { stopScript(); } // file failed to load or doesn't exist
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -2368,13 +2367,14 @@ bool MainWindow::initializeFragment() {
     variableEditor->locksUseDefines( QSettings().value("useDefines", true).toBool() );
     int ms = 0;
         FragmentSource fs = p.parse(inputText,filename,moveMain);
-        addToWatch( QStringList(filename) );
+        if(filename != "Unnamed") // new file not saved yet
+            addToWatch( QStringList(filename) );
     // BUG Up vector gets trashed on Build or Save
     variableEditor->updateFromFragmentSource(&fs, &showGUI);
+        variableEditor->updateTextures(&fs, &fileManager);
         variableEditor->substituteLockedVariables(&fs);
         if(fs.bufferShaderSource)
             variableEditor->substituteLockedVariables(fs.bufferShaderSource);
-        variableEditor->updateTextures(&fs, &fileManager);
     try {
         QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
@@ -2469,7 +2469,7 @@ void MainWindow::cursorPositionChanged() {
     TextEdit *te = this->getTextEdit();
     if (!te) return;
     int pos = te->textCursor().position();
-    int blockNumber = te->textCursor().blockNumber()+1;
+    int blockNumber = te->textCursor().blockNumber();
 
     // Do reverse look up...
     FragmentSource* fs = engine->getFragmentSource();
