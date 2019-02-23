@@ -1873,9 +1873,6 @@ void DisplayWidget::resizeGL ( int /* width */, int /* height */ ) {
     // When resizing the perspective must be recalculated
     updatePerspective();
     clearPreviewBuffer();
-    
-    mainWindow->getVariableEditor()->dockChanged( (mainWindow->getVariableEditor()->width() > mainWindow->getVariableEditor()->height()*2) );
-
 }
 
 void DisplayWidget::updatePerspective() {
