@@ -7,6 +7,7 @@
 #endif
 
 #extension GL_ARB_gpu_shader_int64 : enable
+#extension GL_NV_shader_buffer_load : enable
 
 // Standard matrices
 

@@ -38,7 +38,8 @@ vec3 ContrastSaturationBrightness(vec3  color, float brt, float sat, float con)
 	vec3 intensity = vec3(intensityf, intensityf, intensityf);
 	vec3 satColor = mix(intensity, brtColor, sat);
 	vec3 conColor = mix(AvgLumin, satColor, con);
-	return conColor;
+	// https://fractalforums.org/fragmentarium/17/i-cant-get-the-newest-version-to-work/2629/msg13086#msg13086
+	return clamp(conColor,0.0,1.0);
 }
 
 float sigmoid(float t) {

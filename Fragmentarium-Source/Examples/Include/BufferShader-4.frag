@@ -45,7 +45,8 @@ dvec3 ContrastSaturationBrightness(dvec3  color, double brt, double sat, double 
 	dvec3 intensity = dvec3(intensityf, intensityf, intensityf);
 	dvec3 satColor = mix(intensity, brtColor, sat);
 	dvec3 conColor = mix(AvgLumin, satColor, con);
-	return conColor;
+	// https://fractalforums.org/fragmentarium/17/i-cant-get-the-newest-version-to-work/2629/msg13086#msg13086
+	return clamp(conColor,0.0,1.0);
 }
 
 double sigmoid(double t) {
