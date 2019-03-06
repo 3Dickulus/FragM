@@ -1,4 +1,5 @@
 #buffer RGBA32F
+
 //#buffershader "BufferShaderRD.frag"
 #include "2D.frag"
 

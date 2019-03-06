@@ -62,7 +62,7 @@ float minDist = pow(10.0,Detail);
 //float MaxDistance = 100.0;
 
 // Maximum number of  raymarching steps.
-uniform int MaxRaySteps;  slider[0,56,15000]
+uniform int MaxRaySteps;  slider[0,56,10000]
 uniform float MaxDistance;slider[0,20,1000];
 // Use this to boost Ambient Occlusion and Glow
 //uniform float  MaxRayStepsDiv;  slider[0,1.8,10]
@@ -651,9 +651,10 @@ if(depthFlag) {
                 else
                 // sets depth for spline path occlusion
                 // see http://www.fractalforums.com/index.php?topic=16405.0
-                gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
-                (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-                clamp(Ray.Pos, 0.00001, 1000.0));
+                // gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
+                // (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
+                // clamp(Ray.Pos, 0.00001, 1000.0));
+                    gl_FragDepth = (1.0 + (-1e-05 / clamp (Ray.Pos, 1e-05, 1000.0)));
         }
 
         if(ShowDepth) hitColor = vec3(1.0)-vec3(1.0/Ray.Pos)*DepthMagnitude;

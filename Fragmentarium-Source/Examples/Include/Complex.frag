@@ -293,10 +293,67 @@ dvec4 log( dvec4 n ) {
     return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
 }
 
+// double pow(double a, double b) {
+// 
+// // return exp(log(a) * b);
+// 
+// 	bool ltz = b<0;
+// 	if(ltz) b = abs(b);
+// 
+// 	// put unpacked double bits into long int
+// 	uvec2 unpacked = unpackDouble2x32(a);
+// 
+// 	double r = 1.0;
+// 	int exp = int(b);
+// 
+// 	// use the IEEE 754 trick for the fraction of the exponent
+// 	unpacked.y = int((b - exp) * (unpacked.y - 1072632447) + 1072632447);
+// 	unpacked.x = 0;
+// 
+// 	// exponentiation by squaring
+// 	while (exp != 0) {
+// 		if ((exp & 1) != 0) r *= a;
+// 		a *= a;
+// 		exp >>= 1;
+// 	}
+// 
+// 	r *= packDouble2x32(unpacked);
+// 	return ltz ? 1.0/r : r;
+// 
+// }
+
+// requires #extension GL_ARB_gpu_shader_int64 : enable
 double pow(double a, double b) {
  
-    return exp(log(a) * b);
+return exp(log(a) * b);
  
+//         bool ltz = b<0;
+// 	if(ltz) b = abs(b);
+// 	
+// 	// put unpacked double bits into long int
+// 	uvec2 unpacked = unpackDouble2x32(a);
+// 	int64_t tmp = int64_t(unpacked.y) << 32 + unpacked.x;
+// 
+// 	double r = 1.0;
+// 	int ex = int(b);
+// 	
+// 	// use the IEEE 754 trick for the fraction of the exponent
+// 	int64_t tmp2 = int64_t((b - ex) * (tmp - 4606921280493453312L)) + 4606921280493453312L;
+// 	unpacked.y = uint(tmp2 >> 32);
+// 	unpacked.x = uint(tmp2 - (int64_t(unpacked.y) << 32));
+// 	
+// 	// exponentiation by squaring
+// 	while (ex != 0) {
+// 		if ( (ex & 1) != 0) {
+// 			r *= a;
+// 		}
+// 		a *= a;
+// 		ex >>= 1;
+// 	}
+// 
+// 	r *= packDouble2x32(unpacked);
+// 	return ltz ? 1.0/r : r;
+
 }
 
 dvec2 pow(dvec2 A, dvec2 B)
@@ -309,45 +366,78 @@ dvec3 pow(dvec3 A, dvec3 B)
     return dvec3( pow(A.x,B.x), pow(A.y,B.y), pow(A.z,B.z) );
 }
 /* Approximation of f(x) = atan(x)
- * on interval [ -1, 1 ]
+ * on interval [ 0.0 , π/4 ]
  * with a polynomial of degree 10.
  */
 double atan_approx(double x)
 {
-    double u = -5.2358956372931703e-129;
-    u = u * x + 2.0845114175438905e-2;
-    u = u * x + -1.4352617885833465e-128;
-    u = u * x + -8.51563508337138e-2;
-    u = u * x + 4.4982824080679609e-128;
-    u = u * x + 1.8015929463653335e-1;
-    u = u * x + -3.2151159799554032e-128;
-    u = u * x + -3.3030478550486476e-1;
-    u = u * x + 6.8552431842688999e-129;
-    u = u * x + 9.9986632946592026e-1;
-    u = u * x + -9.8393942267841755e-131;
-	if(isnan(u) || isinf(u))
-		return 0.0LF;
+    double u = -2.9140257478972053e-3;
+    u = u * x + 3.2005571699830107e-2;
+    u = u * x + -1.627659300903442e-1;
+    u = u * x + 5.0513223367120972e-1;
+    u = u * x + -1.0595254685451083;
+    u = u * x + 1.5689337521140527;
+    u = u * x + -1.6640521237136246;
+    u = u * x + 1.270853367426007;
+    u = u * x + -7.356602708332424e-1;
+    u = u * x + 4.0096549787833572e-1;
+    u = u * x + -2.317084220916499e-1;
+    u = u * x + 5.5673464120677798e-2;
+    u = u * x + 6.1518997985636844e-2;
+    u = u * x + 3.4871637890152628e-3;
+    u = u * x + -9.1551371689992248e-2;
+    u = u * x + 9.5405115942529782e-5;
+    u = u * x + 1.1109982274527962e-1;
+    u = u * x + 1.0462503881004859e-6;
+    u = u * x + -1.4285721713962809e-1;
+    u = u * x + 3.9206483284047854e-9;
+    u = u * x + 1.9999999985236683e-1;
+    u = u * x + 3.7405487051591751e-12;
+    u = u * x + -3.3333333333339171e-1;
+    u = u * x + 4.8455084038412012e-16;
+    u = u * x + 1.0;
+    u = u * x + 8.8145999826527008e-22;
+
+    if(isnan(u) || isinf(u))
+        return 0.0;
     return u;
 }
 
-// const double c = (1.0LF + sqrt(17.0LF))/8.0LF;
-// const double c1 = c+1.0LF;
 
 double atan(double y, double x){
  
+    double sign_factor = 1.0;
+    /*
+      Account for signs.
+    */
+//     if ( x < 0.0 && y < 0.0 )
+//     {
+//         x = -x;
+//         y = -y;
+//     }
+
+    if ( x < 0.0 )
+    {
+        x = -x;
+        sign_factor = -1.0;
+    }
+    else
+    if ( y < 0.0 )
+    {
+        y = -y;
+        sign_factor = -1.0;
+    }
+
     double ay = abs(y), ax = abs(x);
     bool inv = (ay > ax);
     
     double z;
     if(inv) z = ax/ay; else z = ay/ax; // [0,1]
-//     double zz = z * z;
-//     double zzz = z * zz;
-//     double th = M_PI2*(c*z + zz + zzz)/(1.0LF + c1*z + c1*zz + zzz);
     double th = atan_approx(z);        // [0,π/4]
     if(inv) th = M_PI2 - th;           // [0,π/2]
-    if(x < 0.0) th = M_PI - th;        // [0,π]
+//     if(x < 0.0) th = M_PI - th;        // [0,π]
     if(y < 0.0) th = -th;              // [-π,π]
-    return th;
+    return sign_factor * th;
 }
 
 

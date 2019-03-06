@@ -4,10 +4,11 @@
 
 #include "MathUtils.frag"
 #include "Complex.frag"
+
 #include "Progressive2D-4.frag"
 
-#info BurningShirp inspired by the good folks at FractalForums.com 2013-2017
-#group BurningShirp
+#info BurningShip inspired by the good folks at FractalForums.com 2013-2017
+#group BurningShip
 
 uniform int  RetryMax; slider[0,0,64]
 uniform double RetryEntry; slider[0,0,64]
@@ -62,7 +63,7 @@ dvec2 Plot(dvec2 a) {
 	
 	if ( a.x < 0.) b.y += M_PI;
 	
-	b.x = pow( float(b.x) , float(Power) );
+	b.x = pow( b.x , Power );
 	b.y *= Power;
 	
 	a.x = cos( b.y ) * b.x;

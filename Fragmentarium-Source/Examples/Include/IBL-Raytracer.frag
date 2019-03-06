@@ -55,8 +55,6 @@ uniform float Fog; slider[0,0.0,2]
 
 uniform float Shadow; slider[0,0,1]
 
-
-
 uniform sampler2D Background; file[Ditch-River_2k.hdr]
 uniform sampler2D Specular; file[Ditch-River_2k.hdr]
 uniform sampler2D Diffuse; file[Ditch-River_Env.hdr]
@@ -376,9 +374,10 @@ vec3 trace(vec3 from, vec3 dir, inout vec3 hit, inout vec3 hitNormal) {
 		else
 		// sets depth for spline path occlusion
 		// see http://www.fractalforums.com/index.php?topic=16405.0
-		gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
-		(1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-		clamp(totalDist, 0.00001, 1000.0));
+		// gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
+		// (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
+		// clamp(totalDist, 0.00001, 1000.0));
+			gl_FragDepth = (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)));
 	}
 
 	return hitColor;

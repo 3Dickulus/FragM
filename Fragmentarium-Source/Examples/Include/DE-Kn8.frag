@@ -570,9 +570,10 @@ vec3 trace(inout SRay Ray, inout vec3 hitNormal, inout float glow) {
 		else
 		// sets depth for spline path occlusion
 		// see http://www.fractalforums.com/index.php?topic=16405.0
-		gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
-		(1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-		clamp(Ray.Pos, 0.00001, 1000.0));
+		// gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
+		// (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
+		// clamp(Ray.Pos, 0.00001, 1000.0));
+			gl_FragDepth = (1.0 + (-1e-05 / clamp (Ray.Pos, 1e-05, 1000.0)));
 	}
 	return hitColor;
 }

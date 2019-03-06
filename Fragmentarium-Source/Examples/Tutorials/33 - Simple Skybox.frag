@@ -2,7 +2,7 @@
 #define providesInit
 
 #define providesBackground
-#define  providesColor
+#define providesColor
 
 #include "MathUtils.frag"
 #include "DE-Raytracer.frag"

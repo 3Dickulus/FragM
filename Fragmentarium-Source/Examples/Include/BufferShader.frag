@@ -20,6 +20,29 @@ uniform float Brightness;
 uniform float Contrast;
 uniform float Saturation;
 uniform int ToneMapping;
+uniform float Hue;
+uniform vec3 LumCoeff;
+uniform vec3 AvgLumin;
+
+// RGB <-> HSV conversion, thanks to http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+// HSV <-> RGB conversion, thanks to http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
 
 /*
 ** Based on: http://mouaif.wordpress.com/2009/01/22/photoshop-gamma-correction-shader/
@@ -31,8 +54,6 @@ uniform int ToneMapping;
 // For all settings: 1.0 = 100% 0.5=50% 1.5 = 150%
 vec3 ContrastSaturationBrightness(vec3  color, float brt, float sat, float con)
 {
-	const vec3 LumCoeff = vec3(0.2125, 0.7154, 0.0721);
-	vec3 AvgLumin = vec3(0.5);
 	vec3 brtColor = color * brt;
 	float intensityf = dot(brtColor, LumCoeff);
 	vec3 intensity = vec3(intensityf, intensityf, intensityf);
@@ -59,8 +80,12 @@ uniform sampler2D frontbuffer;
 void main() {
 	vec2 pos = (coord+1.0) * 0.5;
 	vec4 tex = texture2D(frontbuffer, pos);
-	vec3 c = tex.xyz/tex.a;
-
+// 	vec3 c = tex.xyz/tex.a;
+    vec3 colorHSV = rgb2hsv(tex.rgb);  //based on ased on VB_overflows answer on https://stackoverflow.com/questions/32080747/gpuimage-add-hue-color-adjustments-per-rgb-channel-adjust-reds-to-be-more-pink
+    colorHSV.x += Hue;
+    vec3 c = hsv2rgb(vec3(colorHSV));   
+    c=c/tex.a;
+    
 	if (ToneMapping==1) {
 		// Linear
 		c = c*Exposure;

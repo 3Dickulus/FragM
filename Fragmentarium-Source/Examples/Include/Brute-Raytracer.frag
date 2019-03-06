@@ -186,9 +186,11 @@ gl_FragDepth = 1.;
 	if (DepthToAlpha)
 	  gl_FragDepth = 1.0/(length( closest)/length(dir));
 	else
-	gl_FragDepth = ( (1000.0 / (1000.0 - 0.00001)) +
-	  (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-	  clamp(length( closest)/length(dir), 0.00001, 1000.0) );
-
+		// sets depth for spline path occlusion
+		// see http://www.fractalforums.com/index.php?topic=16405.0
+		// gl_FragDepth = ( (1000.0 / (1000.0 - 0.00001)) +
+		// (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
+		// clamp(length( closest)/length(dir), 0.00001, 1000.0) );
+			gl_FragDepth = (1.0 + (-1e-05 / clamp (length( closest)/length(dir), 1e-05, 1000.0)));
 	return vec4(hitColor,closest);
 }

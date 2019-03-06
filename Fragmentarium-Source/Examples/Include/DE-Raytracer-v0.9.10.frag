@@ -369,9 +369,12 @@ vec3 trace(vec3 from, vec3 dir, inout vec3 hit, inout vec3 hitNormal) {
 
 //	if (totalDist>ColorDist && totalDist<ColorDist+ColorDist2) hitColor.x = 1.0;
 
-gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
-(1000.0 * 0.00001 / (0.00001 - 1000.0)) /
-clamp(totalDist/length(dir), 0.00001, 1000.0));
+		// sets depth for spline path occlusion
+		// see http://www.fractalforums.com/index.php?topic=16405.0
+		// gl_FragDepth = ((1000.0 / (1000.0 - 0.00001)) +
+		// (1000.0 * 0.00001 / (0.00001 - 1000.0)) /
+		// clamp(totalDist/length(dir), 0.00001, 1000.0));
+			gl_FragDepth = (1.0 + (-1e-05 / clamp (totalDist/length(dir), 1e-05, 1000.0)));
 
         return hitColor;
 }
