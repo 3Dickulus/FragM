@@ -282,18 +282,25 @@ protected:
             highlightingRules.append(rule);
         }
 
+        QString NUMf = QString("[-+]?\\d{1,}(?:[\\.]\\d{1,})?(?:[eE]{1}[+-]{1}\\d{1,})?");
+        QString NUMi = QString("[-+]?\\d{1,}");
+
         patterns.clear();
         /// Fragmentarium keywords
-        patterns  << "\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+)\\].*$"
-                  << "\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"
-                  << "\\s+(\\S+)\\s*;\\s*file\\[(.*)\\]"
-                  << "(random\\[[-+]?[0-9]*\\.?[0-9]+,[-+]?[0-9]*\\.?[0-9]+\\])";
+        patterns  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+
+                  << "^\\s*uniform\\s+([float|double]{1,6})\\s+\\S+\\s*;\\s*slider\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+                  << "^\\s*uniform\\s+int\\s+\\S+\\s*;\\s*slider\\[("+NUMi+"),("+NUMi+"),("+NUMi+")\\]"
+                  << "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[([t|T][r|R][u|U][e|E][f|F][a|A][l|L][s|S][e|E])\\]"
+                  << "^\\s*uniform\\s+sampler[2D|Cube]\\s+(\\S+)\\s*;\\s*file\\[(\\S+)\\]"
+                  << "(random\\["+NUMf+","+NUMf+"\\])"
+                  << "^\\s*uniform\\s+float\\s+(time);"
+                  << "^\\s*uniform\\s+int\\s+(subframe);"
+                  << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(pixelSize);";
         foreach (const QString &pattern, patterns ) {
             rule.group = "Fragmentarium";
             rule.pattern = QRegExp(pattern);
@@ -315,7 +322,7 @@ protected:
             myformat.setFontWeight(QFont::Normal);
             myformat.setFontItalic(false);
             myformat.setFontUnderline(false);
-            myformat.setForeground(QBrush(Qt::black));
+            myformat.setForeground(QBrush(Qt::color1));
 
             if (child.tagName() == "itemData")  {
 

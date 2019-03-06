@@ -27,7 +27,7 @@ namespace Parser {
     subframeMax ( -1 ),
     depthToAlpha ( false ),
     autoFocus ( false ) {
-}
+    }
 
 // Helpers:
 namespace {
@@ -225,14 +225,14 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
     static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
 
     static QRegExp intSlider ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
-    static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"+lockTypeString );
+    static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[([t|T][r|R][u|U][e|E][f|F][a|A][l|L][s|S][e|E])\\]"+lockTypeString );
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
-    static QRegExp sampler2D ( "^\\s*uniform\\s+sampler2D\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
-    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    static QRegExp sampler2D ( "^\\s*uniform\\s+sampler2D\\s+(\\S+)\\s*;\\s*file\\[(\\S+)\\]$" );
+    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(\\S+)\\]$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
-    static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
-    static QRegExp subframeMax ( "^\\s*#define\\s+subframemax\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
+    static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)$",Qt::CaseInsensitive );
+    static QRegExp subframeMax ( "^\\s*#define\\s+subframemax\\s*(\\d+)$",Qt::CaseInsensitive );
     QString lastComment;
     QString currentGroup;
     QMap<QString, QString> replaceMap;
