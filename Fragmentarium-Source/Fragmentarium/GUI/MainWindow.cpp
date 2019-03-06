@@ -31,6 +31,12 @@
 #include <QVector3D>
 #include <QVector4D>
 
+#include <QAction>
+#include <QApplication>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QtScriptTools/QScriptEngineDebugger>
+
 #include "MainWindow.h"
 #include "TextEdit.h"
 #include "TimeLine.h"
@@ -49,6 +55,7 @@ namespace Fragmentarium {
 namespace GUI {
 
 MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
+      , cmdScriptDebugger(0)
 {
 
     bufferXSpinBox = 0;
@@ -71,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190222, "");
+    version = Version(2, 5, 0, 190303, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -3151,6 +3158,7 @@ void MainWindow::saveCmdScript() {
 void MainWindow::loadCmdScript() {
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, QString(), QString(), filter);
+    QSettings settings;
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
@@ -3158,6 +3166,7 @@ void MainWindow::loadCmdScript() {
                                  tr("Cannot read file %1:\n%2.")
                                  .arg(fileName)
                                  .arg(file.errorString()));
+            settings.setValue("cmdscriptfilename", 0);
             return;
         }
 
@@ -3165,6 +3174,7 @@ void MainWindow::loadCmdScript() {
         scriptText = in.readAll();
         file.close();
         INFO(tr("Cmd Script loaded from file: ") + fileName);
+        settings.setValue("cmdscriptfilename", fileName);
     }
 }
 
@@ -3219,9 +3229,11 @@ void MainWindow::editScript() {
     d->resize(640,480);
     // open the dialog and take control
     d->exec();
+    
+    scriptText = t->toPlainText();
+    
     // closed the window so...
     runningScript=false;
-
 }
 
 void MainWindow::executeScript()
@@ -3230,6 +3242,7 @@ void MainWindow::executeScript()
 
     QSettings settings;
     QString name = settings.value("filename").toString();
+    QString scriptname = settings.value("cmdscriptfilename").toString();
 
     if(sender() != 0) {
         e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
@@ -3238,7 +3251,7 @@ void MainWindow::executeScript()
 
     runningScript=true;
 
-    QScriptValue result = scriptEngine.evaluate( scriptText );
+    QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
 
     if (result.isError())
     {
@@ -3255,10 +3268,32 @@ void MainWindow::executeScript()
             e->setTextCursor(tc);
         }
         runningScript=false;
-        return;
-    } else cmdScriptLineNumber = 0;
+        
+    } else {
+        cmdScriptLineNumber = 0;
+    }
+    
+    // can't edit the script in the debugger
+    // only for examining status, messages and vars
+    // only used when called from GUI
+    if(sender() != 0) {
+        if (!cmdScriptDebugger) {
+            cmdScriptDebugger = new QScriptEngineDebugger(this);
+            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
+            cmdScriptDebugger->standardWindow()->resize(1280, 704);
+        }
 
-    settings.setValue("filename",name);
+        if (cmdScriptLineNumber == 0) { // no error detach and destroy debugger
+            if (cmdScriptDebugger) {
+                cmdScriptDebugger->detach();
+                cmdScriptDebugger->~QScriptEngineDebugger();
+                cmdScriptDebugger = 0;
+            }
+        // there was an error so attach a debugger, if error was fixed no debug window on execute
+        } else cmdScriptDebugger->attachTo(&scriptEngine);
+    }   
+
+    if(runningScript) settings.setValue("filename",name);
 
 }
 

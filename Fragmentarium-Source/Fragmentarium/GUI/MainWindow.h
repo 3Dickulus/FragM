@@ -26,6 +26,7 @@
 
 #include "asmbrowser.h"
 
+class QScriptEngineDebugger;
 class QAction;
 class QMenu;
 
@@ -461,8 +462,10 @@ namespace Fragmentarium {
       void reloadFragFile( int );
       void reloadFragFile( QString );
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
-      
+
     private:
+
+      QScriptEngineDebugger *cmdScriptDebugger;
       QSpinBox* timeMaxSpinBox;
       QPushButton* animationButton;
       QPushButton* progressiveButton;
@@ -602,6 +605,7 @@ namespace Fragmentarium {
       QMap<int, EasingInfo*> easingMap;
 
       QFileSystemWatcher *fragWatch;
+
     };
     
   }
