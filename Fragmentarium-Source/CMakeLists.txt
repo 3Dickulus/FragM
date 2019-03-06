@@ -1,8 +1,10 @@
 project( Fragmentarium-2.5.0 )
 cmake_minimum_required( VERSION 2.8.12 )
 
-cmake_policy(SET CMP0043 NEW)
-cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0043 OLD)
+IF ( APPLE )
+    cmake_policy(SET CMP0071 NEW)
+ENDIF ()
 
 IF(UNIX AND NOT APPLE)
     # for find_package ( OpenEXR REQUIRED )
@@ -25,6 +27,7 @@ find_package ( Qt5Widgets REQUIRED )
 find_package ( Qt5Gui REQUIRED )
 find_package ( Qt5Xml REQUIRED )
 find_package ( Qt5Script REQUIRED )
+find_package ( Qt5ScriptTools REQUIRED )
 find_package ( Qt5LinguistTools )
 
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
@@ -249,7 +252,9 @@ IF ( APPLE )
 ELSEIF ( UNIX )
   add_executable ( ${PROJECT_NAME} ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
+#   set ( WIN32_EXECUTABLE ON )
   add_executable ( ${PROJECT_NAME} WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+#   set ( WIN32_EXECUTABLE OFF )
   add_executable ( ${PROJECT_NAME}-console ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
@@ -258,9 +263,9 @@ IF ( WIN32 )
 target_link_libraries ( ${PROJECT_NAME}-console ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
 ENDIF ()
 
-qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script)
+qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script ScriptTools)
 IF ( WIN32 )
-qt5_use_modules(${PROJECT_NAME}-console OpenGL Widgets Gui Xml Script)
+qt5_use_modules(${PROJECT_NAME}-console OpenGL Widgets Gui Xml Script ScriptTools)
 ENDIF ()
 
 # Runtime support files

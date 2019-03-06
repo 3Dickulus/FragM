@@ -137,23 +137,6 @@ These have been redacted due to lack of use may be brought back if there is dema
 + Complex.frag now includes double types with trig functions thanks to Claude and Clacker
 + fixed 2D.frag, now single pass render frags save image instead of empty buffer. tnx charPixel ;)
 
-# GUI Language Translations
-+ German by Sabine
-+ Dutch by Sabine
-+ Russian by Crist-JRoger and SCORPION
-
-# Tested on Linux desktops
-+ Ubuntu 14.04.5 LTS Qt-5.7.1 OpenEXR 2.2 
-+ SuSE Leap 42.2 RPM Qt-5.6.2 OpenEXR 2.2 
-
-# Tested on Windows
-+ Windows 7,8,10 Qt-5.6.2  OpenEXR 2.1
-
-# Testing on Mac
-+ OSX 10.11 GCC 4.8 Qt-5.9.1 OpenEXR 2.2
-
-# Version bump 2.5.0-180909
-
 + Removed deprecated QGLWidget now using QOpenGL variants
 + Shift+Right mouse button: shows more menus when in fullscreen mode.
 + some improvements in the timeline editor ( RMB click on time slider )
@@ -168,7 +151,7 @@ These have been redacted due to lack of use may be brought back if there is dema
 + "New" provides minimum working frag code
 + keyframe and easingcurves are handled with QMap<T,T> lists
 
-2.5.0.181123 https://fractalforums.org/fragmentarium/17/feature-request-ideas/2321 (claude)
+https://fractalforums.org/fragmentarium/17/feature-request-ideas/2321 (claude)
 ----------------------
 
 + splash only shows on first run or if no tabs are open when program exits
@@ -179,8 +162,9 @@ These have been redacted due to lack of use may be brought back if there is dema
 + enhanced numbered filename padding for animation rendering
 + reload file menu option
 
-2.5.0.181222
+----------------------
 
+# 2.5.0.181222
 + Edit fqScript is now CTRL+E
 + added wiki to help menu
 + added file watcher
@@ -190,9 +174,28 @@ These have been redacted due to lack of use may be brought back if there is dema
 + added setUserUniform code to sampler widget using texID
 + added getPresetNamesList function for fqScript, returns keyframe list or normal presets list
 
+# 2.5.0.190303
++ Realtime feedback from color dialogs
++ enhanced glsl highlighter
++ reports uniform clamping
++ added AutoSave and UniqueID to fqScripting commands
++ 2D zoom follows mouse
++ full path in recent files list option Sabine's idea ;)
++ complete exception class
++ Log to file, Sabine's idea ;)
++ using Qt Script Debugger
 
 #  Tested on Linux desktop
-+  Compiled with gcc (SuSE Leap 42.3) Qt 5.9.2
++  Compiled with gcc (SuSE Leap 15.0) Qt 5.9.4
 
 #  Tested on Windows 10
 +  Compiled with MinGW 4.9.2 Qt 5.6.2
+
+# GUI Language Translations
++ German by Sabine
++ Dutch by Sabine
++ Russian by Crist-JRoger and SCORPION
+
+# Tested on Windows
++ Windows 7,8,10 Qt-5.6.2  OpenEXR 2.1
+
