@@ -58,6 +58,7 @@ install:
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-dev-tools
       sudo apt-get -qq install qtscript5-dev
+      sudo apt-get -qq install libqt5scripttools5
       sudo apt-get -qq install libqt5svg5-dev
       sudo apt-get -qq install libqt5opengl5-dev
       sudo apt-get -qq install libqt5xmlpatterns5-dev
