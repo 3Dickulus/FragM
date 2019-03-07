@@ -465,6 +465,7 @@ namespace Fragmentarium {
 
     private:
 
+      QSplashScreen* splashWidget;
       QScriptEngineDebugger *cmdScriptDebugger;
       QSpinBox* timeMaxSpinBox;
       QPushButton* animationButton;
@@ -560,7 +561,6 @@ namespace Fragmentarium {
       QVector<QAction*> recentFileActions;
       QAction* recentFileSeparator;
       QLabel* fpsLabel;
-      QSplashScreen* splashWidget;
       bool rebuildRequired;
       FileManager fileManager;
       QLabel* frameLabel;
