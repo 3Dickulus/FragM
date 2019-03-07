@@ -287,16 +287,16 @@ protected:
 
         patterns.clear();
         /// Fragmentarium keywords
-        patterns  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
-                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
-                  << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\)\\]"
-                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
-                  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+        patterns  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+);\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+);\\s*slider\\[\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+);\\s*slider\\[\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\),\\(("+NUMf+"),("+NUMf+")\\)\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+);\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+                  << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+);\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
 
-                  << "^\\s*uniform\\s+([float|double]{1,6})\\s+\\S+\\s*;\\s*slider\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
-                  << "^\\s*uniform\\s+int\\s+\\S+\\s*;\\s*slider\\[("+NUMi+"),("+NUMi+"),("+NUMi+")\\]"
-                  << "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[([t|T][r|R][u|U][e|E][f|F][a|A][l|L][s|S][e|E])\\]"
-                  << "^\\s*uniform\\s+sampler[2D|Cube]\\s+(\\S+)\\s*;\\s*file\\[(\\S+)\\]"
+                  << "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+);\\s*slider\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
+                  << "^\\s*uniform\\s+int\\s+(\\S+\\);\\s*slider\\[("+NUMi+"),("+NUMi+"),("+NUMi+")\\]"
+                  << "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[([true|false]{1,5})\\]"
+                  << "^\\s*uniform\\s+sampler([2D|Cube]{1,4})\\s+(\\S+);\\s*file\\[(\\S+)\\]"
                   << "(random\\["+NUMf+","+NUMf+"\\])"
                   << "^\\s*uniform\\s+float\\s+(time);"
                   << "^\\s*uniform\\s+int\\s+(subframe);"
