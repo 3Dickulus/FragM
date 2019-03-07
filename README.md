@@ -195,7 +195,3 @@ https://fractalforums.org/fragmentarium/17/feature-request-ideas/2321 (claude)
 + German by Sabine
 + Dutch by Sabine
 + Russian by Crist-JRoger and SCORPION
-
-# Tested on Windows
-+ Windows 7,8,10 Qt-5.6.2  OpenEXR 2.1
-
