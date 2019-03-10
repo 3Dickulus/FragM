@@ -294,7 +294,7 @@ protected:
                   << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+);\\s*color\\[("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
 
                   << "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+);\\s*slider\\[("+NUMf+"),("+NUMf+"),("+NUMf+")\\]"
-                  << "^\\s*uniform\\s+int\\s+(\\S+\\);\\s*slider\\[("+NUMi+"),("+NUMi+"),("+NUMi+")\\]"
+                  << "^\\s*uniform\\s+int\\s+(\\S+);\\s*slider\\[("+NUMi+"),("+NUMi+"),("+NUMi+")\\]"
                   << "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[([true|false]{1,5})\\]"
                   << "^\\s*uniform\\s+sampler([2D|Cube]{1,4})\\s+(\\S+);\\s*file\\[(\\S+)\\]"
                   << "(random\\["+NUMf+","+NUMf+"\\])"
