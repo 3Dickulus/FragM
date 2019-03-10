@@ -366,7 +366,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes3 = false;
             double to = toS.toDouble ( &succes3 );
             if ( !succes || !succes2 || !succes3 ) {
-              WARNING ( "Could not parse interval for uniform: " + name );
+              WARNING ( "Could not parse color value for uniform: " + name );
                 continue;
             }
 
@@ -389,7 +389,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes3 = false;
             double to = toS.toDouble ( &succes3 );
             if ( !succes || !succes2 || !succes3 ) {
-                WARNING ( "Could not parse interval for uniform: " + name );
+                WARNING ( "Could not parse float value for uniform: " + name );
                 continue;
             }
 
@@ -456,7 +456,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes3 = false;
             int to = toS.toInt ( &succes3 );
             if ( !succes || !succes2 || !succes3 ) {
-              WARNING ( "Could not parse interval for uniform: " + name );
+              WARNING ( "Could not parse integer value for uniform: " + name );
                 continue;
             }
 
@@ -489,7 +489,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes = false;
             int i = iterationCount.toInt ( &succes );
             if ( !succes ) {
-              WARNING ( "Could not parse iterations value for 'iterationsbetweenredraws': " + iterationCount );
+              WARNING ( "Could not parse value for 'iterationsbetweenredraws': " + iterationCount );
                 continue;
             }
             fs.iterationsBetweenRedraws = i;
@@ -499,7 +499,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes = false;
             int i = maxCount.toInt ( &succes );
             if ( !succes ) {
-              WARNING ( "Could not parse iterations value for 'subframemax': " + maxCount );
+              WARNING ( "Could not parse value for 'subframemax': " + maxCount );
                 continue;
             }
             fs.subframeMax = i;
