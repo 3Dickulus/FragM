@@ -90,7 +90,7 @@ public:
     int getPresetCount() {
         return presetComboBox->count();
     }
-    void setPreset(QString p);
+    bool setPreset(QString p);
     
     QStringList getWidgetNames() {
       QStringList varnames;

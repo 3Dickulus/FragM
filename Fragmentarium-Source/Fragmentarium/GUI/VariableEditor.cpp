@@ -963,10 +963,10 @@ int VariableEditor::getCurrentKeyFrame() {
     return -1;
 }
 
-void VariableEditor::setPreset(QString p) {
+bool VariableEditor::setPreset(QString p) {
     int item = presetComboBox->findText(p, Qt::MatchFixedString);
     presetComboBox->setCurrentIndex(item);
-    applyPreset();
+    return applyPreset();
     /// this bit of fudge sets the current time to keyframe time
 //     if(hasKeyFrames())
 //         mainWindow->setTimeSliderValue( getCurrentKeyFrame() * ((mainWindow->getTimeMax()*mainWindow->renderFPS)/(getKeyFrameCount()-1)));

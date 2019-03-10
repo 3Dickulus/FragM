@@ -347,8 +347,8 @@ namespace Fragmentarium {
         setEndFrame(value+1);
       };
       
-      void applyPresetByName(QString n) {
-        variableEditor->setPreset(n);
+      bool applyPresetByName(QString n) {
+        return variableEditor->setPreset(n);
       };
       
       bool scriptRunning() {
