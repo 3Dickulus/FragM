@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190309, "");
+    version = Version(2, 5, 0, 190316, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -1497,18 +1497,8 @@ retry:
                 
                 if (!progress.wasCanceled()) {
                     QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    int oldsteps = steps;
                     engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
     
-                    // this is a terrible fudge
-                    // I can't figure out why the first tile fails when called from fqs script
-                    // works fine when fragment is loaded and initial Default preset is applied
-                    // after applying a preset that requires build the first tile is black
-                    if(scriptRunning() && tile ==0) {
-                        steps = oldsteps;
-                        engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-                    }
-
                     if (padding>0.0)  {
                         int nw = (int)(tileWidth / (1.0 + padding));
                         int nh = (int)(tileHeight / (1.0 + padding));
