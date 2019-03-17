@@ -37,7 +37,12 @@ int main(int argc, char *argv[])
 
     QApplication *app = new QApplication(argc, argv);
    
-    app->setApplicationVersion("2.5.0.190309");
+    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
+    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    app->setApplicationVersion(mainWin->getVersion());
 
     // this should translate all of the generic default widget texts
     QTranslator qtTranslator;
@@ -126,17 +131,13 @@ int main(int argc, char *argv[])
         }
     }
 
-    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
-    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
-
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;
 
     mainWin->setVerbose(parser.isSet("verbose"));
 
     mainWin->show();
+
 
     splash.setMask(pixmap.mask());
     QStringList openFiles = QSettings().value("openFiles").toStringList();
