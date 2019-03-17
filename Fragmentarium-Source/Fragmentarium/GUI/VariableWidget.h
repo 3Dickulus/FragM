@@ -42,7 +42,6 @@ namespace Fragmentarium {
     
                 setMinimumSize(160,20);
                 setMaximumSize(1024,20);
-                Logarithmic = false;
                 
                 QHBoxLayout* l = new QHBoxLayout(this);
                 l->setSpacing(2);
@@ -104,15 +103,6 @@ namespace Fragmentarium {
             int getPong() { return m_pong; }
 
         public slots:
-            void setLogarithmic( bool l) {
-                Logarithmic=l;
-                if(!l) return;
-                scale = ((maximum-minimum) / __INT32_MAX__);
-                slider->setRange(minimum*scale,maximum*scale);
-                slider->setSingleStep(scale*1000);
-                slider->setPageStep(scale*10000);
-            }
-
             void setValue(double d) {
                 spinner->setValue(d);
                 bool clamping = (d < minimum || d > maximum);
@@ -130,7 +120,9 @@ namespace Fragmentarium {
                 // our value comes from the spin box
                 // the slider must be kept quiet while adjusting from spinner
                 slider->blockSignals(true);
-                slider->setValue( Logarithmic ? slider->minimum() + (log(d) / scale) : d*scale);
+                
+                slider->setValue(d*scale);
+
                 slider->blockSignals(false);
                 // let the main gui thread know something happened
                  emit changed();
@@ -140,7 +132,9 @@ namespace Fragmentarium {
                 // our value is calculated from the slider position
                 // the spinner must be kept quiet while adjusting from slider
                 spinner->blockSignals(true);
-                spinner->setValue(Logarithmic ? minimum + exp(i*scale) : i/scale);
+                
+                spinner->setValue(i/scale);
+
                 spinner->blockSignals(false);
                 // let the main gui thread know something happened
                 emit changed();
@@ -154,7 +148,6 @@ namespace Fragmentarium {
             double minimum;
             double maximum;
             double scale;
-            bool Logarithmic;
         };
 
         class ColorChooser : public QFrame {

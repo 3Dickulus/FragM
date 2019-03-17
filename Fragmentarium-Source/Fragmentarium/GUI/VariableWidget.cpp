@@ -148,8 +148,6 @@ FloatWidget::FloatWidget(QWidget* parent, QWidget* variableEditor, QString name,
     comboSlider1->setObjectName(QString("%1%2").arg(name).arg("1"));
     l->addWidget(comboSlider1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
-    
-    comboSlider1->setLogarithmic(name.contains("log_",Qt::CaseInsensitive));
 };
 
 void FloatWidget::setValue(double f) {
