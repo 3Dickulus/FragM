@@ -4,10 +4,9 @@
 #extension GL_ARB_shader_bit_encoding : enable
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_gpu_shader5 : enable
-#endif
-
 #extension GL_ARB_gpu_shader_int64 : enable
-#extension GL_NV_shader_buffer_load : enable
+// #extension GL_NV_shader_buffer_load : enable // nVidia only
+#endif
 
 // Standard matrices
 
