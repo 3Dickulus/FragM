@@ -12,3 +12,10 @@
 vec3 color(vec2 c) {
 	return vec3(cos(c.x),sin(c.y),sin(c.x*c.y));
 }
+
+#preset Default
+Center = 0.01102281,0.612725616
+Zoom = 0.18175028
+AntiAliasScale = 1
+AntiAlias = 1
+#endpreset
