@@ -255,7 +255,8 @@ protected:
         highlightingRules.append(rule);
 
         rule.group = "Numbers"; // generic
-        rule.pattern = QRegExp("\\b[-+]?\\d*\\.?\\d+([eE][-+]?\\d+)?\\b");
+//         rule.pattern = QRegExp("\\b[-+]?\\d*\\.?\\d+([eE][-+]?\\d+)?\\b");
+        rule.pattern = QRegExp("\\b[+-]?\\d{1,}[\\.]?\\d*(?:([eE][+-]\\d{1,}|[fF]))?\\b");
         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
         rule.format = textFormat.value("Numbers");
         highlightingRules.append(rule);
