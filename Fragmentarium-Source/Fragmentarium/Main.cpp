@@ -13,8 +13,25 @@
 #include "windows.h"
 #endif
 
+// Needed for `setenv()`.
+#ifndef Q_OS_WIN
+#define _POSIX_C_SOURCE 200112L
+#include <stdlib.h>
+#endif
+
 int main(int argc, char *argv[])
 {
+    // Grotesque hack to workaround Mesa providing an OpenGL 3 context
+    // when a compatibility profile is requested; while FragM needs an
+    // OpenGL 4 context (else the display widget crashes on startup).
+    // The `0` means not to overwrite an existing value, so to test the
+    // old way just set the variable in the shell to an earlier version
+    // that might actually be properly supported.
+    // XXX TODO FIXME handle OpenGL compatibility context versions
+#ifndef Q_OS_WIN
+    setenv("MESA_GL_VERSION_OVERRIDE", "4.6COMPAT", 0);
+#endif
+
 #ifdef Q_OS_WIN
     qApp->addLibraryPath("./");
     qApp->addLibraryPath("./plugins");
