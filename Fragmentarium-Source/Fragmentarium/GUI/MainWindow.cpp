@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190316, "");
+    version = Version(2, 5, 0, 190324, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -2183,33 +2183,42 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
-  if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
-
+    // calling with nonexistant filename before test prevents crash
+    // fi a non-quoted filename with an unescaped space will appear as 2 file names,
+    // both are wrong the first appears as non frag the second appears as frag but non-existant
+    // passing bogus name to insertTabPAge() will cause it to load the minimum default GLSL source
+    // so initializeFragment() gets valid code later on
     insertTabPage(fileName);
-    processGuiEvents();
-    
-    DisplayWidget::DrawingState oldstate = engine->getState();
-    engine->setState(DisplayWidget::Progressive);
-    bool pp = pausePlay;
-    stop();
+    processGuiEvents(); // make sure the widgets are there
 
-    QString inputText = getTextEdit()->toPlainText();
-    if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
-    if (QSettings().value("autorun", true).toBool()) {
-        rebuildRequired = initializeFragment(); // once to initialize presets
-        bool requiresRecompile = variableEditor->setDefault();
-        if (requiresRecompile || rebuildRequired) {
-            INFO(tr("Rebuilding to update locked uniforms..."));
-            initializeFragment();
-            variableEditor->setDefault();
+    if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
+
+        DisplayWidget::DrawingState oldstate = engine->getState();
+        engine->setState(DisplayWidget::Progressive);
+        bool pp = pausePlay;
+        stop();
+
+        QString inputText = getTextEdit()->toPlainText();
+        if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
+        if (QSettings().value("autorun", true).toBool()) {
+            rebuildRequired = initializeFragment(); // once to initialize presets
+            bool requiresRecompile = variableEditor->setDefault();
+            if (requiresRecompile || rebuildRequired) {
+                INFO(tr("Rebuilding to update locked uniforms..."));
+                initializeFragment();
+                variableEditor->setDefault();
+            }
+
+            initializeFragment(); // makes textures persist
+            processGuiEvents();
         }
-//         initializeFragment(); // makes textures persist
+
+        QSettings().setValue("isStarting", false);
+        engine->setState(oldstate);
+        pp?stop():play();
+    } else if(scriptRunning()) {
+        stopScript();    // file failed to load or doesn't exist
     }
-    
-    QSettings().setValue("isStarting", false);
-    engine->setState(oldstate);
-    pp?stop():play();
-  } else if(scriptRunning()) { stopScript(); } // file failed to load or doesn't exist
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -2317,20 +2326,26 @@ bool MainWindow::initializeFragment() {
         return false;
     }
 
-//    if(sender() == 0) return false; // != 0 when called by "Build" button or TabChanged signal
+//     if(sender() == 0) return true; // != 0 when called by "Build" button or TabChanged signal
 //     DBOUT << sender() << tabInfo[tabBar->currentIndex()].filename;
     
     logger->getListWidget()->clear();
 
     // Show info first...
-    INFO ( engine->vendor + " " + engine->renderer );
-    // report the version and profile that was actually created in the engine
+    INFO( "Vendor: " + engine->vendor + "\nRenderer: " + engine->renderer + "\nGL Driver: " + engine->glvers);
+
+    // report the profile that was actually created in the engine
     int prof = engine->format().profile();
-    QString s1 = QString("Using GL version %1.%2 %3").
-    arg(engine->format().majorVersion()).
-    arg(engine->format().minorVersion()).
-    arg(prof==0 ? "No profile" : prof == 1 ? "Core profile" : prof == 2 ? "Compatibility profile" : "oops!");
-    INFO(s1);
+    if(prof == 1 || prof == 2)
+        INFO( QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "") );
+    else if(prof == 0) {
+        INFO( "No GL profile found!" );
+        return false;
+    } else {
+        INFO( "Something went wrong!!!" );
+        return false;
+    }
+        
     INFO("");
    
     QStringList imgFileExtensions;
@@ -2372,7 +2387,7 @@ bool MainWindow::initializeFragment() {
     variableEditor->locksUseDefines( QSettings().value("useDefines", true).toBool() );
     int ms = 0;
         FragmentSource fs = p.parse(inputText,filename,moveMain);
-        if(filename != "Unnamed") // new file not saved yet
+        if(filename != "Unnamed") // file has been saved
             addToWatch( QStringList(filename) );
     // BUG Up vector gets trashed on Build or Save
     variableEditor->updateFromFragmentSource(&fs, &showGUI);
@@ -2429,13 +2444,12 @@ bool MainWindow::initializeFragment() {
         }
         
         //TODO: remove group tab if it's empty, if all widgets in group are hidden
-        // then they have been optimized out by the glsl compiler
-
-        return true;
+        //      they have been optimized out by the glsl compiler
+        return false; // does not need rebuild
     } else {
         WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
     }
-    return false;
+    return true;
 }
 
 namespace {
@@ -2524,14 +2538,13 @@ Target = 0,0,0\r\n\
 Up = -0.1207781,0.8478234,0.5163409\r\n\
 #endpreset\r\n");
 
-
     bool loadingSucceded = false;
-    if (filename.isEmpty()) 
+    if (filename.isEmpty())
         textEdit->setPlainText(s);
     else {
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            textEdit->setPlainText(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
+            textEdit->setPlainText(tr("// Cannot read file %1:\n// %2\n").arg(filename).arg(file.errorString()) + s);
         } else {
             QTextStream in(&file);
             QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -2542,7 +2555,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
         }
     }
 
-    QString displayName = filename;
+    QString displayName = loadingSucceded ? filename : "";
     if (displayName.isEmpty()) {
         // Find a new name
         displayName = tr("Unnamed");
@@ -2618,7 +2631,7 @@ void MainWindow::tabChanged(int index) {
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if(!te->lastSettings().isEmpty() && !variableEditor->setSettings(te->lastSettings()))
+        if(!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings()))
             initializeFragment();
     }
     initializeFragment(); // makes textures persist
@@ -2655,7 +2668,7 @@ void MainWindow::closeTab(int index) {
     if (tabBar->currentIndex() == -1) return;
     // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
-    variableEditor->setSettings(te->lastSettings());
+    if(variableEditor->setSettings(te->lastSettings()))
     initializeFragment(); // this bit of fudge preserves textures ???
 }
 

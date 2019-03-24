@@ -84,9 +84,9 @@ void DisplayWidget::initializeGL() {
     initializeOpenGLFunctions();
     vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
     renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
+    glvers = QString ( ( char * ) glGetString ( GL_VERSION ) );
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
-
 }
 
 void DisplayWidget::updateRefreshRate() {
@@ -291,7 +291,7 @@ void DisplayWidget::setGlTexParameter ( QMap<QString, QString> map ) {
             if ( !ok ) wantedLevels = 128; // just an arbitrary small number, GL default = 1000
             glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
 
-            if(context()->format().majorVersion() > 2)
+            if(context()->format().majorVersion() > 2 || context()->format().profile() == QSurfaceFormat::CompatibilityProfile)
                 glGenerateMipmap ( GL_TEXTURE_2D ); //Generate mipmaps here!!!
             else
                 glTexParameteri ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); //Generate mipmaps here!!!
@@ -373,7 +373,10 @@ void DisplayWidget::setGlTexParameter ( QMap<QString, QString> map ) {
 // this function parses the assembler text and returns a string list containing the lines
 QStringList DisplayWidget::shaderAsm ( bool w ) {
     
-    if(!foundnV) return QStringList("nVidia gfx card required for this feature!");
+    if(!foundnV)
+        if( context()->format().majorVersion() < 4 &&
+            context()->format().profile() != QSurfaceFormat::CompatibilityProfile )
+                return QStringList("nVidia GL > 4.0 required for this feature!");
     
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
     GLint formats = 0;
@@ -887,14 +890,15 @@ void DisplayWidget::makeBuffers() {
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     clearBackBuffer();
 
-    if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
+    if(context()->format().majorVersion() > 2 || context()->format().profile() == QSurfaceFormat::CompatibilityProfile) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
             qDebug( ) << tr("FBO Incomplete Error!");
+        } else {
+            glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
         }
-        glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
     }
-    else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    // else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void DisplayWidget::clearBackBuffer() {
@@ -1261,7 +1265,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
                 case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; foundDouble = false; break;
             }
 
-        if(context()->format().majorVersion() > 3 && context()->format().minorVersion() > 0) {
+        if(context()->format().majorVersion() > 2 && context()->format().minorVersion() >= 0) {
           double x,y,z,w;
           GLint index = glGetUniformLocation(programID, name);
           bool found = false;
@@ -1388,6 +1392,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
         
         glLoadIdentity();
 
+        // only available in GL > 2.0 < 3.2 and compatibility profile
         glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
         glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
         
@@ -1458,7 +1463,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
-    glFinish(); // wait for GPU to return control
+    //glFinish(); // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1610,7 +1615,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
     glPopAttrib();
-    glFinish(); // wait for GPU to return control
+    //glFinish(); // wait for GPU to return control
 
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
@@ -1644,7 +1649,7 @@ void DisplayWidget::clearGL() {
     glColorMask ( GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE );
     glDepthMask ( GL_TRUE );
     glStencilMask ( 0xFFFFFFFF );
-    glClearDepthf(1.0f);
+    glClearDepth(1.0f);
     glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 }
 
@@ -1783,7 +1788,7 @@ void DisplayWidget::renderTile ( double pad, double time, int subframes, int w, 
     }
 
     (*im) = hiresBuffer->toImage();
-    
+
     subframeCounter=0;
     
     if ( !hiresBuffer->release() ) {

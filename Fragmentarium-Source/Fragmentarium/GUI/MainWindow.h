@@ -217,7 +217,6 @@ namespace Fragmentarium {
       int getTileHeight() {
         return bufferYSpinBox->value();
       };
-      void processGuiEvents();
       bool wantSplineOcclusion;
       void runScript(QString text) {
         scriptText = text;
@@ -239,6 +238,7 @@ namespace Fragmentarium {
       
     // all public slots are available as script commands
     public slots:
+      void processGuiEvents();
       void loadFragFile(const QString &fileName);
 
       void setParameter(QString settings) {
@@ -348,7 +348,12 @@ namespace Fragmentarium {
       };
       
       bool applyPresetByName(QString n) {
-        return variableEditor->setPreset(n);
+        rebuildRequired = variableEditor->setPreset(n);
+        rebuildRequired |= initializeFragment();
+        rebuildRequired |= initializeFragment();
+        processGuiEvents();
+        processGuiEvents();
+        return !rebuildRequired; // if rebuild is required applying the preset failed
       };
       
       bool scriptRunning() {

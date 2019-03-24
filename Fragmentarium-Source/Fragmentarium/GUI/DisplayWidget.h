@@ -201,6 +201,7 @@ namespace Fragmentarium {
       bool foundnV;
       QString vendor;
       QString renderer;
+      QString glvers;
       
       QString renderETA;
       int renderAVG;
