@@ -7,10 +7,30 @@
 
 #include "Fragmentarium/GUI/MainWindow.h"
 
-// Needed for unicode commandline below.
 #ifdef Q_OS_WIN
+
+// Needed for unicode commandline below.
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
+
+#else
+
+// segfault signal handler prints a nicer message
+#include <signal.h>
+#include <unistd.h>
+void segv_handler(int s)
+{
+    // can't use most functions in a signal handler, see `man signal-safety`
+    const char *message =
+        "Segmentation fault.\n"
+        "Fragmentarium crashed!\n"
+        "For advice, please visit:\n"
+        "<https://en.wikibooks.org/wiki/Fractals/fragmentarium#Troubleshooting>\n"
+        ;
+    write(2 /* stderr FD */, message, strlen(message));
+    abort();
+}
+
 #endif
 
 int main(int argc, char *argv[])
@@ -21,6 +41,9 @@ int main(int argc, char *argv[])
     qApp->addLibraryPath("iconengines");
     qApp->addLibraryPath("imageformats");
     qApp->addLibraryPath("platforms");
+#else
+    // install signal handler to catch segmentation fault
+    signal(SIGSEGV, segv_handler);
 #endif
 
 
