@@ -30,6 +30,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setMajorVersion(4);
     fmt.setMinorVersion(1);
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+    fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
     setFormat(fmt);
 
     verbose = false;
