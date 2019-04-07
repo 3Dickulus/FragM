@@ -1272,20 +1272,20 @@ retry:
             out << final;
             INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
 
-            // Copy files.
-            QStringList ll = p.getDependencies();
-            foreach (QString l, ll) {
-                QString from = l;
-                QString to =  QDir(subdirName).absoluteFilePath( QFileInfo(l).fileName() );
-                if (!QFile::copy(from,to)) {
-                    QMessageBox::warning(this, tr("Fragmentarium"),
-                                         tr("Could not copy dependency:\n'%1' to \n'%2'.")
-                                         .arg(from)
-                                         .arg(to));
+                // Copy files.
+                QStringList ll = p.getDependencies();
+                foreach (QString l, ll) {
+                    QString from = l;
+                    QString to =  QDir(subdirName).absoluteFilePath( QFileInfo(l).fileName() );
+                    if (!QFile::copy(from,to)) {
+                        QMessageBox::warning(this, tr("Fragmentarium"),
+                                            tr("Could not copy dependency:\n'%1' to \n'%2'.")
+                                            .arg(from)
+                                            .arg(to));
                     return;
-                }
+                    }
 
-            }
+                }
         } catch (Exception& e) {
             WARNING(e.getMessage());
         }
@@ -2339,8 +2339,8 @@ bool MainWindow::initializeFragment() {
     if(prof == 1 || prof == 2)
         INFO( QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "") );
     else if(prof == 0) {
-        INFO( "No GL profile found!" );
-        return false;
+        INFO( "No GL profile." );
+//         return false;
     } else {
         INFO( "Something went wrong!!!" );
         return false;
