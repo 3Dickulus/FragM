@@ -151,8 +151,6 @@ namespace Fragmentarium {
       void resetTime() {
         time = QTime::currentTime();
       }
-      void setViewFactor(int val);
-      void setPreviewFactor(int val);
       FragmentSource* getFragmentSource() {
         return &fragmentSource;
       }
@@ -316,8 +314,6 @@ namespace Fragmentarium {
       int fpsCounter;
       double padding;
       int tiles;
-      int viewFactor;
-      int previewFactor;
       QString outputFile;
       //enum BufferType { None, RGBA8, RGBA16, RGBA16F, RGBA32F };
       GLenum bufferType;

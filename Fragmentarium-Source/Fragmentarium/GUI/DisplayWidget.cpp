@@ -32,7 +32,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
     setFormat(fmt);
-
+    
     verbose = false;
     clearOnChange = true;
     drawingState = Progressive;
@@ -45,8 +45,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     bufferShaderProgram = 0;
     shaderProgram = 0;
     bufferType = 0;
-    viewFactor = 0;
-    previewFactor = 0.0;
     tilesCount = 0;
     fitWindow = true;
     bufferSizeX=0;
@@ -78,6 +76,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     /// END 3DTexture
     buttonDown = false;
     updateRefreshRate();
+    
     }
 
 void DisplayWidget::initializeGL() {
@@ -816,25 +815,14 @@ void DisplayWidget::initBufferShader() {
     }
 }
 
-void DisplayWidget::setViewFactor ( int val ) {
-    viewFactor = val;
-    requireRedraw ( true );
-}
-
 void DisplayWidget::resetCamera ( bool fullReset ) {
     if ( !cameraControl ) return;
     cameraControl->reset ( fullReset );
 }
 
-void DisplayWidget::setPreviewFactor ( int val ) {
-    previewFactor = val;
-    makeBuffers();
-    requireRedraw ( true );
-}
-
 void DisplayWidget::makeBuffers() {
-    int w = pixelWidth() / ( previewFactor+1 );
-    int h = pixelHeight() / ( previewFactor+1 );
+    int w = pixelWidth();
+    int h = pixelHeight();
 
     if ( bufferSizeX!=0 ) {
         w = bufferSizeX;
@@ -1195,7 +1183,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     int count;
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    if(subframeCounter == 1 && verbose) {
+        if(subframeCounter == 1 && verbose) {
         if(programID == shaderProgram->programId()) {
             qDebug() << "\nshaderProgram";
         }
@@ -1239,8 +1227,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         QString tp = "Not found!";
         bool foundDouble = false;
 
-          switch(type) {
-
+        switch(type) {
+            
                 case GL_BYTE:           tp = "BYTE "; foundDouble = false; break;
                 case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; foundDouble = false; break;
                 case GL_SHORT:          tp = "SHORT"; foundDouble = false; break;
@@ -1267,67 +1255,67 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
             }
 
         if(context()->format().majorVersion() > 2 && context()->format().minorVersion() >= 0) {
-          double x,y,z,w;
-          GLint index = glGetUniformLocation(programID, name);
-          bool found = false;
+                double x,y,z,w;
+                GLint index = glGetUniformLocation(programID, name);
+                bool found = false;
           if(index != -1)
-          switch(type) {
-                case GL_DOUBLE:
+                    switch(type) {
+                        case GL_DOUBLE:
                     x = uniformValue.toDouble(&foundDouble);
-                    if( foundDouble ) {
-                        glUniform1d(index, x);
-                        tp = "DOUBLE";
+                            if( foundDouble ) {
+                                glUniform1d(index, x);
+                                tp = "DOUBLE";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC2:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform2d(index, x, y);
+                                tp = "DOUBLE_VEC2";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC3:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            z = uniformValue.split(",").at(2).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform3d(index, x, y, z);
+                                tp = "DOUBLE_VEC3";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC4:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            z = uniformValue.split(",").at(2).toDouble(&found);
+                            foundDouble |= found;
+                            w = uniformValue.split(",").at(3).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform4d(index, x, y, z, w);
+                                tp = "DOUBLE_VEC4";
+                            }
+                        break;
+                        case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; foundDouble = true; break;
+                        default:
+                        break;
                     }
-                break;
-                case GL_DOUBLE_VEC2:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform2d(index, x, y);
-                        tp = "DOUBLE_VEC2";
-                    }
-                break;
-                case GL_DOUBLE_VEC3:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    z = uniformValue.split(",").at(2).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform3d(index, x, y, z);
-                        tp = "DOUBLE_VEC3";
-                    }
-                break;
-                case GL_DOUBLE_VEC4:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    z = uniformValue.split(",").at(2).toDouble(&found);
-                    foundDouble |= found;
-                    w = uniformValue.split(",").at(3).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform4d(index, x, y, z, w);
-                        tp = "DOUBLE_VEC4";
-                    }
-                break;
-                case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; foundDouble = true; break;
-                case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; foundDouble = true; break;
-                default:
-                break;
-            }
-        }
+                }
 
         // type name and value to console
         if(subframeCounter == 1 && verbose) qDebug() << tp << "\t" << uniformName << uniformValue;
@@ -1408,11 +1396,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
     l = shaderProgram->uniformLocation ( "globalPixelSize" );
     if ( l != -1 ) {
-        int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
-        if ( viewFactor > 0 ) {
-            d = viewFactor+1;
-        }
-        shaderProgram->setUniformValue ( l, ( ( float ) d/w ), ( ( float ) d/h ) );
+        shaderProgram->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
     }
 
     l = shaderProgram->uniformLocation ( "time" );
@@ -1569,11 +1553,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         // for DepthBufferShader.frag & NODE-Raytracer.frag
         l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
         if ( l != -1 ) {
-            int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
-            if ( viewFactor > 0 ) {
-                d = viewFactor+ 1;
-            }
-            shaderProgram->setUniformValue ( l, ( d/ ( float ) s.width() ), ( d/ ( float ) s.height() ) );
+            shaderProgram->setUniformValue ( l, ( 1.0/ ( float ) s.width() ), ( 1.0/ ( float ) s.height() ) );
         }
 
         l = bufferShaderProgram->uniformLocation ( "frontbuffer" );
@@ -2059,7 +2039,6 @@ void DisplayWidget::keyReleaseEvent ( QKeyEvent* ev ) {
 }
 
 void DisplayWidget::clearPreviewBuffer() {
-    setPreviewFactor ( previewFactor );
     makeBuffers();
     requireRedraw ( true );
 }
