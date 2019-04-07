@@ -25,7 +25,20 @@ void segv_handler(int s)
         "Segmentation fault.\n"
         "Fragmentarium crashed!\n"
         "For advice, please visit:\n"
-        "<https://en.wikibooks.org/wiki/Fractals/fragmentarium#Troubleshooting>\n"
+        "OpenGL Version: <https://en.wikibooks.org/wiki/Fractals/fragmentarium#Troubleshooting>\n"
+        "and...\n"
+        "GPU Watchdog: <http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/>\n"
+        "\n"
+        "If you have found an error, please report the following:\n"
+        "– OS type and OS version\n"
+        "– Graphics card type and driver version\n"
+        "– The version of Fragmentarium, and whether you built it yourself\n"
+        "– A reproducible description of the steps that caused the error (if possible).\n"
+        "\n"
+        "If you have an account at github you can post in <https://github.com/3Dickulus/FragM/issues>\n"
+        "You can also find discussions about Fragmentarium at <https://fractalforums.org/fragmentarium/17>\n"
+        "or...\n"
+        "You may email errors to 3dickulus at gmail dot com\n"
         ;
     write(2 /* stderr FD */, message, strlen(message));
     abort();
