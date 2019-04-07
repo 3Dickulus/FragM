@@ -98,14 +98,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QCheckBox" name="autoLoadCheckBox">
-        <property name="text">
-         <string>Autoload on change</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -118,7 +111,7 @@
         </property>
        </spacer>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -179,7 +172,7 @@
         </item>
        </layout>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="refreshRateLabel">
@@ -203,7 +196,7 @@
         </item>
        </layout>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="animFrameRateLabel">
@@ -227,7 +220,7 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="11" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="includePathsLabel">
@@ -248,7 +241,7 @@
         </item>
        </layout>
       </item>
-      <item row="11" column="0" colspan="2">
+      <item row="12" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QLabel" name="exrBinPathsLabel">
@@ -269,7 +262,7 @@
         </item>
        </layout>
       </item>
-      <item row="12" column="0" colspan="2">
+      <item row="13" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="stylesheetLabel">
@@ -290,7 +283,7 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0">
+      <item row="14" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="maxRecentFilesLabel">
@@ -311,7 +304,7 @@
         </item>
        </layout>
       </item>
-      <item row="14" column="0" colspan="2">
+      <item row="15" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -324,17 +317,31 @@
         </property>
        </spacer>
       </item>
-      <item row="13" column="1">
+      <item row="14" column="1">
        <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
         <property name="text">
          <string>Full path in recent files menu.</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="6" column="0">
        <widget class="QCheckBox" name="logToFileCheckBox">
         <property name="text">
          <string>Log to File</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="includeWithAutoSaveCheckBox">
+        <property name="text">
+         <string>#Include files with AutoSave Fragments</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="autoLoadCheckBox">
+        <property name="text">
+         <string>Autoload on change</string>
         </property>
        </widget>
       </item>

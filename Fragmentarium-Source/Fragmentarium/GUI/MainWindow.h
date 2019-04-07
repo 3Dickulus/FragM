@@ -596,6 +596,7 @@ namespace Fragmentarium {
       bool exrMode;
       bool verbose;
       bool fullPathInRecentFilesList;
+      bool includeWithAutoSave;
       
 /// BEGIN 3DTexture
 //       QString voxelFileName;

@@ -91,6 +91,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     loggingToFile = false;
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
+    includeWithAutoSave = true;
 
     init();
 }
@@ -1272,6 +1273,7 @@ retry:
             out << final;
             INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
 
+            if(includeWithAutoSave) {
                 // Copy files.
                 QStringList ll = p.getDependencies();
                 foreach (QString l, ll) {
@@ -1282,10 +1284,10 @@ retry:
                                             tr("Could not copy dependency:\n'%1' to \n'%2'.")
                                             .arg(from)
                                             .arg(to));
-                    return;
                     }
 
                 }
+            }
         } catch (Exception& e) {
             WARNING(e.getMessage());
         }
@@ -2067,6 +2069,7 @@ void MainWindow::readSettings()
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
+    includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
 
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
@@ -2101,6 +2104,7 @@ void MainWindow::writeSettings()
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
+    settings.setValue("includeWithAutoSave", includeWithAutoSave );
     settings.sync();
 
 }
