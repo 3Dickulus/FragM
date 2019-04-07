@@ -123,7 +123,7 @@ bool VariableWidget::fromSettingsString(QString string) {
         }
     }
     
-    requiresRecompile = fromString(string.trimmed());
+    requiresRecompile |= fromString(string.trimmed());
 
     if (requiresRecompile) {
         locked( lockType == Locked || lockType == AlwaysLocked);
@@ -212,6 +212,12 @@ void Float2Widget::setValue(QVector3D v) {
 bool Float2Widget::fromString(QString string) {
     double f1,f2;
     MiniParser(string).getDouble(f1).getDouble(f2);
+    QVector2D f(f1,f2);
+    
+    if ( f == getValue() ) {
+        return false;
+    }
+    
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
     return isLocked();
@@ -357,6 +363,11 @@ QString Float3Widget::toString() {
 bool Float3Widget::fromString(QString string) {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
+    QVector3D f(f1,f2,f3);
+    
+    if ( f == getValue() ) {
+        return false;
+    }
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
     comboSlider3->setValue(f3);
@@ -436,6 +447,11 @@ QString Float4Widget::toString() {
 bool Float4Widget::fromString(QString string) {
     double f1,f2,f3,f4;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
+    QVector4D f(f1,f2,f3,f4);
+    
+    if ( f == getValue() ) {
+        return false;
+    }
     comboSlider1->setValue(f1);
     comboSlider2->setValue(f2);
     comboSlider3->setValue(f3);
@@ -485,6 +501,9 @@ bool ColorWidget::fromString(QString string) {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
     QVector3D c(f1,f2,f3);
+    if ( c == getValue() ) {
+        return false;
+    }
     colorChooser->setColor(c);
     return isLocked();
 }
@@ -538,6 +557,9 @@ bool FloatColorWidget::fromString(QString string) {
     double f,f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f);
     QVector3D c(f1,f2,f3);
+    if ( QVector4D(c,f) == getValue() ) {
+        return false;
+    }
     colorChooser->setColor(c);
     comboSlider->setDecimals(isDouble() ? DDEC : FDEC);
     comboSlider->setValue(f);
@@ -577,6 +599,9 @@ bool IntWidget::fromString(QString string) {
     if(comboSlider->getValue() == string.toInt()) return false;
     int i;
     MiniParser(string).getInt(i);
+    if(i == getValue())
+        return false;
+    
     comboSlider->setValue(i);
     return isLocked();
 }

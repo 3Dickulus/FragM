@@ -553,7 +553,8 @@ namespace Fragmentarium {
                 return QString::number(t.x(),'g',p) + "," + QString::number(t.y(),'g',p) + "," + QString::number(t.z(),'g',p);
             }
 
-            void setValue(QVector3D v);
+           QVector3D getValue() { return colorChooser->getValue(); }
+           void setValue(QVector3D v);
             virtual QString toString();
             virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -585,6 +586,7 @@ namespace Fragmentarium {
                 if(isDouble()) p = DDEC;
                 return QString::number(t.x(),'g',p) + "," + QString::number(t.y(),'g',p) + "," + QString::number(t.z(),'g',p) + "," + QString::number(comboSlider->getValue(),'g',p );
             }
+            QVector4D getValue() { return QVector4D(colorChooser->getValue(),comboSlider->getValue()); }
             void setValue(QVector4D v);
             virtual QString toString();
             virtual bool fromString(QString string);
