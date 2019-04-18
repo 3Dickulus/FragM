@@ -90,8 +90,11 @@ namespace Fragmentarium {
     class VariableWidget;
     class CameraControl;
     
-    
+#ifdef Q_OS_MAC
+    class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
+#else
     class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
+#endif
     {
       Q_OBJECT
     public:

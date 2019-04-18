@@ -29,7 +29,11 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     fmt.setMajorVersion(4);
     fmt.setMinorVersion(1);
+#ifdef Q_OS_MAC
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
+#else
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+#endif
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
     setFormat(fmt);
     
@@ -887,7 +891,7 @@ void DisplayWidget::makeBuffers() {
             glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
         }
     }
-    // else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void DisplayWidget::clearBackBuffer() {
@@ -1463,6 +1467,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
+
     glFinish(); // wait for GPU to return control
 
     // finished with the shader
@@ -1615,7 +1620,6 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glEnd();
     glPopAttrib();
     glFinish(); // wait for GPU to return control
-
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
@@ -1850,23 +1854,25 @@ void DisplayWidget::paintGL() {
             }
         }
     }
+    
+    drawToFrameBufferObject ( 0, ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) );
 
-    if ( drawingState == DisplayWidget::Progressive ) {
-        if ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) {
-            drawToFrameBufferObject ( 0, true );
-            return;
-        }
-    }
-
-    if ( previewBuffer ) {
-        drawToFrameBufferObject ( 0, false );
-    } else {
-        drawFragmentProgram ( pixelWidth(),pixelHeight(), true );
-        if ( drawingState == DisplayWidget::Progressive ) {
-            subframeCounter++;
-            mainWindow->setSubFrameDisplay ( subframeCounter );
-        }
-    }
+//     if ( drawingState == DisplayWidget::Progressive ) {
+//         if ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) {
+//             drawToFrameBufferObject ( 0, true );
+//             return;
+//         }
+//     }
+// 
+//     if ( previewBuffer ) {
+//         drawToFrameBufferObject ( 0, false );
+//     } else { // this code is never reached
+//         drawFragmentProgram ( pixelWidth(),pixelHeight(), true );
+//         if ( drawingState == DisplayWidget::Progressive ) {
+//             subframeCounter++;
+//             mainWindow->setSubFrameDisplay ( subframeCounter );
+//         }
+//     }
 }
 
 void DisplayWidget::updateBuffers() {
