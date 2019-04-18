@@ -467,6 +467,7 @@ namespace Fragmentarium {
       void reloadFragFile( int );
       void reloadFragFile( QString );
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
+      void showHelpMessage(QString title, QString mess);
 
     private:
 

@@ -345,6 +345,18 @@ bool MainWindow::saveAs()
     return false;
 }
 
+void MainWindow::showHelpMessage(QString title, QString mess) {
+   
+    QMessageBox mb(this);
+    mb.setText(mess);
+    mb.setWindowTitle(title);
+    mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
+    QGridLayout* layout = (QGridLayout*)mb.layout();
+    layout->setColumnMinimumWidth( 2, 640);
+    mb.exec();
+
+}
+
 void MainWindow::about()
 {
     QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
@@ -371,11 +383,8 @@ void MainWindow::about()
     "</table>"
     "</p>");
 
-    QMessageBox mb(this);
-    mb.setText(text);
-    mb.setWindowTitle(tr("About Fragmentarium"));
-    mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-    mb.exec();
+    showHelpMessage(tr("About Fragmentarium"), text);
+
 }
 
 void MainWindow::showControlHelp()
@@ -425,11 +434,8 @@ void MainWindow::showControlHelp()
 
   text += "</html>";
 
-  QMessageBox mb(this);
-  mb.setText(text);
-  mb.setWindowTitle(tr("Mouse and Keyboard Control"));
-  mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-  mb.exec();
+  showHelpMessage(tr("Mouse and Keyboard Control"), text);
+  
 }
 
 void MainWindow::showScriptingHelp()
@@ -533,11 +539,7 @@ void MainWindow::showScriptingHelp()
 
   text += "</html>";
 
-  QMessageBox mb(this);
-  mb.setText(text);
-  mb.setWindowTitle(tr("Fragmentarium script commands."));
-  mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-  mb.exec();
+  showHelpMessage(tr("Fragmentarium script commands."), text);
 
 }
 
