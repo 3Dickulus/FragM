@@ -41,11 +41,11 @@ install:
       sudo apt-get -qq install extra-cmake-modules
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install qt4-x11
       sudo apt-get -qq install qt5-qmake
       sudo apt-get -qq install qt5-default
       sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
+      sudo apt-get -qq install qtbase5-private-dev
       sudo apt-get -qq install qtbase5-dev-tools
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qtscript5-dev
@@ -55,13 +55,13 @@ install:
       sudo apt-get -qq install libqt5xmlpatterns5-dev
       # linuxdeployqt needs this
       sudo apt-get -qq install libgtk2.0-dev
-       # linuxdeployqt needs this
-       git clone http://code.qt.io/qt/qtstyleplugins.git
-       cd qtstyleplugins
-       /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
-       make -j$(nproc)
-       sudo make install 
-       cd -
+      # linuxdeployqt needs this
+      git clone http://code.qt.io/qt/qtstyleplugins.git
+      cd qtstyleplugins
+      /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+      make -j$(nproc)
+      sudo make install 
+      cd -
     fi
 
 before_script:
