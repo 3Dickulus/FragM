@@ -46,11 +46,6 @@ before_install:
       #export CC=/usr/local/bin/gcc-4.8
       #export CXX=/usr/local/bin/g++-4.8
     #fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "windows" ]]
-    then
-      choco install qt-sdk-windows-x86-mingw_opengl
-    fi
 
 install:
   - |
