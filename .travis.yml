@@ -54,7 +54,6 @@ install:
     fi
 
 before_script:
-  - source /opt/qt5*/bin/qt5*-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
 
