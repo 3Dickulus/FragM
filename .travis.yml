@@ -56,18 +56,18 @@ install:
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
-      ## linuxdeployqt needs this
-      #sudo apt-get -qq install libmtdev1
-      #sudo apt-get -qq install libmtdev-dev
-      #sudo apt-get -qq install libgtk2.0-0
-      #sudo apt-get -qq install libgtk2.0-dev
-      ## linuxdeployqt needs this
-      #git clone http://code.qt.io/qt/qtstyleplugins.git
-      #cd qtstyleplugins
-      #/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
-      #make -j$(nproc)
-      #sudo make install 
-      #cd -
+      # linuxdeployqt needs this
+      sudo apt-get -qq install libmtdev1
+      sudo apt-get -qq install libmtdev-dev
+      sudo apt-get -qq install libgtk2.0-0
+      sudo apt-get -qq install libgtk2.0-dev
+      # linuxdeployqt needs this
+      git clone http://code.qt.io/qt/qtstyleplugins.git
+      cd qtstyleplugins
+      /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+      make -j$(nproc)
+      sudo make install 
+      cd -
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
@@ -112,7 +112,7 @@ script:
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
        make -j$(nproc)
-       make -j$(nproc) package
+       make package
        # builds an appimage
        rm CMakeCache.txt
        # setup the apdir structure and add a valid .desktop file
@@ -191,24 +191,24 @@ before_deploy:
       #cd ./Fragmentarium-Source/build
       #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     #fi
-  #- TIME_STRING=`date +%H%M%S`
-  #- export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
-  #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
-  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
+  - TIME_STRING=`date +%H%M%S`
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
+  - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-#deploy:
-  #- provider: releases
-    #api_key:
-        #secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
-    #file:
-        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
-        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
-    #skip_cleanup: true
-    #on:
-        #repo: 3Dickulus/FragM
-        #branch: master
-        #tags: false
-        #condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
+deploy:
+  - provider: releases
+    api_key:
+        secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
+    file:
+        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
+    skip_cleanup: true
+    on:
+        repo: 3Dickulus/FragM
+        branch: master
+        tags: false
+        condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   ### macOS master release
   #- provider: releases
     #api_key:
