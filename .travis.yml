@@ -43,7 +43,7 @@ install:
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install qt4-x11
       sudo apt-get -qq install qt4-designer
-      sudo apt-get -qq install qt5-qmake-bin
+      sudo apt-get -qq install qt5-qmake
       sudo apt-get -qq install qt5-default
       sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
@@ -111,7 +111,7 @@ script:
        chmod a+x linuxdeployqt-continuous-x86_64.AppImage
        unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
        export VERSION=0.1.1 # linuxdeployqt uses this for naming the file
-       ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -qmake=/usr/lib/qt5/bin/qmake
+       ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -qmake=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
     fi
   - |
     export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
