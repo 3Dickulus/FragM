@@ -55,6 +55,8 @@ install:
       sudo apt-get -qq install libqt5xmlpatterns5-dev
       # linuxdeployqt needs this
       sudo apt-get -qq install libmtdev1
+      sudo apt-get -qq install libmtdev-dev
+      sudo apt-get -qq install libgtk2.0-0
       sudo apt-get -qq install libgtk2.0-dev
       # linuxdeployqt needs this
       git clone http://code.qt.io/qt/qtstyleplugins.git
