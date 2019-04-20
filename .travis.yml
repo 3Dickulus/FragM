@@ -123,25 +123,7 @@ script:
        mkdir appdir/usr/share/applications
        
        # create a desktop file
-       echo "[Desktop Entry]
-Categories=Development;Graphics;
-Comment[en_US]=Originally created by Mikael Hvidtfeldt Christensen.
-Comment=Originally created by Mikael Hvidtfeldt Christensen.
-Exec=/usr/bin/Fragmentarium-2.5.0
-Icon=Fragmentarium-2.5.0
-MimeType=
-Name[en_US]=Fragmentarium-2.5.0
-Name=Fragmentarium-2.5.0
-Path=/usr
-StartupNotify=true
-Terminal=false
-TerminalOptions=
-Type=Application
-X-DBUS-ServiceName=
-X-DBUS-StartupType=
-X-KDE-SubstituteUID=false
-X-KDE-Username=
-" > appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "[Desktop Entry]\nCategories=Development;Graphics;\nComment[en_US]=Originally created by Mikael Hvidtfeldt Christensen.\nComment=Originally created by Mikael Hvidtfeldt Christensen.\nExec=/usr/bin/Fragmentarium-2.5.0\nIcon=Fragmentarium-2.5.0\nMimeType=\nName[en_US]=Fragmentarium-2.5.0\nName=Fragmentarium-2.5.0\nPath=/usr\nStartupNotify=true\nTerminal=false\nTerminalOptions=\nType=Application\nX-DBUS-ServiceName=\nX-DBUS-StartupType=\nX-KDE-SubstituteUID=false\nX-KDE-Username=" > appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
 
        mkdir appdir/usr/share/icons
        mkdir appdir/usr/share/icons/hicolor
@@ -208,7 +190,7 @@ before_deploy:
   #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-#deploy:
+deploy:
   ## Linux master release
   #- provider: releases
     #api_key:
