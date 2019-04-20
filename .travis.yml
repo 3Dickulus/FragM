@@ -6,6 +6,7 @@ dist: trusty
 os:
   - linux
   #- osx
+  #- windows
 
 sudo: false
 
@@ -30,13 +31,8 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
-      #sudo apt-get -qq install g++-4.8 libc6-i386
-      sudo apt-add-repository -y ppa:beineri/opt-qt595-trusty
-      sudo apt-get -qq update
-      sudo apt-get -qq install qt59creator
-      
-      sudo apt-add-repository -y ppa:thomas-schiex/blender
-      sudo apt-get -qq update
+  #    sudo add-apt-repository ppa:beineri/opt-qt593-trusty -y
+  #    sudo apt-get update -qq
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -50,23 +46,34 @@ before_install:
       #export CC=/usr/local/bin/gcc-4.8
       #export CXX=/usr/local/bin/g++-4.8
     #fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]
+    then
+      choco install qt-sdk-windows-x86-mingw_opengl
+    fi
 
 install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-
-      sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install libopenexr-dev
-      sudo apt-get -qq install libilmbase12
-      sudo apt-get -qq install libopenexr22
-
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
+      sudo apt-get -qq install libopenexr-dev
+      sudo apt-get -qq install libilmbase-dev
+      sudo apt-get -qq install qttools5-dev-tools
+      sudo apt-get -qq install qtbase5-dev
+      sudo apt-get -qq install qtbase5-dev-tools
+      sudo apt-get -qq install qtscript5-dev
+      sudo apt-get -qq install libqt5scripttools5
+      sudo apt-get -qq install libqt5svg5-dev
+      sudo apt-get -qq install libqt5opengl5-dev
+      sudo apt-get -qq install libqt5xmlpatterns5-dev
+      #- sudo apt-get -y install qt59base
+      #- source /opt/qt*/bin/qt*-env.sh
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
-  #- |
+  # - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #brew install qt5
@@ -87,11 +94,11 @@ install:
     #fi
 
 before_script:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      source /opt/qt59/bin/qt59-env.sh
-    fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #source /opt/qt5*/bin/qt5*-env.sh
+    #fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
@@ -105,9 +112,55 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+       # builds a deb package
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
        make
        make package
+       # builds an appimage
+       make clean
+       rm CMakeCache.txt
+       # setup the apdir structure and add a valid .desktop file
+       mkdir appdir
+       mkdir appdir/usr
+       mkdir appdir/usr/bin
+       mkdir appdir/usr/lib
+       mkdir appdir/usr/share
+       mkdir appdir/usr/share/applications
+       mkdir appdir/usr/share/icons
+       mkdir appdir/usr/share/icons/hicolor
+       mkdir appdir/usr/share/icons/hicolor/256x256
+       mkdir appdir/usr/share/icons/hicolor/256x256/apps
+       cp ../Icons/fileicons/Fragmentarium-256.png appdir/usr/share/icons/hicolor/256x256/apps/Fragmentarium-2.5.0.png
+       # create a desktop file
+       export DTFILE=appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "[Desktop Entry]" > $DTFILE
+       echo "Categories=Development;Graphics;" >> $DTFILE
+       echo "Comment[en_US]=Originally created by Mikael Hvidtfeldt Christensen." >> $DTFILE
+       echo "Comment=Originally created by Mikael Hvidtfeldt Christensen." >> $DTFILE
+       echo "Exec=/usr/bin/Fragmentarium-2.5.0" >> $DTFILE
+       echo "Icon=Fragmentarium-2.5.0" >> $DTFILE
+       echo "MimeType=" >> $DTFILE
+       echo "Name[en_US]=Fragmentarium-2.5.0" >> $DTFILE
+       echo "Name=Fragmentarium-2.5.0" >> $DTFILE
+       echo "Path=/usr" >> $DTFILE
+       echo "StartupNotify=true" >> $DTFILE
+       echo "Terminal=false" >> $DTFILE
+       echo "TerminalOptions=" >> $DTFILE
+       echo "Type=Application" >> $DTFILE
+       echo "X-DBUS-ServiceName=" >> $DTFILE
+       echo "X-DBUS-StartupType=" >> $DTFILE
+       echo "X-KDE-SubstituteUID=false" >> $DTFILE
+       echo "X-KDE-Username=" >> $DTFILE
+       cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX="/usr/bin" ..
+       make DESTDIR=appdir install
+       mv appdir/usr/bin/Fragmentarium-2.5.0 appdir/usr/bin/temp
+       mv appdir/usr/bin/temp/* appdir/usr/bin/
+       rm -rf appdir/usr/bin/temp
+       wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+       chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+       unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+       export VERSION=0.1.1 # linuxdeployqt uses this for naming the file
+       ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
     fi
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -116,16 +169,17 @@ script:
        #make install
     #fi
 
-before_deploy:
   - |
     export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
     export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-  # create debian package for linux and a disk image for OSX
+  # create packages for linux and OSX
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
-      ls -la Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
+      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+      mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
+      ls -l Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+      ls -l Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
       #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
       #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
     fi
@@ -149,8 +203,9 @@ before_deploy:
       #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     #fi
   
-  #add a tag
-  - TIME_STRING=`date +%H%M%S`
+#before_deploy:
+  ##add a tag
+  #- TIME_STRING=`date +%H%M%S`
   #- export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
   #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
