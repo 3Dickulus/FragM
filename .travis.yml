@@ -66,10 +66,17 @@ script:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
-       make
-       make package
+       make -j$(nproc)
+       make -j$(nproc) package
+       # linuxdeployqt needs this
+       apt-get -qq install libgtk2.0-dev
+       git clone http://code.qt.io/qt/qtstyleplugins.git
+       cd qtstyleplugins
+       /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+       make -j$(nproc)
+       sudo make install 
+       cd ../
        # builds an appimage
-       make clean
        rm CMakeCache.txt
        # setup the apdir structure and add a valid .desktop file
        mkdir appdir
@@ -103,6 +110,7 @@ script:
        echo "X-KDE-SubstituteUID=false" >> $DTFILE
        echo "X-KDE-Username=" >> $DTFILE
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX="/usr/bin" ..
+       make -j$(nproc)
        make DESTDIR=appdir install
        mv appdir/usr/bin/Fragmentarium-2.5.0 appdir/usr/bin/temp
        mv appdir/usr/bin/temp/* appdir/usr/bin/
