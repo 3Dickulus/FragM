@@ -1,7 +1,6 @@
 
 language: cpp
-compiler: gcc
-sudo: require
+
 dist: trusty
 
 os:
@@ -9,6 +8,7 @@ os:
   #- osx
   #- windows
 
+sudo: false
 
 branches:
   only:
@@ -22,6 +22,8 @@ env:
   matrix:
     - CONFIG=release
 
+compiler:
+  - gcc
 
 before_install:
   - |
@@ -66,7 +68,7 @@ install:
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
-  - |
+  # - |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
       #brew install qt5
@@ -158,14 +160,13 @@ script:
        export VERSION=0.1.1 # linuxdeployqt uses this for naming the file
        ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
     fi
-  - |
+  #- |
     #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     #then
        #cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        #make install
     #fi
 
-before_deploy:
   - |
     export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
     export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
@@ -200,6 +201,7 @@ before_deploy:
       #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
     #fi
   
+before_deploy:
   ##add a tag
   #- TIME_STRING=`date +%H%M%S`
   #- export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
