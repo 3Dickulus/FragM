@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190406, "");
+    version = Version(2, 5, 0, 190419, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -2476,7 +2476,7 @@ QString findDirectory(QStringList guesses) {
 // Mac needs to step two directies up, when debugging in XCode...
 QString MainWindow::getExamplesDir() {
     QStringList examplesDir;
-    examplesDir << "Examples" << "../Examples" << "../../Examples";
+    examplesDir << "Examples" << "../Examples" << "../../Examples" << "../../../Examples";
     return findDirectory(examplesDir);
 }
 
