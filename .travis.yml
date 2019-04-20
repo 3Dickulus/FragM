@@ -41,7 +41,10 @@ install:
       sudo apt-get -qq install extra-cmake-modules
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
+      sudo apt-get -qq install qt4-qtconfig # linuxdeployqt needs this
+      sudo apt-get -qq install qt4core # linuxdeployqt needs this
       sudo apt-get -qq install qt4-x11 # linuxdeployqt needs this
+      sudo apt-get -qq install libgtk2.0-dev
       sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-dev-tools
@@ -106,7 +109,6 @@ script:
        rm -rf appdir/usr/bin/temp
        wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
        chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-       unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
        export VERSION=0.1.1 # linuxdeployqt uses this for naming the file
        ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
     fi
