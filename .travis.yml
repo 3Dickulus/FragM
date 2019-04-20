@@ -121,15 +121,31 @@ script:
        mkdir appdir/usr/lib
        mkdir appdir/usr/share
        mkdir appdir/usr/share/applications
-       
-       # create a desktop file
-       echo "[Desktop Entry]\nCategories=Development;Graphics;\nComment[en_US]=Originally created by Mikael Hvidtfeldt Christensen.\nComment=Originally created by Mikael Hvidtfeldt Christensen.\nExec=/usr/bin/Fragmentarium-2.5.0\nIcon=Fragmentarium-2.5.0\nMimeType=\nName[en_US]=Fragmentarium-2.5.0\nName=Fragmentarium-2.5.0\nPath=/usr\nStartupNotify=true\nTerminal=false\nTerminalOptions=\nType=Application\nX-DBUS-ServiceName=\nX-DBUS-StartupType=\nX-KDE-SubstituteUID=false\nX-KDE-Username=" > appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
-
        mkdir appdir/usr/share/icons
        mkdir appdir/usr/share/icons/hicolor
        mkdir appdir/usr/share/icons/hicolor/256x256
        mkdir appdir/usr/share/icons/hicolor/256x256/apps
        cp ../Icons/fileicons/Fragmentarium-256.png appdir/usr/share/icons/hicolor/256x256/apps/Fragmentarium-2.5.0.png
+       
+       # create a desktop file
+       echo "[Desktop Entry]" > appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Categories=Development;Graphics;" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Comment[en_US]=Originally created by Mikael Hvidtfeldt Christensen." >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Comment=Originally created by Mikael Hvidtfeldt Christensen." >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Exec=/usr/bin/Fragmentarium-2.5.0" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Icon=Fragmentarium-2.5.0" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "MimeType=" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Name[en_US]=Fragmentarium-2.5.0" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Name=Fragmentarium-2.5.0" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Path=/usr" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "StartupNotify=true" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Terminal=false" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "TerminalOptions=" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "Type=Application" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "X-DBUS-ServiceName=" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "X-DBUS-StartupType=" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "X-KDE-SubstituteUID=false" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       echo "X-KDE-Username=" >> appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
 
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX="/usr/bin" ..
        make DESTDIR=appdir -j$(nproc) install ; find appdir/
