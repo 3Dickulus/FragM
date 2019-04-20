@@ -44,14 +44,17 @@ install:
       sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-dev-tools
+      sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qtscript5-dev
       sudo apt-get -qq install libqt5scripttools5
+      sudo apt-get -qq install libqt5gui5-dev
       sudo apt-get -qq install libqt5svg5-dev
       sudo apt-get -qq install libqt5opengl5-dev
       sudo apt-get -qq install libqt5xmlpatterns5-dev
     fi
 
 before_script:
+  - source /opt/qt5*/bin/qt5*-env.sh
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
 
@@ -91,7 +94,6 @@ script:
        echo "Path=/usr" >> $DTFILE
        echo "StartupNotify=true" >> $DTFILE
        echo "Terminal=false" >> $DTFILE
-       echo "TerminalOptions=" >> $DTFILE
        echo "Type=Application" >> $DTFILE
        echo "X-DBUS-ServiceName=" >> $DTFILE
        echo "X-DBUS-StartupType=" >> $DTFILE
