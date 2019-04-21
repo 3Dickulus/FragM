@@ -76,7 +76,7 @@ install:
     then
       brew install qt5
 
-      brew install ilmbase@2.2 openexr@2.2
+      brew install ilmbase openexr
 
       brew unlink openexr
       brew link --overwrite openexr

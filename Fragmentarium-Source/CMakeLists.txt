@@ -108,11 +108,11 @@ IF ( USE_OPEN_EXR )
 #         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
 #         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
 
-        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.2.0/lib )
-        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.2.0/lib )
+        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.3.0/lib )
+        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.3.0/lib )
 
-        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.2.0/include/OpenEXR )
-        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.2.0/include/OpenEXR )
+        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.3.0/include/OpenEXR )
+        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.3.0/include/OpenEXR )
 
         set( OpenEXR_LIBS
             IlmImf
