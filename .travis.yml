@@ -75,11 +75,8 @@ install:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       brew install qt5
-      export QTDIR="/usr/local/opt/qt"
-      export LDFLAGS="-L/usr/local/opt/qt/lib"
-      export CPPFLAGS="-I/usr/local/opt/qt/include"
 
-      brew install ilmbase openexr
+      brew install ilmbase@2.2 openexr@2.2
 
       brew unlink openexr
       brew link --overwrite openexr
@@ -100,6 +97,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+      export QTDIR="/usr/local/opt/qt"
       export PATH="/usr/local/opt/qt/bin:$PATH"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
       export CPPFLAGS="-I/usr/local/opt/qt/include"
@@ -167,9 +165,6 @@ script:
     
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
-       ls -l
-       ls -l ../
-       ls -l ../../
        cd ../../Fragmentarium-2.5.0
        mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
        mv ./fqScript ./Fragmentarium-2.5.0.app/Contents/MacOS/fqScript
@@ -199,7 +194,7 @@ before_deploy:
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
-#deploy:
+deploy:
   #- provider: releases
     #api_key:
         #secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
