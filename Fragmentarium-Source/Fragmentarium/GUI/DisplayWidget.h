@@ -53,7 +53,9 @@
 #include "QtSpline.h"
 
 #ifdef USE_OPEN_EXR
+#ifndef Q_OS_MAC
 #include <OpenEXRConfig.h>
+#endif
 #include <half.h>
 #include <ImfTileDescription.h>
 #include <ImfTiledOutputFile.h>
