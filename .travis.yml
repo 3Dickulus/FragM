@@ -79,7 +79,7 @@ install:
       export LDFLAGS="-L/usr/local/opt/qt/lib"
       export CPPFLAGS="-I/usr/local/opt/qt/include"
 
-      brew install ilmbase@2.2.0 openexr@2.2.0
+      brew install ilmbase openexr
 
       brew unlink openexr
       brew link --overwrite openexr
@@ -167,6 +167,9 @@ script:
     
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
+       ls -l
+       ls -l ../
+       ls -l ../../
        cd ../../Fragmentarium-2.5.0
        mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
        mv ./fqScript ./Fragmentarium-2.5.0.app/Contents/MacOS/fqScript
