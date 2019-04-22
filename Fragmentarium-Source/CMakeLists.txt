@@ -1,7 +1,7 @@
 project( Fragmentarium-2.5.0 )
 cmake_minimum_required( VERSION 2.8.12 )
 
-cmake_policy(SET CMP0043 OLD)
+cmake_policy(SET CMP0043 NEW)
 IF ( APPLE )
     cmake_policy(SET CMP0071 NEW)
 ENDIF ()
