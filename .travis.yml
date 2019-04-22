@@ -6,7 +6,6 @@ matrix:
         #- os: linux
           #dist: xenial
         - os: osx
-          osx_image: xcode10.2
         #- os: windows
 
 sudo: false
@@ -164,16 +163,18 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-    
+       pwd
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        cd ../../Fragmentarium-2.5.0
+       pwd
        mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
        mv ./fqScript ./Fragmentarium-2.5.0.app/Contents/MacOS/fqScript
        mv ./Misc ./Fragmentarium-2.5.0.app/Contents/MacOS/Misc
        mv ./Languages ./Fragmentarium-2.5.0.app/Contents/MacOS/Languages
        macdeployqt ./Fragmentarium-2.5.0.app
        cd ../
+       pwd
     fi
 
 before_deploy:
@@ -192,10 +193,10 @@ before_deploy:
       export BUILD_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
       ditto -c -k ./Fragmentarium-2.5.0 ./Fragmentarium-2.5.0.zip
       pwd
-      ls -l
+      ls -l ./Fragmentarium-2.5.0.zip
       mv ./Fragmentarium-2.5.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
-      ls -l
+      ls -l Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
     fi
   #- TIME_STRING=`date +%H%M%S`
   #- export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME
