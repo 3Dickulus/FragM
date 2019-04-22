@@ -171,21 +171,22 @@ script:
        mv ./Misc ./Fragmentarium-2.5.0.app/Contents/MacOS/Misc
        mv ./Languages ./Fragmentarium-2.5.0.app/Contents/MacOS/Languages
        macdeployqt ./Fragmentarium-2.5.0.app
-       cd ../Fragmentarium-Source/build
+       cd ../
     fi
 before_deploy:
   - |
-    export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-    export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-  - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+      export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
       mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
       #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
       ditto -c -k ./Fragmentarium-2.5.0 ./Fragmentarium-2.5.0.zip
       mv ./Fragmentarium-2.5.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
     fi
