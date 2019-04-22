@@ -171,7 +171,7 @@ script:
        mv ./Misc ./Fragmentarium-2.5.0.app/Contents/MacOS/Misc
        mv ./Languages ./Fragmentarium-2.5.0.app/Contents/MacOS/Languages
        macdeployqt ./Fragmentarium-2.5.0.app
-       cd ../
+       cd ../Fragmentarium-Source/build
     fi
 before_deploy:
   - |
