@@ -3192,6 +3192,9 @@ void MainWindow::loadCmdScript() {
         file.close();
         INFO(tr("Cmd Script loaded from file: ") + fileName);
         settings.setValue("cmdscriptfilename", fileName);
+        // is the editor open? overwrite current script.
+        QTextEdit *e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
+        if(e != 0) e->setPlainText(scriptText);
     }
 }
 
@@ -3210,11 +3213,14 @@ void MainWindow::editScript() {
     t->setObjectName("cmdScriptEditor");
     // setup some buttons
     QPushButton *saveButton = new QPushButton(tr("&Save"));
+    QPushButton *loadButton = new QPushButton(tr("&Load"));
     QPushButton *executeButton = new QPushButton(tr("&Execute"));
     QPushButton *stopButton = new QPushButton(tr("&Stop"));
     QPushButton *closeButton = new QPushButton(tr("&Close"));
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(saveButton);
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(loadButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(executeButton);
     buttonLayout->addStretch();
@@ -3228,6 +3234,7 @@ void MainWindow::editScript() {
     d->setLayout(mainLayout);
     // give the buttons something to do
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveCmdScript()));
+    connect(loadButton, SIGNAL(clicked()), this, SLOT(loadCmdScript()));
     connect(executeButton, SIGNAL(clicked()), this, SLOT(executeScript()));
     connect(stopButton, SIGNAL(clicked()), this, SLOT(stopScript()));
     connect(closeButton, SIGNAL(clicked()), d, SLOT(close()));
