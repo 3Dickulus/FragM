@@ -31,10 +31,11 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setMinorVersion(1);
 #ifdef Q_OS_MAC
     fmt.setProfile(QSurfaceFormat::CoreProfile);
+    fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
 #else
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
 #endif
-    fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
+
     setFormat(fmt);
     
     verbose = false;
