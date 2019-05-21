@@ -2066,7 +2066,7 @@ void MainWindow::readSettings()
     editorStylesheet = settings.value("editorStylesheet", "font: 9pt Courier;").toString();
     variableEditor->updateGeometry();
     variableEditor->setSaveEasing(settings.value("saveEasing", true).toBool());
-    fileManager.setIncludePaths(settings.value("includePaths", "./Examples/Include;").toString().split(";", QString::SkipEmptyParts));
+    fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";", QString::SkipEmptyParts));
     loggingToFile = settings.value("logToFile", false).toBool();
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();

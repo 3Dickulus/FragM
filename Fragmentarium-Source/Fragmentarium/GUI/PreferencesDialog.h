@@ -49,7 +49,7 @@ private slots:
         m_ui.refreshRateSpinBox->setValue(settings.value("refreshRate", 20).toInt());
         m_ui.fpsSpinBox->setValue(settings.value("fps", 25).toInt());
         m_ui.maxRecentFilesSpinBox->setValue(settings.value("maxRecentFiles", 5).toInt());
-        m_ui.includePathsLineEdit->setText(settings.value("includePaths", "./Examples/Include;").toString());
+        m_ui.includePathsLineEdit->setText(settings.value("includePaths", "Examples/Include;").toString());
         m_ui.fullPathInRecentFilesListCheckBox->setChecked(settings.value("fullPathInRecentFilesList", false).toBool());
         m_ui.includeWithAutoSaveCheckBox->setChecked(settings.value("includeWithAutoSave", true).toBool());
 #ifdef USE_OPEN_EXR
