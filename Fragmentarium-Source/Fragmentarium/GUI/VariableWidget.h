@@ -51,7 +51,7 @@ namespace Fragmentarium {
                 scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1); 
 
                 slider = new QSlider(Qt::Horizontal,this);
-                slider->setRange(minimum*scale,maximum*scale);
+                slider->setRange(minimum*scale,(maximum*scale)+1);
                 slider->setValue(defaultValue*scale);
                 slider->setSingleStep(scale/1000);
                 slider->setPageStep(scale/100);
