@@ -1449,7 +1449,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
 
     // Setup User Uniforms
-    if(subframeCounter == 1) setShaderUniforms(shaderProgram);   
+    setShaderUniforms(shaderProgram);   
    
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
