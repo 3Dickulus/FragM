@@ -8,10 +8,13 @@
 #include "Fragmentarium/GUI/MainWindow.h"
 
 #ifdef Q_OS_WIN
-
 // Needed for unicode commandline below.
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
+// https://fractalforums.org/fragmentarium/17/example-selecting-nvidia-gpu-on-a-laptop-with-two-gpus/2694/msg13596#msg13596
+extern "C" {
+  _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
 
 #else
 
@@ -46,8 +49,10 @@ void segv_handler(int s)
 
 #endif
 
+
 int main(int argc, char *argv[])
 {
+
 #ifdef Q_OS_WIN
     qApp->addLibraryPath("./");
     qApp->addLibraryPath("./plugins");
@@ -72,7 +77,7 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName(QString("Fragmentarium"));
 
     QApplication *app = new QApplication(argc, argv);
-   
+
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
