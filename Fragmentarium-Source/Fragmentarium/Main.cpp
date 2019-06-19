@@ -12,9 +12,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 // https://fractalforums.org/fragmentarium/17/example-selecting-nvidia-gpu-on-a-laptop-with-two-gpus/2694/msg13596#msg13596
-extern "C" {
-  _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-}
+// extern "C" {
+//   _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+// }
 
 #else
 
