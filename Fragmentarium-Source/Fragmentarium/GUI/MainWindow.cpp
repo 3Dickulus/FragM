@@ -75,10 +75,9 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
 
     needRebuild(true);
 
-    oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190419, "");
+    version = Version(2, 5, 0, 190614, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -1413,6 +1412,8 @@ retry:
         bool pause = pausePlay;
         stop();
 
+        statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
+        
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             //
@@ -2424,6 +2425,18 @@ bool MainWindow::initializeFragment() {
         engine->setState(oldState);
         pause ? stop() : play();
 
+        hideUnusedVariableWidgets();
+        
+        //TODO: remove group tab if it's empty, if all widgets in group are hidden
+        //      they have been optimized out by the glsl compiler
+        return false; // does not need rebuild
+    } else {
+        WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
+    }
+    return true;
+}
+
+void MainWindow::hideUnusedVariableWidgets() {
         /// hide unused widgets unless they are lockable
         QStringList wnames = variableEditor->getWidgetNames();
         for (int i = 0; i < wnames.count(); i++) {
@@ -2449,13 +2462,6 @@ bool MainWindow::initializeFragment() {
             }
         }
         
-        //TODO: remove group tab if it's empty, if all widgets in group are hidden
-        //      they have been optimized out by the glsl compiler
-        return false; // does not need rebuild
-    } else {
-        WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
-    }
-    return true;
 }
 
 namespace {
@@ -2476,7 +2482,7 @@ QString findDirectory(QStringList guesses) {
 // Mac needs to step two directies up, when debugging in XCode...
 QString MainWindow::getExamplesDir() {
     QStringList examplesDir;
-    examplesDir << "./Examples" << "../Examples" << "../../Examples" << "../../../Examples";
+    examplesDir << "Examples" << "../Examples" << "../../Examples" << "../../../Examples";
     return findDirectory(examplesDir);
 }
 
@@ -3292,30 +3298,22 @@ void MainWindow::executeScript()
             e->setTextCursor(tc);
         }
         runningScript=false;
-        
+            if(sender() != 0) {
+                cmdScriptDebugger->attachTo(&scriptEngine);
+            }
     } else {
+            if(sender() != 0) {
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearConsoleAction)->trigger();
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearDebugOutputAction)->trigger();
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearErrorLogAction)->trigger();
+                cmdScriptDebugger->detach();
+            }
         cmdScriptLineNumber = 0;
     }
     
     // can't edit the script in the debugger
     // only for examining status, messages and vars
     // only used when called from GUI
-    if(sender() != 0) {
-        if (!cmdScriptDebugger) {
-            cmdScriptDebugger = new QScriptEngineDebugger(this);
-            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
-            cmdScriptDebugger->standardWindow()->resize(1280, 704);
-        }
-
-        if (cmdScriptLineNumber == 0) { // no error detach and destroy debugger
-            if (cmdScriptDebugger) {
-                cmdScriptDebugger->detach();
-                cmdScriptDebugger->~QScriptEngineDebugger();
-                cmdScriptDebugger = 0;
-            }
-        // there was an error so attach a debugger, if error was fixed no debug window on execute
-        } else cmdScriptDebugger->attachTo(&scriptEngine);
-    }   
 
     if(runningScript) settings.setValue("filename",name);
 
@@ -3327,6 +3325,12 @@ void MainWindow::setupScriptEngine(void)
     // expose these widgets to the script
     appContext = scriptEngine.newQObject(this);
     scriptEngine.globalObject().setProperty("app", appContext);
+    // create a debugger for QScript
+        if (!cmdScriptDebugger) {
+            cmdScriptDebugger = new QScriptEngineDebugger(this);
+            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
+            cmdScriptDebugger->standardWindow()->resize(1280, 704);
+        }
 }
 
 /// BEGIN 3DTexture

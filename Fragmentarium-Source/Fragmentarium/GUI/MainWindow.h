@@ -25,6 +25,7 @@
 #include "VariableEditor.h"
 
 #include "asmbrowser.h"
+#include <QScriptEngineDebugger>
 
 class QScriptEngineDebugger;
 class QAction;
@@ -128,6 +129,11 @@ namespace Fragmentarium {
             fragWatch->removePaths( fragWatch->files() );
           delete fragWatch;
           fragWatch=0;
+            if (cmdScriptDebugger) {
+                cmdScriptDebugger->detach();
+                cmdScriptDebugger->~QScriptEngineDebugger();
+                cmdScriptDebugger = 0;
+            }
       };
   
       double getTime();
@@ -393,9 +399,11 @@ namespace Fragmentarium {
 
       void dumpShaderAsm();
 
+      void logMessage( QString message ){ logger->log(message,InfoLevel); };
+
       QString getVersion() { return version.toLongString(); };
 
-      QString getPresetNames( bool keyframesORpresets );
+      QString getPresetNames( bool keyframesORpresets = false );
 
 
     private slots:
@@ -468,6 +476,7 @@ namespace Fragmentarium {
       void reloadFragFile( QString );
       QString makeImgFileName(int timeStep, int timeSteps, QString fileName);
       void showHelpMessage(QString title, QString mess);
+      void hideUnusedVariableWidgets();
 
     private:
 
@@ -560,7 +569,6 @@ namespace Fragmentarium {
       bool fullScreenEnabled;
       QStackedWidget *stackedTextEdits;
       QVector<TabInfo> tabInfo;
-      int oldDirtyPosition;
       QVBoxLayout* frameMainWindow;
       VariableEditor* variableEditor;
       QDockWidget* editorDockWidget;
