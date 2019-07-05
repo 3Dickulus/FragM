@@ -75,10 +75,9 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
 
     needRebuild(true);
 
-    oldDirtyPosition = -1;
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190324, "");
+    version = Version(2, 5, 0, 190614, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -91,6 +90,7 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     loggingToFile = false;
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
+    includeWithAutoSave = true;
 
     init();
 }
@@ -344,6 +344,18 @@ bool MainWindow::saveAs()
     return false;
 }
 
+void MainWindow::showHelpMessage(QString title, QString mess) {
+   
+    QMessageBox mb(this);
+    mb.setText(mess);
+    mb.setWindowTitle(title);
+    mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
+    QGridLayout* layout = (QGridLayout*)mb.layout();
+    layout->setColumnMinimumWidth( 2, 640);
+    mb.exec();
+
+}
+
 void MainWindow::about()
 {
     QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
@@ -370,11 +382,8 @@ void MainWindow::about()
     "</table>"
     "</p>");
 
-    QMessageBox mb(this);
-    mb.setText(text);
-    mb.setWindowTitle(tr("About Fragmentarium"));
-    mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-    mb.exec();
+    showHelpMessage(tr("About Fragmentarium"), text);
+
 }
 
 void MainWindow::showControlHelp()
@@ -424,11 +433,8 @@ void MainWindow::showControlHelp()
 
   text += "</html>";
 
-  QMessageBox mb(this);
-  mb.setText(text);
-  mb.setWindowTitle(tr("Mouse and Keyboard Control"));
-  mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-  mb.exec();
+  showHelpMessage(tr("Mouse and Keyboard Control"), text);
+  
 }
 
 void MainWindow::showScriptingHelp()
@@ -532,11 +538,7 @@ void MainWindow::showScriptingHelp()
 
   text += "</html>";
 
-  QMessageBox mb(this);
-  mb.setText(text);
-  mb.setWindowTitle(tr("Fragmentarium script commands."));
-  mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-  mb.exec();
+  showHelpMessage(tr("Fragmentarium script commands."), text);
 
 }
 
@@ -1272,19 +1274,20 @@ retry:
             out << final;
             INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
 
-            // Copy files.
-            QStringList ll = p.getDependencies();
-            foreach (QString l, ll) {
-                QString from = l;
-                QString to =  QDir(subdirName).absoluteFilePath( QFileInfo(l).fileName() );
-                if (!QFile::copy(from,to)) {
-                    QMessageBox::warning(this, tr("Fragmentarium"),
-                                         tr("Could not copy dependency:\n'%1' to \n'%2'.")
-                                         .arg(from)
-                                         .arg(to));
-                    return;
-                }
+            if(includeWithAutoSave) {
+                // Copy files.
+                QStringList ll = p.getDependencies();
+                foreach (QString l, ll) {
+                    QString from = l;
+                    QString to =  QDir(subdirName).absoluteFilePath( QFileInfo(l).fileName() );
+                    if (!QFile::copy(from,to)) {
+                        QMessageBox::warning(this, tr("Fragmentarium"),
+                                            tr("Could not copy dependency:\n'%1' to \n'%2'.")
+                                            .arg(from)
+                                            .arg(to));
+                    }
 
+                }
             }
         } catch (Exception& e) {
             WARNING(e.getMessage());
@@ -1409,6 +1412,8 @@ retry:
         bool pause = pausePlay;
         stop();
 
+        statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
+        
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             //
@@ -2067,6 +2072,7 @@ void MainWindow::readSettings()
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
+    includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
 
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
@@ -2101,6 +2107,7 @@ void MainWindow::writeSettings()
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
+    settings.setValue("includeWithAutoSave", includeWithAutoSave );
     settings.sync();
 
 }
@@ -2339,8 +2346,8 @@ bool MainWindow::initializeFragment() {
     if(prof == 1 || prof == 2)
         INFO( QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "") );
     else if(prof == 0) {
-        INFO( "No GL profile found!" );
-        return false;
+        INFO( "No GL profile." );
+//         return false;
     } else {
         INFO( "Something went wrong!!!" );
         return false;
@@ -2418,6 +2425,18 @@ bool MainWindow::initializeFragment() {
         engine->setState(oldState);
         pause ? stop() : play();
 
+        hideUnusedVariableWidgets();
+        
+        //TODO: remove group tab if it's empty, if all widgets in group are hidden
+        //      they have been optimized out by the glsl compiler
+        return false; // does not need rebuild
+    } else {
+        WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
+    }
+    return true;
+}
+
+void MainWindow::hideUnusedVariableWidgets() {
         /// hide unused widgets unless they are lockable
         QStringList wnames = variableEditor->getWidgetNames();
         for (int i = 0; i < wnames.count(); i++) {
@@ -2443,13 +2462,6 @@ bool MainWindow::initializeFragment() {
             }
         }
         
-        //TODO: remove group tab if it's empty, if all widgets in group are hidden
-        //      they have been optimized out by the glsl compiler
-        return false; // does not need rebuild
-    } else {
-        WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
-    }
-    return true;
 }
 
 namespace {
@@ -2470,7 +2482,7 @@ QString findDirectory(QStringList guesses) {
 // Mac needs to step two directies up, when debugging in XCode...
 QString MainWindow::getExamplesDir() {
     QStringList examplesDir;
-    examplesDir << "Examples" << "../Examples" << "../../Examples";
+    examplesDir << "Examples" << "../Examples" << "../../Examples" << "../../../Examples";
     return findDirectory(examplesDir);
 }
 
@@ -3186,6 +3198,9 @@ void MainWindow::loadCmdScript() {
         file.close();
         INFO(tr("Cmd Script loaded from file: ") + fileName);
         settings.setValue("cmdscriptfilename", fileName);
+        // is the editor open? overwrite current script.
+        QTextEdit *e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
+        if(e != 0) e->setPlainText(scriptText);
     }
 }
 
@@ -3204,11 +3219,14 @@ void MainWindow::editScript() {
     t->setObjectName("cmdScriptEditor");
     // setup some buttons
     QPushButton *saveButton = new QPushButton(tr("&Save"));
+    QPushButton *loadButton = new QPushButton(tr("&Load"));
     QPushButton *executeButton = new QPushButton(tr("&Execute"));
     QPushButton *stopButton = new QPushButton(tr("&Stop"));
     QPushButton *closeButton = new QPushButton(tr("&Close"));
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(saveButton);
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(loadButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(executeButton);
     buttonLayout->addStretch();
@@ -3222,6 +3240,7 @@ void MainWindow::editScript() {
     d->setLayout(mainLayout);
     // give the buttons something to do
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveCmdScript()));
+    connect(loadButton, SIGNAL(clicked()), this, SLOT(loadCmdScript()));
     connect(executeButton, SIGNAL(clicked()), this, SLOT(executeScript()));
     connect(stopButton, SIGNAL(clicked()), this, SLOT(stopScript()));
     connect(closeButton, SIGNAL(clicked()), d, SLOT(close()));
@@ -3279,30 +3298,22 @@ void MainWindow::executeScript()
             e->setTextCursor(tc);
         }
         runningScript=false;
-        
+            if(sender() != 0) {
+                cmdScriptDebugger->attachTo(&scriptEngine);
+            }
     } else {
+            if(sender() != 0) {
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearConsoleAction)->trigger();
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearDebugOutputAction)->trigger();
+                cmdScriptDebugger->action(QScriptEngineDebugger::ClearErrorLogAction)->trigger();
+                cmdScriptDebugger->detach();
+            }
         cmdScriptLineNumber = 0;
     }
     
     // can't edit the script in the debugger
     // only for examining status, messages and vars
     // only used when called from GUI
-    if(sender() != 0) {
-        if (!cmdScriptDebugger) {
-            cmdScriptDebugger = new QScriptEngineDebugger(this);
-            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
-            cmdScriptDebugger->standardWindow()->resize(1280, 704);
-        }
-
-        if (cmdScriptLineNumber == 0) { // no error detach and destroy debugger
-            if (cmdScriptDebugger) {
-                cmdScriptDebugger->detach();
-                cmdScriptDebugger->~QScriptEngineDebugger();
-                cmdScriptDebugger = 0;
-            }
-        // there was an error so attach a debugger, if error was fixed no debug window on execute
-        } else cmdScriptDebugger->attachTo(&scriptEngine);
-    }   
 
     if(runningScript) settings.setValue("filename",name);
 
@@ -3314,6 +3325,12 @@ void MainWindow::setupScriptEngine(void)
     // expose these widgets to the script
     appContext = scriptEngine.newQObject(this);
     scriptEngine.globalObject().setProperty("app", appContext);
+    // create a debugger for QScript
+        if (!cmdScriptDebugger) {
+            cmdScriptDebugger = new QScriptEngineDebugger(this);
+            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
+            cmdScriptDebugger->standardWindow()->resize(1280, 704);
+        }
 }
 
 /// BEGIN 3DTexture

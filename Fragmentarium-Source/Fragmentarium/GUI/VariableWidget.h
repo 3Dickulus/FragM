@@ -51,7 +51,7 @@ namespace Fragmentarium {
                 scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1); 
 
                 slider = new QSlider(Qt::Horizontal,this);
-                slider->setRange(minimum*scale,maximum*scale);
+                slider->setRange(minimum*scale,(maximum*scale)+1);
                 slider->setValue(defaultValue*scale);
                 slider->setSingleStep(scale/1000);
                 slider->setPageStep(scale/100);
@@ -553,7 +553,8 @@ namespace Fragmentarium {
                 return QString::number(t.x(),'g',p) + "," + QString::number(t.y(),'g',p) + "," + QString::number(t.z(),'g',p);
             }
 
-            void setValue(QVector3D v);
+           QVector3D getValue() { return colorChooser->getValue(); }
+           void setValue(QVector3D v);
             virtual QString toString();
             virtual bool fromString(QString string);
             virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -585,6 +586,7 @@ namespace Fragmentarium {
                 if(isDouble()) p = DDEC;
                 return QString::number(t.x(),'g',p) + "," + QString::number(t.y(),'g',p) + "," + QString::number(t.z(),'g',p) + "," + QString::number(comboSlider->getValue(),'g',p );
             }
+            QVector4D getValue() { return QVector4D(colorChooser->getValue(),comboSlider->getValue()); }
             void setValue(QVector4D v);
             virtual QString toString();
             virtual bool fromString(QString string);

@@ -283,8 +283,8 @@ protected:
             highlightingRules.append(rule);
         }
 
-        QString NUMf = QString("[-+]?\\d{1,}(?:[\\.]\\d{1,})?(?:[eE]{1}[+-]{1}\\d{1,})?");
-        QString NUMi = QString("[-+]?\\d{1,}");
+        QString NUMf = QString("[ ]?[-+]?\\d{0,}(?:[\\.]\\d{1,})?(?:[eE]{1}[+-]{1}\\d{1,})?");
+        QString NUMi = QString("[ ]?[-+]?\\d{1,}");
 
         patterns.clear();
         /// Fragmentarium keywords

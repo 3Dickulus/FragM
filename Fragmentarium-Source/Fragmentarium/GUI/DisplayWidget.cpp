@@ -29,9 +29,15 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     fmt.setMajorVersion(4);
     fmt.setMinorVersion(1);
+#ifdef Q_OS_MAC
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
+    fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
+#else
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
-    setFormat(fmt);
+#endif
 
+    setFormat(fmt);
+    
     verbose = false;
     clearOnChange = true;
     drawingState = Progressive;
@@ -44,8 +50,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     bufferShaderProgram = 0;
     shaderProgram = 0;
     bufferType = 0;
-    viewFactor = 0;
-    previewFactor = 0.0;
     tilesCount = 0;
     fitWindow = true;
     bufferSizeX=0;
@@ -77,6 +81,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     /// END 3DTexture
     buttonDown = false;
     updateRefreshRate();
+    
     }
 
 void DisplayWidget::initializeGL() {
@@ -594,16 +599,16 @@ void DisplayWidget::initFragmentTextures() {
                     if ( texturePath.endsWith ( ".hdr", Qt::CaseInsensitive ) ) { // is HDR format image ?
                         HDRLoaderResult result;
                         loaded = HDRLoader::load ( texturePath.toLocal8Bit(), result );
-                        if(type == GL_SAMPLER_CUBE) {
+                        if(type == GL_SAMPLER_CUBE && loaded) {
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*0*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*1*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*2*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*3*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*4*3] );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width*5*3] );
-                        } else {
+                        } else if(loaded) {
                             glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols );
-                        }
+                        } else WARNING("HDR texture failed to load!");
                     }
 #ifdef USE_OPEN_EXR
                     else if ( texturePath.endsWith ( ".exr", Qt::CaseInsensitive ) ) { // is EXR format image ?
@@ -666,7 +671,7 @@ void DisplayWidget::initFragmentTextures() {
                         QImage im;
                         loaded = im.load(texturePath);
                         
-                        if(type == GL_SAMPLER_CUBE) {
+                        if(type == GL_SAMPLER_CUBE && loaded) {
                             QImage t = im.convertToFormat(QImage::Format_RGBA8888);
                             
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*0) );
@@ -675,10 +680,10 @@ void DisplayWidget::initFragmentTextures() {
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*3) );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*4) );
                             glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width()*5) );
-                        } else {
+                        } else if(loaded) {
                             QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
                             glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
-                        }
+                        } else WARNING("Texture failed to load!");
                     }
                     if ( loaded ) {
                         // add to cache
@@ -815,25 +820,14 @@ void DisplayWidget::initBufferShader() {
     }
 }
 
-void DisplayWidget::setViewFactor ( int val ) {
-    viewFactor = val;
-    requireRedraw ( true );
-}
-
 void DisplayWidget::resetCamera ( bool fullReset ) {
     if ( !cameraControl ) return;
     cameraControl->reset ( fullReset );
 }
 
-void DisplayWidget::setPreviewFactor ( int val ) {
-    previewFactor = val;
-    makeBuffers();
-    requireRedraw ( true );
-}
-
 void DisplayWidget::makeBuffers() {
-    int w = pixelWidth() / ( previewFactor+1 );
-    int h = pixelHeight() / ( previewFactor+1 );
+    int w = pixelWidth();
+    int h = pixelHeight();
 
     if ( bufferSizeX!=0 ) {
         w = bufferSizeX;
@@ -898,7 +892,7 @@ void DisplayWidget::makeBuffers() {
             glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
         }
     }
-    // else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    else glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void DisplayWidget::clearBackBuffer() {
@@ -1192,16 +1186,24 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
     GLuint programID = shaderProg->programId();
     
     int count;
+    // this only returns uniforms that have not been optimized out
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    if(subframeCounter == 1 && verbose) {
-        if(programID == shaderProgram->programId()) {
+    if(programID == shaderProgram->programId()) {
+        if(subframeCounter == 1 && verbose) {
             qDebug() << "\nshaderProgram";
         }
-        
-        if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
+    }
+    else if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
+        if(subframeCounter == 1 && verbose) {
             qDebug() << "\nbufferShaderProgram";
         }
+    }
+    else {
+        if(subframeCounter == 1 && verbose) {
+            qDebug() << "\nNO ShaderProgram!!!";
+        }
+        return;
     }
 
     for (int i = 0; i < count; i++) {
@@ -1222,7 +1224,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         if(uniformName == "backbuffer") uniformValue = "Special variable";
         if(uniformName == "time") uniformValue = "Special variable";
 
-        // find a value to go with the name index in the program may not be the same as index in our list
+        // find a value to go with the name index in the program, may not be the same as index in our list
         for( int n=0; n < vw.count(); n++) {
             if(uniformName == vw[n]->getName()) {
                 // get slider values
@@ -1236,95 +1238,99 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
         if(uniformValue.isEmpty()) uniformValue = "Unused variable widget";
 
         QString tp = "Not found!";
+
+        switch(type) {
+            case GL_BYTE:           tp = "BYTE "; break;
+            case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; break;
+            case GL_SHORT:          tp = "SHORT"; break;
+            case GL_UNSIGNED_SHORT: tp = "UNSIGNED_SHORT"; break;
+            case GL_INT:            tp = "INT  "; break;
+            case GL_UNSIGNED_INT:   tp = "UNSIGNED_INT"; break;
+            case GL_FLOAT:          tp = "FLOAT"; break;
+            case GL_FIXED:          tp = "FIXED"; break;
+            case GL_FLOAT_VEC2:     tp = "FLOAT_VEC2"; break;
+            case GL_FLOAT_VEC3:     tp = "FLOAT_VEC3"; break;
+            case GL_FLOAT_VEC4:     tp = "FLOAT_VEC4"; break;
+            case GL_INT_VEC2:       tp = "INT_VEC2"; break;
+            case GL_INT_VEC3:       tp = "INT_VEC3"; break;
+            case GL_INT_VEC4:       tp = "INT_VEC4"; break;
+            case GL_BOOL:           tp = "BOOL "; break;
+            case GL_BOOL_VEC2:      tp = "BOOL_VEC2"; break;
+            case GL_BOOL_VEC3:      tp = "BOOL_VEC3"; break;
+            case GL_BOOL_VEC4:      tp = "BOOL_VEC4"; break;
+            case GL_FLOAT_MAT2:     tp = "FLOAT_MAT2"; break;
+            case GL_FLOAT_MAT3:     tp = "FLOAT_MAT3"; break;
+            case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; break;
+            case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; break;
+            case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; break;
+        }
+            
         bool foundDouble = false;
 
-          switch(type) {
-
-                case GL_BYTE:           tp = "BYTE "; foundDouble = false; break;
-                case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; foundDouble = false; break;
-                case GL_SHORT:          tp = "SHORT"; foundDouble = false; break;
-                case GL_UNSIGNED_SHORT: tp = "UNSIGNED_SHORT"; foundDouble = false; break;
-                case GL_INT:            tp = "INT  "; foundDouble = false; break;
-                case GL_UNSIGNED_INT:   tp = "UNSIGNED_INT"; foundDouble = false; break;
-                case GL_FLOAT:          tp = "FLOAT"; foundDouble = false; break;
-                case GL_FIXED:          tp = "FIXED"; foundDouble = false; break;
-                case GL_FLOAT_VEC2:     tp = "FLOAT_VEC2"; foundDouble = false; break;
-                case GL_FLOAT_VEC3:     tp = "FLOAT_VEC3"; foundDouble = false; break;
-                case GL_FLOAT_VEC4:     tp = "FLOAT_VEC4"; foundDouble = false; break;
-                case GL_INT_VEC2:       tp = "INT_VEC2"; foundDouble = false; break;
-                case GL_INT_VEC3:       tp = "INT_VEC3"; foundDouble = false; break;
-                case GL_INT_VEC4:       tp = "INT_VEC4"; foundDouble = false; break;
-                case GL_BOOL:           tp = "BOOL "; foundDouble = false; break;
-                case GL_BOOL_VEC2:      tp = "BOOL_VEC2"; foundDouble = false; break;
-                case GL_BOOL_VEC3:      tp = "BOOL_VEC3"; foundDouble = false; break;
-                case GL_BOOL_VEC4:      tp = "BOOL_VEC4"; foundDouble = false; break;
-                case GL_FLOAT_MAT2:     tp = "FLOAT_MAT2"; foundDouble = false; break;
-                case GL_FLOAT_MAT3:     tp = "FLOAT_MAT3"; foundDouble = false; break;
-                case GL_FLOAT_MAT4:     tp = "FLOAT_MAT4"; foundDouble = false; break;
-                case GL_SAMPLER_2D:     tp = "SAMPLER_2D"; foundDouble = false; break;
-                case GL_SAMPLER_CUBE:   tp = "SAMPLER_CUBE"; foundDouble = false; break;
-            }
-
         if(context()->format().majorVersion() > 2 && context()->format().minorVersion() >= 0) {
-          double x,y,z,w;
-          GLint index = glGetUniformLocation(programID, name);
-          bool found = false;
-          if(index != -1)
-          switch(type) {
-                case GL_DOUBLE:
-                    x = uniformValue.toDouble(&foundDouble);
-                    if( foundDouble ) {
-                        glUniform1d(index, x);
-                        tp = "DOUBLE";
+            if(!uniformValue.contains("variable")) { // do not try to set special, gl_ or unused uniform even if it is double type
+                double x,y,z,w;
+                GLint index = glGetUniformLocation(programID, name);
+                bool found = false;
+                if(index != -1) {
+                    switch(type) {
+                        case GL_DOUBLE:
+                            x = uniformValue.toDouble(&found);
+                            foundDouble |= found;
+                            if( foundDouble ) {
+                                glUniform1d(index, x);
+                                tp = "DOUBLE";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC2:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform2d(index, x, y);
+                                tp = "DOUBLE_VEC2";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC3:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            z = uniformValue.split(",").at(2).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform3d(index, x, y, z);
+                                tp = "DOUBLE_VEC3";
+                            }
+                        break;
+                        case GL_DOUBLE_VEC4:
+                            x = uniformValue.split(",").at(0).toDouble(&found);
+                            foundDouble |= found;
+                            y = uniformValue.split(",").at(1).toDouble(&found);
+                            foundDouble |= found;
+                            z = uniformValue.split(",").at(2).toDouble(&found);
+                            foundDouble |= found;
+                            w = uniformValue.split(",").at(3).toDouble(&found);
+                            foundDouble |= found;
+                            if(foundDouble) {
+                                glUniform4d(index, x, y, z, w);
+                                tp = "DOUBLE_VEC4";
+                            }
+                        break;
+                        case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; foundDouble = true; break;
+                        case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; foundDouble = true; break;
+                        default:
+                        break;
                     }
-                break;
-                case GL_DOUBLE_VEC2:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform2d(index, x, y);
-                        tp = "DOUBLE_VEC2";
-                    }
-                break;
-                case GL_DOUBLE_VEC3:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    z = uniformValue.split(",").at(2).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform3d(index, x, y, z);
-                        tp = "DOUBLE_VEC3";
-                    }
-                break;
-                case GL_DOUBLE_VEC4:
-                    x = uniformValue.split(",").at(0).toDouble(&found);
-                    foundDouble |= found;
-                    y = uniformValue.split(",").at(1).toDouble(&found);
-                    foundDouble |= found;
-                    z = uniformValue.split(",").at(2).toDouble(&found);
-                    foundDouble |= found;
-                    w = uniformValue.split(",").at(3).toDouble(&found);
-                    foundDouble |= found;
-                    if(foundDouble) {
-                        glUniform4d(index, x, y, z, w);
-                        tp = "DOUBLE_VEC4";
-                    }
-                break;
-                case GL_DOUBLE_MAT2:    tp = "DOUBLE_MAT2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3:    tp = "DOUBLE_MAT3"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4:    tp = "DOUBLE_MAT4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT2x3:  tp = "DOUBLE_MAT2x3"; foundDouble = true; break;
-                case GL_DOUBLE_MAT2x4:  tp = "DOUBLE_MAT2x4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3x2:  tp = "DOUBLE_MAT3x2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT3x4:  tp = "DOUBLE_MAT3x4"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4x2:  tp = "DOUBLE_MAT4x2"; foundDouble = true; break;
-                case GL_DOUBLE_MAT4x3:  tp = "DOUBLE_MAT4x3"; foundDouble = true; break;
-                default:
-                break;
+                }
             }
         }
 
@@ -1359,6 +1365,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram* shaderProg) {
 
 void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
 
+    if(!this->isValid()) return;
+    
     if(verbose && subframeCounter == 1) {
         static int c = 0;
         qDebug() << QString("Draw fragment program: %1").arg(c++);
@@ -1376,8 +1384,9 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
     
     /// BEGIN 3DTexture
+    //     if( m3DTexId!=0 ) {
     //     draw3DTexture();
-    //     if( m3DTexId!=0 ) return;
+    //     return; }
     /// END 3DTexture
 
     // -- Projection
@@ -1407,11 +1416,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
     l = shaderProgram->uniformLocation ( "globalPixelSize" );
     if ( l != -1 ) {
-        int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
-        if ( viewFactor > 0 ) {
-            d = viewFactor+1;
-        }
-        shaderProgram->setUniformValue ( l, ( ( float ) d/w ), ( ( float ) d/h ) );
+        shaderProgram->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
     }
 
     l = shaderProgram->uniformLocation ( "time" );
@@ -1444,7 +1449,7 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     }
 
     // Setup User Uniforms
-    if(subframeCounter == 1) setShaderUniforms(shaderProgram);   
+    setShaderUniforms(shaderProgram);   
    
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -1463,7 +1468,8 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
-    //glFinish(); // wait for GPU to return control
+
+    glFinish(); // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1495,6 +1501,9 @@ void DisplayWidget::drawFragmentProgram ( int w,int h, bool toBuffer ) {
 }
 
 void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast ) {
+
+    if(!this->isValid()) return;
+
     if(verbose && subframeCounter == 1) {
         static int c = 0;
         qDebug() << QString("drawToFrameBufferObject: %1").arg(c++);
@@ -1568,11 +1577,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
         // for DepthBufferShader.frag & NODE-Raytracer.frag
         l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
         if ( l != -1 ) {
-            int d = 1; // TODO: Set to Tile factor. if ( d<1 ) d = 1;
-            if ( viewFactor > 0 ) {
-                d = viewFactor+ 1;
-            }
-            shaderProgram->setUniformValue ( l, ( d/ ( float ) s.width() ), ( d/ ( float ) s.height() ) );
+            shaderProgram->setUniformValue ( l, ( 1.0/ ( float ) s.width() ), ( 1.0/ ( float ) s.height() ) );
         }
 
         l = bufferShaderProgram->uniformLocation ( "frontbuffer" );
@@ -1615,8 +1620,7 @@ void DisplayWidget::drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, 
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
     glPopAttrib();
-    //glFinish(); // wait for GPU to return control
-
+    glFinish(); // wait for GPU to return control
     
     if ( bufferShaderProgram ) bufferShaderProgram->release();
     
@@ -1851,23 +1855,25 @@ void DisplayWidget::paintGL() {
             }
         }
     }
+    
+    drawToFrameBufferObject ( 0, ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) );
 
-    if ( drawingState == DisplayWidget::Progressive ) {
-        if ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) {
-            drawToFrameBufferObject ( 0, true );
-            return;
-        }
-    }
-
-    if ( previewBuffer ) {
-        drawToFrameBufferObject ( 0, false );
-    } else {
-        drawFragmentProgram ( pixelWidth(),pixelHeight(), true );
-        if ( drawingState == DisplayWidget::Progressive ) {
-            subframeCounter++;
-            mainWindow->setSubFrameDisplay ( subframeCounter );
-        }
-    }
+//     if ( drawingState == DisplayWidget::Progressive ) {
+//         if ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) {
+//             drawToFrameBufferObject ( 0, true );
+//             return;
+//         }
+//     }
+// 
+//     if ( previewBuffer ) {
+//         drawToFrameBufferObject ( 0, false );
+//     } else { // this code is never reached
+//         drawFragmentProgram ( pixelWidth(),pixelHeight(), true );
+//         if ( drawingState == DisplayWidget::Progressive ) {
+//             subframeCounter++;
+//             mainWindow->setSubFrameDisplay ( subframeCounter );
+//         }
+//     }
 }
 
 void DisplayWidget::updateBuffers() {
@@ -2058,7 +2064,6 @@ void DisplayWidget::keyReleaseEvent ( QKeyEvent* ev ) {
 }
 
 void DisplayWidget::clearPreviewBuffer() {
-    setPreviewFactor ( previewFactor );
     makeBuffers();
     requireRedraw ( true );
 }

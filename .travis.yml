@@ -1,13 +1,20 @@
 
 language: cpp
 
+#os: osx
+#osx_image: xcode10.2
+os: linux
 dist: xenial
 
-os:
-  - linux
-  #- osx
+#matrix:
+    #include:
+        #- os: linux
+          #dist: xenial
+        #- os: osx
+          #osx_image: xcode10.2
+        #- os: windows
 
-#sudo: false
+sudo: false
 
 branches:
   only:
@@ -30,21 +37,7 @@ before_install:
     then
       sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
-      #sudo add-apt-repository -y ppa:beineri/opt-qt592-xenial
-      #sudo apt-get update -qq
     fi
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    #then
-      #brew update
-      #brew tab homebrew/versions
-      #brew unlink gcc
-      #brew install gcc48
-      #brew link --overwrite gcc@4.8
-      #export PATH=/usr/local/bin:$PATH
-      #export CC=/usr/local/bin/gcc-4.8
-      #export CXX=/usr/local/bin/g++-4.8
-    #fi
 
 install:
   - |
@@ -54,48 +47,68 @@ install:
       sudo apt-get -qq install extra-cmake-modules
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
-      sudo apt-get -qq install qttools5-dev-tools
-      sudo apt-get -qq install qtbase5-dev
-      sudo apt-get -qq install qtbase5-dev-tools
-      sudo apt-get -qq install qtscript5-dev
       sudo apt-get -qq install libqt5scripttools5
+      sudo apt-get -qq install libqt5gui5
+      sudo apt-get -qq install libqt5libqgtk2
       sudo apt-get -qq install libqt5svg5-dev
       sudo apt-get -qq install libqt5opengl5-dev
       sudo apt-get -qq install libqt5xmlpatterns5-dev
+      sudo apt-get -qq install qt5-qmake
+      sudo apt-get -qq install qt5-default
+      sudo apt-get -qq install qttools5-dev-tools
+      sudo apt-get -qq install qtbase5-dev
+      sudo apt-get -qq install qtbase5-private-dev
+      sudo apt-get -qq install qtbase5-dev-tools
+      sudo apt-get -qq install qt5-style-plugins
+      sudo apt-get -qq install qt5-image-formats-plugins
+      sudo apt-get -qq install qtscript5-dev
+      ## linuxdeployqt needs this
+      #sudo apt-get -qq install libmtdev1
+      #sudo apt-get -qq install libmtdev-dev
+      #sudo apt-get -qq install libgtk2.0-0
+      #sudo apt-get -qq install libgtk2.0-dev
+      ## linuxdeployqt needs this
+      #git clone http://code.qt.io/qt/qtstyleplugins.git
+      #cd qtstyleplugins
+      #/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+      #make -j$(nproc)
+      #sudo make install 
+      #cd -
     fi
   # OS X Qt http://braumeister.org/search/qt5
   # we need to use macdeployqtfix after using macdeployqt to fix the library paths!
   - |
-    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    #then
-      #brew install qt5
-      #export QTDIR="/usr/local/opt/qt"
-      #export LDFLAGS="-L/usr/local/opt/qt/lib"
-      #export CPPFLAGS="-I/usr/local/opt/qt/include"
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then
+      brew install qt5
 
-      #brew install ilmbase openexr
+      brew install ilmbase openexr
 
-      #brew unlink openexr
-      #brew link --overwrite openexr
-      #brew unlink ilmbase
-      #brew link --overwrite ilmbase
+      brew unlink openexr
+      brew link --overwrite openexr
+      brew unlink ilmbase
+      brew link --overwrite ilmbase
 
-      #brew unlink cmake
-      #brew install cmake
-      ##brew install extra-cmake-modules
-    #fi
+      brew unlink cmake
+      brew install cmake
+      #brew install extra-cmake-modules
+    fi
 
 before_script:
   #- |
     #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     #then
-      #source /opt/qt511/bin/qt511-env.sh
+      #source /opt/qt5*/bin/qt5*-env.sh
     #fi
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    #then
-      #export PATH="$QTDIR/bin:$PATH"
-    #fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then
+      export QTDIR="/usr/local/opt/qt"
+      export PATH="/usr/local/opt/qt/bin:$PATH"
+      export LDFLAGS="-L/usr/local/opt/qt/lib"
+      export CPPFLAGS="-I/usr/local/opt/qt/include"
+      export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
+    fi
 
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
@@ -105,81 +118,120 @@ script:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=ON ..
-       make
+       make -j$(nproc)
        make package
+       ## fails to build an appimage
+       #rm CMakeCache.txt
+       ## setup the apdir structure and add a valid .desktop file
+       #mkdir appdir
+       #mkdir appdir/usr
+       #mkdir appdir/usr/bin
+       #mkdir appdir/usr/lib
+       #mkdir appdir/usr/share
+       #mkdir appdir/usr/share/applications
+       #mkdir appdir/usr/share/icons
+       #mkdir appdir/usr/share/icons/hicolor
+       #mkdir appdir/usr/share/icons/hicolor/256x256
+       #mkdir appdir/usr/share/icons/hicolor/256x256/apps
+       #cp ../Icons/fileicons/Fragmentarium-256.png appdir/usr/share/icons/hicolor/256x256/apps/Fragmentarium-2.5.0.png
+       ## create a desktop file
+       #export DTFILE=appdir/usr/share/applications/Fragmentarium-2.5.0.desktop
+       #echo "[Desktop Entry]" > $DTFILE
+       #echo "Categories=Development;Graphics;" >> $DTFILE
+       #echo "Comment[en_US]=Originally created by Mikael Hvidtfeldt Christensen." >> $DTFILE
+       #echo "Comment=Originally created by Mikael Hvidtfeldt Christensen." >> $DTFILE
+       #echo "Exec=/usr/bin/Fragmentarium-2.5.0" >> $DTFILE
+       #echo "Icon=Fragmentarium-2.5.0" >> $DTFILE
+       #echo "MimeType=" >> $DTFILE
+       #echo "Name[en_US]=Fragmentarium-2.5.0" >> $DTFILE
+       #echo "Name=Fragmentarium-2.5.0" >> $DTFILE
+       #echo "Path=/usr" >> $DTFILE
+       #echo "StartupNotify=true" >> $DTFILE
+       #echo "Terminal=false" >> $DTFILE
+       #echo "Type=Application" >> $DTFILE
+       #echo "X-DBUS-ServiceName=" >> $DTFILE
+       #echo "X-DBUS-StartupType=" >> $DTFILE
+       #echo "X-KDE-SubstituteUID=false" >> $DTFILE
+       #echo "X-KDE-Username=" >> $DTFILE
+       #cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX="/usr/bin" ..
+       #make -j$(nproc)
+       #make DESTDIR=appdir install
+       #mv appdir/usr/bin/Fragmentarium-2.5.0 appdir/usr/bin/temp
+       #mv appdir/usr/bin/temp/* appdir/usr/bin/
+       #rm -rf appdir/usr/bin/temp
+       #wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+       #chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+       #unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+       #export VERSION=0.1.1 # linuxdeployqt uses this for naming the file
+       #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -qmake=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
     fi
   - |
-    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    #then
-       #cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
-       #make install
-    #fi
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then
+       cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       make install
+       cd ../../Fragmentarium-2.5.0
+       mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
+       mv ./fqScript ./Fragmentarium-2.5.0.app/Contents/MacOS/fqScript
+       mv ./Misc ./Fragmentarium-2.5.0.app/Contents/MacOS/Misc
+       mv ./Languages ./Fragmentarium-2.5.0.app/Contents/MacOS/Languages
+       macdeployqt ./Fragmentarium-2.5.0.app
+       cd ../
+       wget https://raw.githubusercontent.com/arl/macdeployqtfix/master/macdeployqtfix.py
+       python ./macdeployqtfix.py `pwd`/Fragmentarium-2.5.0/Fragmentarium-2.5.0.app/Contents/MacOS/Fragmentarium-2.5.0.app $QTDIR
+    fi
+
+#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/.......$//g"
+#2.5.0
+#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/$*[0-9]\.//g"
+#190614
 
 before_deploy:
   - |
-    export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-    export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-  # create debian package for linux and a disk image for OSX
-  - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+      export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
       mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
-      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
-      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
+      #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     fi
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    #then
-
-      #cd ../../Fragmentarium-2.0.0
-      #mv ./Examples ./Fragmentarium-2.0.0.app/Contents/MacOS/Examples
-      #mv ./fqScript ./Fragmentarium-2.0.0.app/Contents/MacOS/fqScript
-      #mv ./Misc ./Fragmentarium-2.0.0.app/Contents/MacOS/Misc
-      #mv ./Languages ./Fragmentarium-2.0.0.app/Contents/MacOS/Languages
-
-      #macdeployqt ./Fragmentarium-2.0.0.app
-
-      #cd ../
-      
-      #ditto -c -k ./Fragmentarium-2.0.0 ./Fragmentarium-2.0.0.zip
-      #mv ./Fragmentarium-2.0.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
-      #cd ./Fragmentarium-Source/build
-      #wget http://www.digilanti.org/fragmentarium/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
-    #fi
-  
-  #add a tag
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then
+      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+      ditto -c -k ./Fragmentarium-2.5.0 ./Fragmentarium-2.5.0.zip
+      mv ./Fragmentarium-2.5.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
+      cd ./Fragmentarium-Source/build
+    fi
   - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
-  # Linux master release
   - provider: releases
     api_key:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file:
         - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
-        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-SuSE_Leap-43.2.rpm
-        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-winex.7z
+        #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
         branch: master
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
-
-  ### macOS master release
-  #- provider: releases
-    #api_key:
-      #secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
-    #file: 
-      #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-x86_64-apple-darwin16.7.0.zip
-      #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER.7z
-    #skip_cleanup: true
-    #on:
-        #repo: 3Dickulus/FragM
-        #branch: master
-        #tags: false
-        #condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
+  # macOS master release
+  - provider: releases
+    api_key:
+      secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
+    file: 
+      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
+    skip_cleanup: true
+    on:
+        repo: 3Dickulus/FragM
+        branch: master
+        tags: false
+        condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 

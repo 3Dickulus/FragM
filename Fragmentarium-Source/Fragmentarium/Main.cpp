@@ -7,20 +7,61 @@
 
 #include "Fragmentarium/GUI/MainWindow.h"
 
-// Needed for unicode commandline below.
 #ifdef Q_OS_WIN
+// Needed for unicode commandline below.
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
+// https://fractalforums.org/fragmentarium/17/example-selecting-nvidia-gpu-on-a-laptop-with-two-gpus/2694/msg13596#msg13596
+// extern "C" {
+//   _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+// }
+
+#else
+
+// segfault signal handler prints a nicer message
+#include <signal.h>
+#include <unistd.h>
+void segv_handler(int s)
+{
+    // can't use most functions in a signal handler, see `man signal-safety`
+    const char *message =
+        "Segmentation fault.\n"
+        "Fragmentarium crashed!\n"
+        "For advice, please visit:\n"
+        "OpenGL Version: <https://en.wikibooks.org/wiki/Fractals/fragmentarium#Troubleshooting>\n"
+        "and...\n"
+        "GPU Watchdog: <http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/>\n"
+        "\n"
+        "If you have found an error, please report the following:\n"
+        "– OS type and OS version\n"
+        "– Graphics card type and driver version\n"
+        "– The version of Fragmentarium, and whether you built it yourself\n"
+        "– A reproducible description of the steps that caused the error (if possible).\n"
+        "\n"
+        "If you have an account at github you can post in <https://github.com/3Dickulus/FragM/issues>\n"
+        "You can also find discussions about Fragmentarium at <https://fractalforums.org/fragmentarium/17>\n"
+        "or...\n"
+        "You may email errors to 3dickulus at gmail dot com\n"
+        ;
+    write(2 /* stderr FD */, message, strlen(message));
+    abort();
+}
+
 #endif
+
 
 int main(int argc, char *argv[])
 {
+
 #ifdef Q_OS_WIN
     qApp->addLibraryPath("./");
     qApp->addLibraryPath("./plugins");
     qApp->addLibraryPath("iconengines");
     qApp->addLibraryPath("imageformats");
     qApp->addLibraryPath("platforms");
+#else
+    // install signal handler to catch segmentation fault
+    signal(SIGSEGV, segv_handler);
 #endif
 
 
@@ -36,7 +77,7 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName(QString("Fragmentarium"));
 
     QApplication *app = new QApplication(argc, argv);
-   
+
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
