@@ -67,7 +67,7 @@ The above will install in /home/username/Fragmentarium folder with includes and 
 To install for all users change -DCMAKE_INSTALL_PREFIX=~/ to -DCMAKE_INSTALL_PREFIX=/usr/local and use sudo make install
 
 # Pre-built packages
-You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.0 (rpm), Windows (7z) and a Linux AppImage at https://github.com/3Dickulus/FragM/releases/
+You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.0 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
 ## Notes
 The deb and rpm packages should take care of any dependencies when installing via **apt / synaptic** or **yast / zypper**.
 
