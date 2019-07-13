@@ -19,9 +19,9 @@ using namespace SyntopiaCore::Logging;
 namespace Fragmentarium {
 namespace Parser {
 
-    FragmentSource::FragmentSource() :
+FragmentSource::FragmentSource() :
     hasPixelSizeUniform ( false ),
-    bufferShaderSource ( 0 ),
+    bufferShaderSource ( nullptr ),
     clearOnChange ( true ),
     iterationsBetweenRedraws ( 0 ),
     subframeMax ( -1 ),
@@ -31,15 +31,25 @@ namespace Parser {
 
 // Helpers:
 namespace {
-double parseFloat ( QString s ) {
+float parseFloat ( QString s ) {
     bool success = false;
-    double to = s.toDouble ( &success );
+    float to = s.toFloat ( &success );
     if ( !success ) {
         WARNING ( "Could not parse float: " + s );
         return 0;
     }
     return to;
 }
+
+// double parseDouble ( QString s ) {
+//     bool success = false;
+//     double to = s.toDouble ( &success );
+//     if ( !success ) {
+//         WARNING ( "Could not parse double: " + s );
+//         return 0;
+//     }
+//     return to;
+// }
 
 void setLockType ( GuiParameter* p, QString lockTypeString ) {
     lockTypeString = lockTypeString.toLower().trimmed();
@@ -53,21 +63,21 @@ void setLockType ( GuiParameter* p, QString lockTypeString ) {
     }  else if ( lockTypeString == "alwayslocked" ) {
         l = AlwaysLocked;
     } else {
-      WARNING ( "Not able to parse lock type: " + lockTypeString + " Default notlocked!" );
+        WARNING ( "Not able to parse lock type: " + lockTypeString + " Default notlocked!" );
     }
     p->setLockType ( l );
 }
 
 QVector4D parseQVector4D ( QString s1, QString s2, QString s3, QString s4 ) {
-    return QVector4D ( parseFloat ( s1 ), parseFloat ( s2 ), parseFloat ( s3 ), parseFloat ( s4 ) );
+    return { parseFloat ( s1 ), parseFloat ( s2 ), parseFloat ( s3 ), parseFloat ( s4 ) };
 }
 
 QVector3D parseQVector3D ( QString s1, QString s2, QString s3 ) {
-    return QVector3D ( parseFloat ( s1 ), parseFloat ( s2 ), parseFloat ( s3 ) );
+    return { parseFloat ( s1 ), parseFloat ( s2 ), parseFloat ( s3 ) };
 }
 
 QVector2D parseVector2D ( QString s1, QString s2 ) {
-    return QVector2D ( parseFloat ( s1 ), parseFloat ( s2 ) );
+    return { parseFloat ( s1 ), parseFloat ( s2 ) };
 }
 }
 
@@ -101,7 +111,8 @@ void Preprocessor::parseSource ( FragmentSource* fs,QString input, QString origi
             try {
                 fName = fileManager->resolveName ( fileName, originalFileName );
             } catch ( Exception& e ) {
-                CRITICAL ( e.getMessage() ); continue;
+                CRITICAL ( e.getMessage() );
+                continue;
             }
             QFile f ( fName );
             if ( !f.open ( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -122,7 +133,8 @@ void Preprocessor::parseSource ( FragmentSource* fs,QString input, QString origi
             try {
                 fName = fileManager->resolveName ( fileName, originalFileName );
             } catch ( Exception& e ) {
-                CRITICAL ( e.getMessage() ); continue;
+                CRITICAL ( e.getMessage() );
+                continue;
             }
             QFile f ( fName );
             if ( !f.open ( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -149,10 +161,11 @@ void Preprocessor::parseSource ( FragmentSource* fs,QString input, QString origi
 }
 
 // We leak here, but fs's are copied!
-FragmentSource::~FragmentSource() {
-    /*foreach (QFile* f, sourceFiles) delete(f);*/
-    //delete(screenShaderSource);
-}
+FragmentSource::~FragmentSource() = default;
+// {
+/*foreach (QFile* f, sourceFiles) delete(f);*/
+//delete(screenShaderSource);
+// }
 
 FragmentSource Preprocessor::createAutosaveFragment ( QString input, QString file ) {
     FragmentSource fs;
@@ -193,22 +206,22 @@ FragmentSource Preprocessor::createAutosaveFragment ( QString input, QString fil
 }
 
 FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain ) {
-  INFO ( QCoreApplication::translate("Preprocessor", "Parse: ") + file );
+    INFO ( QCoreApplication::translate("Preprocessor", "Parse: ") + file );
     FragmentSource fs;
 
     // Step one: resolve includes:
     parseSource ( &fs, input, file, false );
 
     // Step two: resolve magic uniforms:
-    QRegExp pixelSizeCommand ( "^\\s*uniform\\s+vec2\\s+pixelSize.*$",Qt::CaseInsensitive ); // Look for 'uniform vec2 pixelSize'
+    QRegExp pixelSizeCommand ( "^\\s*uniform\\s+vec2\\s+pixelSize.*$", Qt::CaseInsensitive ); // Look for 'uniform vec2 pixelSize'
     if ( fs.source.indexOf ( pixelSizeCommand ) !=-1 ) {
         fs.hasPixelSizeUniform = true;
     } else fs.hasPixelSizeUniform = false;
-    QRegExp depthToAlpha ( "^\\s*uniform\\s+bool\\s+depthtoalpha.*$",Qt::CaseInsensitive );
+    QRegExp depthToAlpha ( "^\\s*uniform\\s+bool\\s+depthtoalpha.*$", Qt::CaseInsensitive );
     if ( fs.source.indexOf ( depthToAlpha ) !=-1 ) {
         fs.depthToAlpha = true;
     } else fs.depthToAlpha = false;
-    QRegExp autoFocus ( "^\\s*uniform\\s+bool\\s+autofocus.*$",Qt::CaseInsensitive );
+    QRegExp autoFocus ( "^\\s*uniform\\s+bool\\s+autofocus.*$", Qt::CaseInsensitive );
     if ( fs.source.indexOf ( autoFocus ) !=-1 ) {
         fs.autoFocus = true;
     } else fs.autoFocus = false;
@@ -279,7 +292,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             fs.source[i] = "// " + s;
             QString c = s.remove ( "#camera", Qt::CaseInsensitive );
             fs.camera = c.trimmed();
-        } else if ( s.trimmed().startsWith ( "#TexParameter" , Qt::CaseInsensitive) ) {
+        } else if ( s.trimmed().startsWith ( "#TexParameter", Qt::CaseInsensitive) ) {
             fs.source[i] = "// " + s;
             QString c = s.remove ( "#TexParameter", Qt::CaseInsensitive ).trimmed();
             QStringList l = c.split ( " ", QString::SkipEmptyParts );
@@ -366,7 +379,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes3 = false;
             double to = toS.toDouble ( &succes3 );
             if ( !succes || !succes2 || !succes3 ) {
-              WARNING ( "Could not parse color value for uniform: " + name );
+                WARNING ( "Could not parse color value for uniform: " + name );
                 continue;
             }
 
@@ -456,7 +469,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes3 = false;
             int to = toS.toInt ( &succes3 );
             if ( !succes || !succes2 || !succes3 ) {
-              WARNING ( "Could not parse integer value for uniform: " + name );
+                WARNING ( "Could not parse integer value for uniform: " + name );
                 continue;
             }
 
@@ -475,7 +488,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             } else if ( defS == "false" ) {
                 def = false;
             } else {
-              WARNING ( "Could not parse boolean value for uniform: " + name );
+                WARNING ( "Could not parse boolean value for uniform: " + name );
                 continue;
             }
 
@@ -489,7 +502,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes = false;
             int i = iterationCount.toInt ( &succes );
             if ( !succes ) {
-              WARNING ( "Could not parse value for 'iterationsbetweenredraws': " + iterationCount );
+                WARNING ( "Could not parse value for 'iterationsbetweenredraws': " + iterationCount );
                 continue;
             }
             fs.iterationsBetweenRedraws = i;
@@ -499,7 +512,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             bool succes = false;
             int i = maxCount.toInt ( &succes );
             if ( !succes ) {
-              WARNING ( "Could not parse value for 'subframemax': " + maxCount );
+                WARNING ( "Could not parse value for 'subframemax': " + maxCount );
                 continue;
             }
             fs.subframeMax = i;
@@ -539,7 +552,7 @@ FragmentSource Preprocessor::parse ( QString input, QString file, bool moveMain 
             }
         }
     }
-    
+
     return fs;
 }
 }

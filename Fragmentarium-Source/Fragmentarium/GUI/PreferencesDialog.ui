@@ -168,6 +168,16 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QToolButton" name="logFilePathToolButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -239,6 +249,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QToolButton" name="includePathsToolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="12" column="0" colspan="2">
@@ -260,6 +277,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QToolButton" name="exrBinPathsToolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="13" column="0" colspan="2">
@@ -278,6 +302,13 @@
           </property>
           <property name="clearButtonEnabled">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="stylesheetToolButton">
+          <property name="text">
+           <string>...</string>
           </property>
          </widget>
         </item>
@@ -391,12 +422,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>201</x>
-     <y>165</y>
+     <x>164</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
-     <x>70</x>
-     <y>242</y>
+     <x>90</x>
+     <y>270</y>
     </hint>
    </hints>
   </connection>
@@ -407,12 +438,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>226</x>
-     <y>161</y>
+     <x>164</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
-     <x>149</x>
-     <y>243</y>
+     <x>162</x>
+     <y>269</y>
     </hint>
    </hints>
   </connection>
@@ -423,12 +454,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>246</x>
-     <y>164</y>
+     <x>164</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
-     <x>216</x>
-     <y>239</y>
+     <x>241</x>
+     <y>270</y>
     </hint>
    </hints>
   </connection>
@@ -439,12 +470,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>409</x>
-     <y>162</y>
+     <x>164</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
-     <x>409</x>
-     <y>248</y>
+     <x>394</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>logToFileCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>logFilePathToolButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>415</x>
+     <y>256</y>
     </hint>
    </hints>
   </connection>

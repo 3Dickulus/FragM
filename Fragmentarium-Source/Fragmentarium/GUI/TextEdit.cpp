@@ -1,28 +1,30 @@
-#include <QMainWindow>
-#include <QTabBar>
-#include <QStackedWidget>
-#include <QPlainTextEdit>
-#include <QTextEdit>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QLabel>
-#include <QTextBlock>
-#include <QScrollBar>
 #include <QAbstractScrollArea>
 #include <QAction>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMimeData>
+#include <QPlainTextEdit>
+#include <QScrollBar>
+#include <QSpinBox>
+#include <QStackedWidget>
+#include <QTabBar>
+#include <QTextBlock>
+#include <QTextEdit>
 
 #include "TextEdit.h"
 
-namespace Fragmentarium {
-namespace GUI {
-
-TextBlockData::TextBlockData()
+namespace Fragmentarium
 {
+namespace GUI
+{
+
+TextBlockData::TextBlockData() = default;
+// {
     // Nothing to do
-}
+// }
 
 QVector<ParenthesisInfo *> TextBlockData::parentheses()
 {
@@ -33,9 +35,9 @@ QVector<ParenthesisInfo *> TextBlockData::parentheses()
 void TextBlockData::insert(ParenthesisInfo *info)
 {
     int i = 0;
-    while (i < m_parentheses.size() &&
-            info->position > m_parentheses.at(i)->position)
+    while (i < m_parentheses.size() && info->position > m_parentheses.at(i)->position) {
         ++i;
+    }
 
     m_parentheses.insert(i, info);
 }
@@ -45,12 +47,12 @@ void TextBlockData::append(ParenthesisInfo *info)
     m_parentheses.append(info);
 }
 
-TextEdit::TextEdit(MainWindow* parent) : QPlainTextEdit(parent), mainWindow(parent)
+TextEdit::TextEdit(MainWindow *parent) : QPlainTextEdit(parent), mainWindow(parent)
 {
     lineNumberArea = new LineNumberArea(this);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
-    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
+    connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 }
 
@@ -71,12 +73,14 @@ void TextEdit::contextMenuEvent(QContextMenuEvent *event)
     mainWindow->createCommandHelpMenu(menu, this, mainWindow);
     menu->exec(event->globalPos());
     delete menu;
-    
+
 }
 
 int TextEdit::lineNumberAreaWidth()
 {
-    if(!mainWindow->wantLineNumbers) return 0;
+    if (!mainWindow->wantLineNumbers) {
+        return 0;
+    }
 
     int digits = 1;
     int max = qMax(1, document()->blockCount());
@@ -97,18 +101,19 @@ void TextEdit::updateLineNumberAreaWidth(int /* newBlockCount */)
 
 void TextEdit::updateLineNumberArea(const QRect &rect, int dy)
 {
-    if (dy)
+    if (dy != 0) {
         lineNumberArea->scroll(0, dy);
-    else
+    } else {
         lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+    }
 
     //if (rect.contains(viewport()->rect()))
     updateLineNumberAreaWidth(0);
 }
 
-void TextEdit::resizeEvent(QResizeEvent *e)
+void TextEdit::resizeEvent(QResizeEvent *ev)
 {
-    QPlainTextEdit::resizeEvent(e);
+    QPlainTextEdit::resizeEvent(ev);
 
     QRect cr = contentsRect();
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
@@ -123,7 +128,9 @@ void TextEdit::highlightCurrentLine()
 
         QColor lineColor = QColor(Qt::lightGray).lighter(125);
 
-        if(!mainWindow->wantLineNumbers) lineColor = QColor(Qt::white);
+        if (!mainWindow->wantLineNumbers) {
+            lineColor = QColor(Qt::white);
+        }
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -154,8 +161,7 @@ void TextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
 
             QString number = QString::number(blockNumber);
             painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(), Qt::AlignRight, number);
         }
 
         block = block.next();
@@ -169,7 +175,7 @@ void TextEdit::matchParentheses()
 {
     TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
 
-    if (data) {
+    if (data != nullptr) {
         QVector<ParenthesisInfo *> infos = data->parentheses();
 
         int pos = textCursor().block().position();
@@ -178,13 +184,13 @@ void TextEdit::matchParentheses()
 
             int curPos = textCursor().position() - textCursor().block().position();
             if (info->position == curPos - 1 && (info->character == '(')) {
-                if (matchLeftParenthesis(textCursor().block(), i + 1, 0))
+                if (matchLeftParenthesis(textCursor().block(), i + 1, 0)) {
                     createParenthesisSelection(pos + info->position);
-            }
-            else
-              if (info->position == curPos - 1 && (info->character == ')')) {
-                if (matchRightParenthesis(textCursor().block(), i - 1, 0))
+                }
+            } else if (info->position == curPos - 1 && (info->character == ')')) {
+                if (matchRightParenthesis(textCursor().block(), i - 1, 0)) {
                     createParenthesisSelection(pos + info->position);
+                }
             }
         }
     }
@@ -192,7 +198,7 @@ void TextEdit::matchParentheses()
 
 bool TextEdit::matchLeftParenthesis(QTextBlock currentBlock, int i, int numLeftParentheses)
 {
-    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    auto *data = static_cast<TextBlockData *>(currentBlock.userData());
     QVector<ParenthesisInfo *> infos = data->parentheses();
 
     int docPos = currentBlock.position();
@@ -205,24 +211,25 @@ bool TextEdit::matchLeftParenthesis(QTextBlock currentBlock, int i, int numLeftP
         if ( (info->character == ')')  && numLeftParentheses == 0) {
             createParenthesisSelection(docPos + info->position);
             return true;
-        } else
-            --numLeftParentheses;
+        }
+        --numLeftParentheses;
     }
 
     currentBlock = currentBlock.next();
-    if (currentBlock.isValid())
+    if (currentBlock.isValid()) {
         return matchLeftParenthesis(currentBlock, 0, numLeftParentheses);
+    }
 
     return false;
 }
 
 bool TextEdit::matchRightParenthesis(QTextBlock currentBlock, int i, int numRightParentheses)
 {
-    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    auto *data = static_cast<TextBlockData *>(currentBlock.userData());
     QVector<ParenthesisInfo *> infos = data->parentheses();
 
     int docPos = currentBlock.position();
-    if( infos.size() > 0)
+    if (!infos.isEmpty()) {
         for (; i > -1; --i) {
             ParenthesisInfo *info = infos.at(i);
             if (info->character == ')') {
@@ -232,13 +239,14 @@ bool TextEdit::matchRightParenthesis(QTextBlock currentBlock, int i, int numRigh
             if ( (info->character == '(') && numRightParentheses == 0) {
                 createParenthesisSelection(docPos + info->position);
                 return true;
-            } else
-                --numRightParentheses;
+            }
+            --numRightParentheses;
         }
-
+    }
     currentBlock = currentBlock.previous();
-    if (currentBlock.isValid())
+    if (currentBlock.isValid()) {
         return matchRightParenthesis(currentBlock, 0, numRightParentheses);
+    }
 
     return false;
 }
@@ -262,5 +270,5 @@ void TextEdit::createParenthesisSelection(int pos)
     setExtraSelections(selections);
 }
 
-}
-}
+} // namespace GUI
+} // namespace Fragmentarium

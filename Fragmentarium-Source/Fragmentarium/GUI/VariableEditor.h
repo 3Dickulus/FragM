@@ -1,25 +1,27 @@
 #pragma once
 
+#include "../Parser/Preprocessor.h"
+#include "DisplayWidget.h"
+#include "SyntopiaCore/Logging/Logging.h"
+#include "VariableWidget.h"
+#include <QColorDialog>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QMap>
+#include <QOpenGLShaderProgram>
+#include <QSlider>
 #include <QString>
+#include <QTabWidget>
 #include <QVector>
 #include <QWidget>
-#include <QMap>
-#include <QSlider>
-#include <QTabWidget>
-#include <QComboBox>
-#include <QFrame>
-#include <QColorDialog>
-#include <QDoubleSpinBox>
-#include <QHBoxLayout>
-#include <QOpenGLShaderProgram>
-#include "../Parser/Preprocessor.h"
-#include "SyntopiaCore/Logging/Logging.h"
-#include "DisplayWidget.h"
-#include "VariableWidget.h"
 
 /// The editor window for GUI variables (uniforms)
-namespace Fragmentarium {
-namespace GUI {
+namespace Fragmentarium
+{
+namespace GUI
+{
 
 using namespace SyntopiaCore::Logging;
 using namespace Fragmentarium::Parser;
@@ -28,24 +30,29 @@ class MainWindow;  // forward
 class ComboSlider; // forward
 
 /// The Variable Editor window.
-class VariableEditor : public QWidget {
+class VariableEditor : public QWidget
+{
     Q_OBJECT
 public:
     VariableEditor(QWidget* parent, MainWindow* mainWin);
 
-    void updateFromFragmentSource(FragmentSource* fs, bool* showGUI);
+    void updateFromFragmentSource(FragmentSource* fs/*, bool* showGUI*/);
     void updateCamera(CameraControl* c);
-    void setUserUniforms(QOpenGLShaderProgram* shaderProgram);
-    QVector<VariableWidget*> getUserUniforms(){return variables;};
+    QVector<VariableWidget *> getUserUniforms()
+    {
+        return variables;
+    };
     QString getSettings();
     bool setSettings(QString text);
     void createGroup(QString g);
     VariableWidget* getWidgetFromName(QString name);
     void setPresets(QMap<QString, QString> presets);
-    ComboSlider* getCurrentComboSlider() {
+    ComboSlider *getCurrentComboSlider()
+    {
         return currentComboSlider;
     }
-    void setCurrentComboSlider(ComboSlider* cs) {
+    void setCurrentComboSlider ( ComboSlider *cs )
+    {
         focusChanged(currentComboSlider,cs);
         currentComboSlider = cs;
     }
@@ -58,54 +65,68 @@ public:
     void setEasingCurves( QString ecset );
     int addEasingCurve(QString c);
     int getKeyFrameCount();
-    void setKeyFramesEnabled(bool k) {
+    void setKeyFramesEnabled ( bool k )
+    {
         keyFramesEnabled = k;
     };
-    bool hasKeyFrames() {
+    bool hasKeyFrames()
+    {
       return keyFramesEnabled;
     }
-    void locksUseDefines(bool f) {
+    void locksUseDefines ( bool f )
+    {
       useDefines = f;
     }
-    void setEasingEnabled(bool e) {
+    void setEasingEnabled ( bool e )
+    {
         easingEnabled = e;
     };
     // saves easing curve settings in presets
-    void setSaveEasing(bool e) {
+    void setSaveEasing ( bool e )
+    {
         saveEasing = e;
     };
-    bool hasEasing() {
+    bool hasEasing()
+    {
         return easingEnabled;
     }
-    QString getPresetName(int i) {
+    QString getPresetName ( int i )
+    {
         return presetComboBox->itemText(i);
     }
-    
-    QString getPresetName() {
+
+    QString getPresetName()
+    {
       return presetComboBox->currentText();
     }
-    
+
     QStringList getPresetByName(QString name);
     int getCurrentKeyFrame();
-    int getPresetCount() {
+    int getPresetCount()
+    {
         return presetComboBox->count();
     }
     bool setPreset(QString p);
-    
-    QStringList getWidgetNames() {
+
+    QStringList getWidgetNames()
+    {
       QStringList varnames;
       for (int i = 0; i < variables.count(); i++) {
         varnames << variables[i]->getName();
       }
       return varnames;
     }
-    void setVerbose( bool v ) { verbose = v; }
-    
+    int getWidgetCount() { return variables.count(); };
+    void setVerbose ( bool v )
+    {
+        verbose = v;
+    }
+
 signals:
     void changed(bool lockedChanged);
 
 public slots:
-    void sliderDestroyed(QObject* o);
+    void sliderDestroyed ( QObject *obj );
     void focusChanged(QWidget* oldWidget,QWidget* newWidget);
     bool applyPreset();
     void resetUniforms(bool clear = true);
@@ -117,14 +138,20 @@ public slots:
     void paste();
     void childChanged(bool lockedChanged);
     void presetSelected(QString presetName);
-    void dockChanged(bool t){
-        if(width() > height()) t = true;
-        tabWidget->setTabPosition( t ? (QTabWidget::North) : (QTabWidget::East)); // 05/22/17 Sabine ;)
+    void dockChanged ( bool t )
+    {
+        if ( width() > height() ) {
+            t = true;
+        }
+        tabWidget->setTabPosition ( t ? ( QTabWidget::North ) : ( QTabWidget::East ) ); // 05/22/17 Sabine ;)
     }
-    
+
+private slots:
+    void createWidgetFromGuiParameter(Parser::GuiParameter* p);
+
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
-    
+
 private:
     QMap<QString, QString> presets;
     MainWindow* mainWindow;
@@ -144,6 +171,5 @@ private:
     bool useDefines;
     bool verbose;
 };
-}
-}
-
+} // namespace GUI
+} // namespace Fragmentarium

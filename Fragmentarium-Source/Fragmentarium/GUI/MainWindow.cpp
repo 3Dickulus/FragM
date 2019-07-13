@@ -1,35 +1,35 @@
 #include <iostream>
 
-#include <QCoreApplication>
-#include <QWidget>
-#include <QtGui>
-#include <QDir>
-#include <QMenu>
-#include <QString>
-#include <QClipboard>
-#include <QDesktopServices>
-#include <QImageWriter>
-#include <QTextBlockUserData>
-#include <QStack>
-#include <QImage>
-#include <QPixmap>
-#include <QDialogButtonBox>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QClipboard>
 #include <QComboBox>
+#include <QCoreApplication>
+#include <QDesktopServices>
 #include <QDialog>
+#include <QDialogButtonBox>
+#include <QDir>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QImage>
+#include <QImageWriter>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
+#include <QPixmap>
 #include <QSpacerItem>
+#include <QStack>
+#include <QString>
 #include <QTabWidget>
+#include <QTextBlockUserData>
 #include <QVBoxLayout>
-#include <QtNetwork/QtNetwork>
-#include <QVector>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#include <QVector>
+#include <QWidget>
+#include <QtGui>
+#include <QtNetwork/QtNetwork>
 
 #include <QAction>
 #include <QApplication>
@@ -42,50 +42,51 @@
 #include "TimeLine.h"
 #include "VideoDialog.h"
 
-#include "PreferencesDialog.h"
-#include "OutputDialog.h"
-#include "VariableEditor.h"
-#include "ListWidgetLogger.h"
 #include "Exception.h"
-#include "Preprocessor.h"
+#include "ListWidgetLogger.h"
 #include "Misc.h"
+#include "OutputDialog.h"
+#include "PreferencesDialog.h"
+#include "Preprocessor.h"
+#include "VariableEditor.h"
 
-
-namespace Fragmentarium {
-namespace GUI {
-
-MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
-      , cmdScriptDebugger(0)
+namespace Fragmentarium
+{
+namespace GUI
 {
 
-    bufferXSpinBox = 0;
-    bufferYSpinBox = 0;
+MainWindow::MainWindow(QSplashScreen *splashWidget)
+    : splashWidget(splashWidget), cmdScriptDebugger(nullptr)
+{
+
+    bufferXSpinBox = nullptr;
+    bufferYSpinBox = nullptr;
     lastStoredTime = 0;
     bufferSizeMultiplier = 1;
     exrMode = false;
 #ifdef USE_OPEN_EXR
-    exrToolsMenu = 0;
+    exrToolsMenu = nullptr;
 #endif
 
     maxRecentFiles = 5;
 
     lastStoredTime = 0;
-    engine = 0;
+    engine = nullptr;
     setAcceptDrops(true);
 
     needRebuild(true);
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190614, "");
+    version = Version(2, 5, 0, 190712, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
 
-    QDir::setCurrent(QCoreApplication::applicationDirPath ()); // Otherwise we cannot find examples + templates
+    QDir::setCurrent(QCoreApplication::applicationDirPath()); // Otherwise we cannot find examples + templates
     fragWatch = new QFileSystemWatcher();
     connect(fragWatch, SIGNAL(fileChanged(QString)), this, SLOT(reloadFragFile(QString)));
-    
+
     logFilePath = "fragm.log";
     loggingToFile = false;
     maxLogFileSize = 125000;
@@ -93,114 +94,134 @@ MainWindow::MainWindow(QSplashScreen* splashWidget) : splashWidget(splashWidget)
     includeWithAutoSave = true;
 
     init();
+
+    QSettings settings;
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+    splitter->restoreState(settings.value("splitterSizes").toByteArray());
+    fullScreenEnabled = settings.value("fullScreenEnabled", false).toBool();
+    if (fullScreenEnabled) {
+        fullScreenEnabled = false;
+        toggleFullScreen();
+    }
 }
 
-void MainWindow::createCommandHelpMenu(QMenu* menu, QWidget* textEdit, MainWindow* mainWindow)
+void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
+                                       MainWindow *mainWindow)
 {
-    QMenu *preprocessorMenu = new QMenu(tr("Host Preprocessor Commands"), 0);
+    QMenu *preprocessorMenu = new QMenu(tr("Host Preprocessor Commands"), nullptr);
     preprocessorMenu->addAction("#info sometext", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#include \"some.frag\"", textEdit , SLOT(insertText()));
+    preprocessorMenu->addAction("#include \"some.frag\"", textEdit, SLOT(insertText()));
     preprocessorMenu->addAction("#camera 2D", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#camera 3D", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#group parameter_group_name", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#preset preset_name", textEdit , SLOT(insertText()));
+    preprocessorMenu->addAction("#group parameter_group_name", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#preset preset_name", textEdit, SLOT(insertText()));
     preprocessorMenu->addAction("#endpreset", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#define DontClearOnChange", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#define IterationsBetweenRedraws 10", textEdit , SLOT(insertText()));
-    preprocessorMenu->addAction("#define SubframeMax 20", textEdit , SLOT(insertText()));
+    preprocessorMenu->addAction("#define DontClearOnChange", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#define IterationsBetweenRedraws 10", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#define SubframeMax 20", textEdit, SLOT(insertText()));
 
-    QMenu *textureFlagsMenu = new QMenu(tr("2D Texture Options"), 0);
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_CLAMP", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_CLAMP", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_LEVEL 1000", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_REPEAT", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_REPEAT", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_LINEAR", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_LINEAR", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_NEAREST", textEdit , SLOT(insertText()));
-    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_ANISOTROPY float(>1.0 <16.0)", textEdit , SLOT(insertText()));
+    QMenu *textureFlagsMenu = new QMenu(tr("2D Texture Options"), nullptr);
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_CLAMP", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_CLAMP", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_LEVEL 1000", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_S GL_REPEAT", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_WRAP_T GL_REPEAT", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_LINEAR", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_LINEAR", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_LINEAR_MIPMAP_NEAREST", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_LINEAR", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MIN_FILTER GL_NEAREST_MIPMAP_NEAREST", textEdit, SLOT(insertText()));
+    textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAX_ANISOTROPY float(>1.0 <16.0)", textEdit, SLOT(insertText()));
 
-    QMenu *uniformMenu = new QMenu(tr("Special Uniforms"), 0);
+    QMenu *uniformMenu = new QMenu(tr("Special Uniforms"), nullptr);
     uniformMenu->addAction("uniform float time;", textEdit , SLOT(insertText()));
     uniformMenu->addAction("uniform int subframe;", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform int i; slider[0,1,2]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform float f; slider[0,1,2]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec2 pixelSize;", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec2 v; slider[(0,0),(1,1),(1,1)]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform int i; slider[0,1,2]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform float f; slider[0,1,2]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec2 pixelSize;", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec2 v; slider[(0,0),(1,1),(1,1)]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit, SLOT(insertText()));
 
-    if( (engine->format().majorVersion() > 3 && engine->format().minorVersion() >= 0) ) {
-        uniformMenu->addAction("uniform double f; slider[0,1,2]", textEdit , SLOT(insertText()));
-        uniformMenu->addAction("uniform dvec2 v; slider[(0,0),(1,1),(1,1)]", textEdit , SLOT(insertText()));
-        uniformMenu->addAction("uniform dvec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit , SLOT(insertText()));
-        uniformMenu->addAction("uniform dvec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit , SLOT(insertText()));
+    if ((engine->format().majorVersion() > 3 && engine->format().minorVersion() >= 0)) {
+        uniformMenu->addAction("uniform double f; slider[0,1,2]", textEdit, SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec2 v; slider[(0,0),(1,1),(1,1)]", textEdit, SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec3 v; slider[(0,0,0),(1,1,1),(1,1,1)]", textEdit, SLOT(insertText()));
+        uniformMenu->addAction("uniform dvec4 v; slider[(0,0,0,0),(1,1,1,1),(1,1,1,1)]", textEdit, SLOT(insertText()));
     }
 
-    uniformMenu->addAction("uniform bool b; checkbox[true]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform sampler2D tex; file[tex.jpg]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform samplerCube cubetex; file[cubetex.jpg]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec3 color; color[0.0,0.0,0.0]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform vec4 color; color[0.0,1.0,0.0,0.0,0.0,0.0]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform bool DepthToAlpha; checkbox[true]", textEdit , SLOT(insertText()));
-    uniformMenu->addAction("uniform bool AutoFocus; checkbox[true]", textEdit , SLOT(insertText()));
+    uniformMenu->addAction("uniform bool b; checkbox[true]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform sampler2D tex; file[tex.jpg]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform samplerCube cubetex; file[cubetex.jpg]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec3 color; color[0.0,0.0,0.0]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform vec4 color; color[0.0,1.0,0.0,0.0,0.0,0.0]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform bool DepthToAlpha; checkbox[true]", textEdit, SLOT(insertText()));
+    uniformMenu->addAction("uniform bool AutoFocus; checkbox[true]", textEdit, SLOT(insertText()));
 
-    uniformMenu->insertMenu(0, textureFlagsMenu);
-    
-    QMenu *includeMenu = new QMenu(tr("Include (from Preferences Paths)"), 0);
+    uniformMenu->insertMenu(nullptr, textureFlagsMenu);
+
+    QMenu *includeMenu = new QMenu(tr("Include (from Preferences Paths)"), nullptr);
 
     QStringList filter;
     filter << "*.frag";
-//    readSettings();
     QStringList files = getFileManager()->getFiles(filter);
     foreach (QString s, files) {
-        includeMenu->addAction(QString("#include \"%1\"").arg(s),mainWindow, SLOT(insertText()));
+        includeMenu->addAction(QString("#include \"%1\"").arg(s), mainWindow, SLOT(insertText()));
     }
 
-    QAction* before = 0;
-    if (menu->actions().count() > 0) before = menu->actions()[0];
+    QAction *before = nullptr;
+    if (menu->actions().count() > 0) {
+        before = menu->actions()[0];
+    }
     menu->insertMenu(before, preprocessorMenu);
     menu->insertMenu(before, uniformMenu);
     menu->insertMenu(before, includeMenu);
 
     menu->insertSeparator(before);
-    menu->addAction(tr("Insert Preset from Current Settings"),mainWindow, SLOT(insertPreset()));
+    menu->addAction(tr("Insert Preset from Current Settings"), mainWindow, SLOT(insertPreset()));
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     bool modification = false;
-    for (int i = 0; i < tabInfo.size(); i++) {
-        if (tabInfo[i].unsaved) modification = true;
+    for (auto &i : tabInfo) {
+        if (i.unsaved) {
+            modification = true;
+        }
     }
 
     if (modification) {
-        QString mess = tr("There are tabs with unsaved changes.\r\n%1\r\nContinue and loose changes?").arg( variableEditor->hasEasing() ? "\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n":"\r\n");
+        QString mess = tr("There are tabs with unsaved changes.\r\n%1\r\nContinue and loose changes?")
+            .arg(variableEditor->hasEasing() ? "\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n" : "\r\n");
+
         int i = QMessageBox::warning(this, tr("Unsaved changes"), mess, QMessageBox::Ok, QMessageBox::Cancel);
         if (i == QMessageBox::Ok) {
             // OK
             ev->accept();
             return;
-        } else {
-            // Cancel
-            ev->ignore();
-            return;
         }
+
+        // Cancel
+        ev->ignore();
+        return;
     }
     ev->accept();
 
     writeSettings();
-    
-    if(keyframeMap.count() > 0) keyframeMap.clear();
-    if(easingMap.count() > 0) easingMap.clear();
-    
+
+    if (keyframeMap.count() > 0) {
+        keyframeMap.clear();
+    }
+    if (easingMap.count() > 0) {
+        easingMap.clear();
+    }
+
     QStringList openFiles;
-    if(tabInfo.size() > 0) {
-        for (int i = 0; i < tabInfo.size(); i++) {
-            openFiles << tabInfo[i].filename;
+    if (!tabInfo.isEmpty()) {
+        for (auto &i : tabInfo) {
+            openFiles << i.filename;
         }
     }
 
@@ -213,48 +234,48 @@ void MainWindow::newFile()
     insertTabPage("");
 }
 
-void MainWindow::insertPreset() {
+void MainWindow::insertPreset()
+{
     bool ok = false;
     QString newPreset;
     QTextCursor tc = getTextEdit()->textCursor();
 
     if(tc.hasSelection() &&
             tc.selectedText().contains("#preset", Qt::CaseInsensitive) &&
-            tc.selectedText().contains("#endpreset", Qt::CaseInsensitive)
-      ) { /// if we have selected text try to extract name
+            tc.selectedText().contains("#endpreset", Qt::CaseInsensitive)) { /// if we have selected text try to extract name
         newPreset = tc.selection().toPlainText();
         QStringList tmp = newPreset.split('\n');
         newPreset=tmp.at( tmp.indexOf( QRegExp("^#[Pp]reset.*$") ) );
         tmp = newPreset.split(" ");
         newPreset=tmp.at(1);
         ok = true;
-    }
-    else { /// no block marked or not a preset so move to the end of script to add a new one
+    } else { /// no block marked or not a preset so move to the end of script to add a new one
         tc.movePosition(QTextCursor::End);
         getTextEdit()->setTextCursor(tc);
-        if( engine->cameraID() == "3D" )
-          newPreset.sprintf("KeyFrame.%.3d", variableEditor->getKeyFrameCount()+1);
+        if (engine->cameraID() == "3D") {
+            newPreset.sprintf("KeyFrame.%.3d", variableEditor->getKeyFrameCount() + 1);
+        }
     }
 
     /// confirm keyframe name
     QString newPresetName = QInputDialog::getText(this, tr("Add Preset"),
-                            tr("Change the name for Preset, KeyFrame or Range"), QLineEdit::Normal,
-                              newPreset.toLatin1(), &ok);
+                            tr("Change the name for Preset, KeyFrame or Range"),
+                            QLineEdit::Normal, newPreset.toLatin1(), &ok);
 
     if (ok && !newPresetName.isEmpty()) {
 
         if(newPresetName.contains("KeyFrame.")) { /// adding keyframe
-            getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getCameraSettings() + "\n#endpreset\n");
-        } else if(newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
+            getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getCameraSettings() + "\n#endpreset\n");
+        } else if (newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
             if(variableEditor->hasEasing()) {
-                getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getEngine()->getCurveSettings().join("\n") + "\n#endpreset\n");
+                getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getEngine()->getCurveSettings().join("\n") + "\n#endpreset\n");
             } else {
-                QMessageBox::warning ( this, tr("Warning!"), tr("Setup some parameter Easing Curves first!") );
+                QMessageBox::warning(this, tr("Warning!"), tr("Setup some parameter Easing Curves first!"));
                 INFO(tr("%1 Failed!").arg(newPresetName));
                 return;
             }
         } else { /// adding a named preset
-            getTextEdit()->insertPlainText("\n#preset "+newPresetName+"\n" + getSettings() + "\n#endpreset\n");
+            getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getSettings() + "\n#endpreset\n");
         }
 
         needRebuild(ok);
@@ -269,13 +290,15 @@ void MainWindow::insertPreset() {
 void MainWindow::open()
 {
     QString filter = tr("Fragment Source (*.frag);;All Files (*.*)");
-    QString fileName = QFileDialog::getOpenFileName(this, QString(), QString(), filter);
+    QString fileName =
+        QFileDialog::getOpenFileName(this, QString(), QString(), filter);
     if (!fileName.isEmpty()) {
         loadFragFile(fileName);
     }
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent* ev) {
+void MainWindow::keyReleaseEvent(QKeyEvent *ev)
+{
 
     if (ev->key() == Qt::Key_Escape) {
         toggleFullScreen();
@@ -284,8 +307,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ev) {
     } else if (ev->key() == Qt::Key_Space) {
         if(engine->hasFocus()) {
             pausePlay = !pausePlay;
-            if(pausePlay && (engine->getState() == DisplayWidget::Animation)) stop();
-            else play();
+            if (pausePlay && (engine->getState() == DisplayWidget::Animation)) {
+                stop();
+            } else {
+                play();
+            }
         }
     } else {
         ev->ignore();
@@ -295,12 +321,13 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ev) {
 
 void MainWindow::clearTextures()
 {
-    engine->clearTextureCache(0);
+    engine->clearTextureCache(nullptr);
 }
 
-void MainWindow::bufferSpinBoxChanged(int)
+void MainWindow::bufferSpinBoxChanged(int value)
 {
-    QToolTip::showText(bufferSizeControl->pos(),tr("Set combobox to 'custom-size' to apply size."), 0);
+    Q_UNUSED(value)
+    QToolTip::showText(bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
 }
 
 
@@ -315,9 +342,8 @@ bool MainWindow::save()
 
     if (t.hasBeenSavedOnce) {
         return saveFile(t.filename);
-    } else {
-        return saveAs();
     }
+    return saveAs();
 }
 
 bool MainWindow::saveAs()
@@ -333,24 +359,25 @@ bool MainWindow::saveAs()
     QString filter = tr("Fragment Source (*.frag);;All Files (*.*)");
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), t.filename, filter);
-    if (fileName.isEmpty())
+    if (fileName.isEmpty()) {
         return false;
+    }
 
-    if(saveFile(fileName))
-    {
+    if (saveFile(fileName)) {
         t.filename = fileName;
         return true;
     }
     return false;
 }
 
-void MainWindow::showHelpMessage(QString title, QString mess) {
-   
+void MainWindow::showHelpMessage(const QString title, const QString mess)
+{
+
     QMessageBox mb(this);
     mb.setText(mess);
     mb.setWindowTitle(title);
     mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
-    QGridLayout* layout = (QGridLayout*)mb.layout();
+    auto *layout = (QGridLayout *)mb.layout();
     layout->setColumnMinimumWidth( 2, 640);
     mb.exec();
 
@@ -361,7 +388,7 @@ void MainWindow::about()
     QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
 
     text += tr("<h1>Fragmentarium</h1>"
-    "<p>Version %1. </p>").arg(version.toLongString());
+               "<p>Version %1. </p>").arg(version.toLongString());
 
     text += tr("<p>An integrated environment for exploring GPU pixel graphics. </p>"
     "<p>Created by Mikael Hvidtfeldt Christensen.<br />Licensed and distributed under the LPGL or GPL license.</p>"
@@ -389,7 +416,7 @@ void MainWindow::about()
 void MainWindow::showControlHelp()
 {
   QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
-  text += tr("<p>"
+    text += tr("<p>"
   "Notice: the 3D view must have keyboard focus!"
   "</p>"
   "<h2>2D</h2>"
@@ -434,7 +461,7 @@ void MainWindow::showControlHelp()
   text += "</html>";
 
   showHelpMessage(tr("Mouse and Keyboard Control"), text);
-  
+
 }
 
 void MainWindow::showScriptingHelp()
@@ -544,14 +571,19 @@ void MainWindow::showScriptingHelp()
 
 void MainWindow::documentWasModified()
 {
-    if (tabBar->currentIndex() < 0) return;
+    if (tabBar->currentIndex() < 0) {
+        return;
+    }
     // when all is undone
-    if(tabInfo[tabBar->currentIndex()].textEdit->document()->availableUndoSteps() == 0)
+    if (tabInfo[tabBar->currentIndex()].textEdit->document()->availableUndoSteps() == 0) {
         tabInfo[tabBar->currentIndex()].unsaved = false;
-    else
+    } else {
         tabInfo[tabBar->currentIndex()].unsaved = true;
+    }
 
-    if (tabBar->currentIndex() > tabInfo.size()) return;
+    if (tabBar->currentIndex() > tabInfo.size()) {
+        return;
+    }
 
     TabInfo t = tabInfo[tabBar->currentIndex()];
     QString tabTitle = QString("%1%2").arg(strippedName(t.filename)).arg(t.unsaved ? "*" : "");
@@ -578,9 +610,11 @@ void MainWindow::init()
     stackedTextEdits = new QStackedWidget(splitter);
 
     engine = new DisplayWidget(this, splitter);
+    engine->setObjectName("DisplayWidget");
     engine->show();
-    
+
     tabBar = new QTabBar(this);
+    tabBar->setObjectName("TabBar");
 
     tabBar->setTabsClosable(true);
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
@@ -608,7 +642,7 @@ void MainWindow::init()
     dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-    QVBoxLayout* vboxLayout1 = new QVBoxLayout(dockLogContents);
+    auto *vboxLayout1 = new QVBoxLayout(dockLogContents);
     vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
     vboxLayout1->setContentsMargins(0, 0, 0, 0);
 
@@ -622,21 +656,22 @@ void MainWindow::init()
     editorDockWidget->setMinimumWidth(320);
     editorDockWidget->setWindowTitle(tr("Variable Editor (uniforms)"));
     editorDockWidget->setObjectName(QString::fromUtf8("editorDockWidget"));
-    editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
+    editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
-    QVBoxLayout* vboxLayout2 = new QVBoxLayout(editorLogContents);
+    auto *vboxLayout2 = new QVBoxLayout(editorLogContents);
     vboxLayout2->setObjectName(QString::fromUtf8("vboxLayout2"));
     vboxLayout2->setContentsMargins(0, 0, 0, 0);
 
     variableEditor = new VariableEditor(editorDockWidget, this);
+    variableEditor->setObjectName("VariableEditor");
     variableEditor->setMinimumWidth(320);
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
     connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
     connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
-    
+
     editorDockWidget->setHidden(true);
     setMouseTracking(true);
 
@@ -645,7 +680,6 @@ void MainWindow::init()
     INFO("");
 
     connect(this->tabBar, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
-
 
     {
         QSettings settings;
@@ -662,11 +696,10 @@ void MainWindow::init()
                         "\nTo prevent repeated crashes, you may choose to disable 'Autorun on Load'."
                         "\nThis option may be re-enabled through Preferences");
 
-
             QMessageBox msgBox(this);
             msgBox.setText(s);
             msgBox.setIcon(QMessageBox::Warning);
-            QAbstractButton* b = msgBox.addButton(tr("Disable Autorun"),QMessageBox::AcceptRole);
+            QAbstractButton *b = msgBox.addButton(tr("Disable Autorun"), QMessageBox::AcceptRole);
             msgBox.addButton(tr("Enable Autorun"),QMessageBox::RejectRole);
 
             msgBox.exec();
@@ -681,7 +714,9 @@ void MainWindow::init()
 
     readSettings();
 
-    if(loggingToFile) logger->setLogToFile();
+    if (loggingToFile) {
+        logger->setLogToFile();
+    }
 
     createActions();
 
@@ -701,25 +736,28 @@ initTools();
     setupScriptEngine();
     play();
     veDockChanged(true);
+
 }
 
 #ifdef USE_OPEN_EXR
-void MainWindow::initTools() {
+void MainWindow::initTools()
+{
 
     QStringList filters;
-       
-    if(exrToolsMenu == 0)
+
+    if (exrToolsMenu == nullptr) {
       exrToolsMenu = menuBar()->addMenu(tr("EXR &Tools"));
+    }
 
     QDir exrbp( exrBinaryPath.first() );
-    
+
     while (!exrbp.exists()) {
         exrBinaryPath.removeFirst();
         exrbp.setPath( exrBinaryPath.first() );
     }
 
     if (!exrbp.exists()) {
-        QAction* a = new QAction(tr("Unable to locate: ")+exrbp.absolutePath(), this);
+        QAction *a = new QAction(tr("Unable to locate: ") + exrbp.absolutePath(), this);
         a->setEnabled(false);
         exrToolsMenu->addAction(a);
     } else {
@@ -727,7 +765,7 @@ void MainWindow::initTools() {
         exrToolsMenu->clear();
 
         // -- OpenEXR binary tools Menu --
-        if(exrToolsMenu != 0) {
+        if (exrToolsMenu != nullptr) {
             filters.clear();
             filters << "exr*";
 
@@ -737,13 +775,13 @@ void MainWindow::initTools() {
             dir.setNameFilters(filters);
 
             QStringList sl = dir.entryList();
-            if(sl.size() == 0) {
-                QAction* a = new QAction(tr("Unable to locate OpenEXR binaries !!!"), this);
+            if (sl.isEmpty()) {
+                QAction *a = new QAction(tr("Unable to locate OpenEXR binaries !!!"), this);
                 a->setEnabled(false);
                 exrToolsMenu->addAction(a);
             } else {
                 for (int i = 0; i < sl.size(); i++) {
-                    QAction* a = new QAction(sl[i], this);
+                    auto *a = new QAction(sl[i], this);
                     QString absPath = QDir(path ).absoluteFilePath(sl[i]);
 
                     a->setData(absPath);
@@ -757,7 +795,8 @@ void MainWindow::initTools() {
     }
 }
 
-void MainWindow::runTool() {
+void MainWindow::runTool()
+{
     QString cmnd = sender()->objectName();
     // execute once with -h option and capture the output
     cmnd += " -h &> .htxt"; // > filename 2>&1
@@ -765,20 +804,25 @@ void MainWindow::runTool() {
 
         // open the resulting textfile and parse for command information
         QFile file(".htxt");
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             return;
+        }
         // grab the general help text
         QString helpText;
         while (!file.atEnd()) {
             QByteArray line = file.readLine();
-            if( QString(line).contains("Options") && QString(line).contains(":")) break;
+            if (QString(line).contains("Options") && QString(line).contains(":")) {
+                break;
+            }
             helpText += QString(line);
         }
         // grab the option details
         QString detailedText;
         while (!file.atEnd()) {
             QByteArray line = file.readLine();
-            if( QString(line).contains("Options:") ) continue;
+            if (QString(line).contains("Options:")) {
+                continue;
+            }
             detailedText += QString(line);
         }
         file.remove();
@@ -794,7 +838,8 @@ void MainWindow::runTool() {
 
 #endif // USE_OPEN_EXR
 
-void MainWindow::showWelcomeNote() {
+void MainWindow::showWelcomeNote()
+{
     QString s =
         tr("This is your first run of Fragmentarium.\nPlease read this:\n\n"
         "(1) Fragmentarium requires a decent GPU, preferably a NVIDIA or ATI discrete graphics card with recent drivers.\n\n"
@@ -807,20 +852,16 @@ void MainWindow::showWelcomeNote() {
 
 }
 
-void MainWindow::setUserUniforms(QOpenGLShaderProgram* shaderProg) {
-    
-//         DBOUT << shaderProg->programId();
-
-    if (!variableEditor || !shaderProg) return;    
-    variableEditor->setUserUniforms(shaderProg);
-}
-
-void MainWindow::variablesChanged(bool lockedChanged) {
-    if(lockedChanged) highlightBuildButton(true);
+void MainWindow::variablesChanged(bool lockedChanged)
+{
+    if (lockedChanged) {
+        highlightBuildButton(true);
+    }
     engine->uniformsHasChanged();
 }
 
-void MainWindow::createOpenGLContextMenu() {
+void MainWindow::createOpenGLContextMenu()
+{
     openGLContextMenu = new QMenu();
     openGLContextMenu->addAction(fullScreenAction);
     openGLContextMenu->addMenu(fileMenu);
@@ -831,7 +872,8 @@ void MainWindow::createOpenGLContextMenu() {
     engine->setContextMenu(openGLContextMenu);
 }
 
-void MainWindow::toggleFullScreen() {
+void MainWindow::toggleFullScreen()
+{
     if (fullScreenEnabled) {
         frameMainWindow->setMargin(4);
         showNormal();
@@ -1003,7 +1045,7 @@ void MainWindow::createActions()
     connect(faqAction, SIGNAL(triggered()), this, SLOT(launchFAQ()));
 
     for (int i = 0; i < maxRecentFiles; ++i) {
-        QAction* a = new QAction(this);
+        auto *a = new QAction(this);
         a->setVisible(false);
         connect(a, SIGNAL(triggered()), this, SLOT(openFile()));
         recentFileActions.append(a);
@@ -1023,7 +1065,9 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAction);
 
     recentFileSeparator = fileMenu->addSeparator();
-    for (int i = 0; i < maxRecentFiles; ++i) fileMenu->addAction(recentFileActions[i]);
+    for (int i = 0; i < maxRecentFiles; ++i) {
+        fileMenu->addAction(recentFileActions[i]);
+    }
     fileMenu->addSeparator();
     fileMenu->addAction(closeAction);
     fileMenu->addAction(exitAction);
@@ -1050,7 +1094,7 @@ void MainWindow::createMenus()
     // -- Render Menu --
     renderMenu = menuBar()->addMenu(tr("&Render"));
     renderMenu->addAction(renderAction);
-    renderMenu->addAction(QIcon(":/Icons/render.png"),tr("High Resolution and Animation Render"), this, SLOT(tileBasedRender()));
+    renderMenu->addAction(QIcon(":/Icons/render.png"), tr("High Resolution and Animation Render"), this, SLOT(tileBasedRender()));
     renderMenu->addSeparator();
     renderMenu->addAction(tr("Output Preprocessed Script (for Debug)"), this, SLOT(showPreprocessedScript()));
     renderMenu->addSeparator();
@@ -1080,7 +1124,7 @@ void MainWindow::createMenus()
     QMenu* mc = createPopupMenu();
     mc->setTitle(tr("Windows"));
     menuBar()->addMenu(mc);
-    
+
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
     helpMenu->addAction(aboutAction);
@@ -1109,7 +1153,8 @@ void MainWindow::createMenus()
 
 }
 
-void MainWindow::buildExamplesMenu() {
+void MainWindow::buildExamplesMenu()
+{
     QStringList filters;
     // Scan examples dir...
     QDir d(getExamplesDir());
@@ -1132,12 +1177,14 @@ void MainWindow::buildExamplesMenu() {
 
             QMenu* currentMenu = examplesMenu;
             QString path = pathStack.pop();
-            if (menuMap.contains(path)) currentMenu = menuMap[path];
+            if (menuMap.contains(path)) {
+                currentMenu = menuMap[path];
+            }
             QDir dir(path);
 
             QStringList sl = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
             for (int i = 0; i < sl.size(); i++) {
-                QMenu* menu = new QMenu(sl[i]);
+                auto *menu = new QMenu(sl[i]);
                 QString absPath = QDir(path + QDir::separator() +  sl[i]).absolutePath();
                 menuMap[absPath] = menu;
                 currentMenu->addMenu(menu);
@@ -1149,7 +1196,7 @@ void MainWindow::buildExamplesMenu() {
 
             sl = dir.entryList();
             for (int i = 0; i < sl.size(); i++) {
-                QAction* a = new QAction(sl[i], this);
+                auto *a = new QAction(sl[i], this);
                 a->setIcon(QIcon(":/Icons/mail_new.png"));
 
 
@@ -1163,28 +1210,36 @@ void MainWindow::buildExamplesMenu() {
     }
 }
 
-QString MainWindow::makeImgFileName(int timeStep, int timeSteps, QString fileName) {
+QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
+                                    const QString fileName)
+{
     QString name = fileName;
 
     if (timeSteps > 1) {
         int digits = 5;
-        if (timeSteps > 99999) digits = 6; // possible, feature-film length
-        if (timeSteps > 999999) digits = 7; // unlikely
+        if (timeSteps > 99999) {
+            digits = 6;
+        } // possible, feature-film length
+        if (timeSteps > 999999) {
+            digits = 7;
+        } // unlikely
         int lastPoint = fileName.lastIndexOf(".");
-        name = QString("%1.%2.%3").arg(fileName.left(lastPoint))
+        name = QString("%1.%2.%3")
+               .arg(fileName.left(lastPoint))
                .arg(timeStep,digits,10,QChar('0'))
                .arg(fileName.right(fileName.size()-lastPoint-1));
     }
     return name;
 }
 
-void MainWindow::tileBasedRender() {
+void MainWindow::tileBasedRender()
+{
 
     if (!engine->hasShader()) {
         WARNING(tr("Build the fragment first!"));
         return;
     }
-        
+
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
@@ -1193,9 +1248,10 @@ retry:
     QString subdirName;
 
     if(!runFromScript) {
-        if(od.exec() != QDialog::Accepted) return;
-    }
-    else {
+        if (od.exec() != QDialog::Accepted) {
+            return;
+        }
+    } else {
         od.readOutputSettings();
     }
 
@@ -1219,14 +1275,17 @@ retry:
         try {
             QString file = tabInfo[tabBar->currentIndex()].filename;
             FragmentSource fs = p.createAutosaveFragment(inputText,file);
-            // if the first line is the #version preprocessor command it must stay as the first line
+            // if the first line is the #version preprocessor command it must stay as
+            // the first line
             QString firstLine = fs.source[0].trimmed() + "\n";
             if (firstLine.startsWith("#version")) {
                 fs.source.removeAt(0);
                 fs.lines.removeAt(0);
-            } else firstLine = "";
+            } else {
+                firstLine = "";
+            }
 
-            QString prepend =  firstLine + tr("// Output generated from file: ") + file + "\n";
+            QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
             prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
             QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
 
@@ -1253,40 +1312,32 @@ retry:
             QString subdirName = od.getFolderName();
             if (!oDir.mkdir(subdirName)) {
 
-              QMessageBox::warning(this, tr("Fragmentarium"),
-                                   tr("Could not create directory %1:\n.")
-                                   .arg(oDir.filePath(subdirName)));
+              QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
               return;
             }
             subdirName = oDir.filePath(subdirName); // full name
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
             QFile fileStream(subdirName + QDir::separator() + fileName);
             if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                QMessageBox::warning(this, tr("Fragmentarium"),
-                                     tr("Cannot write file %1:\n%2.")
-                                     .arg(fileName)
-                                     .arg(fileStream.errorString()));
+                QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
                 return;
             }
 
             QTextStream out(&fileStream);
             out << final;
-            INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
+            INFO(tr("Saved fragment + settings as: ") + subdirName +
+                 QDir::separator() + fileName);
 
             if(includeWithAutoSave) {
                 // Copy files.
                 QStringList ll = p.getDependencies();
-                foreach (QString l, ll) {
-                    QString from = l;
-                    QString to =  QDir(subdirName).absoluteFilePath( QFileInfo(l).fileName() );
+                foreach (QString from, ll) {
+                    QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
                     if (!QFile::copy(from,to)) {
-                        QMessageBox::warning(this, tr("Fragmentarium"),
-                                            tr("Could not copy dependency:\n'%1' to \n'%2'.")
-                                            .arg(from)
-                                            .arg(to));
+                        QMessageBox::warning(
+                            this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
                     }
-
                 }
             }
         } catch (Exception& e) {
@@ -1314,7 +1365,7 @@ retry:
     engine->setEXRmode(exrMode);
 #endif
 
-    if( (tileWidth*maxTiles>32768 || tileHeight*maxTiles > 32768) && !exrMode ) {
+    if ((tileWidth * maxTiles > 32768 || tileHeight * maxTiles > 32768) && !exrMode) {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setText( QString("%1x%2 %3").arg(tileWidth*maxTiles).arg(tileHeight*maxTiles).arg(tr("is too large!\nMust be less than 32769x32769")));
@@ -1338,14 +1389,13 @@ retry:
     if (timeSteps==0) {
         startTime = getFrame();
         timeSteps = startTime+1;
-    }
-    else if (endTime > startTime) {
+    } else if (endTime > startTime) {
         timeSteps = endTime;
     }
 
     int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
     int steps = startTime*maxTiles*maxTiles*maxSubframes;
-    
+
     engine->tileAVG = 0;
     engine->renderAVG = 0;
     engine->renderETA =  "";
@@ -1353,16 +1403,17 @@ retry:
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
     progress.setValue ( 0 );
-    progress.move((width()-progress.width())/2,(height()-progress.height())/2);
+    progress.move((width() - progress.width()) / 2, (height() - progress.height()) / 2);
     progress.setWindowModality(Qt::WindowModal);
     progress.setValue(steps);
-    QLabel *lab; lab = new QLabel();
+    QLabel *lab;
+    lab = new QLabel();
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
     progress.show();
     progress.resize(300, 120);
-    
+
     QTime totalTime;
     totalTime.start();
 
@@ -1378,7 +1429,7 @@ retry:
             }
 
             if ( variableEditor->hasKeyFrames() ) {
-                if (engine->eyeSpline != NULL) {
+                if (engine->eyeSpline != nullptr) {
                     int index = timeStep+1;
                     QVector3D e = engine->eyeSpline->getSplinePoint(index);
                     QVector3D t = engine->targetSpline->getSplinePoint(index);
@@ -1392,20 +1443,23 @@ retry:
 
         QVector<QImage> cachedTileImages;
 
-        QString name=fileName; // prevent double numbering in file name when under script control
-        if(!fileName.contains(QRegExp(".[0-9]{5,7}.")))
+        QString name = fileName; // prevent double numbering in file name when under script control
+        if (!fileName.contains(QRegExp(".[0-9]{5,7}."))) {
             name=makeImgFileName(timeStep, timeSteps, fileName);
+        }
 
         if (od.doSaveFragment() || od.doAnimation()) {
           subdirName = od.getFolderName();
-          // save the image(s) in the frags folder unless the image name indicates it's own folder
+            // save the image(s) in the frags folder unless the image name indicates it's own folder
           if(!name.contains(QDir::separator())) {
-            name = (QFileInfo(name).absolutePath() + QDir::separator() + subdirName + QDir::separator() + QFileInfo(name).fileName());
-            QDir dir(QFileInfo(name).absolutePath());
-            if(!dir.exists()) dir.mkdir(QFileInfo(name).absolutePath());
+              name = (QFileInfo(name).absolutePath() + QDir::separator() + subdirName + QDir::separator() + QFileInfo(name).fileName());
+              QDir dir(QFileInfo(name).absolutePath());
+              if (!dir.exists()) {
+                  dir.mkdir(QFileInfo(name).absolutePath());
+              }
           }
         }
-        
+
         QTime frametime;
         frametime.start();
 
@@ -1413,7 +1467,7 @@ retry:
         stop();
 
         statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
-        
+
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             //
@@ -1438,24 +1492,26 @@ retry:
 
               QTime tiletime;
               tiletime.start();
-              
+
               if (!progress.wasCanceled()) {
 
-                    QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
                     if (padding>0.0)  {
                         int w = im.width();
                         int h = im.height();
-                        int nw = (int)(w / (1.0 + padding));
-                        int nh = (int)(h / (1.0 + padding));
+                        auto nw = (int)(w / (1.0 + padding));
+                        auto nh = (int)(h / (1.0 + padding));
                         int ox = (w-nw)/2;
                         int oy = (h-nh)/2;
                         im = im.copy(ox,oy,nw,nh);
                     }
 
-                    if(tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
                         cachedTileImages.append(im);
+                    }
 
                     int dx = (tile / maxTiles);
                     int dy = (maxTiles-1)-(tile % maxTiles);
@@ -1471,7 +1527,7 @@ retry:
                     out.writeTile (dx, dy);
 
                     // display tiles while rendering if the tiles fit the window
-                    if(engine->width() >= im.width()*maxTiles && engine->height() >= im.height()*maxTiles) {
+                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
                         QPainter painter(engine);
                         QRect target(xoff, yoff, tileWidth, tileHeight);
                         QRect source(0, 0, tileWidth, tileHeight);
@@ -1482,11 +1538,11 @@ retry:
                   stopScript();
                   tile = maxTiles*maxTiles;
                 }
-                if((maxTiles*maxTiles) == 1)
+                if ((maxTiles * maxTiles) == 1) {
                     engine->tileAVG = tiletime.elapsed();
-                else
+                } else {
                     engine->tileAVG += tiletime.elapsed();
-
+                }
             }
 
             imageSaved = out.isValidLevel(0,0);
@@ -1495,28 +1551,30 @@ retry:
         } else
 #endif
         {
-            
+
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
                 QTime tiletime;
                 tiletime.start();
-                
+
                 if (!progress.wasCanceled()) {
-                    QImage im(tileWidth,tileHeight,QImage::Format_ARGB32); im.fill(Qt::black);
-                    engine->renderTile(padding,time, maxSubframes, tileWidth,tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-    
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+
                     if (padding>0.0)  {
-                        int nw = (int)(tileWidth / (1.0 + padding));
-                        int nh = (int)(tileHeight / (1.0 + padding));
+                        auto nw = (int)(tileWidth / (1.0 + padding));
+                        auto nh = (int)(tileHeight / (1.0 + padding));
                         int ox = (tileWidth-nw)/2;
                         int oy = (tileHeight-nh)/2;
                         im = im.copy(ox,oy,nw,nh);
                     }
-                    
-                    if(tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)
+
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
                         cachedTileImages.append(im);
+                    }
 
                     // display tiles while rendering if the tiles fit the window
-                    if(engine->width() >= tileWidth*maxTiles && engine->height() >= tileHeight*maxTiles) {
+                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
                         int dx = (tile / maxTiles);
                         int dy = (maxTiles-1)-(tile % maxTiles);
                         int xoff = dx*tileWidth;
@@ -1525,46 +1583,47 @@ retry:
                         QRect source(0, 0, tileWidth, tileHeight);
                         QPainter painter(engine);
                         painter.drawImage(target, im, source);
-                    }
-                    else // display scaled tiles if tile is same size or smaller than the window
-                        if ( engine->width() >= tileWidth && engine->height() >= tileHeight) {
+                    } else // display scaled tiles if tile is same size or smaller than the window
+                        if (engine->width() >= tileWidth &&
+                                engine->height() >= tileHeight) {
                             float wScaleFactor = engine->width() / maxTiles;
                             float hScaleFactor = engine->height() / maxTiles;
                             int dx = (tile / maxTiles);
                             int dy = (maxTiles-1)-(tile % maxTiles);
                             QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                            QRect target ( dx*wScaleFactor, dy*hScaleFactor, wScaleFactor, hScaleFactor );
+                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
                             QPainter painter ( engine );
-                            im = im.scaled(wScaleFactor, hScaleFactor,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
                             painter.drawImage ( target, im, source );
                         }
                 } else {
                     stopScript();
                     tile = maxTiles*maxTiles;
                 }
-                
-                if((maxTiles*maxTiles) == 1)
+
+                if ((maxTiles * maxTiles) == 1) {
                     engine->tileAVG = tiletime.elapsed();
-                else
+                } else {
                     engine->tileAVG += tiletime.elapsed();
+                }
                 engine->update();
             }
         }
-        
+
         pause ? stop() : play();
-        
+
         engine->tileAVG /= maxTiles*maxTiles;
-        if((maxTiles*maxTiles) == 1)
+        if ((maxTiles * maxTiles) == 1) {
             engine->renderAVG = frametime.elapsed();
-        else
+        } else {
             engine->renderAVG += frametime.elapsed();
-        
+        }
+
         // Now assemble image
-        if (!progress.wasCanceled() &&
-                (!exrMode || (preview && tileWidth*maxTiles<32769 && tileHeight*maxTiles < 32769)) ) {
+        if (!progress.wasCanceled() && (!exrMode || (preview && tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769))) {
             int w = cachedTileImages[0].width();
             int h = cachedTileImages[0].height();
-            QImage finalImage(w*maxTiles,h*maxTiles,cachedTileImages[0].format());
+            QImage finalImage(w * maxTiles, h * maxTiles, cachedTileImages[0].format());
             // There IS a Qt function to copy entire images!
             QPainter painter(&finalImage);
             for (int i = 0; i < maxTiles*maxTiles; i++) {
@@ -1577,12 +1636,12 @@ retry:
                 painter.drawImage(target, cachedTileImages[i], source);
             }
 
-            INFO(QString("Created combined image (%1,%2)").arg(w*maxTiles).arg(h*maxTiles));
+            INFO(QString("Created combined image (%1,%2)").arg(w * maxTiles).arg(h * maxTiles));
 
             if (preview) {
                 static QDialog* qd;
                 /// prevent multiple previews
-                if(findChild<QDialog*>("PREVIEW")) {
+                if (findChild<QDialog *>("PREVIEW") != 0) {
                     qd = findChild<QDialog*>("PREVIEW");
                     qd->close();
                     qd->~QDialog();
@@ -1590,13 +1649,13 @@ retry:
                 qd = new QDialog(this);
                 qd->setObjectName("PREVIEW");
 
-                QVBoxLayout *l = new QVBoxLayout;
+                auto *l = new QVBoxLayout;
 
                 QLabel* label = new QLabel();
                 label->setObjectName("previewImage");
                 label->setPixmap(QPixmap::fromImage(finalImage));
 
-                QScrollArea* scrollArea = new QScrollArea;
+                auto *scrollArea = new QScrollArea;
                 scrollArea->setBackgroundRole(QPalette::Dark);
                 scrollArea->setWidget(label);
                 l->addWidget(scrollArea);
@@ -1609,8 +1668,7 @@ retry:
                 qd->setLayout(l);
                 qd->show();
 
-            } else if( !exrMode )
-            {
+            } else if (!exrMode) {
               finalImage.setText("frAg", variableEditor->getSettings());
               imageSaved=finalImage.save(name);
             }
@@ -1619,24 +1677,28 @@ retry:
         if(!preview) {
             if(imageSaved && !progress.wasCanceled()) {
                 INFO(tr("Saved file : ") + name);
+            } else {
+                WARNING(tr("Save file failed! : ") + name);
             }
-            else WARNING(tr("Save file failed! : ") + name);
         }
     }
 
     engine->tilesCount = 0;
     engine->setState(oldState);
     progress.setValue(totalSteps);
-    if (preview || progress.wasCanceled()) engine->requireRedraw(true);
+    if (preview || progress.wasCanceled()) {
+        engine->requireRedraw(true);
+    }
     engine->clearTileBuffer();
     engine->updateBuffers();
-    
+
 }
 
-void MainWindow::savePreview() {
+void MainWindow::savePreview()
+{
 
     QDialog *qd;
-    if(findChild<QDialog*>("PREVIEW")) {
+    if (findChild<QDialog *>("PREVIEW") != 0) {
         qd = findChild<QDialog*>("PREVIEW");
 
         QStringList extensions;
@@ -1647,10 +1709,10 @@ void MainWindow::savePreview() {
         QString ext = QString(tr("Images (")) + extensions.join ( " " ) + tr(")");
 
         QString fn;
-        fn = QFileDialog::getSaveFileName(qd,tr("Save preview image..."),"preview.png",ext);
+        fn = QFileDialog::getSaveFileName(qd, tr("Save preview image..."), "preview.png", ext);
         if(!fn.isEmpty()) {
-            QLabel* label = qd->findChild<QLabel*>("previewImage");
-            if(label) {
+            auto *label = qd->findChild<QLabel *>("previewImage");
+            if (label != nullptr) {
                 QImage img = label->pixmap()->toImage();
                 img.setText("frAg", variableEditor->getSettings());
                 img.save(fn);
@@ -1661,16 +1723,20 @@ void MainWindow::savePreview() {
     }
 }
 
-void MainWindow::pasteSelected() {
+void MainWindow::pasteSelected()
+{
     QString settings = getTextEdit()->textCursor().selectedText();
     // Note: If the selection obtained from an editor spans a line break,
-    // the text will contain a Unicode U+2029 paragraph separator character instead of a newline \n character. Use QString::replace() to replace these characters with newlines
+    // the text will contain a Unicode U+2029 paragraph separator character
+    // instead of a newline \n character. Use QString::replace() to replace these
+    // characters with newlines
     settings = settings.replace(QChar::ParagraphSeparator,"\n");
     variableEditor->setSettings(settings);
     INFO(tr("Pasted selected settings"));
 }
 
-void MainWindow::saveParameters() {
+void MainWindow::saveParameters()
+{
     QString filter = tr("Fragment Parameters (*.fragparams);;All Files (*.*)");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), "", filter);
 
@@ -1678,17 +1744,16 @@ void MainWindow::saveParameters() {
 
 }
 
-void MainWindow::saveParameters(QString fileName) {
+void MainWindow::saveParameters(const QString fileName)
+{
 
-    if (fileName.isEmpty())
+    if (fileName.isEmpty()) {
         return;
+    }
 
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Fragmentarium"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
+        QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return;
     }
 
@@ -1697,18 +1762,16 @@ void MainWindow::saveParameters(QString fileName) {
     INFO(tr("Settings saved to file"));
 }
 
-void MainWindow::loadParameters(QString fileName) {
+void MainWindow::loadParameters(const QString fileName)
+{
     QFile file(fileName);
     if (fileName.toLower().endsWith(".png") && file.exists()) {
       variableEditor->setSettings(QImage(fileName).text("frAg"));
       return;
     }
-      else
+
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Fragmentarium"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
+        QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot read file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return;
     }
 
@@ -1718,11 +1781,13 @@ void MainWindow::loadParameters(QString fileName) {
     INFO(tr("Settings loaded from file") );
 }
 
-void MainWindow::loadParameters() {
+void MainWindow::loadParameters()
+{
     QString filter = tr("Fragment Parameters (*.fragparams);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Load"), "", filter);
-    if (fileName.isEmpty())
+    if (fileName.isEmpty()) {
         return;
+    }
 
     loadParameters(fileName);
 }
@@ -1738,7 +1803,7 @@ void MainWindow::createToolBars()
 //     fileToolBar->hide();
     QSettings settings;
     settings.value("showFileToolbar").toBool() ? fileToolBar->show() : fileToolBar->hide();
-    
+
     editToolBar = addToolBar(tr("Edit Toolbar"));
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
@@ -1746,7 +1811,7 @@ void MainWindow::createToolBars()
     editToolBar->setObjectName("EditToolbar");
 //     editToolBar->hide();
     settings.value("showEditToolbar").toBool() ? editToolBar->show() : editToolBar->hide();
-    
+
     bufferToolBar = addToolBar(tr("Buffer Dimensions"));
     bufferToolBar->addWidget(new QLabel(tr("Buffer Size. X: "), this));
     bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
@@ -1764,7 +1829,7 @@ void MainWindow::createToolBars()
     connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
     connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
     bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
-    QMenu* menu = new QMenu();
+    auto *menu = new QMenu();
     bufferAction1 = menu->addAction(tr("Lock to window size"));
     bufferAction1_2 = menu->addAction(tr("Lock to 1/2 window size"));
     bufferAction1_4 = menu->addAction(tr("Lock to 1/4 window size"));
@@ -1773,7 +1838,7 @@ void MainWindow::createToolBars()
     bufferActionCustom = menu->addAction(tr("Custom size"));
     bufferSizeControl->setMenu(menu);
 
-    connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(bufferActionChanged(QAction*)));
+    connect(menu, SIGNAL(triggered(QAction *)), this, SLOT(bufferActionChanged(QAction *)));
 
     bufferToolBar->addWidget(bufferYSpinBox);
     bufferToolBar->addWidget(bufferSizeControl);
@@ -1788,7 +1853,7 @@ void MainWindow::createToolBars()
 
     renderModeToolBar = addToolBar(tr("Rendering Mode"));
 
-    //     renderModeToolBar->addWidget(new QLabel("Render mode:", this));
+//     renderModeToolBar->addWidget(new QLabel("Render mode:", this));
 
     progressiveButton = new QPushButton( tr("Progressive"),renderModeToolBar);
     progressiveButton->setCheckable(true);
@@ -1796,7 +1861,7 @@ void MainWindow::createToolBars()
     animationButton = new QPushButton( tr("Animation"),renderModeToolBar);
     animationButton->setCheckable(true);
 
-    QButtonGroup* bg =new QButtonGroup(renderModeToolBar);
+    auto *bg = new QButtonGroup(renderModeToolBar);
     bg->addButton(progressiveButton);
     bg->addButton(animationButton);
 
@@ -1805,7 +1870,6 @@ void MainWindow::createToolBars()
 
     renderModeToolBar->addWidget(progressiveButton);
     renderModeToolBar->addWidget(animationButton);
-
 
     rewindAction = new QAction(QIcon(":/Icons/player_rew.png"), tr("Rewind"), this);
     rewindAction->setShortcut(tr("F10"));
@@ -1853,7 +1917,7 @@ void MainWindow::createToolBars()
     timeSlider->setMinimum(0);
     timeSlider->setValue(0);
 
-    timeSlider->setMaximum(10*renderFPS); // seconds * frames per second = length of anim
+    timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
     timeToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(timeToolBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(timeLineRequest(QPoint)));
@@ -1867,30 +1931,34 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeMaxSpinBox);
     timeToolBar->setObjectName("Time");
 
-    timeMaxChanged(timeMaxSpinBox->value()); // call when timeMax changes to setup the time slider for frame accuracy
+    timeMaxChanged(timeMaxSpinBox->value()); // call when timeMax changes to setup
+    // the time slider for frame accuracy
     autoFocusEnabled = false;
+
 }
 
-void MainWindow::setTimeSliderValue(int v) {
+void MainWindow::setTimeSliderValue(int value)
+{
     // timeslider max = animation length in frames set here to keep in sync with framerate/duration changes
     timeSlider->setMaximum(timeMaxSpinBox->value()*renderFPS);
 
-    if(v >= timeMaxSpinBox->value()*renderFPS) {
-        if(wantLoopPlay && engine->getState()==DisplayWidget::Animation && !pausePlay) {
+    if (value >= timeMaxSpinBox->value() * renderFPS) {
+        if (wantLoopPlay && engine->getState() == DisplayWidget::Animation && !pausePlay) {
             rewind();
             play();
             return;
         }
         playAction->setEnabled(true);
         stopAction->setEnabled(false);
-        lastStoredTime = v;
+        lastStoredTime = value;
         engine->setContinuous(false);
-        v = timeMaxSpinBox->value()*renderFPS;
+        value = timeMaxSpinBox->value() * renderFPS;
     }
-    timeSlider->setValue(v);
+    timeSlider->setValue(value);
 }
 
-void MainWindow::bufferActionChanged(QAction* action) {
+void MainWindow::bufferActionChanged(QAction *action)
+{
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
         bufferSizeMultiplier = 1;
@@ -1906,47 +1974,55 @@ void MainWindow::bufferActionChanged(QAction* action) {
     engine->updateBuffers();
 }
 
-void MainWindow::timeLineRequest(QPoint ) {
-
-  TimeLineDialog *timeDialog = new TimeLineDialog(this);
-  timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
-  timeDialog->exec();
-
-};
-
-void MainWindow::videoEncoderRequest() {
-
-  VideoDialog *vDialog = new VideoDialog(this);
-  vDialog->exec();
+void MainWindow::timeLineRequest(QPoint p)
+{
+    Q_UNUSED(p)
+    auto *timeDialog = new TimeLineDialog(this);
+    timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
+    timeDialog->exec();
 
 };
 
-void MainWindow::timeChanged(int) {
+void MainWindow::videoEncoderRequest()
+{
+    auto *vDialog = new VideoDialog(this);
+    vDialog->exec();
+
+};
+
+void MainWindow::timeChanged(int value)
+{
+    Q_UNUSED(value)
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
     engine->requireRedraw(true);
 }
 
-void MainWindow::timeMaxChanged(int v) {
+void MainWindow::timeMaxChanged(int value)
+{
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
-    timeSlider->setMaximum(v*renderFPS);  // timeslider max = animation length in frames
+    timeSlider->setMaximum(value * renderFPS);       // timeslider max = animation length in frames
     timeSlider->setSingleStep(1);        // should be one frame
     timeSlider->setPageStep(renderFPS); // should be one second
-    timeMax=v;
-    if(variableEditor->hasKeyFrames()) initKeyFrameControl();
+    timeMax = value;
+    if (variableEditor->hasKeyFrames()) {
+        initKeyFrameControl();
+    }
 }
 
-void MainWindow::rewind() {
+void MainWindow::rewind()
+{
     lastTime->restart();
     lastStoredTime = 0;
     getTime();
     engine->update();
 }
 
-void MainWindow::play() {
+void MainWindow::play()
+{
     playAction->setEnabled(false);
     stopAction->setEnabled(true);
     lastTime->restart();
@@ -1955,30 +2031,35 @@ void MainWindow::play() {
     pausePlay=false;
 }
 
-void MainWindow::stop() {
+void MainWindow::stop()
+{
 
     playAction->setEnabled(true);
     stopAction->setEnabled(false);
     lastStoredTime = getTime();
 
-    if(engine->getState() == DisplayWidget::Animation)
-    INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
-    //statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
+    if (engine->getState() == DisplayWidget::Animation) {
+        INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime / renderFPS));
+    }
+    // statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
 
     engine->setContinuous(false);
     getTime();
     pausePlay=true;
 }
 
-void MainWindow::maxSubSamplesChanged(int i) {
-    engine->setMaxSubFrames(i);
+void MainWindow::maxSubSamplesChanged(int value)
+{
+    engine->setMaxSubFrames(value);
 }
 
-void MainWindow::setSubframeMax(int i) {
+void MainWindow::setSubframeMax(int i)
+{
     frameSpinBox->setValue(i);
 }
 
-double MainWindow::getTime() {
+double MainWindow::getTime()
+{
     DisplayWidget::DrawingState state = engine->getState();
 
     int time = 0;
@@ -1993,19 +2074,24 @@ double MainWindow::getTime() {
         }
     }
     int ct = time != 0 ? time/renderFPS : 0;
-    timeLabel->setText(QString("%1 %2s:%3f ").arg(tr("Time:") ).arg(ct,3,'g',-1,'0').arg((((double)time/(double)renderFPS)-ct)*renderFPS,2,'g',-1,'0'));
+    timeLabel->setText(
+        QString("%1 %2s:%3f ")
+        .arg(tr("Time:"))
+        .arg(ct, 3, 'g', -1, '0')
+        .arg((((double)time / (double)renderFPS) - ct) * renderFPS, 2, 'g', -1, '0'));
     timeSlider->blockSignals(true);
     setTimeSliderValue(time);
     timeSlider->blockSignals(false);
     return time;
 }
 
-void MainWindow::renderModeChanged() {
+void MainWindow::renderModeChanged()
+{
     engine->setMaxSubFrames(frameSpinBox->value());
     setFPS(-1);
     QObject* o = QObject::sender();
     lastStoredTime = getTime();
-    if (o == 0 || o == progressiveButton) {
+    if (o == nullptr || o == progressiveButton) {
         engine->setState(DisplayWidget::Progressive);
         getTime();
     } else if (o == animationButton) {
@@ -2018,25 +2104,30 @@ void MainWindow::renderModeChanged() {
     engine->setDisableRedraw(false);
 }
 
-void MainWindow::setSubFrameDisplay(int i) {
+void MainWindow::setSubFrameDisplay(int i)
+{
     frameLabel->setText(QString(" %1 %2").arg(tr("Done")).arg(i));
 }
 
-void MainWindow::callRedraw() {
+void MainWindow::callRedraw()
+{
     bool state = engine->isRedrawDisabled();
     engine->setDisableRedraw(false);
     engine->setDisableRedraw(state);
 }
 
-void MainWindow::disableAllExcept(QWidget* w) {
+void MainWindow::disableAllExcept(QWidget *w)
+{
     disabledWidgets.clear();
     disabledWidgets = findChildren<QWidget *>("");
-    while (w) {
+    while (w != nullptr) {
         disabledWidgets.removeAll(w);
         w=w->parentWidget();
     }
 
-    foreach (QWidget* w, disabledWidgets) w->setEnabled(false);
+    foreach (QWidget *w, disabledWidgets) {
+        w->setEnabled(false);
+    }
     processGuiEvents();
 }
 
@@ -2048,15 +2139,6 @@ void MainWindow::createStatusBar()
 void MainWindow::readSettings()
 {
     QSettings settings;
-    static bool first = true;
-    if(first) {
-        restoreGeometry(settings.value("geometry").toByteArray());
-        restoreState(settings.value("windowState").toByteArray());
-        first = false;
-        splitter->restoreState(settings.value("splitterSizes").toByteArray());
-        fullScreenEnabled = settings.value("fullScreenEnabled", false).toBool();
-        if(fullScreenEnabled) { fullScreenEnabled=false; toggleFullScreen(); }
-    }
     maxRecentFiles = settings.value("maxRecentFiles", 5).toInt();
     renderFPS = settings.value("fps", 25).toInt();
     timeMax = settings.value("timeMax", 10).toInt();
@@ -2096,11 +2178,15 @@ void MainWindow::writeSettings()
     settings.setValue("loopPlay", wantLoopPlay);
     settings.setValue("editorStylesheet", editorStylesheet);
     QString ipaths = fileManager.getIncludePaths().join(";");
-    if(fileManager.getIncludePaths().count() == 1) ipaths += ";";
+    if (fileManager.getIncludePaths().count() == 1) {
+        ipaths += ";";
+    }
     settings.setValue("includePaths", ipaths);
 #ifdef USE_OPEN_EXR
     QString ebpaths = exrBinaryPath.join(";");
-    if(exrBinaryPath.count() == 1) ebpaths += ";";
+    if (exrBinaryPath.count() == 1) {
+        ebpaths += ";";
+    }
     settings.setValue("exrBinPaths", ebpaths);
 #endif // USE_OPEN_EXR
 
@@ -2114,8 +2200,8 @@ void MainWindow::writeSettings()
 
 void MainWindow::openFile()
 {
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action) {
+    auto *action = qobject_cast<QAction *>(sender());
+    if (action != nullptr) {
         loadFragFile(action->data().toString());
     } else {
         WARNING(tr("No data!"));
@@ -2135,7 +2221,7 @@ void MainWindow::reloadFragFile( int index )
 
     QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            WARNING(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
+        WARNING(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
         } else {
             te->clear();
             QTextStream in(&file);
@@ -2150,27 +2236,26 @@ void MainWindow::reloadFragFile( int index )
 /// fragWatch
 void MainWindow::reloadFragFile( QString f )
 {
-    QMessageBox msgBox(this);
-    msgBox.setIcon(QMessageBox::Warning);
-    QAbstractButton* a = msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
-    msgBox.addButton(tr("Ignore"),QMessageBox::RejectRole);
+    static bool first = true; // TODO: why this gets called twice ???
 
     bool autoLoad = QSettings().value("autoload", false).toBool();
 
-    if (!autoLoad) {
-        QString s = QString("It looks like the file: %1\n has been changed by another program.\n"
-                            "Would you like to reload it?").arg(f.split(QDir::separator()).last());
+    if (!autoLoad && first) {
+        QString s = QString("It looks like the file: %1\n has been changed by another program.\nWould you like to reload it?").arg(f.split(QDir::separator()).last());
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
+        msgBox.addButton(tr("Ignore"),QMessageBox::RejectRole);
         msgBox.setText(s);
-
-        msgBox.exec();
-        autoLoad = (msgBox.clickedButton() == a);
+        first = false;
+        autoLoad = msgBox.exec()==1 ? false : true; // (msgBox.clickedButton() == a);
     }
 
     if (autoLoad) {
         for (int i = 0; i < tabInfo.size(); i++) {
             if (tabInfo[i].filename == f) {
                 tabBar->setCurrentIndex(i);
-                if(!tabInfo[i].unsaved) { // won't autoload if the frag is changed in the editor
+                if (!tabInfo[i].unsaved) { // won't autoload if the frag is changed in the editor
                     reloadFrag();
                     highlightBuildButton(true); // won't autoload again until this frag is built
                     processGuiEvents(); // make sure gui is updated
@@ -2186,39 +2271,44 @@ void MainWindow::reloadFragFile( QString f )
         }
     }
 
+    first = true;
+
 }
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
     // calling with nonexistant filename before test prevents crash
-    // fi a non-quoted filename with an unescaped space will appear as 2 file names,
-    // both are wrong the first appears as non frag the second appears as frag but non-existant
-    // passing bogus name to insertTabPAge() will cause it to load the minimum default GLSL source
-    // so initializeFragment() gets valid code later on
+    // fi a non-quoted filename with an unescaped space will appear as 2 file
+    // names, both are wrong the first appears as non frag the second appears as
+    // frag but non-existant passing bogus name to insertTabPage() will cause it
+    // to load the minimum default GLSL source so initializeFragment() gets valid
+    // code later on
     insertTabPage(fileName);
     processGuiEvents(); // make sure the widgets are there
 
     if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
-
         DisplayWidget::DrawingState oldstate = engine->getState();
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
 
-        QString inputText = getTextEdit()->toPlainText();
-        if (inputText.startsWith("#donotrun")) variableEditor->resetUniforms(false);
+//         QString inputText = getTextEdit()->toPlainText();
+//         if (inputText.startsWith("#donotrun")) {
+//             variableEditor->resetUniforms(false);
+//         }
         if (QSettings().value("autorun", true).toBool()) {
-            rebuildRequired = initializeFragment(); // once to initialize presets
+            rebuildRequired = initializeFragment();// once to initialize presets
             bool requiresRecompile = variableEditor->setDefault();
             if (requiresRecompile || rebuildRequired) {
                 INFO(tr("Rebuilding to update locked uniforms..."));
-                initializeFragment();
+                rebuildRequired = initializeFragment();
                 variableEditor->setDefault();
             }
-
-            initializeFragment(); // makes textures persist
+            rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
+
+//         highlightBuildButton(!rebuildRequired);
 
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
@@ -2235,8 +2325,10 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
-    fragWatch->removePath(fileName);
-    
+    if(fragWatch->files().contains(fileName)) {
+      fragWatch->removePath(fileName);
+    }
+
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Fragmentarium"),
@@ -2245,13 +2337,13 @@ bool MainWindow::saveFile(const QString &fileName)
                              .arg(file.errorString()));
         return false;
     }
-    
+
     QTextStream out(&file);
     QApplication::setOverrideCursor(Qt::WaitCursor);
     out << getTextEdit()->toPlainText();
     QApplication::restoreOverrideCursor();
     out.flush();
-    
+
     tabInfo[tabBar->currentIndex()].hasBeenSavedOnce = true;
     tabInfo[tabBar->currentIndex()].unsaved = false;
     tabInfo[tabBar->currentIndex()].filename = fileName;
@@ -2260,7 +2352,9 @@ bool MainWindow::saveFile(const QString &fileName)
     statusBar()->showMessage(tr("File saved"), 2000);
     setRecentFile(fileName);
 
-    fragWatch->addPath(fileName);
+    if(QFile(fileName).exists() && !fragWatch->files().contains(fileName)) {
+        fragWatch->addPath(fileName);
+    }
 
     return true;
 }
@@ -2270,14 +2364,15 @@ QString MainWindow::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-void MainWindow::showPreprocessedScript() {
+void MainWindow::showPreprocessedScript()
+{
 
     logger->getListWidget()->clear();
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
     }
-    INFO(tr("Showing preprocessed output in new tab"));
+    INFO(tr("Showing preprocessed output in new tabs"));
     QString inputText = getTextEdit()->toPlainText();
     QString filename = tabInfo[tabBar->currentIndex()].filename;
     QSettings settings;
@@ -2290,20 +2385,28 @@ void MainWindow::showPreprocessedScript() {
 //                            "#define mediump\n"
 //                            "#define lowp\n";
         variableEditor->substituteLockedVariables(&fs);
-        if(fs.bufferShaderSource)
+        if (fs.bufferShaderSource != nullptr) {
             variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+        }
         insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
-        // suggested by FF user Sabine62 18/10/12
-        QString fname = QString("Preprocessed_%1").arg(strippedName(filename));
+        // Use a real name instead of "unnamed" suggested by FF user Sabine62 18/10/12
+        QString fname = QString("FragmentShader_%1").arg(strippedName(filename));
         tabBar->setTabText(tabBar->currentIndex(), fname);
         tabInfo[tabBar->currentIndex()].filename = fname;
-        
+        if (fs.bufferShaderSource != nullptr) {
+            // present the buffershader as well
+            insertTabPage("")->setPlainText(/*prepend+*/fs.bufferShaderSource->getText());
+            fname = QString("BufferShader_%1").arg(strippedName(filename));
+            tabBar->setTabText(tabBar->currentIndex(), fname);
+            tabInfo[tabBar->currentIndex()].filename = fname;
+        }
     } catch (Exception& e) {
         WARNING(e.getMessage());
     }
 }
 
-void MainWindow::highlightBuildButton(bool value) {
+void MainWindow::highlightBuildButton(bool value)
+{
     QWidget* w = buildLabel->parentWidget();
     if (value) {
         QPalette pal = buildLabel->palette();
@@ -2321,40 +2424,45 @@ void MainWindow::highlightBuildButton(bool value) {
     needRebuild(value);
 }
 
-void MainWindow::addToWatch( QStringList fileList ) {
-//     DBOUT << fileList;
-    fragWatch->addPaths(fileList);
+void MainWindow::addToWatch(QStringList fileList)
+{
+    foreach(QString f, fileList) {
+        if(QFile(f).exists() && !fragWatch->files().contains(f)) {
+            fragWatch->addPaths(fileList);
+        }
+    }
 }
 
-bool MainWindow::initializeFragment() {
-
+bool MainWindow::initializeFragment()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
     }
 
-//     if(sender() == 0) return true; // != 0 when called by "Build" button or TabChanged signal
-//     DBOUT << sender() << tabInfo[tabBar->currentIndex()].filename;
-    
+    // if(sender() == 0) return true;  // != 0 when called by "Build" button or TabChanged signal
+                                    // DBOUT << sender() << tabInfo[tabBar->currentIndex()].filename;
+
+
     logger->getListWidget()->clear();
 
     // Show info first...
-    INFO( "Vendor: " + engine->vendor + "\nRenderer: " + engine->renderer + "\nGL Driver: " + engine->glvers);
+    INFO("Vendor: " + engine->vendor + "\nRenderer: " + engine->renderer + "\nGL Driver: " + engine->glvers);
 
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();
-    if(prof == 1 || prof == 2)
-        INFO( QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "") );
-    else if(prof == 0) {
+    if (prof == 1 || prof == 2) {
+        INFO(QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+    } else if (prof == 0) {
         INFO( "No GL profile." );
 //         return false;
     } else {
         INFO( "Something went wrong!!!" );
         return false;
     }
-        
+
     INFO("");
-   
+
     QStringList imgFileExtensions;
 
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
@@ -2383,73 +2491,91 @@ bool MainWindow::initializeFragment() {
     //     readSettings();
     fileManager.setOriginalFileName(filename);
 
-    if(variableEditor->hasKeyFrames())
+    if (variableEditor->hasKeyFrames()) {
         clearKeyFrames();
+    }
 
     Preprocessor p(&fileManager);
     // BUG Fixs Up vector
     QString camSet = getCameraSettings();
-    bool showGUI = false;
-    highlightBuildButton(false);
-    variableEditor->locksUseDefines( QSettings().value("useDefines", true).toBool() );
+
+    variableEditor->locksUseDefines(QSettings().value("useDefines", true).toBool());
     int ms = 0;
-        FragmentSource fs = p.parse(inputText,filename,moveMain);
-        if(filename != "Unnamed") // file has been saved
+    FragmentSource fs = p.parse(inputText,filename,moveMain);
+
+    if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
             addToWatch( QStringList(filename) );
-    // BUG Up vector gets trashed on Build or Save
-    variableEditor->updateFromFragmentSource(&fs, &showGUI);
-        variableEditor->updateTextures(&fs, &fileManager);
-        variableEditor->substituteLockedVariables(&fs);
-        if(fs.bufferShaderSource)
-            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
-    try {
-        QTime start = QTime::currentTime();
-        engine->setFragmentShader(fs);
-        ms = start.msecsTo(QTime::currentTime());
-    } catch (Exception& e) {
-        WARNING(e.getMessage());
-        highlightBuildButton(true);
     }
-    // BUG Fixs Up vector
-    if(getCameraSettings() != camSet) variableEditor->setSettings(camSet);
-    editorDockWidget->setHidden(!showGUI);
-    variableEditor->updateCamera(engine->getCameraControl());
-    engine->requireRedraw(true);
-    engine->resetTime();
+
+    // BUG Up vector gets trashed on Build or Save
+    variableEditor->updateFromFragmentSource(&fs);
+    variableEditor->updateTextures(&fs, &fileManager);
+    variableEditor->substituteLockedVariables(&fs);
+
+    if (fs.bufferShaderSource != nullptr) {
+            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+    }
+
+    if( sender() != 0 ) {
+        // DBOUT << requiresRebuild() << tabInfo[tabBar->currentIndex()].filename;
+        try {
+            QTime start = QTime::currentTime();
+            engine->setFragmentShader(fs);
+            engine->initFragmentTextures();
+            ms = start.msecsTo(QTime::currentTime());
+        } catch (Exception& e) {
+            WARNING(e.getMessage());
+            highlightBuildButton(true);
+        }
+    }
 
     if (engine->hasShader()) {
-        if(!engine->hasBufferShader())
+        // BUG Fixs Up vector
+        if (getCameraSettings() != camSet) {
+            variableEditor->setSettings(camSet);
+        }
+        editorDockWidget->setHidden( variableEditor->getWidgetCount() == 0 );
+        variableEditor->updateCamera(engine->getCameraControl());
+        engine->requireRedraw(true);
+        engine->resetTime();
+
+        if (!engine->hasBufferShader()) {
             setSubframeMax(1);
+        }
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
         pause ? stop() : play();
 
         hideUnusedVariableWidgets();
-        
+
+        highlightBuildButton(false);
+
         //TODO: remove group tab if it's empty, if all widgets in group are hidden
         //      they have been optimized out by the glsl compiler
         return false; // does not need rebuild
-    } else {
-        WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
     }
+    WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
+
     return true;
 }
 
-void MainWindow::hideUnusedVariableWidgets() {
-        /// hide unused widgets unless they are lockable
+void MainWindow::hideUnusedVariableWidgets()
+{
+        /// hide unused widgets unless the default state is locked
         QStringList wnames = variableEditor->getWidgetNames();
         for (int i = 0; i < wnames.count(); i++) {
             // find a widget in the variable editor
-            VariableWidget* vw = variableEditor->findChild<VariableWidget*>(wnames.at(i));
-            if(vw != 0) {
+        auto *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
+        if (vw != nullptr) {
                 /// get the uniform location from the shader
                 int uloc = vw->uniformLocation(engine->getShader());
-                if(uloc == -1 && engine->hasBufferShader())
+            if (uloc == -1 && engine->hasBufferShader()) {
                     /// get the uniform location from the buffershader
                     uloc = vw->uniformLocation(engine->getBufferShader());
-                /// locked widgets are transformed into const or #define so don't show up as uniforms
-                /// AutoFocus is a dummy so does not exist inside shader program
+            }
+            /// locked widgets are transformed into const or #define so don't show up as uniforms
+            /// AutoFocus is a dummy so does not exist inside shader program
                 if(uloc == -1 &&
                         !(vw->getLockType() == Parser::Locked ||
                           vw->getDefaultLockType() == Parser::AlwaysLocked ||
@@ -2461,15 +2587,19 @@ void MainWindow::hideUnusedVariableWidgets() {
                 }
             }
         }
-        
+
 }
 
-namespace {
+namespace
+{
 // Returns the first valid directory.
-QString findDirectory(QStringList guesses) {
+QString findDirectory(QStringList guesses)
+{
     QStringList invalid;
     for (int i = 0; i < guesses.size(); i++) {
-        if (QFile::exists(guesses[i])) return guesses[i];
+        if (QFile::exists(guesses[i])) {
+            return guesses[i];
+        }
         invalid.append(QFileInfo(guesses[i]).absoluteFilePath());
     }
 
@@ -2477,28 +2607,40 @@ QString findDirectory(QStringList guesses) {
     WARNING(QCoreApplication::tr("Could not locate directory in: ") + invalid.join(",") + ".");
     return QCoreApplication::tr("[not found]");
 }
-}
+} // namespace
 
-// Mac needs to step two directies up, when debugging in XCode...
-QString MainWindow::getExamplesDir() {
+// Mac needs to step two directories up, when debugging in XCode...
+QString MainWindow::getExamplesDir()
+{
     QStringList examplesDir;
-    examplesDir << "Examples" << "../Examples" << "../../Examples" << "../../../Examples";
+    examplesDir << "Examples"
+                << "../Examples"
+                << "../../Examples"
+                << "../../../Examples";
     return findDirectory(examplesDir);
 }
 
-QString MainWindow::getMiscDir() {
+QString MainWindow::getMiscDir()
+{
     QStringList miscDir;
-    miscDir << "Misc" << "../Misc" << "../../Misc";
+    miscDir << "Misc"
+            << "../Misc"
+            << "../../Misc"
+            << "../../../Misc";
     return findDirectory(miscDir);
 }
 
-TextEdit* MainWindow::getTextEdit() {
-    return (TextEdit*)(stackedTextEdits->currentWidget() ? stackedTextEdits->currentWidget() : 0);
+TextEdit *MainWindow::getTextEdit()
+{
+    return (TextEdit *)stackedTextEdits->currentWidget();
 }
 
-void MainWindow::cursorPositionChanged() {
+void MainWindow::cursorPositionChanged()
+{
     TextEdit *te = this->getTextEdit();
-    if (!te) return;
+    if (te == nullptr) {
+        return;
+    }
     int pos = te->textCursor().position();
     int blockNumber = te->textCursor().blockNumber();
 
@@ -2510,23 +2652,22 @@ void MainWindow::cursorPositionChanged() {
 
     for (int i = 0; i < fs->lines.count(); i++) {
         // fs->sourceFiles[fs->sourceFile[i]]->fileName()
-        if (fs->lines[i] == blockNumber &&
-                QString::compare(filename,fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive)==0
-           ) ex.append(QString::number(i));
+        if (fs->lines[i] == blockNumber && QString::compare(filename, fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive) == 0) {
+            ex.append(QString::number(i));
+        }
     }
-    if (ex.count()) {
+    if (ex.count() != 0) {
         x = tr(" Line in preprocessed script: ") + ex.join(",");
     } else {
         x = tr(" (Not part of current script) ");
     }
 
-    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber)+x, 5000);
-
+    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber) + x, 5000);
 }
 
-TextEdit* MainWindow::insertTabPage(QString filename) {
-
-    TextEdit* textEdit = new TextEdit(this);
+TextEdit *MainWindow::insertTabPage(QString filename)
+{
+    auto *textEdit = new TextEdit(this);
     textEdit->setStyleSheet(editorStylesheet);
 
     connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
@@ -2551,9 +2692,9 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
 #endpreset\r\n");
 
     bool loadingSucceded = false;
-    if (filename.isEmpty())
+    if (filename.isEmpty()) {
         textEdit->setPlainText(s);
-    else {
+    } else {
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
             textEdit->setPlainText(tr("// Cannot read file %1:\n// %2\n").arg(filename).arg(file.errorString()) + s);
@@ -2577,13 +2718,15 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
         int counter = 1;
         while (!unique) {
             unique = true;
-            for (int i = 0; i < tabInfo.size(); i++) {
-                if (tabInfo[i].filename == suggestedName) {
+            for (auto &i : tabInfo) {
+                if (i.filename == suggestedName) {
                     unique = false;
                     break;
                 }
             }
-            if (!unique) suggestedName = displayName + " " + QString::number(counter++);
+            if (!unique) {
+                suggestedName = displayName + " " + QString::number(counter++);
+            }
         }
         displayName = suggestedName;
     }
@@ -2599,11 +2742,11 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
         tabInfo.append(TabInfo(displayName, textEdit, true));
     }
 
-    QString tabTitle = QString("%1%3").arg(strippedName(displayName)).arg(!loadingSucceded? "*" : "");
+    QString tabTitle = QString("%1%2") .arg(strippedName(displayName)).arg(!loadingSucceded ? "*" : "");
     tabBar->setCurrentIndex(tabBar->addTab(strippedName(tabTitle)));
-    
+
     tabBar->setTabToolTip(tabBar->currentIndex(),filename);
-    
+
     tabInfo.last().tabIndex = tabBar->currentIndex();
 
     connect(textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
@@ -2611,13 +2754,19 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     return textEdit;
 }
 
-void MainWindow::resetCamera(bool fullReset) {
+void MainWindow::resetCamera(bool fullReset)
+{
     engine->resetCamera(fullReset);
 }
 
-void MainWindow::tabChanged(int index) {
-    if (index > tabInfo.size()) return;
-    if (index < 0) return;
+void MainWindow::tabChanged(int index)
+{
+    if (index > tabInfo.size()) {
+        return;
+    }
+    if (index < 0) {
+        return;
+    }
 
     TextEdit *te = getTextEdit();
 
@@ -2639,17 +2788,18 @@ void MainWindow::tabChanged(int index) {
         return;
     }
 
-    initializeFragment();
-    // this bit of fudge resets the tab to its last settings
+    initializeFragment(); // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if(!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings()))
+        if (!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings())) {
             initializeFragment();
+        }
     }
     initializeFragment(); // makes textures persist
 }
 
-void MainWindow::closeTab() {
+void MainWindow::closeTab()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2658,99 +2808,140 @@ void MainWindow::closeTab() {
     closeTab(index);
 }
 
-void MainWindow::closeTab(int index) {
+void MainWindow::closeTab(int index)
+{
 
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
-        QString mess = tr("There are unsaved changes.%1\r\nClose this tab without saving changes?").arg( variableEditor->hasEasing() ? "\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!":"\r\n");
+        QString mess =
+            tr("There are unsaved changes.%1\r\nClose this tab without saving changes?")
+                .arg(variableEditor->hasEasing()
+                ? "\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!"
+                : "\r\n");
         int answer = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("OK"), tr("Cancel"));
-        if (answer == 1) return;
+        if (answer == 1) {
+            return;
+        }
     }
 
-    fragWatch->removePath(t.filename);
+    if(fragWatch->files().contains(t.filename)) {
+      fragWatch->removePath(t.filename);
+    }
 
     tabInfo.remove(index);
     tabBar->removeTab(index);
 
     stackedTextEdits->removeWidget(t.textEdit);
-    delete(t.textEdit); // widget is gone but textedit remains so manually delete it
+    delete (t.textEdit); // widget is gone but textedit remains so manually delete it
 
     clearKeyFrames();
     // if no more tabs don't try to reset to last saved settings
-    if (tabBar->currentIndex() == -1) return;
-    // this bit of fudge resets the tab to its last settings
+    if (tabBar->currentIndex() == -1) {
+        return;
+    }    // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
-    if(variableEditor->setSettings(te->lastSettings()))
-    initializeFragment(); // this bit of fudge preserves textures ???
+    if (variableEditor->setSettings(te->lastSettings())) {
+        initializeFragment();
+    } // this bit of fudge preserves textures ???
 }
 
-void MainWindow::clearKeyFrames() {
+void MainWindow::clearKeyFrames()
+{
     // clear the easingcurve settings
     if(variableEditor->hasEasing()) {
         engine->setCurveSettings( QStringList() );
         variableEditor->setEasingEnabled(false);
     }
     // clear the spline data
-    if(variableEditor->hasKeyFrames())
+    if (variableEditor->hasKeyFrames()) {
         clearKeyFrameControl();
 }
+}
 
-void MainWindow::launchDocumentation() {
+void MainWindow::launchDocumentation()
+{
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("https://en.wikibooks.org/wiki/Fractals/fragmentarium"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchSfHome() {
+void MainWindow::launchSfHome()
+{
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("http://syntopia.github.com/Fragmentarium/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchGLSLSpecs() {
+void MainWindow::launchGLSLSpecs()
+{
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("http://www.opengl.org/registry/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchIntro() {
+void MainWindow::launchIntro()
+{
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://blog.hvidtfeldts.net/index.php/2011/06/distance-estimated-3d-fractals-part-i/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchFAQ() {
+void MainWindow::launchFAQ()
+{
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchReferenceHome() {
+void MainWindow::launchReferenceHome()
+{
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://www.fractalforums.com/fragmentarium/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchReferenceHome2() {
+void MainWindow::launchReferenceHome2()
+{
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://www.digilanti.org/fragmentarium/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::launchGallery() {
+void MainWindow::launchGallery()
+{
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://flickr.com/groups/fragmentarium/"));
-    if (!s) WARNING(tr("Failed to open browser..."));
+    if (!s) {
+        WARNING(tr("Failed to open browser..."));
+    }
 }
 
-void MainWindow::makeScreenshot() {
+void MainWindow::makeScreenshot()
+{
     engine->update();
     saveImage(engine->grabFramebuffer());
 }
 
-void MainWindow::saveImage(QImage image) {
+void MainWindow::saveImage(QImage image)
+{
     QString filename = GetImageFileName(this, tr("Save screenshot as:"));
-    if (filename.isEmpty()) return;
+    if (filename.isEmpty()) {
+        return;
+    }
 
     image.setText("frAg", variableEditor->getSettings());
 
@@ -2762,7 +2953,8 @@ void MainWindow::saveImage(QImage image) {
     }
 }
 
-void MainWindow::copy() {
+void MainWindow::copy()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2770,7 +2962,8 @@ void MainWindow::copy() {
     getTextEdit()->copy();
 }
 
-void MainWindow::cut() {
+void MainWindow::cut()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2778,7 +2971,8 @@ void MainWindow::cut() {
     getTextEdit()->cut();
 }
 
-void MainWindow::paste() {
+void MainWindow::paste()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2786,7 +2980,8 @@ void MainWindow::paste() {
     getTextEdit()->paste();
 }
 
-void MainWindow::search() {
+void MainWindow::search()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2798,15 +2993,11 @@ void MainWindow::search() {
     if(getTextEdit()->textCursor().hasSelection()) {
         text = getTextEdit()->textCursor().selectedText();
     } else {
-        text = QInputDialog::getText(this, tr("Search"),
-                                     tr("Text to find"), QLineEdit::Normal,
-                                     text, &ok);
+        text = QInputDialog::getText(this, tr("Search"), tr("Text to find"), QLineEdit::Normal, text, &ok);
     }
 restart:
     if(!getTextEdit()->find(text)) {
-        text = QInputDialog::getText(this, tr("Not found"),
-                                     tr("Try again from the start?"), QLineEdit::Normal,
-                                     text, &ok);
+        text = QInputDialog::getText(this, tr("Not found"), tr("Try again from the start?"), QLineEdit::Normal, text, &ok);
         /// move to beginning and search again
         if(ok && !text.isEmpty()) {
             QTextCursor cursor(getTextEdit()->textCursor());
@@ -2826,32 +3017,40 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
     }
 }
 
-void MainWindow::dropEvent(QDropEvent *ev) {
-    if (ev->mimeData()->hasUrls() && ev->source() == 0) {
+void MainWindow::dropEvent(QDropEvent *ev)
+{
+    if (ev->mimeData()->hasUrls() && ev->source() == nullptr) {
         QList<QUrl> urls = ev->mimeData()->urls();
-        for (int i = 0; i < urls.size() ; i++) {
-            QString file = urls[i].toLocalFile();
+        for (auto &url : urls) {
+            QString file = url.toLocalFile();
             INFO(tr("Loading: ") + file);
-            if (file.toLower().endsWith(".fragparams")) loadParameters(file);
-            else if (file.toLower().endsWith(".frag")) loadFragFile(file);
-            else if (file.toLower().endsWith(".png")) {
+            if (file.toLower().endsWith(".fragparams")) {
+                loadParameters(file);
+            } else if (file.toLower().endsWith(".frag")) {
+                loadFragFile(file);
+            } else if (file.toLower().endsWith(".png")) {
                 // get the frAg parameters
                 QString fromPNG = QImage(file).text("frAg");
                 // no params ?
-                if(fromPNG.isEmpty() )
+                if (fromPNG.isEmpty()) {
                     // try the old tag
                     fromPNG = QImage(file).text("fRAg");
+                }
 
-                if(fromPNG.isEmpty())
+                if (fromPNG.isEmpty()) {
                     // if empty say so
                     INFO(tr("No parameters found in file."));
-                else
+                } else {
                     // use the params found in png
                     variableEditor->setSettings(fromPNG);
+                }
+            } else {
+                INFO(tr("Must be a .frag or .fragparams file."));
             }
-            else INFO(tr("Must be a .frag or .fragparams file."));
         }
-    } else INFO(tr("Cannot accept MIME object: ") + ev->mimeData()->formats().join(" - "));
+    } else {
+        INFO(tr("Cannot accept MIME object: ") + ev->mimeData()->formats().join(" - "));
+    }
 }
 
 void MainWindow::setRecentFile(const QString &fileName)
@@ -2860,12 +3059,15 @@ void MainWindow::setRecentFile(const QString &fileName)
 
     QStringList files = settings.value("recentFileList").toStringList();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList").toBool();
-    
+
     files.removeAll(fileName);
-    if(!fileName.isEmpty())
+    if (!fileName.isEmpty()) {
       files.prepend(fileName);
-    
-    while (files.size() > maxRecentFiles) files.removeLast();
+    }
+
+    while (files.size() > maxRecentFiles) {
+        files.removeLast();
+    }
 
     settings.setValue("recentFileList", files);
 
@@ -2873,55 +3075,65 @@ void MainWindow::setRecentFile(const QString &fileName)
 
     for (int i = 0; i < numRecentFiles; ++i) {
         QString absPath = QFileInfo(files[i]).absoluteFilePath();
-        QString text = QString("%1 %2").arg(i + 1).arg( fullPathInRecentFilesList ? absPath : QFileInfo(files[i]).fileName() );
+        QString text = QString("%1 %2").arg(i + 1).arg(fullPathInRecentFilesList ? absPath : QFileInfo(files[i]).fileName());
         recentFileActions[i]->setText(text);
         recentFileActions[i]->setData(absPath);
         recentFileActions[i]->setVisible(true);
     }
 
-    for (int j = numRecentFiles; j < maxRecentFiles; ++j) recentFileActions[j]->setVisible(false);
+    for (int j = numRecentFiles; j < maxRecentFiles; ++j) {
+        recentFileActions[j]->setVisible(false);
+    }
 
     recentFileSeparator->setVisible(numRecentFiles > 0);
 }
 
-void MainWindow::setSplashWidgetTimeout(QSplashScreen* w) {
+void MainWindow::setSplashWidgetTimeout(QSplashScreen *w)
+{
     splashWidget = w;
     QTimer::singleShot(2000, this, SLOT(removeSplash()));
     // test for nVidia card and GL > 4.0
-    if( !(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-            WARNING( tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
-        if(asmAction)editMenu->removeAction(asmAction);
+    if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
+        WARNING(tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+        if (asmAction != nullptr) {
+            editMenu->removeAction(asmAction);
+        }
     }
 
 }
 
-void MainWindow::removeSplash() {
-    if (splashWidget) splashWidget->finish(this);
-    splashWidget = 0;
+void MainWindow::removeSplash()
+{
+    if (splashWidget != nullptr) {
+        splashWidget->finish(this);
+    }
+    splashWidget = nullptr;
 }
 
-void MainWindow::insertText() {
+void MainWindow::insertText()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
     }
 
-    QString text = ((QAction*)sender())->iconText(); // iconText is the menu text without hotkey char
+    QString text = ((QAction *)sender())->iconText(); // iconText is the menu text without hotkey char
     getTextEdit()->insertPlainText(text.section("//",0,0)); // strip comments
 }
 
-void MainWindow::preferences() {
+void MainWindow::preferences()
+{
     PreferencesDialog pd(this);
     pd.exec();
     readSettings();
     engine->updateRefreshRate();
 
     setRecentFile("");
-    
+
     if (tabBar->currentIndex() != -1) {
       getTextEdit()->setStyleSheet(editorStylesheet);
     }
-    
+
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_WIN
 initTools();
@@ -2929,13 +3141,16 @@ initTools();
 #endif // USE_OPEN_EXR
 }
 
-void MainWindow::getBufferSize(int w, int h, int& bufferSizeX, int& bufferSizeY, bool& fitWindow) {
-    if (engine && engine->getState()==DisplayWidget::Tiled) {
+void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
+{
+    if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY =  bufferYSpinBox->value();
         return;
     }
-    if (!bufferXSpinBox || !bufferYSpinBox) return;
+    if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {
+        return;
+    }
     if (bufferSizeMultiplier>0) {
         // Locked to a fraction of the window size
         bufferSizeX = w/bufferSizeMultiplier;
@@ -2970,7 +3185,8 @@ void MainWindow::getBufferSize(int w, int h, int& bufferSizeX, int& bufferSizeY,
     }
 }
 
-void MainWindow::indent() {
+void MainWindow::indent()
+{
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2986,7 +3202,9 @@ void MainWindow::indent() {
     foreach (QString s, l) {
         int offset = s.trimmed().startsWith("}") ? -1 : 0;
         QString newString = s.trimmed();
-        for (int i = 0; i < indent+offset; i++) newString.push_front("\t");
+        for (int i = 0; i < indent + offset; i++) {
+            newString.push_front("\t");
+        }
         out.append(newString);
         indent = indent + s.count("{")+s.count("(") - s.count("}") -s.count(")");
     }
@@ -3000,70 +3218,82 @@ void MainWindow::indent() {
 
 }
 
-void MainWindow::setFPS(float fps) {
+void MainWindow::setFPS(float fps)
+{
     if (fps>0) {
-        fpsLabel->setText("FPS: " + QString::number(fps, 'f' ,1) + " (" +  QString::number(1.0/fps, 'g' ,1) + "s)");
+        fpsLabel->setText("FPS: " + QString::number(fps, 'f', 1) + " (" + QString::number(1.0 / fps, 'g', 1) + "s)");
     } else {
         fpsLabel->setText("FPS: n.a.");
     }
 }
 
-QString MainWindow::getCameraSettings() {
+QString MainWindow::getCameraSettings()
+{
     QString settings = variableEditor->getSettings();
     QStringList l = settings.split("\n");
     QStringList r;
     // added " =" to Eye because Axolotl has Eyes!
     QString camId = engine->getCameraControl()->getID();
-    if(camId == "3D")
-      r << l.filter("FOV") << l.filter("Eye =") << l.filter("Target") << l.filter("Up");
-    else if(camId == "2D")
+    if (camId == "3D") {
+        r << l.filter("FOV") << l.filter("Eye =") << l.filter("Target") << l.filter("Up");
+    } else if (camId == "2D") {
       r << l.filter("Center") << l.filter("Zoom");
+    }
     return r.join("\n");
 }
 
-void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u) {
+void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u)
+{
     QString r = QString("Eye = %1,%2,%3\nTarget = %4,%5,%6\nUp = %7,%8,%9\n")
-                .arg(e.x()).arg(e.y()).arg(e.z()).arg(t.x()).arg(t.y()).arg(t.z()).arg(u.x()).arg(u.y()).arg(u.z());
+                .arg(e.x()).arg(e.y()).arg(e.z())
+                .arg(t.x()).arg(t.y()).arg(t.z())
+                .arg(u.x()).arg(u.y()).arg(u.z());
     variableEditor->blockSignals(true);
     if(engine->getFragmentSource()->autoFocus) { // widget detected
-        BoolWidget *btest = dynamic_cast<BoolWidget*>(variableEditor->getWidgetFromName("AutoFocus"));
-        if(btest != NULL)
+        BoolWidget *btest = dynamic_cast<BoolWidget *>(variableEditor->getWidgetFromName("AutoFocus"));
+        if (btest != nullptr) {
             if(btest->isChecked()) {
                 double d = e.distanceToPoint(t);
                 r += QString("FocalPlane = %1\n").arg(d);
             }
     }
+    }
     variableEditor->setSettings(r);
     variableEditor->blockSignals(false);
 }
 
-QString MainWindow::getPresetNames( bool keyframesORpresets ) {
-
+QString MainWindow::getPresetNames(bool keyframesORpresets)
+{
     int c = variableEditor->getPresetCount(); // total preset count including keyframes
     QStringList k, p;
-
-    if(c>1)
+    if (c > 1) {
         for(int i =0; i<c; i++) {
             QString presetname = variableEditor->getPresetName(i);
             if(!presetname.isEmpty()) {
-                if(presetname.contains("KeyFrame", Qt::CaseInsensitive)) // found a keyframe
+                if (presetname.contains("KeyFrame", Qt::CaseInsensitive)) { // found a keyframe
                     k << presetname;
-                else
+                } else {
                     p << presetname;
+                }
             }
         }
+    }
     return keyframesORpresets ? k.join(" ") : p.join(" ");
 }
 
-void MainWindow::initKeyFrameControl() {
-    
-    if( engine->eyeSpline != NULL || engine->targetSpline != NULL || engine->upSpline != NULL)
+void MainWindow::initKeyFrameControl()
+{
+
+    if (engine->eyeSpline != nullptr || engine->targetSpline != nullptr || engine->upSpline != nullptr) {
         clearKeyFrameControl();
+    }
 
     int c = variableEditor->getPresetCount();
     int k = variableEditor->getKeyFrameCount();
 
-    if(k>0) engine->setHasKeyFrames(true);
+    if (k > 0) {
+        engine->setHasKeyFrames(true);
+    }
 
     if(k>1) {
         variableEditor->setKeyFramesEnabled(true);
@@ -3074,34 +3304,36 @@ void MainWindow::initKeyFrameControl() {
         if(c>1) {
             for(int i =0; i<c; i++) {
                 QString presetname = variableEditor->getPresetName(i);
-                QRegExp rx = QRegExp("KeyFrame\\.\\d\\d\\d");
-                if(rx.indexIn(presetname) != -1)  { /// found a keyframe, add to keyframeMap
+                QRegExp rx = QRegExp(R"(KeyFrame\.\d\d\d)");
+                if (rx.indexIn(presetname) != -1) { /// found a keyframe, add to keyframeMap
                     QStringList p;
                     p << presetname << variableEditor->getPresetByName( presetname );
                     addKeyFrame( p );
                 }
             }
-            
+
             // after keyframeMap is complete create camera path splines in the engine
             engine->createSplines(k,getFrameMax()+1);
         }
     }
 }
 
-void MainWindow::clearKeyFrameControl() {
+void MainWindow::clearKeyFrameControl()
+{
     variableEditor->setKeyFramesEnabled(false);
-    if( engine->eyeSpline != NULL || engine->targetSpline != NULL || engine->upSpline != NULL) {
+    if (engine->eyeSpline != nullptr || engine->targetSpline != nullptr || engine->upSpline != nullptr) {
         engine->clearControlPoints();
-        engine->eyeSpline = NULL;
-        engine->targetSpline = NULL;
-        engine->upSpline = NULL;
+        engine->eyeSpline = nullptr;
+        engine->targetSpline = nullptr;
+        engine->upSpline = nullptr;
         engine->setHasKeyFrames(false);
         timeSlider->setTickPosition(QSlider::NoTicks);
     }
     keyframeMap.clear();
 }
 
-void MainWindow::addKeyFrame(QStringList kfps) {
+void MainWindow::addKeyFrame(QStringList kfps)
+{
     /// for each key frame add ctrl point to the list
     if(engine->cameraID() == "3D" ) {
         KeyFrameInfo kf(kfps);
@@ -3113,7 +3345,8 @@ void MainWindow::addKeyFrame(QStringList kfps) {
 
 }
 
-void MainWindow::selectPreset() {
+void MainWindow::selectPreset()
+{
 
     QString pName;
 
@@ -3134,11 +3367,16 @@ void MainWindow::selectPreset() {
       if(found) {
         tc.setPosition(te->textCursor().position()+1, QTextCursor::KeepAnchor);
         te->setTextCursor(tc);
-      } else statusBar()->showMessage(tr("#endpreset not found!"));
-    } else statusBar()->showMessage(tr( QString(pName + " not found!").toStdString().c_str() ));
+        } else {
+            statusBar()->showMessage(tr("#endpreset not found!"));
+        }
+    } else {
+        statusBar()->showMessage(tr(QString(pName + " not found!").toStdString().c_str()));
+    }
 }
 
-void MainWindow::processGuiEvents() {
+void MainWindow::processGuiEvents()
+{
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
@@ -3146,22 +3384,27 @@ void MainWindow::processGuiEvents() {
 
 }
 
-void MainWindow::dumpShaderAsm() {
-    if(engine->hasShader())
+void MainWindow::dumpShaderAsm()
+{
+    if (engine->hasShader()) {
         AsmBrowser::showPage(engine->shaderAsm(true), "Rendershader Program");
-    if(engine->hasBufferShader())
+    }
+    if (engine->hasBufferShader()) {
         AsmBrowser::showPage(engine->shaderAsm(false), "Buffershader Program");
+    }
 }
 
-void MainWindow::saveCmdScript() {
+void MainWindow::saveCmdScript()
+{
 
-    QTextEdit *e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
+    auto *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
     scriptText = e->toPlainText();
 
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), filter);
-    if (fileName.isEmpty())
+    if (fileName.isEmpty()) {
         return;
+    }
 
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -3178,7 +3421,8 @@ void MainWindow::saveCmdScript() {
     INFO(tr("Cmd Script saved to file:")+fileName);
 }
 
-void MainWindow::loadCmdScript() {
+void MainWindow::loadCmdScript()
+{
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, QString(), QString(), filter);
     QSettings settings;
@@ -3199,14 +3443,19 @@ void MainWindow::loadCmdScript() {
         INFO(tr("Cmd Script loaded from file: ") + fileName);
         settings.setValue("cmdscriptfilename", fileName);
         // is the editor open? overwrite current script.
-        QTextEdit *e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
-        if(e != 0) e->setPlainText(scriptText);
+        auto *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
+        if (e != nullptr) {
+            e->setPlainText(scriptText);
+        }
     }
 }
 
-void MainWindow::editScript() {
+void MainWindow::editScript()
+{
 
-    if(scriptText.isEmpty()) loadCmdScript();
+    if (scriptText.isEmpty()) {
+        loadCmdScript();
+    }
 
     // we need a dialog
     QDialog *d;
@@ -3223,7 +3472,7 @@ void MainWindow::editScript() {
     QPushButton *executeButton = new QPushButton(tr("&Execute"));
     QPushButton *stopButton = new QPushButton(tr("&Stop"));
     QPushButton *closeButton = new QPushButton(tr("&Close"));
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    auto *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(saveButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(loadButton);
@@ -3234,7 +3483,7 @@ void MainWindow::editScript() {
     buttonLayout->addStretch();
     buttonLayout->addWidget(closeButton);
     // setup the main layout with text editor
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(t);
     mainLayout->addLayout(buttonLayout);
     d->setLayout(mainLayout);
@@ -3251,7 +3500,7 @@ void MainWindow::editScript() {
     if(cmdScriptLineNumber != 0) {
         QTextCursor tc = t->textCursor();
         tc.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
-        tc.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor,cmdScriptLineNumber);
+        tc.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, cmdScriptLineNumber);
         tc.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor,1);
         t->setTextCursor(tc);
     }
@@ -3259,23 +3508,23 @@ void MainWindow::editScript() {
     d->resize(640,480);
     // open the dialog and take control
     d->exec();
-    
+
     scriptText = t->toPlainText();
-    
+
     // closed the window so...
     runningScript=false;
 }
 
 void MainWindow::executeScript()
 {
-    QTextEdit *e = NULL;
+    QTextEdit *e = nullptr;
 
     QSettings settings;
     QString name = settings.value("filename").toString();
     QString scriptname = settings.value("cmdscriptfilename").toString();
 
-    if(sender() != 0) {
-        e = sender()->parent()->findChild<QTextEdit*>("cmdScriptEditor", Qt::FindChildrenRecursively);
+    if (sender() != nullptr) {
+        e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
         scriptText = e->toPlainText();
     }
 
@@ -3283,54 +3532,54 @@ void MainWindow::executeScript()
 
     QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
 
-    if (result.isError())
-    {
+    if (result.isError()) {
         QString err = result.toString();
         cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
         QString msg = tr("Error %1 at line %2").arg(err).arg(cmdScriptLineNumber);
         INFO(msg);
         // highlight the error line
-        if(cmdScriptLineNumber != 0 && e != NULL) {
+        if (cmdScriptLineNumber != 0 && e != nullptr) {
             QTextCursor tc = e->textCursor();
             tc.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
-            tc.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor,cmdScriptLineNumber-1);
+            tc.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, cmdScriptLineNumber - 1);
             tc.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor,1);
             e->setTextCursor(tc);
         }
         runningScript=false;
-            if(sender() != 0) {
-                cmdScriptDebugger->attachTo(&scriptEngine);
-            }
+        if (sender() != nullptr) {
+            cmdScriptDebugger->attachTo(&scriptEngine);
+        }
     } else {
-            if(sender() != 0) {
-                cmdScriptDebugger->action(QScriptEngineDebugger::ClearConsoleAction)->trigger();
-                cmdScriptDebugger->action(QScriptEngineDebugger::ClearDebugOutputAction)->trigger();
-                cmdScriptDebugger->action(QScriptEngineDebugger::ClearErrorLogAction)->trigger();
-                cmdScriptDebugger->detach();
-            }
+        if (sender() != nullptr) {
+            cmdScriptDebugger->action(QScriptEngineDebugger::ClearConsoleAction)->trigger();
+            cmdScriptDebugger->action(QScriptEngineDebugger::ClearDebugOutputAction)->trigger();
+            cmdScriptDebugger->action(QScriptEngineDebugger::ClearErrorLogAction)->trigger();
+            cmdScriptDebugger->detach();
+        }
         cmdScriptLineNumber = 0;
     }
-    
+
     // can't edit the script in the debugger
     // only for examining status, messages and vars
     // only used when called from GUI
 
-    if(runningScript) settings.setValue("filename",name);
-
+    if (runningScript) {
+        settings.setValue("filename", name);
+    }
 }
 
-void MainWindow::setupScriptEngine(void)
+void MainWindow::setupScriptEngine()
 {
     runningScript=false;
     // expose these widgets to the script
     appContext = scriptEngine.newQObject(this);
     scriptEngine.globalObject().setProperty("app", appContext);
     // create a debugger for QScript
-        if (!cmdScriptDebugger) {
-            cmdScriptDebugger = new QScriptEngineDebugger(this);
-            cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
-            cmdScriptDebugger->standardWindow()->resize(1280, 704);
-        }
+    if (cmdScriptDebugger == nullptr) {
+        cmdScriptDebugger = new QScriptEngineDebugger(this);
+        cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
+        cmdScriptDebugger->standardWindow()->resize(1280, 704);
+    }
 }
 
 /// BEGIN 3DTexture
@@ -3340,6 +3589,5 @@ void MainWindow::setupScriptEngine(void)
 // }
 /// END 3DTexture
 
-}
-}
-
+} // namespace GUI
+} // namespace Fragmentarium

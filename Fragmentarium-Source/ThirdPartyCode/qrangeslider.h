@@ -42,210 +42,211 @@
 #ifndef QRANGESLIDER_H
 #define QRANGESLIDER_H
 
-#include <QStyle>
 #include <QSlider>
+#include <QStyle>
 #include <QStyleOptionComplex>
 #include <QWidget>
 
 /**
  * Used for converting native units, to some logical unit
  */
-class RangeSliderUnitConverter {
+class RangeSliderUnitConverter
+{
 public:
-  /**
-   * Destructs the RangeSliderUnitConverter
-   */
-  virtual ~RangeSliderUnitConverter() {}
+    /**
+     * Destructs the RangeSliderUnitConverter
+     */
+    virtual ~RangeSliderUnitConverter() {}
 
-  /**
-   * Convert from the base unit to logical unit
-   *
-   * @param baseunit The unit of the base
-   */
-  virtual QVariant convertFromBase(int baseunit) const = 0;
+    /**
+     * Convert from the base unit to logical unit
+     *
+     * @param baseunit The unit of the base
+     */
+    virtual QVariant convertFromBase ( int baseunit ) const = 0;
 
-  /**
-   * Converts from a logical unit to int
-   *
-   * @param logical Some representation that can be converted to an int
-   */
-  virtual int convertToBase(QVariant logical) const = 0;
+    /**
+     * Converts from a logical unit to int
+     *
+     * @param logical Some representation that can be converted to an int
+     */
+    virtual int convertToBase ( QVariant logical ) const = 0;
 };
 
-class QStyleOptionRangeSlider : public QStyleOptionComplex {
-  public:
-  typedef QPair<int,int> range_t;
-  void setTickPosition(QSlider::TickPosition position) {
-    tickPosition_ = position;
-  }
+class QStyleOptionRangeSlider : public QStyleOptionComplex
+{
+public:
+    typedef QPair<int, int> range_t;
+    void setTickPosition ( QSlider::TickPosition position )
+    {
+        tickPosition_ = position;
+    }
 
-  QSlider::TickPosition tickPosition() const
-  {
-    return tickPosition_;
-  }
+    QSlider::TickPosition tickPosition() const
+    {
+        return tickPosition_;
+    }
 
-  const range_t& range() const
-  {
-    return range_;
-  }
+    const range_t &range() const
+    {
+        return range_;
+    }
 
-  const range_t& cutoffRange() const
-  {
-    return cutoffRange_;
-  }
+    const range_t &cutoffRange() const
+    {
+        return cutoffRange_;
+    }
 
-  void setOrientation(Qt::Orientation orientation)
-  {
-    orientation_ = orientation;
-  }
+    void setOrientation ( Qt::Orientation orientation )
+    {
+        orientation_ = orientation;
+    }
 
-  void setCutoffRange(const range_t& cutoffRange)
-  {
-    cutoffRange_ = cutoffRange;
-  }
+    void setCutoffRange ( const range_t &cutoffRange )
+    {
+        cutoffRange_ = cutoffRange;
+    }
 
-  void setRange(const range_t& range)
-  {
-    range_ = range;
-  }
+    void setRange ( const range_t &range )
+    {
+        range_ = range;
+    }
 
-  Qt::Orientation orientation() const
-  {
-    return orientation_;
-  }
+    Qt::Orientation orientation() const
+    {
+        return orientation_;
+    }
 
-  void setTickInterval(float tickInterval)
-  {
-    tickInterval_ = tickInterval;
-  }
+    void setTickInterval ( float tickInterval )
+    {
+        tickInterval_ = tickInterval;
+    }
 
-  float tickInterval() const
-  {
-    return tickInterval_;
-  }
+    float tickInterval() const
+    {
+        return tickInterval_;
+    }
 
-  void setLogarithmic(bool logarithmic)
-  {
-    logarithmic_ = logarithmic;
-  }
+    void setLogarithmic ( bool logarithmic )
+    {
+        logarithmic_ = logarithmic;
+    }
 
-  bool isLogarithmic() const
-  {
-    return logarithmic_;
-  }
+    bool isLogarithmic() const
+    {
+        return logarithmic_;
+    }
 
 private:
-  range_t range_;
-  range_t cutoffRange_;
+    range_t range_;
+    range_t cutoffRange_;
 
-  float tickInterval_;
-  bool logarithmic_;
+    float tickInterval_;
+    bool logarithmic_;
 
-  QSlider::TickPosition tickPosition_;
-  Qt::Orientation orientation_;
+    QSlider::TickPosition tickPosition_;
+    Qt::Orientation orientation_;
 };
 
 class QStyleRangeSlider;
 
 class qRangeSlider : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  typedef QPair<int,int> range_t;
+    typedef QPair<int, int> range_t;
 
-  //    Q_ENUMS(TickPosition)
-  Q_PROPERTY(range_t range READ range WRITE setRange )
-  Q_PROPERTY(range_t cutoffRange READ cutoffRange WRITE setCutoffRange )
-  Q_PROPERTY(QSlider::TickPosition tickPosition
-  READ tickPosition
-  WRITE setTickPosition)
-  Q_PROPERTY(float tickInterval READ tickInterval WRITE setTickInterval)
+    //    Q_ENUMS(TickPosition)
+    Q_PROPERTY ( range_t range READ range WRITE setRange )
+    Q_PROPERTY ( range_t cutoffRange READ cutoffRange WRITE setCutoffRange )
+    Q_PROPERTY ( QSlider::TickPosition tickPosition READ tickPosition WRITE setTickPosition )
+    Q_PROPERTY ( float tickInterval READ tickInterval WRITE setTickInterval )
 
 public:
-//  qRangeSlider(QWidget *parent = 0);
-  enum ELEMENT { NONE = 0x0, FIRST = 0x1, SECOND = 0x2};
+    //  qRangeSlider(QWidget *parent = 0);
+    enum ELEMENT { NONE = 0x0, FIRST = 0x1, SECOND = 0x2 };
 
-  enum TickPosition {
-    NoTicks = 0,
-    TicksAbove = 1,
-    TicksLeft = TicksAbove,
-    TicksBelow = 2,
-    TicksRight = TicksBelow,
-    TicksBothSides = 3
+    enum TickPosition {
+        NoTicks = 0,
+        TicksAbove = 1,
+        TicksLeft = TicksAbove,
+        TicksBelow = 2,
+        TicksRight = TicksBelow,
+        TicksBothSides = 3
 
-  };
+    };
 
-  explicit qRangeSlider(QWidget* parent = 0);
-  explicit qRangeSlider(Qt::Orientation orientation, QWidget* parent = 0);
+    explicit qRangeSlider ( QWidget *parent = 0 );
+    explicit qRangeSlider ( Qt::Orientation orientation, QWidget *parent = 0 );
 
-  ~qRangeSlider();
+    ~qRangeSlider();
 
 #ifndef Q_OS_MAC
-  QSize sizeHint() const;
+    QSize sizeHint() const;
 #endif
-  QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const;
 
-  void setTickPosition(QSlider::TickPosition position);
-  QSlider::TickPosition tickPosition() const;
+    void setTickPosition ( QSlider::TickPosition position );
+    QSlider::TickPosition tickPosition() const;
 
-  void setTickInterval(float ti);
-  float tickInterval() const;
+    void setTickInterval ( float ts );
+    float tickInterval() const;
 
-  bool event(QEvent* event);
+    bool event ( QEvent *event );
 
-  void setUnitConverter(const RangeSliderUnitConverter* = 0);
+    void setUnitConverter ( const RangeSliderUnitConverter * = 0 );
 
-  const range_t& range() const {
-    return styleOptionRangeSlider_.range();
-  }
+    const range_t &range() const
+    {
+        return styleOptionRangeSlider_.range();
+    }
 
-  const range_t& cutoffRange() const {
-    return styleOptionRangeSlider_.cutoffRange();
-  }
+    const range_t &cutoffRange() const
+    {
+        return styleOptionRangeSlider_.cutoffRange();
+    }
 
-  void setLogarithmic(bool logarithmic);
-  bool isLogarithmic() const;
+    void setLogarithmic ( bool logarithmic );
+    bool isLogarithmic() const;
 
-  QRect getBBox() const;
+    QRect getBBox() const;
 signals:
-  void rangeChanged(QPair<int, int> range);
-  void cutoffRangeChanged(QPair<int, int> range);
+    void rangeChanged ( QPair<int, int> range );
+    void cutoffRangeChanged ( QPair<int, int> range );
 
 public slots:
-  void setRange(const QPair<int, int>& value);
-  void setCutoffRange(const QPair<int, int>& value);
+    void setRange ( const QPair<int, int> &range_in );
+    void setCutoffRange ( const QPair<int, int> &cutoffRange );
 
 protected:
-  void init(Qt::Orientation orientation);
+    void init ( Qt::Orientation orientation );
 
-  void paintEvent(QPaintEvent* ev);
-  void mousePressEvent(QMouseEvent* ev);
-  void mouseReleaseEvent(QMouseEvent*);
-  void mouseMoveEvent(QMouseEvent* ev);
-  void initStyleOption(QStyleOptionRangeSlider* option);
-  const QStyleRangeSlider* styleRangeSlider() const;
-  Qt::Orientation orientation() const
-  {
-    return styleOptionRangeSlider_.orientation();
-  }
+    void paintEvent ( QPaintEvent *ev );
+    void mousePressEvent ( QMouseEvent *ev );
+    void mouseReleaseEvent ( QMouseEvent * );
+    void mouseMoveEvent ( QMouseEvent *ev );
+    //   void initStyleOption(QStyleOptionRangeSlider* option);
+    const QStyleRangeSlider *styleRangeSlider() const;
+    Qt::Orientation orientation() const
+    {
+        return styleOptionRangeSlider_.orientation();
+    }
 
-  void showValueTooltip();
-
-
-private:
-  Q_DISABLE_COPY(qRangeSlider)
-
-  QStyle::SubControl tracking;
-
-
-  QStyleOptionRangeSlider styleOptionRangeSlider_;
-
-  static void clamp(int& value, const range_t& clamp_to);
-  static void clamp(range_t& value, const range_t& clamp_to);
+    void showValueTooltip();
 
 private:
-  static QStyleRangeSlider* styleRangeSlider_;
-  const RangeSliderUnitConverter* unitConverter_;
+    Q_DISABLE_COPY ( qRangeSlider )
+
+    QStyle::SubControl tracking;
+
+    QStyleOptionRangeSlider styleOptionRangeSlider_;
+
+    static void clamp ( int &value, const range_t &clampTo );
+    static void clamp ( range_t &value, const range_t &clampTo );
+
+private:
+    static QStyleRangeSlider *styleRangeSlider_;
+    const RangeSliderUnitConverter *unitConverter_;
 };
 
 #endif

@@ -1,47 +1,51 @@
 #include "VariableEditor.h"
 
-#include <qglobal.h>
-#include <QDebug>
-#include <QPushButton>
-#include <QSlider>
-#include <QDoubleSpinBox>
+#include <QApplication>
+#include <QClipboard>
 #include <QComboBox>
+#include <QDebug>
+#include <QDoubleSpinBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QApplication>
-#include <QScrollArea>
-#include <QClipboard>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QSlider>
 #include <QSpacerItem>
+#include <qglobal.h>
 
 #include "../../SyntopiaCore/Logging/ListWidgetLogger.h"
 #include "../../SyntopiaCore/Misc/MiniParser.h"
+#include "EasingWindow.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
-#include "EasingWindow.h"
+
+
+namespace Fragmentarium
+{
+namespace GUI
+{
 
 using namespace SyntopiaCore::Logging;
-
-namespace Fragmentarium {
-namespace GUI {
-
 using namespace SyntopiaCore::Misc;
 
-VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(parent) , mainWindow(mainWin) {
-    currentComboSlider = 0;
+VariableEditor::VariableEditor(QWidget *parent, MainWindow *mainWin)
+    : QWidget(parent), mainWindow(mainWin)
+{
+    currentComboSlider = nullptr;
     layout = new QVBoxLayout(this);
     layout->setSpacing(0);
     layout->setContentsMargins (0,0,0,0);
 
     QWidget* tw = new QWidget(this);
-    QHBoxLayout* topLayout = new QHBoxLayout(tw);
-    QSpacerItem *horizontalSpacer = new QSpacerItem(1024, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    auto *topLayout = new QHBoxLayout(tw);
+    auto *horizontalSpacer = new QSpacerItem(1024, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
     topLayout->addItem(horizontalSpacer);
 
     QLabel* l = new QLabel(tr("Preset:"), tw);
     topLayout->addWidget(l);
     presetComboBox = new QComboBox(tw);
-    connect(presetComboBox, SIGNAL(activated ( QString )), this, SLOT(presetSelected( QString )));
+    connect(presetComboBox, SIGNAL(activated(QString)), this, SLOT(presetSelected(QString)));
     presetComboBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     topLayout->addWidget(presetComboBox);
     QPushButton* pb2 = new QPushButton(tr("Apply"), tw);
@@ -70,12 +74,12 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     w->layout()->addWidget(pb);
     layout->addWidget(w);
 
-    spacer=0;
-    currentWidget=0;
+    spacer = nullptr;
+    currentWidget = nullptr;
 
     tabWidget->setTabPosition(QTabWidget::East);
 
-    connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(focusChanged(QWidget*,QWidget*)));
+    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
     easingEnabled=false;
     useDefines=false;
@@ -84,32 +88,43 @@ VariableEditor::VariableEditor(QWidget* parent, MainWindow* mainWin) : QWidget(p
     verbose = false;
 }
 
-void VariableEditor::presetSelected( QString presetName ) {
+void VariableEditor::presetSelected(QString presetName)
+{
     if(presetName.contains("KeyFrame")) {
         mainWindow->selectPreset();
         mainWindow->getEngine()->update();
     }
 }
 
-void VariableEditor::sliderDestroyed(QObject* obj) {
+void VariableEditor::sliderDestroyed(QObject *obj)
+{
     if (obj==currentComboSlider) {
-        currentComboSlider = 0;
+        currentComboSlider = nullptr;
     }
 }
 
-void VariableEditor::focusChanged(QWidget* oldWidget,QWidget* newWidget) {
+void VariableEditor::focusChanged(QWidget *oldWidget, QWidget *newWidget)
+{
 
     // Detect if a ComboSlider gets or looses focus
-    ComboSlider* oldFloat = 0;
-    if (oldWidget && oldWidget->parent()) oldFloat = qobject_cast<ComboSlider*>(oldWidget->parent());
-    if (oldFloat == 0) oldFloat = qobject_cast<ComboSlider*>(oldWidget);
-    ComboSlider* newFloat = 0;
-    if (newWidget && newWidget->parent()) newFloat = qobject_cast<ComboSlider*>(newWidget->parent());
-    if (newFloat == 0) newFloat = qobject_cast<ComboSlider*>(newWidget);
+    ComboSlider *oldFloat = nullptr;
+    if (oldWidget != nullptr && oldWidget->parent() != nullptr) {
+        oldFloat = qobject_cast<ComboSlider *>(oldWidget->parent());
+    }
+    if (oldFloat == nullptr) {
+        oldFloat = qobject_cast<ComboSlider *>(oldWidget);
+    }
+    ComboSlider *newFloat = nullptr;
+    if (newWidget != nullptr && newWidget->parent() != nullptr) {
+        newFloat = qobject_cast<ComboSlider *>(newWidget->parent());
+    }
+    if (newFloat == nullptr) {
+        newFloat = qobject_cast<ComboSlider *>(newWidget);
+    }
 
-    if (newFloat != 0) {
+    if (newFloat != nullptr) {
 
-        if (currentComboSlider) {
+        if (currentComboSlider != nullptr) {
             currentComboSlider->setPalette(QApplication::palette(oldFloat));
             currentComboSlider->setAutoFillBackground(false);
         }
@@ -125,7 +140,8 @@ void VariableEditor::focusChanged(QWidget* oldWidget,QWidget* newWidget) {
     QApplication::postEvent(tabWidget, new QEvent(QEvent::LayoutRequest));
 }
 
-void VariableEditor::setPresets(QMap<QString, QString> presets) {
+void VariableEditor::setPresets(QMap<QString, QString> presets)
+{
     QString pi = presetComboBox->currentText();
     presetComboBox->clear();
     foreach (QString preset, presets.keys()) {
@@ -133,14 +149,21 @@ void VariableEditor::setPresets(QMap<QString, QString> presets) {
     }
     this->presets = presets;
 
-    if(!pi.isEmpty()) presetComboBox->setCurrentIndex( presetComboBox->findText(pi,Qt::MatchContains|Qt::MatchFixedString) );
+    if (!pi.isEmpty()) {
+        presetComboBox->setCurrentIndex(presetComboBox->findText(pi, Qt::MatchContains | Qt::MatchFixedString));
+    }
 
-    if(getKeyFrameCount() > 1) mainWindow->initKeyFrameControl();
+    if (getKeyFrameCount() > 1) {
+        mainWindow->initKeyFrameControl();
+    }
 }
 
-bool VariableEditor::setDefault() {
-    if (!(QSettings().value("autorun", true).toBool())) return false;
-    int i = presetComboBox->findText("default", Qt::MatchContains|Qt::MatchFixedString);
+bool VariableEditor::setDefault()
+{
+    if (!(QSettings().value("autorun", true).toBool())) {
+        return false;
+    }
+    int i = presetComboBox->findText("default", Qt::MatchContains | Qt::MatchFixedString);
     if (i != -1) {
         presetComboBox->setCurrentIndex(i);
         INFO(tr("Found '") + presetComboBox->currentText() + tr("' preset. Executing..."));
@@ -149,49 +172,48 @@ bool VariableEditor::setDefault() {
     return false;
 }
 
-bool VariableEditor::applyPreset() {
+bool VariableEditor::applyPreset()
+{
     QString presetName = presetComboBox->currentText();
     QString preset = presets[presetName];
     /// this bit of fudge sets the current time to keyframe time
-    QRegExp rx = QRegExp("KeyFrame\\.\\d\\d\\d");
+    QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
     if(rx.indexIn(presetName) != -1)  { /// found a keyframe
-        mainWindow->setTimeSliderValue( getCurrentKeyFrame() * ((mainWindow->getTimeMax()*mainWindow->renderFPS)/(getKeyFrameCount()-1)));
+        mainWindow->setTimeSliderValue(getCurrentKeyFrame() * ((mainWindow->getTimeMax() * mainWindow->renderFPS) / (getKeyFrameCount() - 1)));
     }
     return setSettings(preset);
 }
 
-void VariableEditor::resetUniforms(bool clear ) {
+void VariableEditor::resetUniforms(bool clear)
+{
     for (int i = 0; i < variables.count(); i++ ) {
         delete(variables[i]);
     }
     variables.clear();
     mainWindow->resetCamera(true);
 
-    if (clear) mainWindow->initializeFragment();
-}
-
-void VariableEditor::setUserUniforms(QOpenGLShaderProgram* shaderProgram) {
-    for (int i = 0; i < variables.count(); i++) {
-        if (!variables[i]->isSystemVariable()) {
-            variables[i]->setUserUniform(shaderProgram);
-        }
+    if (clear) {
+        mainWindow->initializeFragment();
     }
 }
 
-void VariableEditor::copy() {
+void VariableEditor::copy()
+{
     INFO(tr("Copied settings to clipboard"));
     QClipboard *cb = QApplication::clipboard();
     cb->setText( getSettings(),QClipboard::Clipboard );
 }
 
-void VariableEditor::paste() {
-  INFO(tr("Pasted settings from clipboard"));
+void VariableEditor::paste()
+{
+    INFO(tr("Pasted settings from clipboard"));
     QClipboard *cb = QApplication::clipboard();
     QString text = cb->text(QClipboard::Clipboard);
     setSettings(text);
 }
 
-void VariableEditor::lockGroup() {
+void VariableEditor::lockGroup()
+{
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
 
     QMap<QString, QWidget*>::const_iterator it;
@@ -209,7 +231,8 @@ void VariableEditor::lockGroup() {
     }
 }
 
-void VariableEditor::unlockGroup() {
+void VariableEditor::unlockGroup()
+{
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
 
     QMap<QString, QWidget*>::const_iterator it;
@@ -227,8 +250,8 @@ void VariableEditor::unlockGroup() {
     }
 }
 
-
-void VariableEditor::resetGroup() {
+void VariableEditor::resetGroup()
+{
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
 
     QMap<QString, QWidget*>::const_iterator it;
@@ -252,7 +275,8 @@ void VariableEditor::resetGroup() {
     mainWindow->callRedraw();
 }
 
-void VariableEditor::copyGroup() {
+void VariableEditor::copyGroup()
+{
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
 
     QMap<QString, QWidget*>::const_iterator it;
@@ -272,33 +296,41 @@ void VariableEditor::copyGroup() {
 
     INFO(tr("Copied ") + g + tr(" settings to clipboard"));
     QClipboard *cb = QApplication::clipboard();
-    cb->setText( gs ,QClipboard::Clipboard );
+    cb->setText( gs,QClipboard::Clipboard );
 }
 
-namespace {
-class ScrollArea : public QScrollArea {
+namespace
+{
+class ScrollArea : public QScrollArea
+{
 public:
     ScrollArea(QWidget* child): child(child) {}
 
-    virtual void resizeEvent(QResizeEvent*) {
+    void resizeEvent(QResizeEvent *ev) override
+    {
+        Q_UNUSED(ev)
         child->setMinimumSize( viewport()->size().width(),child->size().height());
         child->setMaximumSize( viewport()->size().width(),child->size().height());
-        child->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+        child->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         // Seems we have to do this manually...
         QApplication::postEvent(this, new QEvent(QEvent::LayoutRequest));
     }
     QWidget* child;
 };
-}
+} // namespace
 
-void VariableEditor::childChanged(bool lockedChanged) {
+void VariableEditor::childChanged(bool lockedChanged)
+{
     emit changed(lockedChanged);
 }
 
-void VariableEditor::createGroup(QString g) {
-    if(verbose) qDebug() << "Creating new group -> "+ g;
+void VariableEditor::createGroup(QString g)
+{
+    if (verbose) {
+        qDebug() << "Creating new group -> " + g;
+    }
 
-    QWidget* w =new QWidget(this,0);
+    QWidget *w = new QWidget(this, nullptr);
 
     w->setLayout(new QVBoxLayout(w));
 
@@ -308,7 +340,7 @@ void VariableEditor::createGroup(QString g) {
 
     w->layout()->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
-    ScrollArea* sa = new ScrollArea(w);
+    auto *sa = new ScrollArea(w);
     sa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     sa->setWidget(w);
     sa->setContentsMargins (0,0,0,0);
@@ -316,7 +348,7 @@ void VariableEditor::createGroup(QString g) {
 
     tabWidget->addTab(sa, g);
     tabs[g] = w;
-    
+
     QWidget* a = new QWidget();
     a->setLayout(new QVBoxLayout(a));
     a->layout()->setSpacing(0);
@@ -327,7 +359,7 @@ void VariableEditor::createGroup(QString g) {
     b->layout()->setSpacing(0);
     b->layout()->setContentsMargins (0,0,0,0);
 
-    QPushButton* pb = new QPushButton(b);
+    auto *pb = new QPushButton(b);
     pb->setText("Copy group");
     b->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(copyGroup()));
@@ -351,7 +383,7 @@ void VariableEditor::createGroup(QString g) {
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(resetGroup()));
     a->layout()->addWidget(c);
-    QSpacerItem *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    auto *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
     a->layout()->addItem(verticalSpacer);
     w->layout()->addWidget(a);
     spacers[w] = a;
@@ -359,14 +391,16 @@ void VariableEditor::createGroup(QString g) {
     update();
 }
 
-void VariableEditor::updateTextures(Parser::FragmentSource* fs, FileManager* fileManager) {
+void VariableEditor::updateTextures(Parser::FragmentSource *fs, FileManager *fileManager)
+{
     for (int i = 0; i < variables.count(); i++) {
         variables[i]->updateTextures(fs, fileManager);
     }
 }
 
-void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
-    static QRegExp exp("^\\s*uniform\\s+(\\S+)\\s+(\\S+)\\s*;\\s*$");
+void VariableEditor::substituteLockedVariables(Parser::FragmentSource *fs)
+{
+    static QRegExp exp(R"(^\s*uniform\s+(\S+)\s+(\S+)\s*;\s*$)");
 
     QMap<QString, VariableWidget*> map;
     QStringList names;
@@ -376,8 +410,8 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
             names.append(variables[i]->getName());
         }
     }
-    
-    if (names.count()>0 && !fs->bufferShaderSource) {
+
+    if (names.count() > 0 && fs->bufferShaderSource == nullptr) {
         INFO(tr("%1 locked variables: %2").arg(map.count()).arg(names.join(",")));
     }
 
@@ -386,22 +420,139 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource* fs) {
         if (exp.indexIn(s)!=-1) {
             if (map.contains(exp.cap(2))) {
                 QString s;
-                if(!useDefines)
-                  s = map[exp.cap(2)]->getLockedSubstitution();
-                else
-                  s = map[exp.cap(2)]->getLockedSubstitution2();
+                if (!useDefines) {
+                    s = map[exp.cap(2)]->getLockedSubstitution();
+                } else {
+                    s = map[exp.cap(2)]->getLockedSubstitution2();
+                }
 
-//                 if(verbose) qDebug() << "Substituted: " + s + " -> " + fs->source[i];
-                if (!s.isNull()) fs->source[i] = s;
+                //                 if(verbose) qDebug() << "Substituted: " + s + " -> " + fs->source[i];
+                if (!s.isNull()) {
+                    fs->source[i] = s;
+                }
             }
         }
     }
 }
 
-void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* showGUI) {
+void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
+//             if(verbose) qDebug() << "Creating: " + p->getName();
+    if (dynamic_cast<Parser::FloatParameter *>(p) != nullptr) {
+        auto *fp = dynamic_cast<Parser::FloatParameter *>(p);
+        QString name = fp->getName();
+        FloatWidget *fw = new FloatWidget(currentWidget, this, name, fp->getDefaultValue(), fp->getFrom(), fp->getTo());
+        fw->setToolTip(fp->getTooltip());
+//                 fw->setStatusTip(fp->getTooltip());
+        fw->setGroup(fp->getGroup());
+        fw->setDefaultLockType(fp->getLockType());
+        fw->setIsDouble(p->isDouble());
+        fw->setUpdated(true);
+        variables.append(fw);
+        currentWidget->layout()->addWidget(fw);
+    } else if (dynamic_cast<Parser::Float2Parameter *>(p) != nullptr) {
+        auto *f2p = dynamic_cast<Parser::Float2Parameter *>(p);
+        QString name = f2p->getName();
+        Float2Widget *f2w = new Float2Widget(currentWidget, this, name, f2p->getDefaultValue(), f2p->getFrom(), f2p->getTo());
+        f2w->setToolTip(f2p->getTooltip());
+//                 f2w->setStatusTip(f2p->getTooltip());
+        f2w->setGroup(f2p->getGroup());
+        f2w->setDefaultLockType(f2p->getLockType());
+        f2w->setIsDouble(p->isDouble());
+        f2w->setUpdated(true);
+        variables.append(f2w);
+        currentWidget->layout()->addWidget(f2w);
+    } else if (dynamic_cast<Parser::Float3Parameter *>(p) != nullptr) {
+        auto *f3p = dynamic_cast<Parser::Float3Parameter *>(p);
+        QString name = f3p->getName();
+        Float3Widget *f3w = new Float3Widget(currentWidget, this, name, f3p->getDefaultValue(), f3p->getFrom(), f3p->getTo());
+        f3w->setToolTip(f3p->getTooltip());
+//                 f3w->setStatusTip(f3p->getTooltip());
+        f3w->setGroup(f3p->getGroup());
+        f3w->setDefaultLockType(f3p->getLockType());
+        f3w->setIsDouble(p->isDouble());
+        f3w->setUpdated(true);
+        variables.append(f3w);
+        currentWidget->layout()->addWidget(f3w);
+    } else if (dynamic_cast<Parser::Float4Parameter *>(p) != nullptr) {
+        auto *f4p = dynamic_cast<Parser::Float4Parameter *>(p);
+        QString name = f4p->getName();
+        Float4Widget *f4w = new Float4Widget(currentWidget, this, name, f4p->getDefaultValue(), f4p->getFrom(), f4p->getTo());
+        f4w->setToolTip(f4p->getTooltip());
+//                 f4w->setStatusTip(f4p->getTooltip());
+        f4w->setGroup(f4p->getGroup());
+        f4w->setDefaultLockType(f4p->getLockType());
+        f4w->setIsDouble(p->isDouble());
+        f4w->setUpdated(true);
+        variables.append(f4w);
+        currentWidget->layout()->addWidget(f4w);
+    } else if (dynamic_cast<Parser::IntParameter *>(p) != nullptr) {
+        auto *ip = dynamic_cast<Parser::IntParameter *>(p);
+        QString name = ip->getName();
+        IntWidget *iw = new IntWidget(currentWidget, this, name, ip->getDefaultValue(), ip->getFrom(), ip->getTo());
+        iw->setGroup(ip->getGroup());
+        iw->setToolTip(ip->getTooltip());
+//                 iw->setStatusTip(ip->getTooltip());
+        iw->setDefaultLockType(ip->getLockType());
+        iw->setUpdated(true);
+        variables.append(iw);
+        currentWidget->layout()->addWidget(iw);
+    } else if (dynamic_cast<Parser::ColorParameter *>(p) != nullptr) {
+        auto *cp = dynamic_cast<Parser::ColorParameter *>(p);
+        QString name = cp->getName();
+        ColorWidget *cw = new ColorWidget(currentWidget, this, name, cp->getDefaultValue());
+        cw->setGroup(cp->getGroup());
+        cw->setToolTip(cp->getTooltip());
+//                 cw->setStatusTip(cp->getTooltip());
+        cw->setDefaultLockType(cp->getLockType());
+        cw->setIsDouble(p->isDouble());
+        cw->setUpdated(true);
+        variables.append(cw);
+        currentWidget->layout()->addWidget(cw);
+    } else if (dynamic_cast<Parser::FloatColorParameter *>(p) != nullptr) {
+        auto *cp = dynamic_cast<Parser::FloatColorParameter *>(p);
+        QString name = cp->getName();
+        FloatColorWidget *cw = new FloatColorWidget( currentWidget, this, name, cp->getDefaultValue(), cp->getFrom(), cp->getTo(), cp->getDefaultColorValue());
+        cw->setGroup(cp->getGroup());
+        cw->setToolTip(cp->getTooltip());
+//                 cw->setStatusTip(cp->getTooltip());
+        cw->setDefaultLockType(cp->getLockType());
+        cw->setIsDouble(p->isDouble());
+        cw->setUpdated(true);
+        variables.append(cw);
+        currentWidget->layout()->addWidget(cw);
+    } else if (dynamic_cast<Parser::BoolParameter *>(p) != nullptr) {
+        auto *bp = dynamic_cast<Parser::BoolParameter *>(p);
+        QString name = bp->getName();
+        BoolWidget *bw = new BoolWidget(currentWidget, this, name, bp->getDefaultValue());
+        bw->setToolTip(bp->getTooltip());
+//                 bw->setStatusTip(bp->getTooltip());
+        bw->setGroup(bp->getGroup());
+        bw->setDefaultLockType(bp->getLockType());
+        bw->setUpdated(true);
+        variables.append(bw);
+        currentWidget->layout()->addWidget(bw);
+    } else if (dynamic_cast<Parser::SamplerParameter *>(p) != nullptr) {
+        auto *sp = dynamic_cast<Parser::SamplerParameter *>(p);
+        QString name = sp->getName();
+        SamplerWidget *sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue());
+        sw->setToolTip(sp->getTooltip());
+//                 sw->setStatusTip(sp->getTooltip());
+        sw->setGroup(sp->getGroup());
+        sw->setDefaultLockType(Parser::AlwaysLocked);
+        sw->setUpdated(true);
+        variables.append(sw);
+        currentWidget->layout()->addWidget(sw);
 
-  if (fs) {
-    
+    } else {
+        WARNING(tr("Unsupported parameter"));
+    }
+}
+
+void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, bool *showGUI*/)
+{
+
+    if (fs == nullptr) return;
+
     QVector<Parser::GuiParameter*> ps = fs->params;
 
     for (int i = 0; i < variables.count(); ) {
@@ -424,19 +575,23 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
 
     for (int i = 0; i < ps.count(); i++) {
         QString g = ps[i]->getGroup();
-        if (g.isEmpty()) g = "Default";
+        if (g.isEmpty()) {
+            g = "Default";
+        }
         if (!tabs.contains(g)) {
             createGroup(g);
         } else {
-            if (tabStillPresent.contains(g)) tabStillPresent[g] = true;
-
+            if (tabStillPresent.contains(g)) {
+                tabStillPresent[g] = true;
+            }
         }
         currentWidget = tabs[g];
 
         bool found = false;
         for (int j = 0; j < variables.count(); j++) {
             QString name = variables[j]->getUniqueName();
-//             if(verbose) qDebug() << "Checking " + name + " -> " +  ps[i]->getUniqueName();
+            //             if(verbose) qDebug() << "Checking " + name + " -> " +
+            //             ps[i]->getUniqueName();
             if (name == ps[i]->getUniqueName()) {
                 found = true;
                 variables[j]->setUpdated(true);
@@ -444,124 +599,17 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
                 variables[j]->setPalette(QApplication::palette(variables[j]));
                 variables[j]->setAutoFillBackground(false);
 
-//                 if(verbose) qDebug() << "Found existing: " + variables[j]->getName() + QString(" value: %1").arg(variables[j]->getValueAsText());
+                //                 if(verbose) qDebug() << "Found existing: " +
+                //                 variables[j]->getName() + QString(" value:
+                //                 %1").arg(variables[j]->getValueAsText());
             }
         }
-       
+
         // We need to move the spacer to bottom.
         currentWidget->layout()->removeWidget(spacers[currentWidget]);
 
         if (!found) {
-//             if(verbose) qDebug() << "Creating: " + ps[i]->getName();
-            if (dynamic_cast<Parser::FloatParameter*>(ps[i])) {
-                Parser::FloatParameter* fp = dynamic_cast<Parser::FloatParameter*>(ps[i]);
-                QString name = fp->getName();
-                FloatWidget* fw = new FloatWidget(currentWidget, this, name, fp->getDefaultValue(), fp->getFrom(), fp->getTo());
-                fw->setToolTip(fp->getTooltip());
-//                 fw->setStatusTip(fp->getTooltip());
-                fw->setGroup(fp->getGroup());
-                fw->setDefaultLockType(fp->getLockType());
-                fw->setIsDouble(ps[i]->isDouble());
-                fw->setUpdated(true);
-                variables.append(fw);
-                currentWidget->layout()->addWidget(fw);
-            } else if (dynamic_cast<Parser::Float2Parameter*>(ps[i])) {
-                Parser::Float2Parameter* f2p = dynamic_cast<Parser::Float2Parameter*>(ps[i]);
-                QString name = f2p->getName();
-                Float2Widget* f2w = new Float2Widget(currentWidget, this, name, f2p->getDefaultValue(), f2p->getFrom(), f2p->getTo());
-                f2w->setToolTip(f2p->getTooltip());
-//                 f2w->setStatusTip(f2p->getTooltip());
-                f2w->setGroup(f2p->getGroup());
-                f2w->setDefaultLockType(f2p->getLockType());
-                f2w->setIsDouble(ps[i]->isDouble());
-                f2w->setUpdated(true);
-                variables.append(f2w);
-                currentWidget->layout()->addWidget(f2w);
-            } else if (dynamic_cast<Parser::Float3Parameter*>(ps[i])) {
-                Parser::Float3Parameter* f3p = dynamic_cast<Parser::Float3Parameter*>(ps[i]);
-                QString name = f3p->getName();
-                Float3Widget* f3w = new Float3Widget(currentWidget, this, name, f3p->getDefaultValue(), f3p->getFrom(), f3p->getTo());
-                f3w->setToolTip(f3p->getTooltip());
-//                 f3w->setStatusTip(f3p->getTooltip());
-                f3w->setGroup(f3p->getGroup());
-                f3w->setDefaultLockType(f3p->getLockType());
-                f3w->setIsDouble(ps[i]->isDouble());
-                f3w->setUpdated(true);
-                variables.append(f3w);
-                currentWidget->layout()->addWidget(f3w);
-            } else if (dynamic_cast<Parser::Float4Parameter*>(ps[i])) {
-                Parser::Float4Parameter* f4p = dynamic_cast<Parser::Float4Parameter*>(ps[i]);
-                QString name = f4p->getName();
-                Float4Widget* f4w = new Float4Widget(currentWidget, this, name, f4p->getDefaultValue(), f4p->getFrom(), f4p->getTo());
-                f4w->setToolTip(f4p->getTooltip());
-//                 f4w->setStatusTip(f4p->getTooltip());
-                f4w->setGroup(f4p->getGroup());
-                f4w->setDefaultLockType(f4p->getLockType());
-                f4w->setIsDouble(ps[i]->isDouble());
-                f4w->setUpdated(true);
-                variables.append(f4w);
-                currentWidget->layout()->addWidget(f4w);
-            } else if (dynamic_cast<Parser::IntParameter*>(ps[i])) {
-                Parser::IntParameter* ip = dynamic_cast<Parser::IntParameter*>(ps[i]);
-                QString name = ip->getName();
-                IntWidget* iw = new IntWidget(currentWidget, this, name, ip->getDefaultValue(), ip->getFrom(), ip->getTo());
-                iw->setGroup(ip->getGroup());
-                iw->setToolTip(ip->getTooltip());
-//                 iw->setStatusTip(ip->getTooltip());
-                iw->setDefaultLockType(ip->getLockType());
-                iw->setUpdated(true);
-                variables.append(iw);
-                currentWidget->layout()->addWidget(iw);
-            } else if (dynamic_cast<Parser::ColorParameter*>(ps[i])) {
-                Parser::ColorParameter* cp = dynamic_cast<Parser::ColorParameter*>(ps[i]);
-                QString name = cp->getName();
-                ColorWidget* cw = new ColorWidget(currentWidget, this, name, cp->getDefaultValue());
-                cw->setGroup(cp->getGroup());
-                cw->setToolTip(cp->getTooltip());
-//                 cw->setStatusTip(cp->getTooltip());
-                cw->setDefaultLockType(cp->getLockType());
-                cw->setIsDouble(ps[i]->isDouble());
-                cw->setUpdated(true);
-                variables.append(cw);
-                currentWidget->layout()->addWidget(cw);
-            } else if (dynamic_cast<Parser::FloatColorParameter*>(ps[i])) {
-                Parser::FloatColorParameter* cp = dynamic_cast<Parser::FloatColorParameter*>(ps[i]);
-                QString name = cp->getName();
-                FloatColorWidget* cw = new FloatColorWidget(currentWidget, this, name,cp->getDefaultValue(), cp->getFrom(), cp->getTo(), cp->getDefaultColorValue());
-                cw->setGroup(cp->getGroup());
-                cw->setToolTip(cp->getTooltip());
-//                 cw->setStatusTip(cp->getTooltip());
-                cw->setDefaultLockType(cp->getLockType());
-                cw->setIsDouble(ps[i]->isDouble());
-                cw->setUpdated(true);
-                variables.append(cw);
-                currentWidget->layout()->addWidget(cw);
-            } else if (dynamic_cast<Parser::BoolParameter*>(ps[i])) {
-                Parser::BoolParameter* bp = dynamic_cast<Parser::BoolParameter*>(ps[i]);
-                QString name = bp->getName();
-                BoolWidget* bw = new BoolWidget(currentWidget, this, name, bp->getDefaultValue());
-                bw->setToolTip(bp->getTooltip());
-//                 bw->setStatusTip(bp->getTooltip());
-                bw->setGroup(bp->getGroup());
-                bw->setDefaultLockType(bp->getLockType());
-                bw->setUpdated(true);
-                variables.append(bw);
-                currentWidget->layout()->addWidget(bw);
-            } else if (dynamic_cast<Parser::SamplerParameter*>(ps[i])) {
-                Parser::SamplerParameter* sp = dynamic_cast<Parser::SamplerParameter*>(ps[i]);
-                QString name = sp->getName();
-                SamplerWidget* sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue());
-                sw->setToolTip(sp->getTooltip());
-//                 sw->setStatusTip(sp->getTooltip());
-                sw->setGroup(sp->getGroup());
-                sw->setDefaultLockType(Parser::AlwaysLocked);
-                sw->setUpdated(true);
-                variables.append(sw);
-                currentWidget->layout()->addWidget(sw);
-
-            } else {
-                WARNING(tr("Unsupported parameter"));
-            }
+            createWidgetFromGuiParameter(ps[i]);
         }
 
         // We need to move the spacer to bottom.
@@ -585,21 +633,21 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource* fs, bool* 
     QMapIterator<QString, bool> it(tabStillPresent);
     while (it.hasNext()) {
         it.next();
-        if (it.value() == false) {
+        if (!it.value()) {
             spacers.remove(tabs[it.key()]);
             delete((tabs[it.key()]->parent()));
             tabs.remove(it.key());
         }
     }
 
-    if (showGUI) (*showGUI) = (variables.count() != 0);
+    //if (showGUI) (*showGUI) = (variables.count() != 0);
     setPresets(fs->presets);
     updateGeometry();
-  }
 
 }
 
-QString VariableEditor::getSettings() {
+QString VariableEditor::getSettings()
+{
     QStringList l;
     for (int i = 0; i < variables.count(); i++) {
         QString name = variables[i]->getName();
@@ -609,26 +657,32 @@ QString VariableEditor::getSettings() {
     if(saveEasing) {
         QStringList cs = mainWindow->getEngine()->getCurveSettings();
         if(!cs.isEmpty()) {
-            for(int i = 0; i < cs.count(); i++)
+            for (int i = 0; i < cs.count(); i++) {
                 l.append(cs.at(i));
+            }
         }
     }
     return l.join("\n");
 }
 
-bool VariableEditor::setSettings(QString text) {
+bool VariableEditor::setSettings(QString text)
+{
     QStringList l = text.split("\n");
     QMap<QString, QString> maps;
 
     foreach (QString s, l) {
         s=s.trimmed();
-        if (s.startsWith("#")) continue;
+        if (s.startsWith("#")) {
+            continue;
+        }
         if (s.split(":").count() == 12) { // 12 items in an easing curve setting line
-                setEasingCurves(s);
+            setEasingCurves(s);
             continue;
         }
 
-        if (s.isEmpty()) continue;
+        if (s.isEmpty()) {
+            continue;
+        }
 
         QStringList l2 = s.split("=");
 
@@ -659,16 +713,18 @@ bool VariableEditor::setSettings(QString text) {
     return requiresRecompile;
 }
 
-VariableWidget* VariableEditor::getWidgetFromName(QString name) {
+VariableWidget *VariableEditor::getWidgetFromName(QString name)
+{
     for (int i = 0; i < variables.count(); i++) {
         if (variables[i]->getName() == name) {
             return variables[i];
         }
     }
-    return 0;
+    return nullptr;
 }
 
-void VariableEditor::updateCamera(CameraControl* c) {
+void VariableEditor::updateCamera(CameraControl *c)
+{
 
     QString g = "Camera";
     if (!tabs.contains(g)) {
@@ -678,7 +734,9 @@ void VariableEditor::updateCamera(CameraControl* c) {
     QVector<VariableWidget*> added= c->addWidgets(tabs[g], this);
 
     foreach (VariableWidget* v, added) {
-        if (variables.contains(v)) continue;
+        if (variables.contains(v)) {
+            continue;
+        }
         v->setGroup(g);
         variables.append(v);
         v->setUpdated(true);
@@ -688,11 +746,12 @@ void VariableEditor::updateCamera(CameraControl* c) {
     c->connectWidgets(this);
 }
 
-bool VariableEditor::eventFilter(QObject *obj, QEvent *ev) {
+bool VariableEditor::eventFilter(QObject *obj, QEvent *ev)
+{
 
     // Pass key events to display widget (to use cursor keys for fine tuning)
     if (ev->type() == QEvent::KeyPress || ev->type() == QEvent::KeyRelease) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(ev);
+        auto *keyEvent = static_cast<QKeyEvent *>(ev);
         mainWindow->getEngine()->keyPressEvent(keyEvent);
         return true;
     }
@@ -700,7 +759,8 @@ bool VariableEditor::eventFilter(QObject *obj, QEvent *ev) {
     return QWidget::eventFilter(obj, ev);
 }
 
-int VariableEditor::addEasingCurve(QString c) {
+int VariableEditor::addEasingCurve(QString c)
+{
     QStringList curveSettings = mainWindow->getEngine()->getCurveSettings();
     int count = curveSettings.count();
     int found = -1;
@@ -719,11 +779,12 @@ int VariableEditor::addEasingCurve(QString c) {
         msgBox.setDefaultButton(QMessageBox::Apply);
         int ret = msgBox.exec();
         if(ret == QMessageBox::Apply) {
-            INFO(tr("Easing curve %1 replaced by %2").arg(curveSettings.at(found)).arg(c) );
+            INFO(tr("Easing curve %1 replaced by %2").arg(curveSettings.at(found)).arg(c));
             curveSettings.replace(found,c);
             mainWindow->getEngine()->setCurveSettings(curveSettings);
             return found;
-        } else if(ret == QMessageBox::Discard) {
+        }
+        if (ret == QMessageBox::Discard) {
             WARNING(tr("Easing curve %1 removed!").arg(curveSettings.at(found)) );
             curveSettings.removeAt(found);
             mainWindow->getEngine()->setCurveSettings(curveSettings);
@@ -733,8 +794,7 @@ int VariableEditor::addEasingCurve(QString c) {
             INFO(tr("Easing curve canceled!"));
             return -1;
         }
-    }
-    else {
+    } else {
         INFO(QString("\n%1").arg(c) );
         WARNING(tr("Insert a \"Range-nnnn-nnnn\" preset to keep this setting!"));
         curveSettings.append(c);
@@ -749,16 +809,17 @@ int VariableEditor::addEasingCurve(QString c) {
 
 // sets easing curve for currently selected parameter
 // tests for existing and warns if found apply|delete|cancel
-void VariableEditor::setEasingCurve() {
+void VariableEditor::setEasingCurve()
+{
     // which combo slider ?
-    if( getCurrentComboSlider() ) {
+    if (getCurrentComboSlider() != nullptr) {
         // variable to animate
         ComboSlider *cs = getCurrentComboSlider();
         // extract the variable name
         QString variableName = cs->objectName();
         // did we get a variable to animate?
         if( !variableName.isEmpty() ) {
-            if( variableName.contains("Eye") || variableName.contains("Target") || variableName.contains("Up")) {
+            if (variableName.contains("Eye") || variableName.contains("Target") || variableName.contains("Up")) {
                 WARNING(tr("Camera settings handled in KeyFrames!"));
                 return;
             }
@@ -773,16 +834,12 @@ void VariableEditor::setEasingCurve() {
             }
 
             QEasingCurve::Type curveType = QEasingCurve::Linear; // default curve = 0
-            ///NOTE the value 65355.0 passed when found=true because -1,0,1 are valid start params
+            /// NOTE the value 65355.0 passed when found=true because -1,0,1 are valid start params
             /// but 65355.0 is not likely, tells EW we have a curve and not to set defaults
-            EasingWindow *ew = new EasingWindow(this,
-                                                cs->getMin(),
-                                                cs->getMax(),
-                                                (found==-1) ? cs->getValue() : 65355.0,
-                                                mainWindow->getTimeMax()*mainWindow->renderFPS,
-                                                cs->getLoops(),
-                                                cs->getPong()
-                                               );
+            auto *ew = new EasingWindow(this, cs->getMin(), cs->getMax(),
+                                 (found==-1) ? cs->getValue() : 65355.0,
+                                 mainWindow->getTimeMax()*mainWindow->renderFPS,
+                                 cs->getLoops(), cs->getPong());
 
             ew->setTitle(tr("Easing Curve for %1").arg(variableName));
 
@@ -841,33 +898,48 @@ void VariableEditor::setEasingCurve() {
                 const QMetaObject &mo = QEasingCurve::staticMetaObject;
                 QMetaEnum metaEnum = mo.enumerator(mo.indexOfEnumerator("Type"));
                 // assemble easing curve string
-                QString sc = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12").
-                             arg(variableName).arg(metaEnum.key(curveType)).arg(curveType).
-                             arg(s).arg(f).
-                             arg(ff).arg(lf).
-                             arg(p).arg(a).arg(o).arg(l).arg(pp);
+                QString sc = QString("%1:%2:%3:%4:%5:%6:%7:%8:%9:%10:%11:%12")
+                             .arg(variableName)
+                             .arg(metaEnum.key(curveType))
+                             .arg(curveType)
+                             .arg(s)
+                             .arg(f)
+                             .arg(ff)
+                             .arg(lf)
+                             .arg(p)
+                             .arg(a)
+                             .arg(o)
+                             .arg(l)
+                             .arg(pp);
                 // append curve string to list and setup the curve for animating
                 if(addEasingCurve(sc) != -1) {
                     setEasingCurves(sc);
                 }
-            } else INFO(tr("Easing curve canceled!"));
+            } else {
+                INFO(tr("Easing curve canceled!"));
+            }
             delete ew; // cleanup!
-        } else INFO(tr("No Easing Curve for this parameter."));
+        } else {
+            INFO(tr("No Easing Curve for this parameter."));
+        }
     }
 }
 
 // adds or replaces existing with provided Easing Curve Settings no dialog
-void VariableEditor::setEasingCurves( QString ecset ) {
+void VariableEditor::setEasingCurves(QString ecset)
+{
     QStringList curveSettings = mainWindow->getEngine()->getCurveSettings();
     // variable to animate
     QStringList easingOptions = ecset.split(":");
     QString varName = easingOptions.at(0);
-    if( varName.contains("Eye") || varName.contains("Target") || varName.contains("Up")) return;
+    if (varName.contains("Eye") || varName.contains("Target") || varName.contains("Up")) {
+        return;
+    }
     // did we get a variable to animate?
     if( !varName.isEmpty() && easingOptions.count() == 12) {
         // which combo slider ?
-        ComboSlider *cs = findChild<ComboSlider*>(varName);
-        if( cs ) {
+        auto *cs = findChild<ComboSlider *>(varName);
+        if (cs != nullptr) {
             // test if already exists
             int count = curveSettings.count();
             int found = -1;
@@ -877,7 +949,7 @@ void VariableEditor::setEasingCurves( QString ecset ) {
                 }
             }
 
-            QEasingCurve::Type curveType = (QEasingCurve::Type)easingOptions.at(2).toInt();
+            auto curveType = (QEasingCurve::Type)easingOptions.at(2).toInt();
             double s,f,p,a,o;
             int ff,lf, l, pp;
             s = easingOptions.at(3).toDouble();
@@ -899,8 +971,11 @@ void VariableEditor::setEasingCurves( QString ecset ) {
                 return;
             }
             // setup the curve for animating
-            if(found != -1) curveSettings.replace(found,ecset);
-            else curveSettings.append(ecset);
+            if (found != -1) {
+                curveSettings.replace(found, ecset);
+            } else {
+                curveSettings.append(ecset);
+            }
 
             bool isElastic = curveType >= QEasingCurve::InElastic && curveType <= QEasingCurve::OutInElastic;
             bool isBounce = curveType >= QEasingCurve::InBounce && curveType <= QEasingCurve::OutInBounce;
@@ -909,12 +984,15 @@ void VariableEditor::setEasingCurves( QString ecset ) {
             // set the animation attributes for this ComboSlider
             cs->m_anim->setEasingCurve( curveType );
 
-            if(isElastic)
+            if (isElastic) {
                 cs->m_anim->easingCurve().setPeriod(p);
-            if(isElastic || isBounce)
+            }
+            if (isElastic || isBounce) {
                 cs->m_anim->easingCurve().setAmplitude(a);
-            if(isOverShoot)
+            }
+            if (isOverShoot) {
                 cs->m_anim->easingCurve().setOvershoot(o);
+            }
 
             cs->m_framestart = ff;
             cs->m_framefin = lf;
@@ -923,7 +1001,7 @@ void VariableEditor::setEasingCurves( QString ecset ) {
 
             cs->m_anim->setStartValue(s);
             cs->m_anim->setEndValue(f);
-            cs->m_anim->setDuration( (lf-ff)*((1.0/mainWindow->renderFPS)*1000) );
+            cs->m_anim->setDuration((lf - ff) * ((1.0 / mainWindow->renderFPS) * 1000));
             cs->m_anim->setLoopCount(l);
             cs->m_anim->start();
             cs->m_anim->setPaused(true);
@@ -931,46 +1009,54 @@ void VariableEditor::setEasingCurves( QString ecset ) {
             mainWindow->getEngine()->setCurveSettings(curveSettings);
 
         }
-    } else WARNING(tr("Missing parameter or not applicable. %1").arg(ecset));
+    } else {
+        WARNING(tr("Missing parameter or not applicable. %1").arg(ecset));
+    }
 }
 
-int VariableEditor::getKeyFrameCount() {
+int VariableEditor::getKeyFrameCount()
+{
     int cnt = 0;
-    QRegExp rx = QRegExp("KeyFrame\\.\\d\\d\\d");
+    QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
     foreach (QString preset, presets.keys()) {
-        if(rx.indexIn(preset) != -1) cnt++;
+        if (rx.indexIn(preset) != -1) {
+            cnt++;
+        }
     }
     return cnt;
 }
 
-QStringList VariableEditor::getPresetByName(QString name) {
+QStringList VariableEditor::getPresetByName(QString name)
+{
     int i = presetComboBox->findText(name, Qt::MatchFixedString);
     if (i>=0) {
         QString presetName = presetComboBox->itemText(i);
         QStringList preset = presets[presetName].split("\n");
         return preset;
     }
-    return QStringList(0);
+    return QStringList(nullptr);
 }
 
-int VariableEditor::getCurrentKeyFrame() {
+int VariableEditor::getCurrentKeyFrame()
+{
 
-    QRegExp rx = QRegExp("KeyFrame\\.\\d\\d\\d");
+    QRegExp rx = QRegExp(R"(KeyFrame\.\d\d\d)");
     if(rx.indexIn(presetComboBox->currentText()) != -1) {
         return presetComboBox->currentText().split(".").at(1).toInt();
     }
-    
+
     return -1;
 }
 
-bool VariableEditor::setPreset(QString p) {
+bool VariableEditor::setPreset(QString p)
+{
     int item = presetComboBox->findText(p, Qt::MatchFixedString);
     presetComboBox->setCurrentIndex(item);
     return applyPreset();
     /// this bit of fudge sets the current time to keyframe time
 //     if(hasKeyFrames())
-//         mainWindow->setTimeSliderValue( getCurrentKeyFrame() * ((mainWindow->getTimeMax()*mainWindow->renderFPS)/(getKeyFrameCount()-1)));
+    //         mainWindow->setTimeSliderValue( getCurrentKeyFrame() *
+    //         ((mainWindow->getTimeMax()*mainWindow->renderFPS)/(getKeyFrameCount()-1)));
 }
-}
-}
-
+} // namespace GUI
+} // namespace Fragmentarium
