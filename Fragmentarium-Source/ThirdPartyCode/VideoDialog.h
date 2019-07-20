@@ -33,7 +33,8 @@ private slots:
     void saveSettings();
     void readyReadStandardOutput();
     void processStarted();
-    void encodingFinished();
+    void encodingFinished(int);
+    void playingFinished(int);
     void on_startButton_clicked();
     void on_fileOpenButton_clicked();
     void on_fileSaveButton_clicked();

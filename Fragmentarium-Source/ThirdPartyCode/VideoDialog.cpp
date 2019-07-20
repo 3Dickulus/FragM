@@ -32,12 +32,13 @@ VideoDialog::VideoDialog(MainWindow *parent)
     mTranscodingProcess->setObjectName("TranscodingProcess");
     connect(mTranscodingProcess, SIGNAL(started()), this, SLOT(processStarted()));
     connect(mTranscodingProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
-    connect(mTranscodingProcess, SIGNAL(finished(int)), this, SLOT(encodingFinished()));
+    connect(mTranscodingProcess, SIGNAL(finished(int)), this, SLOT(encodingFinished(int)));
 
     // Create playback processes
     mOutputPlayProcess = new QProcess(this);
     mOutputPlayProcess->setObjectName("PlayProcess");
     connect(mOutputPlayProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
+    m_ui->transcodingStatusLabel->setText("Encoding Status: Ready.");
 }
 
 VideoDialog::~VideoDialog()
@@ -119,7 +120,9 @@ void VideoDialog::on_startButton_clicked()
     }
 
     mTranscodingProcess->setProcessChannelMode(QProcess::MergedChannels);
+    m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Running!"));
     mTranscodingProcess->start(arguments.join(" "));
+
 }
 
 void VideoDialog::readyReadStandardOutput()
@@ -128,11 +131,11 @@ void VideoDialog::readyReadStandardOutput()
     QString senderName = sender()->objectName();
     QString outtxt;
 
-    if (senderName.contains("Play")) {
+    if (senderName == QString("PlayProcess")) {
         outtxt = mOutputPlayProcess->readAllStandardOutput();
     }
 
-    if (senderName.contains("Transcoding")) {
+    if (senderName == QString("TranscodingProcess")) {
         outtxt = mTranscodingProcess->readAllStandardOutput();
     }
 
@@ -150,10 +153,10 @@ void VideoDialog::readyReadStandardOutput()
     m_ui->textEdit->update();
     // put the slider at the bottom
     m_ui->textEdit->verticalScrollBar()->setSliderPosition(
-        m_ui->textEdit->verticalScrollBar()->maximum());
+    m_ui->textEdit->verticalScrollBar()->maximum());
 }
 
-void VideoDialog::encodingFinished()
+void VideoDialog::encodingFinished(int)
 {
     // Set the encoding status by checking output file's existence
     QString fileName = m_ui->toLineEdit->text();
@@ -161,9 +164,10 @@ void VideoDialog::encodingFinished()
     bool encstat = (mTranscodingProcess->exitStatus() == 0);
 
     if (QFile::exists(fileName)) {
-        m_ui->transcodingStatusLabel->setText(QString("Transcoding Status: %1").arg(encstat ? "Success!" : "Failed!"));
+        m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg(encstat ? "Ready." : "Failed!"));
     } else {
-        m_ui->transcodingStatusLabel->setText("Transcoding Status: Failed!");
+        m_ui->transcodingStatusLabel->setText("Encoding Status: Failed!");
+        qDebug() << "TranscodingProcess failed:" << mTranscodingProcess->errorString();
         encstat = false;
     }
 
@@ -205,6 +209,12 @@ void VideoDialog::on_fileSaveButton_clicked()
     }
 }
 
+void VideoDialog::playingFinished(int)
+{
+    on_stopButton_clicked();
+    m_ui->transcodingStatusLabel->setText("Encoding Status: Ready.");
+}
+
 void VideoDialog::on_playOutputButton_clicked()
 {
     QString program = m_ui->playCmdLineEdit->text();
@@ -212,7 +222,9 @@ void VideoDialog::on_playOutputButton_clicked()
     QString output = m_ui->toLineEdit->text();
     arguments << program << output;
     mOutputPlayProcess->setProcessChannelMode(QProcess::MergedChannels);
+    m_ui->transcodingStatusLabel->setText("Encoding Status: Playing...");
     mOutputPlayProcess->start(arguments.join(" "));
+    connect(mOutputPlayProcess, SIGNAL(finished(int)), this, SLOT(playingFinished(int)));
     m_ui->stopButton->setEnabled(true);
 }
 
@@ -267,7 +279,7 @@ void VideoDialog::on_stopButton_clicked()
     mOutputPlayProcess->kill();
     mTranscodingProcess->kill();
     m_ui->stopButton->setEnabled(false);
-
+    m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Stopped!"));
     saveSettings();
 }
 

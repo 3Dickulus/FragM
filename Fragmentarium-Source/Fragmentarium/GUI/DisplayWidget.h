@@ -52,6 +52,7 @@
 #include "SyntopiaCore/Logging/ListWidgetLogger.h"
 #include <QOpenGLShaderProgram>
 
+
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_MAC
 #include <OpenEXRConfig.h>
@@ -323,8 +324,6 @@ protected:
     void resizeGL ( int w, int h ) Q_DECL_OVERRIDE;
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
 
-    bool initPreviewBuffer();
-
 private:
     QOpenGLFramebufferObject* previewBuffer;
     QOpenGLFramebufferObject* backBuffer;
@@ -341,6 +340,23 @@ private:
     void setViewPort ( int w, int h );
     void makeBuffers();
     void setPerspective();
+
+    bool initPreviewBuffer();
+
+    bool loadHDRTexture(QString texturePath, GLenum type);
+    bool loadEXRTexture(QString texturePath, GLenum type);
+    bool loadQtTexture(QString texturePath, GLenum type);
+
+    bool setTextureParms(QString textureUniformName, GLenum type);
+    void checkForSpecialCase(QString uniformName, QString &uniformValue);
+    void setFloatType(GLenum type, QString &tp);
+    bool checkShaderProg(GLuint programID);
+    void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
+    void setupShaderVars(int w, int h);
+    void draw3DHints();
+    bool FBOcheck();
+    void setupBufferShaderVars(int w, int h);
+
     int pendingRedraws; // the number of times we must redraw
     QColor backgroundColor;
 

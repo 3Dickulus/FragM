@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190712, "");
+    version = Version(2, 5, 0, 190719, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -193,18 +193,18 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     if (modification) {
-        QString mess = tr("There are tabs with unsaved changes.\r\n%1\r\nContinue and loose changes?")
-            .arg(variableEditor->hasEasing() ? "\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n" : "\r\n");
+        QString mess = tr("There are unsaved changes.\r\n%1\r\nContinue will discard changes.")
+            .arg(variableEditor->hasEasing() ? tr("\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n") : "\r\n");
 
-        int i = QMessageBox::warning(this, tr("Unsaved changes"), mess, QMessageBox::Ok, QMessageBox::Cancel);
-        if (i == QMessageBox::Ok) {
-            // OK
-            ev->accept();
+        int i = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("Continue"), tr("Cancel"));
+        if (i == 1) {
+            // Cancel
+            ev->ignore();
             return;
         }
 
-        // Cancel
-        ev->ignore();
+        // OK
+        ev->accept();
         return;
     }
     ev->accept();
@@ -445,11 +445,11 @@ void MainWindow::showControlHelp()
   "<li>A/D: move left/right.</li>"
   "<li>Q/E: roll</li>"
   "<li>1/3: increase/decrease step size x2</li>"
-  "<li>2/X: increase/decrease step size x10</li>"
+  "<li>2: increase/decrease step size x10</li>"
   "<li>Shift+Wheel: change step size</li>"
-  "<li>T/H: move up/down.</li>"
+  "<li>T/G: move up/down.</li>"
   "<li>R/F: yaw</li>"
-  "<li>T/G: pitch</li>"
+  "<li>Y/H: pitch</li>"
   "</ul>"
   "</p>"
   "<h2>Sliders</h2>"
@@ -2814,11 +2814,11 @@ void MainWindow::closeTab(int index)
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
         QString mess =
-            tr("There are unsaved changes.%1\r\nClose this tab without saving changes?")
+            tr("There are unsaved changes.%1\r\nContinue will discard changes.")
                 .arg(variableEditor->hasEasing()
-                ? "\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!"
+                ? tr("\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!")
                 : "\r\n");
-        int answer = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("OK"), tr("Cancel"));
+        int answer = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("Continue"), tr("Cancel"));
         if (answer == 1) {
             return;
         }

@@ -77,6 +77,11 @@ int main(int argc, char *argv[])
     auto *app = new QApplication(argc, argv);
     app->setObjectName("Application");
 
+// this should translate all of the generic default widget texts to local language
+    QTranslator qtTranslator;
+    qtTranslator.load(QString("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app->installTranslator(&qtTranslator);
+
 // QFile f("Misc/style.qss");
 // if (!f.exists())
 // {
@@ -91,15 +96,6 @@ int main(int argc, char *argv[])
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
-    mainWin->setObjectName("MainWindow");
-    app->setApplicationVersion(mainWin->getVersion());
-
-    // this should translate all of the generic default widget texts
-    QTranslator qtTranslator;
-    qtTranslator.load(QString("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
 
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -168,8 +164,8 @@ int main(int argc, char *argv[])
                 app->installTranslator(&myappTranslator);
             } else {
                 qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
+            }
         }
-    }
     } else {
         langArg = QLocale::system().name().split("_").at(0);
         if( langArg != QString("en") ) {
@@ -177,9 +173,14 @@ int main(int argc, char *argv[])
                 app->installTranslator(&myappTranslator);
             } else {
                 qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
+            }
         }
     }
-    }
+
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin->setObjectName("MainWindow");
+    app->setApplicationVersion(mainWin->getVersion());
 
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;

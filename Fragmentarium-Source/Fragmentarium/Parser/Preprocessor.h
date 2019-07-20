@@ -339,15 +339,54 @@ public:
     bool autoFocus;
 };
 
-/// The preprocessor is responsible for
-/// including files and resolve user uniform variables
+/// The preprocessor is responsible for including files and resolve user uniform variables
+    const QString lockTypeString = "\\s*(Locked|NotLocked|NotLockable)?\\s*.?$";
+
+    // Look for patterns like 'uniform float varName; slider[0.1,1,2.0]'
+    static QRegExp float4Slider ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\)\\]"+lockTypeString );
+    static QRegExp float3Slider ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\)\\]"+lockTypeString );
+    static QRegExp float2Slider ( "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\)\\]"+lockTypeString );
+    static QRegExp float1Slider ( "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+
+    static QRegExp colorChooser ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+    static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+
+    static QRegExp intSlider ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+    static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"+lockTypeString );
+    static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
+    static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
+    static QRegExp sampler2D ( "^\\s*uniform\\s+sampler2D\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
+    static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
+    static QRegExp subframeMax ( "^\\s*#define\\s+subframemax\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
+    static QRegExp pixelSizeCommand ( "^\\s*uniform\\s+vec2\\s+pixelSize.*$", Qt::CaseInsensitive ); // Look for 'uniform vec2 pixelSize'
+    static QRegExp depthToAlpha ( "^\\s*uniform\\s+bool\\s+depthtoalpha.*$", Qt::CaseInsensitive );
+    static QRegExp autoFocus ( "^\\s*uniform\\s+bool\\s+autofocus.*$", Qt::CaseInsensitive );
+
 class Preprocessor : public QObject {
     Q_OBJECT
 public:
-    Preprocessor(FileManager* fileManager) : fileManager(fileManager), isCreatingAutoSave(false) {}
+    Preprocessor(FileManager* fileManager) : fileManager(fileManager), isCreatingAutoSave(false), inVertex(false) {}
     FragmentSource parse(QString input, QString fileName, bool moveMain);
     FragmentSource createAutosaveFragment(QString input, QString fileName);
     void parseSource(FragmentSource* fs,QString input, QString fileName, bool dontAdd);
+    void parsePreset(FragmentSource *fs, QString s, int i);
+    void parseSpecial(FragmentSource *fs, QString s, int i, bool moveMain );
+    void parseReplacement(FragmentSource *fs, QString s, int i);
+    void parseSampler2D( FragmentSource* fs, int i, QString file);
+    void parseSamplerCube( FragmentSource* fs, int i, QString file );
+    void parseFloatColorChooser( FragmentSource* fs, int i);
+    void parseFloat1Slider( FragmentSource* fs, int i);
+    void parseFloat2Slider( FragmentSource* fs, int i);
+    void parseFloat3Slider( FragmentSource* fs, int i);
+    void parseFloat4Slider( FragmentSource* fs, int i);
+    void parseColorChooser( FragmentSource* fs, int i);
+    void parseIntSlider( FragmentSource* fs, int i);
+    void parseBoolChooser( FragmentSource* fs, int i);
+    void parseIterations( FragmentSource* fs);
+    void parseMaxSubFrames( FragmentSource* fs);
+
     QStringList getDependencies() {
         return dependencies;
     }
@@ -356,7 +395,11 @@ private:
     FileManager* fileManager;
     QStringList dependencies;
     bool isCreatingAutoSave;
+    QMap<QString, QString> replaceMap;
+    bool inVertex;
 
+    QString lastComment;
+    QString currentGroup;
 };
 
 }
