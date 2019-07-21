@@ -221,6 +221,7 @@ IF(Qt5LinguistTools_FOUND)
 
     add_custom_target(translations)
     file (GLOB TS_FILES Translations/*.ts)
+    IF(UPDATE_TRANSLATIONS)
     foreach(_ts_file ${TS_FILES})
 
         # generate a sensible name for this translation file
@@ -239,6 +240,7 @@ IF(Qt5LinguistTools_FOUND)
         # attach the custom target for this ts file to the parent target
         add_dependencies(translations ${_ts_name})
     endforeach()
+    ENDIF(UPDATE_TRANSLATIONS)
 
     # generate qm files
     qt5_add_translation(QM_FILES ${TS_FILES})
@@ -315,10 +317,7 @@ DESTINATION
     ${DESTINATION_NAME}
 )
 
-INSTALL ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
+INSTALL ( FILES ${QM_FILES}
 DESTINATION
     ${DESTINATION_NAME}/Languages
 )
