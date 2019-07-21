@@ -21,7 +21,7 @@
     <message>
         <location line="+7"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -374,11 +374,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
     <message>
         <location line="+32"/>
         <source>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Final Size: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Current&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tile: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Avg sec/tile&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</source>
-        <translation>&lt;table width=\&quot;100%\&quot;&gt; \
-            &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=\&quot;center\&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt; \
-            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=\&quot;center\&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt; \
-            &lt;tr&gt;&lt;td&gt;Gem sec / tegel&lt;/td&gt;&lt;td align=\&quot;center\&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt; \
-            &lt;/table&gt;</translation>
+        <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
         <location line="-1417"/>
@@ -534,7 +530,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
     <message>
         <location line="+147"/>
         <source>[%1x%2] Aspect=%3</source>
-        <translation></translation>
+        <translation>[%1x%2] Aspect=%3</translation>
     </message>
     <message>
         <location line="+250"/>
@@ -573,6 +569,24 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <location line="-18"/>
         <source>Include (from Preferences Paths)</source>
         <translation>Include (uit Voorkeuren/Paden)</translation>
+    </message>
+    <message>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
+%1
+Doorgaan en verliezen veranderen?</translation>
+    </message>
+    <message>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation>
+Tip: update acceleratiecurven in voorinstelling
+en opslaan in bestand voor afsluiting.
+</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -690,7 +704,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
     <message>
         <location line="+72"/>
         <source>Log</source>
-        <translation></translation>
+        <translation>Log</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -789,7 +803,7 @@ Moet minder zijn dan 32769x32769</translation>
     <message>
         <source>There are unsaved changes.%1
 Close this tab without saving changes?</source>
-        <translation type="vanished">Er zijn niet-opgeslagen wijzigingen %1
+        <translation>Er zijn niet-opgeslagen wijzigingen %1
 Sluit dit tabblad zonder wijzigingen op te slaan?</translation>
     </message>
     <message>
@@ -843,7 +857,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+N</source>
-        <translation></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -858,7 +872,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+O</source>
-        <translation></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -874,7 +888,7 @@ l
     <message>
         <location line="-2547"/>
         <source>Ctrl+S</source>
-        <translation></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -889,7 +903,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+Shift+S</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -904,7 +918,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+W</source>
-        <translation></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -919,12 +933,12 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+Q</source>
-        <translation></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exit the application</source>
-        <translation></translation>
+        <translation>Verlaat de applicatie</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -934,7 +948,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+X</source>
-        <translation></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -949,7 +963,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+C</source>
-        <translation></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -964,7 +978,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+V</source>
-        <translation></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -979,7 +993,7 @@ l
     <message>
         <location line="+1"/>
         <source>Ctrl+F</source>
-        <translation></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -989,12 +1003,12 @@ l
     <message>
         <location line="+3"/>
         <source>Shader &amp;Asm</source>
-        <translation></translation>
+        <translation>Shader &amp;Asm</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+A</source>
-        <translation></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1009,7 +1023,7 @@ l
     <message>
         <location line="-49"/>
         <source>Ctrl+R</source>
-        <translation></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location line="-794"/>
@@ -1020,14 +1034,14 @@ l
         <source>There are tabs with unsaved changes.
 %1
 Continue and loose changes?</source>
-        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.
+        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
 %1
 Doorgaan en verliezen veranderen?</translation>
     </message>
     <message>
         <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
-        <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/ p&gt; &lt;h2&gt; 2D &lt;/ h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/ li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/ li&gt; &lt;li&gt; Wiel: zoom &lt;/ li&gt; &lt;li&gt; A / D: links / rechts &lt;/ li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/ li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/ li&gt; &lt;/ ul&gt; &lt;/ p&gt; &lt;h2&gt; 3D &lt;/ h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/ li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/ li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/ li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/ li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/ Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/ Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/ li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/ li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/ li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/ Li&gt; &lt;li&gt; Q / E: rol &lt;/ li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/ li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/ li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/ li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/ li&gt; &lt;li&gt; R / F: yaw &lt;/ li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/ li&gt; &lt;/ ul&gt; &lt;/ p&gt; &lt;h2&gt; Sliders &lt;/ h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/ b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/ p&gt;</translation>
+        <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -1067,12 +1081,12 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Build System</source>
-        <translation></translation>
+        <translation>&amp;Build System</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F5</source>
-        <translation></translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1082,7 +1096,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Video Encoding</source>
-        <translation></translation>
+        <translation>&amp;Video Codering</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1130,7 +1144,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="-11"/>
         <source>&amp;Scripting Parameter Help</source>
-        <translation></translation>
+        <translation>Hulp bij &amp;scriptparameters</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1150,7 +1164,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Project Homepage (web link)</source>
-        <translation></translation>
+        <translation>Startpagina van &amp;project (weblink)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1160,7 +1174,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Fragmentarium@FractalForums (web link)</source>
-        <translation></translation>
+        <translation>&amp;Fragmentarium@FractalForums (web link)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1170,7 +1184,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Fragmentarium 3Dickulus (web link)</source>
-        <translation></translation>
+        <translation>&amp;Fragmentarium 3Dickulus (web link)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1186,7 +1200,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Flickr Fragmentarium Group (web link)</source>
-        <translation></translation>
+        <translation>&amp;Flickr Fragmentarium Group (web link)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1206,12 +1220,12 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>Introduction to Distance Estimated Fractals (web link)</source>
-        <translation></translation>
+        <translation>Introductie tot op afstand geschatte breuken (weblink)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Fragmentarium FAQ (web link)</source>
-        <translation></translation>
+        <translation>Fragmentarium FAQ (web link)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1256,7 +1270,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Render</source>
-        <translation></translation>
+        <translation>&amp;Render</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1320,27 +1334,7 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>Kan niet vinden: </translation>
     </message>
     <message>
-        <location line="-969"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
-%1
-Doorgaan en verliezen veranderen?</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation>
-Tip: update acceleratiecurven in voorinstelling
-en opslaan in bestand voor afsluiting.
-</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="-966"/>
         <location line="+2622"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
@@ -1348,7 +1342,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="-1696"/>
         <source>Windows</source>
-        <translation></translation>
+        <translation>ramen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1381,7 +1375,7 @@ en opslaan in bestand voor afsluiting.
         <location line="+1077"/>
         <location line="+21"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
         <location line="-2117"/>
@@ -1447,7 +1441,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+0"/>
         <source>)</source>
-        <translation></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1512,7 +1506,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+8"/>
         <source>Y: </source>
-        <translation></translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1548,7 +1542,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+2"/>
         <source>Build</source>
-        <translation></translation>
+        <translation>Bouwen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1573,7 +1567,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+1"/>
         <source>F10</source>
-        <translation></translation>
+        <translation>F10</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1583,12 +1577,12 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+3"/>
         <source>Start</source>
-        <translation></translation>
+        <translation>Begin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F11</source>
-        <translation></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1598,12 +1592,12 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+3"/>
         <source>Stop</source>
-        <translation></translation>
+        <translation>Hou op</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F12</source>
-        <translation></translation>
+        <translation>F12</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1613,7 +1607,7 @@ en opslaan in bestand voor afsluiting.
     <message>
         <location line="+8"/>
         <source> Subframe Max: </source>
-        <translation></translation>
+        <translation> Subframe Max: </translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1711,21 +1705,12 @@ en opslaan in bestand voor afsluiting.
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <location line="-2587"/>
-        <location line="+2622"/>
-        <source>Cancel</source>
-        <translation>Afbreken</translation>
-    </message>
-    <message>
-        <location line="-4"/>
         <source>There are unsaved changes.%1
 Continue will discard changes.</source>
-        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
-%1
-Doorgaan en verliezen veranderen?</translation>
+        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
+Doorgaan en verliezen veranderen.</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
@@ -1736,7 +1721,13 @@ een voorinstelling toevoegen met de naam &quot;Bereik&quot;
 en bespaar voor sluitingstijd!</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="-2587"/>
+        <location line="+2622"/>
+        <source>Cancel</source>
+        <translation>Afbreken</translation>
+    </message>
+    <message>
+        <location line="+42"/>
         <location line="+9"/>
         <location line="+9"/>
         <source>Launching web browser...</source>
@@ -1973,7 +1964,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <message>
         <location filename="../Fragmentarium/GUI/VariableEditor.cpp" line="+45"/>
         <source>Preset:</source>
-        <translation></translation>
+        <translation>Preset:</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2126,7 +2117,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location line="+6"/>
         <location line="+9"/>
         <source>Video</source>
-        <translation></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <location line="-15"/>
@@ -2152,7 +2143,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location line="+0"/>
         <location line="+18"/>
         <source>)</source>
-        <translation></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location line="-16"/>
@@ -2165,7 +2156,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <message>
         <location line="-58"/>
         <source>Videos (</source>
-        <translation></translation>
+        <translation>Videos (</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2186,7 +2177,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <message>
         <location line="+5"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2316,7 +2307,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>FPS:</source>
-        <translation></translation>
+        <translation>FPS:</translation>
     </message>
     <message>
         <location/>
@@ -2451,7 +2442,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Examples/Include;</source>
-        <translation></translation>
+        <translation>Examples/Include;</translation>
     </message>
     <message>
         <location/>
@@ -2463,7 +2454,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>font: 9pt Courier;</source>
-        <translation></translation>
+        <translation>font: 9pt Courier;</translation>
     </message>
     <message>
         <location/>
@@ -2568,7 +2559,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <message>
         <location line="+374"/>
         <source>Parse: </source>
-        <translation></translation>
+        <translation>Parse: </translation>
     </message>
 </context>
 <context>
@@ -2617,7 +2608,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location filename="../ThirdPartyCode/VideoDialog.ui"/>
         <location filename="../build/ui_VideoDialog.h" line="+286"/>
         <source>Video Encoding</source>
-        <translation></translation>
+        <translation>Video Codering</translation>
     </message>
     <message>
         <location/>
@@ -2633,7 +2624,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location line="+2"/>
         <location line="+4"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location/>
@@ -2645,7 +2636,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Enc Cmd:</source>
-        <translation></translation>
+        <translation>Enc Cmd:</translation>
     </message>
     <message>
         <location/>
@@ -2657,13 +2648,13 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Start</source>
-        <translation></translation>
+        <translation>Begin</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Encoding Status:</source>
-        <translation></translation>
+        <translation>Coderingsstatus:</translation>
     </message>
     <message>
         <location/>
@@ -2681,7 +2672,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location/>
         <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Stop</source>
-        <translation></translation>
+        <translation>Hou op</translation>
     </message>
     <message>
         <location/>

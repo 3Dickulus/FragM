@@ -2650,10 +2650,16 @@ void MainWindow::cursorPositionChanged()
     QStringList ex;
     QString filename = tabInfo[tabBar->currentIndex()].filename;
 
+    // when there is no #version statement as the first line the line number is off by 2
+    // default is to insert #version statements into vertex shaders (both makes 2) so they match the fragment shaders
+
+    int incFudge = 0;
+    if( !fs->source.at(0).contains("#version") ) incFudge = 2;
+
     for (int i = 0; i < fs->lines.count(); i++) {
         // fs->sourceFiles[fs->sourceFile[i]]->fileName()
         if (fs->lines[i] == blockNumber && QString::compare(filename, fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive) == 0) {
-            ex.append(QString::number(i));
+            ex.append(QString::number(i+incFudge));
         }
     }
     if (ex.count() != 0) {

@@ -157,6 +157,7 @@ void TextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
     int bottom = top + (int) blockBoundingRect(block).height();
 
     while (block.isValid() && top <= event->rect().bottom()) {
+        ++blockNumber;
         if (block.isVisible() && bottom >= event->rect().top()) {
 
             QString number = QString::number(blockNumber);
@@ -167,7 +168,6 @@ void TextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
         block = block.next();
         top = bottom;
         bottom = top + (int) blockBoundingRect(block).height();
-        ++blockNumber;
     }
 }
 

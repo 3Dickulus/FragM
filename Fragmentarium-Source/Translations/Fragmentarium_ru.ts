@@ -82,7 +82,7 @@
     <message>
         <location line="+6"/>
         <source>Camera: Use W/S to fly. 1/3 adjusts speed. Q/E rolls. Click on 3D window for key focus. See Help Menu for more.</source>
-        <translation>Камера: Используйте W / S для облёта камерой. 1/3 регулирует скорость . Q / E прокрутка. С зажатой ЛКМ или ПКМ мыши водите по 3D окну предпросмотра. См. Меню справки, чтобы узнать больше.</translation>
+        <translation>Камера: Используйте Ц/Ы для облёта камерой. 1/3 регулирует скорость . Й/У прокрутка. С зажатой ЛКМ или ПКМ мыши водите по 3D окну предпросмотра. См. Меню справки, чтобы узнать больше.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -571,7 +571,27 @@ Initialized as GL_RGBA8</source>
         <translation>Включить(Из путей в настройках)</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+31"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation>Есть вкладки с несохраненными изменениями.
+%1
+Продолжить и потерять изменения?</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation>
+Совет: Обновите кривые ускорения в предустановке
+и сохранить в файл перед закрытием.
+</translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <location line="+2622"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
@@ -847,7 +867,7 @@ This option may be re-enabled through Preferences</source>
     <message>
         <source>There are unsaved changes.%1
 Close this tab without saving changes?</source>
-        <translation type="vanished">Есть несохраненные изменения.%1
+        <translation>Есть несохраненные изменения.%1
 Закрыть эту вкладку без сохранения изменений?</translation>
     </message>
     <message>
@@ -1082,54 +1102,54 @@ Please read this:
         <source>There are tabs with unsaved changes.
 %1
 Continue and loose changes?</source>
-        <translation type="vanished">Есть вкладки с несохраненными изменениями.
+        <translation>Есть вкладки с несохраненными изменениями.
 %1
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
         <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
-        <translation>&quot;&lt;p&gt;&quot;
-  &quot;Обратите внимание: 3D вид должен иметь фокус клавиатуры!&quot;
-  &quot;&lt;/p&gt;&quot;
-  &quot;&lt;h2&gt;2D&lt;/h2&gt;&quot;
-  &quot;&lt;p&gt;&quot;
-  &quot;&lt;ul&gt;&quot;
-  &quot;&lt;li&gt;Левая кнопка мыши: перевести центр.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Правая кнопка мыши: зум.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Колесо: зум&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;А/Д : влево / вправоt&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Ш/С: вверх / вниз&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Я/Е: увеличение / уменьшение&lt;/li&gt;&quot;
-  &quot;&lt;/ul&gt;&quot;
-  &quot;&lt;/p&gt;&quot;
-  &quot;&lt;h2&gt;3D&lt;/h2&gt;&quot;
-  &quot;&lt;p&gt;&quot;
-  &quot;&lt;ul&gt;&quot;
-  &quot;&lt;li&gt;Shift + правая кнопка мыши: показывает меню на весь экран.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Левая кнопка мыши: изменить направление камеры.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Правая кнопка мыши: переместить камеру в плоскости экрана.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Левая + правая кнопка мыши: зум.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Shift + левая кнопка мыши: вращать объект (вокруг начала координат).&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Shift+Alt+левая кнопка мыши: вращать объект (вокруг цели).&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Shift+Тильда (~) сбрасывает вид для просмотра источника (0,0,0)&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Колесо: двигаться вперед / назад&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Ш/С: двигаться вперед / назад&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;А/Д: двигаться влево / вправо.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Я/Е: ролл&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;1/3: увеличить / уменьшить размер шага в 2 раза&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;2: увеличить / уменьшить размер шага в 10 раз&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Shift+Рулевое колесо: изменить размер шага&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Т/Г: двигаться вверх / вниз.&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Р/Ф: рыскание&lt;/li&gt;&quot;
-  &quot;&lt;li&gt;Ы/Ч: наклонять&lt;/li&gt;&quot;
-  &quot;&lt;/ul&gt;&quot;
-  &quot;&lt;/p&gt;&quot;
-  &quot;&lt;h2&gt;Sliders&lt;/h2&gt;&quot;
-  &quot;&lt;p&gt;&quot;
-  &quot;Когда ползунок (тип с плавающей точкой) получает щелчок правой кнопкой мыши, он открывает диалоговое окно ввода, чтобы установить размер шага.&lt;br&gt;&quot;
-  &quot;&lt;b&gt;Клавиша F7&lt;/b&gt; открывает редактор кривой замедления для текущего выбранного ползунка.&quot;
-  &quot;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;
+  Обратите внимание: 3D вид должен иметь фокус клавиатуры!
+  &lt;/p&gt;
+  &lt;h2&gt;2D&lt;/h2&gt;
+  &lt;p&gt;
+  &lt;ul&gt;
+  &lt;li&gt;Левая кнопка мыши: перевести центр.&lt;/li&gt;
+  &lt;li&gt;Правая кнопка мыши: зум.&lt;/li&gt;
+  &lt;li&gt;Колесо: зум&lt;/li&gt;
+  &lt;li&gt;Ф/В : влево / вправоt&lt;/li&gt;
+  &lt;li&gt;Ц/Ы: вверх / вниз&lt;/li&gt;
+  &lt;li&gt;Й/У: увеличение / уменьшение&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;/p&gt;
+  &lt;h2&gt;3D&lt;/h2&gt;
+  &lt;p&gt;
+  &lt;ul&gt;
+  &lt;li&gt;Shift + правая кнопка мыши: показывает меню на весь экран.&lt;/li&gt;
+  &lt;li&gt;Левая кнопка мыши: изменить направление камеры.&lt;/li&gt;
+  &lt;li&gt;Правая кнопка мыши: переместить камеру в плоскости экрана.&lt;/li&gt;
+  &lt;li&gt;Левая + правая кнопка мыши: зум.&lt;/li&gt;
+  &lt;li&gt;Shift + левая кнопка мыши: вращать объект (вокруг начала координат).&lt;/li&gt;
+  &lt;li&gt;Shift+Alt+левая кнопка мыши: вращать объект (вокруг цели).&lt;/li&gt;
+  &lt;li&gt;Shift+Тильда (~) сбрасывает вид для просмотра источника (0,0,0)&lt;/li&gt;
+  &lt;li&gt;Колесо: двигаться вперед / назад&lt;/li&gt;
+  &lt;li&gt;Ц/Ы: двигаться вперед / назад&lt;/li&gt;
+  &lt;li&gt;Ф/В: двигаться влево / вправо.&lt;/li&gt;
+  &lt;li&gt;Й/У: ролл&lt;/li&gt;
+  &lt;li&gt;1/3: увеличить / уменьшить размер шага в 2 раза&lt;/li&gt;
+  &lt;li&gt;2: увеличить / уменьшить размер шага в 10 раз&lt;/li&gt;
+  &lt;li&gt;Shift+Рулевое колесо: изменить размер шага&lt;/li&gt;
+  &lt;li&gt;Е/Г: двигаться вверх / вниз.&lt;/li&gt;
+  &lt;li&gt;К/А: рыскание&lt;/li&gt;
+  &lt;li&gt;Н/Р: наклонять&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;/p&gt;
+  &lt;h2&gt;Sliders&lt;/h2&gt;
+  &lt;p&gt;
+  Когда ползунок (тип с плавающей точкой) получает щелчок правой кнопкой мыши, он открывает диалоговое окно ввода, чтобы установить размер шага.&lt;br&gt;
+  &lt;b&gt;Клавиша F7&lt;/b&gt; открывает редактор кривой замедления для текущего выбранного ползунка.
+  &lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -1515,7 +1535,26 @@ Continue and loose changes?</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-21"/>
+        <location line="-616"/>
+        <source>There are unsaved changes.%1
+Continue will discard changes.</source>
+        <translation>Есть вкладки с несохраненными изменениями.
+%1
+Продолжить и потерять изменения?</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation>
+Чтобы сохранить кривые затухания, вы должны
+Добавить пресет под названием «Диапазон»
+и сохраните перед закрытием!</translation>
+    </message>
+    <message>
+        <location line="+593"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Невозможно записать файл%1:
@@ -1535,27 +1574,7 @@ Continue and loose changes?</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3236"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation>Есть вкладки с несохраненными изменениями.
-%1
-Продолжить и потерять изменения?</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation>
-Совет: Обновите кривые ускорения в предустановке
-и сохранить в файл перед закрытием.
-</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="-3233"/>
         <location line="+2622"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
@@ -1862,7 +1881,7 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <source>OK</source>
-        <translation type="vanished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location line="-2587"/>
@@ -1871,26 +1890,7 @@ Must be less than 32769x32769</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location line="-4"/>
-        <source>There are unsaved changes.%1
-Continue will discard changes.</source>
-        <translation>Есть вкладки с несохраненными изменениями.
-%1
-Продолжить и потерять изменения?</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation>
-Чтобы сохранить кривые затухания, вы должны
-Добавить пресет под названием «Диапазон»
-и сохраните перед закрытием!</translation>
-    </message>
-    <message>
-        <location line="+44"/>
+        <location line="+42"/>
         <location line="+9"/>
         <location line="+9"/>
         <source>Launching web browser...</source>

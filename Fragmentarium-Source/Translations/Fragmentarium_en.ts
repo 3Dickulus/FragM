@@ -569,12 +569,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+34"/>
-        <location line="+2622"/>
+        <location line="+2628"/>
         <source>Unsaved changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2560"/>
+        <location line="-2566"/>
         <source>Add Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -622,7 +622,7 @@ Initialized as GL_RGBA8</source>
         <location line="+1056"/>
         <location line="+48"/>
         <location line="+67"/>
-        <location line="+365"/>
+        <location line="+371"/>
         <location line="+155"/>
         <location line="+9"/>
         <location line="+9"/>
@@ -633,14 +633,14 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2830"/>
+        <location line="-2836"/>
         <location line="+1380"/>
-        <location line="+1663"/>
+        <location line="+1669"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3014"/>
+        <location line="-3020"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -765,28 +765,14 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+231"/>
         <source>// Cannot read file %1:
 // %2
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+117"/>
-        <source>There are unsaved changes.%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+278"/>
+        <location line="+397"/>
         <source>OpenGL features missing</source>
         <translation type="unfinished"></translation>
     </message>
@@ -796,7 +782,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2253"/>
+        <location line="-2259"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -851,12 +837,12 @@ Please read this:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2548"/>
+        <location line="+2554"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2547"/>
+        <location line="-2553"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1001,7 +987,22 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+72"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+222"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1296,28 +1297,13 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-969"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location line="+2622"/>
+        <location line="-966"/>
+        <location line="+2628"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1696"/>
+        <location line="-1702"/>
         <source>Windows</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1349,13 +1335,13 @@ and save to file before closing.
         <location line="+18"/>
         <location line="+490"/>
         <location line="+70"/>
-        <location line="+1077"/>
+        <location line="+1083"/>
         <location line="+21"/>
         <source>Fragmentarium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2117"/>
+        <location line="-2123"/>
         <source>Could not create directory %1:
 .</source>
         <translation type="unfinished"></translation>
@@ -1440,13 +1426,13 @@ and save to file before closing.
     <message>
         <location line="+12"/>
         <location line="+450"/>
-        <location line="+1209"/>
+        <location line="+1215"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1652"/>
+        <location line="-1658"/>
         <source>Settings loaded from file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1642,7 +1628,7 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+108"/>
         <source> Line in preprocessed script: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1677,13 +1663,27 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2587"/>
-        <location line="+2622"/>
+        <location line="-2593"/>
+        <location line="+2628"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="-4"/>
+        <source>There are unsaved changes.%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <location line="+9"/>
         <location line="+9"/>
         <source>Launching web browser...</source>
@@ -2518,7 +2518,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-931"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
         <source>Could not locate directory in: </source>
         <translation type="unfinished"></translation>
     </message>
