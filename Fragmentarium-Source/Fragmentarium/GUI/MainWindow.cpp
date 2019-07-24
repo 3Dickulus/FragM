@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190720, "");
+    version = Version(2, 5, 0, 190723, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -2241,7 +2241,7 @@ void MainWindow::reloadFragFile( QString f )
     bool autoLoad = QSettings().value("autoload", false).toBool();
 
     if (!autoLoad && first) {
-        QString s = QString("It looks like the file: %1\n has been changed by another program.\nWould you like to reload it?").arg(f.split(QDir::separator()).last());
+        QString s = tr("It looks like the file: %1\n has been changed by another program.\nWould you like to reload it?").arg(f.split(QDir::separator()).last());
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
@@ -2307,7 +2307,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
-
+update();
 //         highlightBuildButton(!rebuildRequired);
 
         QSettings().setValue("isStarting", false);
@@ -2440,10 +2440,6 @@ bool MainWindow::initializeFragment()
         return false;
     }
 
-    // if(sender() == 0) return true;  // != 0 when called by "Build" button or TabChanged signal
-                                    // DBOUT << sender() << tabInfo[tabBar->currentIndex()].filename;
-
-
     logger->getListWidget()->clear();
 
     // Show info first...
@@ -2516,17 +2512,14 @@ bool MainWindow::initializeFragment()
             variableEditor->substituteLockedVariables(fs.bufferShaderSource);
     }
 
-    if( sender() != 0 ) {
-        // DBOUT << requiresRebuild() << tabInfo[tabBar->currentIndex()].filename;
-        try {
-            QTime start = QTime::currentTime();
-            engine->setFragmentShader(fs);
-            engine->initFragmentTextures();
-            ms = start.msecsTo(QTime::currentTime());
-        } catch (Exception& e) {
-            WARNING(e.getMessage());
-            highlightBuildButton(true);
-        }
+    try {
+        QTime start = QTime::currentTime();
+        engine->setFragmentShader(fs);
+        engine->initFragmentTextures();
+        ms = start.msecsTo(QTime::currentTime());
+    } catch (Exception& e) {
+        WARNING(e.getMessage());
+        highlightBuildButton(true);
     }
 
     if (engine->hasShader()) {
@@ -2562,10 +2555,10 @@ bool MainWindow::initializeFragment()
 
 void MainWindow::hideUnusedVariableWidgets()
 {
-        /// hide unused widgets unless the default state is locked
-        QStringList wnames = variableEditor->getWidgetNames();
-        for (int i = 0; i < wnames.count(); i++) {
-            // find a widget in the variable editor
+    /// hide unused widgets unless the default state is locked
+    QStringList wnames = variableEditor->getWidgetNames();
+    for (int i = 0; i < wnames.count(); i++) {
+        // find a widget in the variable editor
         auto *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
         if (vw != nullptr) {
                 /// get the uniform location from the shader
@@ -2576,18 +2569,17 @@ void MainWindow::hideUnusedVariableWidgets()
             }
             /// locked widgets are transformed into const or #define so don't show up as uniforms
             /// AutoFocus is a dummy so does not exist inside shader program
-                if(uloc == -1 &&
-                        !(vw->getLockType() == Parser::Locked ||
-                          vw->getDefaultLockType() == Parser::AlwaysLocked ||
-                          vw->getDefaultLockType() == Parser::NotLockable) &&
-                        !wnames.at(i).contains("AutoFocus")  )  {
-                    vw->hide();
-                } else {
-                    vw->show();
-                }
+            if(uloc == -1 &&
+                    !(vw->getLockType() == Parser::Locked ||
+                    vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                    vw->getDefaultLockType() == Parser::NotLockable) &&
+                    !wnames.at(i).contains("AutoFocus")  )  {
+                vw->hide();
+            } else {
+                vw->show();
             }
         }
-
+    }
 }
 
 namespace

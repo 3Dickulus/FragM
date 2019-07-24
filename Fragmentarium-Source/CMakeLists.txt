@@ -215,7 +215,7 @@ QT5_WRAP_CPP(MOCS ${Fragmentarium_MOCS})
 
 set(QM_FILES)
 IF(Qt5LinguistTools_FOUND)
-    OPTION(UPDATE_TRANSLATIONS OFF)
+    OPTION(UPDATE_TRANSLATIONS ON)
     # prevent the generated files from being deleted during make clean
     set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM true)
 

@@ -146,7 +146,8 @@ int VariableWidget::uniformLocation(QOpenGLShaderProgram *shaderProgram)
     if (lockType == Locked) {
         return -1;
     }
-    return shaderProgram->uniformLocation(name);
+    int l =  shaderProgram->uniformLocation(name);
+    return l;
 }
 
 /// FloatVariable constructor.

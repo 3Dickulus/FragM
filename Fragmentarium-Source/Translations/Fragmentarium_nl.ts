@@ -362,12 +362,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
     <message>
         <location line="+7"/>
         <location line="+14"/>
-        <location line="+350"/>
+        <location line="+365"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="+1040"/>
+        <location line="+1049"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Omlijsting:%1/%2 Tijd:%3</translation>
     </message>
@@ -377,13 +377,13 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1417"/>
-        <location line="+350"/>
+        <location line="-1441"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
@@ -393,17 +393,17 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Gebruik de buffer-define, b.v.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+61"/>
         <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 x %2 is te groot! max %3x%3</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+36"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+134"/>
         <source>Not a valid texture: </source>
         <translation>Geen geldige textuur: </translation>
     </message>
@@ -438,7 +438,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location line="+670"/>
+        <location line="+676"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
@@ -458,7 +458,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>PREVIEWBUFFER MISLUKT!</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+58"/>
         <source>Failed to bind FBO</source>
         <translation>Kan FBO niet verbinden</translation>
     </message>
@@ -496,12 +496,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-1453"/>
+        <location line="-1477"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Kan vertex + fragmentshader niet koppelen: </translation>
     </message>
     <message>
-        <location line="+255"/>
+        <location line="+270"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -511,7 +511,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+1001"/>
+        <location line="+1010"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -574,7 +574,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
-        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.
 %1
 Doorgaan en verliezen veranderen?</translation>
     </message>
@@ -583,19 +583,19 @@ Doorgaan en verliezen veranderen?</translation>
 Tip: Update easing curves in preset
 and save to file before closing.
 </source>
-        <translation>
+        <translation type="vanished">
 Tip: update acceleratiecurven in voorinstelling
 en opslaan in bestand voor afsluiting.
 </translation>
     </message>
     <message>
         <location line="+34"/>
-        <location line="+2622"/>
+        <location line="+2620"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location line="-2560"/>
+        <location line="-2558"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
@@ -643,7 +643,7 @@ en opslaan in bestand voor afsluiting.
         <location line="+1056"/>
         <location line="+48"/>
         <location line="+67"/>
-        <location line="+365"/>
+        <location line="+363"/>
         <location line="+155"/>
         <location line="+9"/>
         <location line="+9"/>
@@ -654,14 +654,14 @@ en opslaan in bestand voor afsluiting.
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location line="-2830"/>
+        <location line="-2828"/>
         <location line="+1380"/>
-        <location line="+1663"/>
+        <location line="+1661"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location line="-3014"/>
+        <location line="-3012"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
@@ -787,12 +787,12 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Toon voorbewerkte uitvoer in nieuwe tabbladen</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+96"/>
         <source>Available image formats: </source>
         <translation>Beschikbare afbeeldingsformaten: </translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+227"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -803,7 +803,7 @@ Moet minder zijn dan 32769x32769</translation>
     <message>
         <source>There are unsaved changes.%1
 Close this tab without saving changes?</source>
-        <translation>Er zijn niet-opgeslagen wijzigingen %1
+        <translation type="vanished">Er zijn niet-opgeslagen wijzigingen %1
 Sluit dit tabblad zonder wijzigingen op te slaan?</translation>
     </message>
     <message>
@@ -817,7 +817,7 @@ Sluit dit tabblad zonder wijzigingen op te slaan?</translation>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2253"/>
+        <location line="-2251"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -881,12 +881,12 @@ l
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2548"/>
+        <location line="+2546"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2547"/>
+        <location line="-2545"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1034,7 +1034,7 @@ l
         <source>There are tabs with unsaved changes.
 %1
 Continue and loose changes?</source>
-        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.
 %1
 Doorgaan en verliezen veranderen?</translation>
     </message>
@@ -1335,12 +1335,12 @@ Doorgaan en verliezen veranderen?</translation>
     </message>
     <message>
         <location line="-966"/>
-        <location line="+2622"/>
+        <location line="+2620"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
     </message>
     <message>
-        <location line="-1696"/>
+        <location line="-1694"/>
         <source>Windows</source>
         <translation>ramen</translation>
     </message>
@@ -1372,13 +1372,13 @@ Doorgaan en verliezen veranderen?</translation>
         <location line="+18"/>
         <location line="+490"/>
         <location line="+70"/>
-        <location line="+1077"/>
+        <location line="+1075"/>
         <location line="+21"/>
         <source>Fragmentarium</source>
         <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location line="-2117"/>
+        <location line="-2115"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
@@ -1467,14 +1467,14 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+12"/>
         <location line="+450"/>
-        <location line="+1209"/>
+        <location line="+1207"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kan bestand niet lezen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1652"/>
+        <location line="-1650"/>
         <source>Settings loaded from file</source>
         <translation>Instellingen geladen uit bestand</translation>
     </message>
@@ -1650,17 +1650,26 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>Geen data!</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+37"/>
+        <source>It looks like the file: %1
+ has been changed by another program.
+Would you like to reload it?</source>
+        <translation>Het lijkt op een bestand: %1
+werd veranderd door een ander programma.
+Wil je het opnieuw laden?</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>File saved</source>
         <translation>Bestand opgeslagen</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+129"/>
         <source>Not a runnable fragment.</source>
         <translation>Geen uitvoerbaar fragment.</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+58"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script gecompileerd in %1 ms.</translation>
     </message>
@@ -1670,7 +1679,7 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>Compileren script mislukt (%1 ms).</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+107"/>
         <source> Line in preprocessed script: </source>
         <translation> Regel in voorbewerkt script: </translation>
     </message>
@@ -1707,7 +1716,7 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <source>There are unsaved changes.%1
 Continue will discard changes.</source>
-        <translation>Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
 Doorgaan en verliezen veranderen.</translation>
     </message>
     <message>
@@ -1715,14 +1724,14 @@ Doorgaan en verliezen veranderen.</translation>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
 and save before closing!</source>
-        <translation>
+        <translation type="vanished">
 U moet dit doen om Verlichtingscurven te behouden
 een voorinstelling toevoegen met de naam &quot;Bereik&quot;
 en bespaar voor sluitingstijd!</translation>
     </message>
     <message>
-        <location line="-2587"/>
-        <location line="+2622"/>
+        <location line="-2585"/>
+        <location line="+2620"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
@@ -1924,7 +1933,7 @@ en bespaar voor sluitingstijd!</translation>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+764"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
         <source>Select a Texture</source>
         <translation>Kies textuur</translation>
     </message>
@@ -2027,7 +2036,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation>Onondersteunde parameter</translation>
     </message>
     <message>
-        <location line="+143"/>
+        <location line="+144"/>
         <source>Expected a key value pair, found: </source>
         <translation>Verwacht keywaardenpaar, gevonden: </translation>
     </message>
@@ -2565,7 +2574,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-931"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
         <source>Could not locate directory in: </source>
         <translation>Kan folder niet vinden in: </translation>
     </message>

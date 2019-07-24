@@ -362,12 +362,12 @@ Initialized as GL_RGBA8</source>
     <message>
         <location line="+7"/>
         <location line="+14"/>
-        <location line="+350"/>
+        <location line="+365"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="+1040"/>
+        <location line="+1049"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Кадр:%1/%2 Время:%3</translation>
     </message>
@@ -377,13 +377,13 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1417"/>
-        <location line="+350"/>
+        <location line="-1441"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Попытка использовать backbuffer не того типа.</translation>
     </message>
@@ -393,17 +393,17 @@ Initialized as GL_RGBA8</source>
         <translation>Используйте определение буфера, например: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+61"/>
         <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
         <translation>EXR загрузчик найдено EXR изображение: %1x%2 слишком велико! макс %3x%3</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+36"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>EXR загрузчик найдено EXR изображение: %1 не является полным</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+134"/>
         <source>Not a valid texture: </source>
         <translation>Неверная текстура: </translation>
     </message>
@@ -438,7 +438,7 @@ Initialized as GL_RGBA8</source>
         <translation>Неполное FBO Ошибка!</translation>
     </message>
     <message>
-        <location line="+670"/>
+        <location line="+676"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Недействительное FBO - просмотр буфера</translation>
     </message>
@@ -458,7 +458,7 @@ Initialized as GL_RGBA8</source>
         <translation>Просмотр буфера не возможен!</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+58"/>
         <source>Failed to bind FBO</source>
         <translation>Не удалось привязать FBO</translation>
     </message>
@@ -496,12 +496,12 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-1453"/>
+        <location line="-1477"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Не удалось связать вершинный шейдер с фрагментным шейдером: </translation>
     </message>
     <message>
-        <location line="+255"/>
+        <location line="+270"/>
         <source>Unused sampler uniform: </source>
         <translation>Неиспользуемая равномерная переменная сэмплера: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialized as GL_RGBA8</source>
         <translation>Вершинный шейдер не найден!</translation>
     </message>
     <message>
-        <location line="+1001"/>
+        <location line="+1010"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Не удалось связать previewBuffer FBO</translation>
@@ -571,33 +571,31 @@ Initialized as GL_RGBA8</source>
         <translation>Включить(Из путей в настройках)</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
-        <translation>Есть вкладки с несохраненными изменениями.
+        <translation type="vanished">Есть вкладки с несохраненными изменениями.
 %1
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
 </source>
-        <translation>
+        <translation type="vanished">
 Совет: Обновите кривые ускорения в предустановке
 и сохранить в файл перед закрытием.
 </translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+2622"/>
+        <location line="+34"/>
+        <location line="+2620"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2560"/>
+        <location line="-2558"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -645,7 +643,7 @@ and save to file before closing.
         <location line="+1056"/>
         <location line="+48"/>
         <location line="+67"/>
-        <location line="+365"/>
+        <location line="+363"/>
         <location line="+155"/>
         <location line="+9"/>
         <location line="+9"/>
@@ -656,14 +654,14 @@ and save to file before closing.
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-2830"/>
+        <location line="-2828"/>
         <location line="+1380"/>
-        <location line="+1663"/>
+        <location line="+1661"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3014"/>
+        <location line="-3012"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -851,12 +849,12 @@ This option may be re-enabled through Preferences</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+96"/>
         <source>Available image formats: </source>
         <translation>Доступные форматы изображений: </translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+227"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -867,7 +865,7 @@ This option may be re-enabled through Preferences</source>
     <message>
         <source>There are unsaved changes.%1
 Close this tab without saving changes?</source>
-        <translation>Есть несохраненные изменения.%1
+        <translation type="vanished">Есть несохраненные изменения.%1
 Закрыть эту вкладку без сохранения изменений?</translation>
     </message>
     <message>
@@ -881,7 +879,7 @@ Close this tab without saving changes?</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2253"/>
+        <location line="-2251"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -949,12 +947,12 @@ Please read this:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2548"/>
+        <location line="+2546"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2547"/>
+        <location line="-2545"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1102,7 +1100,7 @@ Please read this:
         <source>There are tabs with unsaved changes.
 %1
 Continue and loose changes?</source>
-        <translation>Есть вкладки с несохраненными изменениями.
+        <translation type="vanished">Есть вкладки с несохраненными изменениями.
 %1
 Продолжить и потерять изменения?</translation>
     </message>
@@ -1527,7 +1525,7 @@ Continue and loose changes?</source>
     <message>
         <location line="+435"/>
         <location line="+450"/>
-        <location line="+1209"/>
+        <location line="+1207"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Невозможно прочитать файл %1:
@@ -1535,52 +1533,50 @@ Continue and loose changes?</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-616"/>
         <source>There are unsaved changes.%1
 Continue will discard changes.</source>
-        <translation>Есть вкладки с несохраненными изменениями.
+        <translation type="vanished">Есть вкладки с несохраненными изменениями.
 %1
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
 and save before closing!</source>
-        <translation>
+        <translation type="vanished">
 Чтобы сохранить кривые затухания, вы должны
 Добавить пресет под названием «Диапазон»
 и сохраните перед закрытием!</translation>
     </message>
     <message>
-        <location line="+593"/>
+        <location line="-21"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Невозможно записать файл%1:
 %2.</translation>
     </message>
     <message>
-        <location line="-2097"/>
+        <location line="-2095"/>
         <location line="+8"/>
         <location line="+16"/>
         <location line="+417"/>
         <location line="+18"/>
         <location line="+490"/>
         <location line="+70"/>
-        <location line="+1077"/>
+        <location line="+1075"/>
         <location line="+21"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3233"/>
-        <location line="+2622"/>
+        <location line="-3231"/>
+        <location line="+2620"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-1492"/>
+        <location line="-1490"/>
         <source>Saved fragment + settings as: </source>
         <translation>Сохраненный фрагмент + настройки как: </translation>
     </message>
@@ -1825,17 +1821,26 @@ Must be less than 32769x32769</source>
         <translation>Нет данных!</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+37"/>
+        <source>It looks like the file: %1
+ has been changed by another program.
+Would you like to reload it?</source>
+        <translation>Это похоже на файл: %1
+была изменена другой программой.
+Вы хотите перезапустить его?</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>File saved</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+129"/>
         <source>Not a runnable fragment.</source>
         <translation>Ваш код не запускается.</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+58"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Компилировать скрипт в %1 мс.</translation>
     </message>
@@ -1845,7 +1850,7 @@ Must be less than 32769x32769</source>
         <translation>Не удалось скомпилировать скрипт (%1 мс).</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+107"/>
         <source> Line in preprocessed script: </source>
         <translation> Линия в скрипте препроцессора: </translation>
     </message>
@@ -1881,11 +1886,11 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <source>OK</source>
-        <translation>Закрыть</translation>
+        <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location line="-2587"/>
-        <location line="+2622"/>
+        <location line="-2585"/>
+        <location line="+2620"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -2080,7 +2085,7 @@ Must be less than 32769x32769</source>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+764"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
         <source>Select a Texture</source>
         <translation>Выбор текстуры</translation>
     </message>
@@ -2183,7 +2188,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation>Неподдерживаемый параметр</translation>
     </message>
     <message>
-        <location line="+143"/>
+        <location line="+144"/>
         <source>Expected a key value pair, found: </source>
         <translation>Ожидаемое значение пары ключа, найдено: </translation>
     </message>
@@ -2721,7 +2726,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-931"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>

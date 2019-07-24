@@ -576,6 +576,7 @@ void DisplayWidget::initFragmentShader()
         makeCurrent();
         // Bind first texture to backbuffer
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
+
         int l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
               GLuint i = backBuffer->texture();
@@ -601,23 +602,29 @@ vec3  backgroundColor(vec3 dir) {
 }
 */
 
-bool DisplayWidget::loadHDRTexture(QString texturePath, GLenum type)
+bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
 {
     HDRLoaderResult result;
-    bool loaded = HDRLoader::load ( texturePath.toLocal8Bit(), result );
-    if(type == GL_SAMPLER_CUBE && loaded) {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 0 * 3]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 1 * 3]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 2 * 3]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3]);
-    } else if(loaded) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, result.cols);
+    bool loaded = HDRLoader::load ( texturePath.toStdString().c_str(), result );
+
+    if ( loaded ) {
+        glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
+
+        if ( type == GL_SAMPLER_CUBE ) {
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 0 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 1 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 2 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3] );
+        } else {
+            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, &result.cols[0] );
+        }
+
     } else {
-        WARNING("HDR texture failed to load!");
-        return false;
+        WARNING ( "HDR texture failed to load!" );
     }
+
     return loaded;
 }
 
@@ -629,12 +636,13 @@ bool DisplayWidget::loadHDRTexture(QString texturePath, GLenum type)
 //    - describe the memory layout of the pixels
 //    - read the pixels from the file
 //
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type)
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID)
 {
     RgbaInputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.dataWindow();
 
     if ( file.isComplete() ) {
+
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
@@ -644,6 +652,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type)
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
+
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+
         Array2D<Rgba>pixels ( w, 1 );
 
         auto *cols = new float[w * h * 4];
@@ -681,10 +692,14 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type)
 }
 
 // Qt format image, Qt 5+ loads EXR format on linux
-bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type)
+bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
 {
     QImage im;
     bool loaded = im.load(texturePath);
+
+    if(loaded) {
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+    }
 
     if(type == GL_SAMPLER_CUBE && loaded) {
         QImage t = im.convertToFormat(QImage::Format_RGBA8888);
@@ -746,8 +761,9 @@ void DisplayWidget::initFragmentTextures()
         QString texturePath = it.value();
         bool loaded = false;
         if(!texturePath.isEmpty()) {
-//         DBOUT << textureUniformName << u << texturePath;
+
             int l = shaderProgram->uniformLocation ( textureUniformName );
+
             if ( l != -1 ) { // found named texture in shader program
 
                 // 2D or Cube ?
@@ -773,18 +789,16 @@ void DisplayWidget::initFragmentTextures()
                         qDebug() << QString("Allocating texture ID: %1 %2").arg(textureID).arg(texturePath);
                     }
 
-                    glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
-
                     if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
-                        loaded = loadHDRTexture(texturePath, type);
+                        loaded = loadHDRTexture(texturePath, type, textureID);
                     }
 #ifdef USE_OPEN_EXR
                     else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type);
+                        loaded = loadEXRTexture(texturePath, type, textureID);
                     }
 #endif
                     else {
-                        loaded = loadQtTexture(texturePath, type);
+                        loaded = loadQtTexture(texturePath, type, textureID);
                     }
                     if ( loaded ) {
                         // add to cache
@@ -794,11 +808,12 @@ void DisplayWidget::initFragmentTextures()
                 } else { // use cache
                     textureID = TextureCache[texturePath];
                     textureCacheUsed[texturePath] = true;
-                    glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     loaded = true;
                 }
 
+
                 if ( loaded ) {
+                    glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
                         shaderProgram->setUniformValue ( l, ( GLuint ) u );
                     }
@@ -1351,6 +1366,7 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
     double x,y,z,w;
 
     GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str());
+
     bool found = false;
     if(index != -1) {
         switch(type) {
@@ -1515,17 +1531,20 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 void DisplayWidget::setupShaderVars(int w, int h) {
 
     cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
-     int l = shaderProgram->uniformLocation ( "pixelSize" );
+    int l = shaderProgram->uniformLocation ( "pixelSize" );
+
     if ( l != -1 ) {
         shaderProgram->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
     }
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
     l = shaderProgram->uniformLocation ( "globalPixelSize" );
+
     if ( l != -1 ) {
         shaderProgram->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
     }
 
     l = shaderProgram->uniformLocation ( "time" );
+
     if ( l != -1 ) {
         double t = mainWindow->getTime() / ( double ) renderFPS;
         shaderProgram->setUniformValue ( l, ( float ) t );
@@ -1537,6 +1556,7 @@ void DisplayWidget::setupShaderVars(int w, int h) {
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
         GLuint i = backBuffer->texture();
         glBindTexture ( GL_TEXTURE_2D,i );
+
         l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
             if (verbose && subframeCounter == 1) {
@@ -1549,6 +1569,7 @@ void DisplayWidget::setupShaderVars(int w, int h) {
         }
 
         l = shaderProgram->uniformLocation ( "subframe" );
+
         if ( l != -1 ) {
             shaderProgram->setUniformValue ( l, subframeCounter );
             // if(verbose) qDebug() << QString("Setting subframe: %1").arg(subframeCounter);
@@ -1698,17 +1719,20 @@ bool DisplayWidget::FBOcheck()
 
 void DisplayWidget::setupBufferShaderVars(int w, int h)
 {
-       int l = bufferShaderProgram->uniformLocation ( "pixelSize" );
+        int l = bufferShaderProgram->uniformLocation ( "pixelSize" );
+
         if ( l != -1 ) {
             shaderProgram->setUniformValue(l, (float)(1.0 / w), (float)(1.0 / h));
         }
         // for DepthBufferShader.frag & NODE-Raytracer.frag
         l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
+
         if ( l != -1 ) {
             shaderProgram->setUniformValue(l, (1.0 / w), (1.0 / h));
         }
 
         l = bufferShaderProgram->uniformLocation ( "frontbuffer" );
+
         if ( l != -1 ) {
             bufferShaderProgram->setUniformValue ( l, 0 );
         } else {

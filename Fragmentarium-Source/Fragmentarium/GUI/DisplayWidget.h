@@ -343,9 +343,9 @@ private:
 
     bool initPreviewBuffer();
 
-    bool loadHDRTexture(QString texturePath, GLenum type);
-    bool loadEXRTexture(QString texturePath, GLenum type);
-    bool loadQtTexture(QString texturePath, GLenum type);
+    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
 
     bool setTextureParms(QString textureUniformName, GLenum type);
     void checkForSpecialCase(QString uniformName, QString &uniformValue);

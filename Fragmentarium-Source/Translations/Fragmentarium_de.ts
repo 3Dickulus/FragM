@@ -362,12 +362,12 @@ Initialisiert als GL_RGBA8</translation>
     <message>
         <location line="+7"/>
         <location line="+14"/>
-        <location line="+350"/>
+        <location line="+365"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="+1040"/>
+        <location line="+1049"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Frame:%1/%2 Zeit:%3</translation>
     </message>
@@ -377,13 +377,13 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1417"/>
-        <location line="+350"/>
+        <location line="-1441"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Versuche Backbuffer zu gebrauchen, aber kein BufferTyp eingestellt.</translation>
     </message>
@@ -393,17 +393,17 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Gebrauche ein Buffer define, z. B.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+61"/>
         <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
         <translation>Exrloader warnt, daß EXR-Bild: %1 x %2 zu groß ist! Max %3x%3</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+36"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader warnt, daß Bild: %1 nicht vollständig ist</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+134"/>
         <source>Not a valid texture: </source>
         <translation>Keine gültige Textur: </translation>
     </message>
@@ -438,7 +438,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>FBO Incomplete Fehler!!</translation>
     </message>
     <message>
-        <location line="+670"/>
+        <location line="+676"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ungültiger FBO - previewBuffer</translation>
     </message>
@@ -458,7 +458,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>PREVIEW BUFFER GESCHEITERT!</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+58"/>
         <source>Failed to bind FBO</source>
         <translation>Konnte FBO nicht binden</translation>
     </message>
@@ -496,12 +496,12 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-1453"/>
+        <location line="-1477"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Vertex + Fragment-Shader konnte nicht verknüpft werden: </translation>
     </message>
     <message>
-        <location line="+255"/>
+        <location line="+270"/>
         <source>Unused sampler uniform: </source>
         <translation>Unbenutzte Probenehmeruniform: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+1001"/>
+        <location line="+1010"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -574,7 +574,7 @@ Initialisiert als GL_RGBA8</translation>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
-        <translation>Es gibt Registerkarten mit nicht gespeicherten Änderungen.
+        <translation type="vanished">Es gibt Registerkarten mit nicht gespeicherten Änderungen.
 %1
 Werden weiterhin Änderungen verlieren?</translation>
     </message>
@@ -583,19 +583,19 @@ Werden weiterhin Änderungen verlieren?</translation>
 Tip: Update easing curves in preset
 and save to file before closing.
 </source>
-        <translation>
+        <translation type="vanished">
 Tipp: Aktualisieren Sie die Beschleunigungskurven standardmäßig
 und speichern Sie es in einer Datei, bevor Sie es schließen.
 </translation>
     </message>
     <message>
         <location line="+34"/>
-        <location line="+2622"/>
+        <location line="+2620"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2560"/>
+        <location line="-2558"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -643,7 +643,7 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <location line="+1056"/>
         <location line="+48"/>
         <location line="+67"/>
-        <location line="+365"/>
+        <location line="+363"/>
         <location line="+155"/>
         <location line="+9"/>
         <location line="+9"/>
@@ -654,14 +654,14 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-2830"/>
+        <location line="-2828"/>
         <location line="+1380"/>
-        <location line="+1663"/>
+        <location line="+1661"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3014"/>
+        <location line="-3012"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -847,12 +847,12 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Vorverarbeitete Ausgabe in neuen Registerkarten anzeigen</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+96"/>
         <source>Available image formats: </source>
         <translation>Verfügbare Bildformate: </translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+227"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -863,7 +863,7 @@ Muß kleiner sein als 32769x32769</translation>
     <message>
         <source>There are unsaved changes.%1
 Close this tab without saving changes?</source>
-        <translation>Es gibt ungespeicherte Änderungen. %1
+        <translation type="vanished">Es gibt ungespeicherte Änderungen. %1
 Tab schließen ohne Änderungen zu speichern?</translation>
     </message>
     <message>
@@ -877,7 +877,7 @@ Tab schließen ohne Änderungen zu speichern?</translation>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2253"/>
+        <location line="-2251"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -941,12 +941,12 @@ Bitte, lese unterstehendes:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2548"/>
+        <location line="+2546"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2547"/>
+        <location line="-2545"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1094,7 +1094,7 @@ Bitte, lese unterstehendes:
         <source>There are tabs with unsaved changes.
 %1
 Continue and loose changes?</source>
-        <translation>Es gibt Registerkarten mit nicht gespeicherten Änderungen.
+        <translation type="vanished">Es gibt Registerkarten mit nicht gespeicherten Änderungen.
 %1
 Werden weiterhin Änderungen verlieren?</translation>
     </message>
@@ -1395,12 +1395,12 @@ Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
         <location line="-966"/>
-        <location line="+2622"/>
+        <location line="+2620"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location line="-1696"/>
+        <location line="-1694"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1432,13 +1432,13 @@ Werden weiterhin Änderungen verlieren?</translation>
         <location line="+18"/>
         <location line="+490"/>
         <location line="+70"/>
-        <location line="+1077"/>
+        <location line="+1075"/>
         <location line="+21"/>
         <source>Fragmentarium</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-2117"/>
+        <location line="-2115"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Konnte Verzeichnis nicht erstellen: %1:
@@ -1530,14 +1530,14 @@ Werden weiterhin Änderungen verlieren?</translation>
     <message>
         <location line="+12"/>
         <location line="+450"/>
-        <location line="+1209"/>
+        <location line="+1207"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kann Datei nicht lesen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1652"/>
+        <location line="-1650"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
@@ -1713,17 +1713,26 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Keine Daten…!</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+37"/>
+        <source>It looks like the file: %1
+ has been changed by another program.
+Would you like to reload it?</source>
+        <translation>Es sieht aus wie die Datei: %1
+wurde von einem anderen Programm geändert.
+Möchten Sie es neu laden?</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>File saved</source>
         <translation>Datei gespeichert</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+129"/>
         <source>Not a runnable fragment.</source>
         <translation>Fragment nicht lauffähig.</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+58"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script Kompiliert in %1 ms.</translation>
     </message>
@@ -1733,7 +1742,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Kompilieren Script gescheitert (%1 ms).</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+107"/>
         <source> Line in preprocessed script: </source>
         <translation> Zeile im vorbearbeiteten Script: </translation>
     </message>
@@ -1770,7 +1779,7 @@ Werden weiterhin Änderungen verlieren?</translation>
     <message>
         <source>There are unsaved changes.%1
 Continue will discard changes.</source>
-        <translation>Es gibt Registerkarten mit nicht gespeicherten Änderungen.
+        <translation type="vanished">Es gibt Registerkarten mit nicht gespeicherten Änderungen.
 %1
 Werden weiterhin Änderungen verlieren?</translation>
     </message>
@@ -1779,14 +1788,14 @@ Werden weiterhin Änderungen verlieren?</translation>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
 and save before closing!</source>
-        <translation>
+        <translation type="vanished">
 Um Beschleunigungskurven zu halten, müssen Sie
 Füge ein Preset mit dem Namen &quot;Range&quot; hinzu
 und vor dem Schließen speichern!</translation>
     </message>
     <message>
-        <location line="-2587"/>
-        <location line="+2622"/>
+        <location line="-2585"/>
+        <location line="+2620"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1988,7 +1997,7 @@ und vor dem Schließen speichern!</translation>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+764"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
         <source>Select a Texture</source>
         <translation>Wähle Textur</translation>
     </message>
@@ -2091,7 +2100,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <translation>Ununterstützter Parameter</translation>
     </message>
     <message>
-        <location line="+143"/>
+        <location line="+144"/>
         <source>Expected a key value pair, found: </source>
         <translation>Erwartete key value pair, fand: </translation>
     </message>
@@ -2629,7 +2638,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-931"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>

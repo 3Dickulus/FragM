@@ -633,6 +633,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
     QMapIterator<QString, bool> it(tabStillPresent);
     while (it.hasNext()) {
         it.next();
+        // DBOUT << it.key() << tabs[it.key()]->findChildren<VariableWidget *>(QString(),Qt::FindDirectChildrenOnly).count();
         if (!it.value()) {
             spacers.remove(tabs[it.key()]);
             delete((tabs[it.key()]->parent()));

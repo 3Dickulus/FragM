@@ -4,24 +4,19 @@
     FileName: 	hdrloader.h
     Author:		Igor Kravtchenko
 
-    Info:		Load HDR image and convert to a set of float32 RGB
-triplet.
+    Info:		Load HDR image and convert to a set of float32 RGB triplet.
 ************************************************************************************/
-#pragma once
-class HDRLoaderResult
-{
+
+class HDRLoaderResult {
 public:
-    ~HDRLoaderResult()
-    {
-        delete[] cols;
-    }
+    ~HDRLoaderResult() { delete[] cols; }
     int width, height;
     // each pixel takes 3 float32, each component can be of any value...
     float *cols;
 };
 
-class HDRLoader
-{
+class HDRLoader {
 public:
-    static bool load ( const char *fileName, HDRLoaderResult &res );
+    static bool load(const char *fileName, HDRLoaderResult &res);
 };
+
