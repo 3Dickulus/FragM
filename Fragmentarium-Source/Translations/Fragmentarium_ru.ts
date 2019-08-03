@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+472"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Камера: Нажмите 2D окно для управления движением с помощью клавиатуры. Для получения более подробной информации, обратитесь к меню Справка.</translation>
     </message>
@@ -551,7 +551,7 @@ Initialized as GL_RGBA8</source>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+112"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+114"/>
         <source>Host Preprocessor Commands</source>
         <translation>Команды препроцессора</translation>
     </message>
@@ -589,13 +589,13 @@ and save to file before closing.
 </translation>
     </message>
     <message>
-        <location line="+34"/>
-        <location line="+2620"/>
+        <location line="+35"/>
+        <location line="+2691"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2558"/>
+        <location line="-2627"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -625,43 +625,43 @@ and save to file before closing.
         <translation>Добавлено %1</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+67"/>
+        <location line="+7"/>
+        <location line="+72"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Источник фрагментов (*.frag);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location line="-29"/>
-        <location line="+1487"/>
+        <location line="-31"/>
+        <location line="+1513"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1479"/>
-        <location line="+15"/>
-        <location line="+915"/>
-        <location line="+1056"/>
-        <location line="+48"/>
-        <location line="+67"/>
-        <location line="+363"/>
-        <location line="+155"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+130"/>
-        <location line="+75"/>
+        <location line="-1504"/>
+        <location line="+16"/>
+        <location line="+932"/>
+        <location line="+1087"/>
+        <location line="+50"/>
+        <location line="+70"/>
+        <location line="+373"/>
+        <location line="+167"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+136"/>
+        <location line="+78"/>
         <source>No open tab</source>
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-2828"/>
-        <location line="+1380"/>
-        <location line="+1661"/>
+        <location line="-2915"/>
+        <location line="+1400"/>
+        <location line="+1736"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3012"/>
+        <location line="-3105"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -694,12 +694,12 @@ and save to file before closing.
         <translation>О Фрагментариум</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+52"/>
         <source>Mouse and Keyboard Control</source>
         <translation>Управление мышью и клавиатурой</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>&lt;h2&gt;General commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Returns the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Opens a new editor tab, loads the named fragment file, initializes default preset,&lt;br&gt;initializes keyframes and easing curves if the file contains these settings.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Returns success or fail.&lt;br&gt;Must be called after altering a locked variable before rendering an image.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt;Общие команды&lt;/h2&gt;
 &lt;p&gt;
@@ -766,7 +766,7 @@ and save to file before closing.
         <translation>Команды скрипта Фрагментариум.</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+74"/>
         <source>Log</source>
         <translation>Журнал событий</translation>
     </message>
@@ -807,17 +807,17 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+536"/>
+        <location line="+547"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
     <message>
-        <location line="+992"/>
+        <location line="+1020"/>
         <source>Reloaded file: %1</source>
         <translation>Перезагрузка файла: %1</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>Reload</source>
         <translation>Прочитай заново</translation>
     </message>
@@ -839,22 +839,22 @@ This option may be re-enabled through Preferences</source>
         <translation>Конфликт с изменениями в редакторе!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+37"/>
         <source>Rebuilding to update locked uniforms...</source>
         <translation>Реструктуризация для обновления заблокированных переменных ...</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+75"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
     <message>
-        <location line="+96"/>
+        <location line="+99"/>
         <source>Available image formats: </source>
         <translation>Доступные форматы изображений: </translation>
     </message>
     <message>
-        <location line="+227"/>
+        <location line="+234"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -869,7 +869,7 @@ Close this tab without saving changes?</source>
 Закрыть эту вкладку без сохранения изменений?</translation>
     </message>
     <message>
-        <location line="+397"/>
+        <location line="+419"/>
         <source>OpenGL features missing</source>
         <translation>Функции OpenGL отсутствуют</translation>
     </message>
@@ -879,7 +879,7 @@ Close this tab without saving changes?</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2251"/>
+        <location line="-2324"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -906,7 +906,7 @@ Please read this:
 </translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+61"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Во весь экран (Клавиша ESC переключает режимы)</translation>
     </message>
@@ -947,12 +947,12 @@ Please read this:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2546"/>
+        <location line="+2629"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2545"/>
+        <location line="-2628"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1092,7 +1092,7 @@ Please read this:
         <translation></translation>
     </message>
     <message>
-        <location line="-794"/>
+        <location line="-816"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
@@ -1105,7 +1105,7 @@ Continue and loose changes?</source>
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+307"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1150,7 +1150,7 @@ Continue and loose changes?</source>
   &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+98"/>
         <source>&lt;h2&gt;Hires image and animation dialog commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Sets the total animation duration in seconds.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Sets the tile width and height.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Sets the number of row and column tiles, this value squared = total tiles.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Sets the number of frames to accumulate.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Sets the filename for saved image,&lt;br&gt;if script has total control this must be set by the script for every frame,&lt;br&gt;if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Sets the frames per second for rendering.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the start frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the end frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE sets animation to script control exclusively.&lt;br&gt;TRUE enables control from keyframes and easing curves.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE will preview frames in a window on the desktop instead of saving image files.&lt;br&gt;WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAutoSave(bool);&lt;/b&gt;&lt;/li&gt;TRUE will save files in subfolder.&lt;br&gt;FALSE will use the path set by setOutputBaseFileName(String)&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setUniqueID(bool);&lt;/b&gt;&lt;/li&gt;Does the same thing as &quot;Add unique ID to filename&quot; in the HiResolution and Animation Dialog.&lt;br&gt;&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&quot;&lt;h2&gt;Нанимает команды для работы с изображениями и анимацией&lt;/h2&gt;&quot;
     &quot;&lt;p&gt;&quot;
@@ -1189,7 +1189,7 @@ Continue and loose changes?</source>
     &quot;&lt;/p&gt;&quot;</translation>
     </message>
     <message>
-        <location line="+233"/>
+        <location line="+236"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Инструменты</translation>
     </message>
@@ -1199,7 +1199,7 @@ Continue and loose changes?</source>
         <translation>Невозможно найти двоичные файлы OpenEXR !!!</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+144"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Перезагрузить...</translation>
     </message>
@@ -1368,7 +1368,7 @@ Continue and loose changes?</source>
         <translation>Фрагментариум Часто Задаваемые Вопросы (веб-ссылка)</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
@@ -1468,13 +1468,13 @@ Continue and loose changes?</source>
         <translation>&amp;Примеры</translation>
     </message>
     <message>
-        <location line="-360"/>
-        <location line="+405"/>
+        <location line="-367"/>
+        <location line="+413"/>
         <source>Unable to locate: </source>
         <translation>Невозможно определить местоположение: </translation>
     </message>
     <message>
-        <location line="-40"/>
+        <location line="-41"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1484,14 +1484,14 @@ Continue and loose changes?</source>
         <translation>&amp;Помощь</translation>
     </message>
     <message>
-        <location line="+160"/>
+        <location line="+163"/>
         <source>// Output generated from file: </source>
-        <translation>Вывод генерируется из файла: </translation>
+        <translation>// Вывод генерируется из файла: </translation>
     </message>
     <message>
         <location line="+1"/>
         <source>// Created: </source>
-        <translation>Создан: </translation>
+        <translation>// Создан: </translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1502,8 +1502,8 @@ Continue and loose changes?</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+433"/>
-        <location line="+579"/>
+        <location line="+437"/>
+        <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Невозможно записать файл %1:
@@ -1511,7 +1511,7 @@ Continue and loose changes?</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-996"/>
+        <location line="-1027"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1523,9 +1523,9 @@ Continue and loose changes?</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+435"/>
-        <location line="+450"/>
-        <location line="+1207"/>
+        <location line="+440"/>
+        <location line="+473"/>
+        <location line="+1258"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Невозможно прочитать файл %1:
@@ -1550,33 +1550,33 @@ and save before closing!</source>
 и сохраните перед закрытием!</translation>
     </message>
     <message>
-        <location line="-21"/>
+        <location line="-22"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Невозможно записать файл%1:
 %2.</translation>
     </message>
     <message>
-        <location line="-2095"/>
+        <location line="-2173"/>
         <location line="+8"/>
         <location line="+16"/>
-        <location line="+417"/>
-        <location line="+18"/>
-        <location line="+490"/>
-        <location line="+70"/>
-        <location line="+1075"/>
-        <location line="+21"/>
+        <location line="+421"/>
+        <location line="+19"/>
+        <location line="+514"/>
+        <location line="+72"/>
+        <location line="+1122"/>
+        <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3231"/>
-        <location line="+2620"/>
+        <location line="-3335"/>
+        <location line="+2691"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-1490"/>
+        <location line="-1536"/>
         <source>Saved fragment + settings as: </source>
         <translation>Сохраненный фрагмент + настройки как: </translation>
     </message>
@@ -1604,17 +1604,17 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+275"/>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Saved file : </source>
         <translation>Сохранённый файл : </translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="-40"/>
         <source>Save file failed! : </source>
         <translation>Сохранить файл не удалось! : </translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+29"/>
         <source>Images (</source>
         <translation>Изображения (</translation>
     </message>
@@ -1629,33 +1629,33 @@ Must be less than 32769x32769</source>
         <translation>Сохранить изображение предварительного просмотра...</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+24"/>
         <source>Pasted selected settings</source>
         <translation>Вставлены выбранные настройки</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <location line="+46"/>
+        <location line="+6"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Параметры .frag(*.fragparams );;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation>Сохранить настройки в файл</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+20"/>
         <source>Settings loaded from file</source>
         <translation>Загрузить настройки из файла</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Load</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>File Toolbar</source>
         <translation>Панель инструментов</translation>
     </message>
@@ -1796,32 +1796,32 @@ Must be less than 32769x32769</source>
         <translation>Время: 0s </translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+138"/>
         <source>Stopping: last stored time set to</source>
         <translation>Остановка последнего сохраненного времени, установленного для</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+40"/>
         <source>Time:</source>
         <translation>Время:</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Done</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+30"/>
         <source>Ready</source>
         <translation>Готов</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+74"/>
         <source>No data!</source>
         <translation>Нет данных!</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+40"/>
         <source>It looks like the file: %1
  has been changed by another program.
 Would you like to reload it?</source>
@@ -1830,12 +1830,12 @@ Would you like to reload it?</source>
 Вы хотите перезапустить его?</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+110"/>
         <source>File saved</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+134"/>
         <source>Not a runnable fragment.</source>
         <translation>Ваш код не запускается.</translation>
     </message>
@@ -1850,7 +1850,7 @@ Would you like to reload it?</source>
         <translation>Не удалось скомпилировать скрипт (%1 мс).</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+113"/>
         <source> Line in preprocessed script: </source>
         <translation> Линия в скрипте препроцессора: </translation>
     </message>
@@ -1865,7 +1865,7 @@ Would you like to reload it?</source>
         <translation>Позиция: %1, строка: %2.</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Loaded file: %1</source>
         <translation>Загруженный файл:%1</translation>
     </message>
@@ -1875,7 +1875,7 @@ Would you like to reload it?</source>
         <translation>Без имени</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+73"/>
         <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
         <translation>Авто запуск отключен! Вы должны нажать &quot;Сборка&quot; чтобы применить изменения.</translation>
     </message>
@@ -1889,32 +1889,32 @@ Would you like to reload it?</source>
         <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location line="-2585"/>
-        <location line="+2620"/>
+        <location line="-2655"/>
+        <location line="+2691"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location line="+42"/>
-        <location line="+9"/>
-        <location line="+9"/>
+        <location line="+44"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Launching web browser...</source>
         <translation>Запуск веб-браузера...</translation>
     </message>
     <message>
-        <location line="-15"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
+        <location line="-17"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Failed to open browser...</source>
         <translation>Не удалось открыть браузер...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+14"/>
         <source>Save screenshot as:</source>
         <translation>Сохранить снимок экрана как:</translation>
     </message>
@@ -1929,7 +1929,7 @@ Would you like to reload it?</source>
         <translation>Сохранить не удалось! Имя файла: </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+48"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
@@ -1949,8 +1949,8 @@ Would you like to reload it?</source>
         <translation>Попробовать еще раз с самого начала?</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <location line="+36"/>
+        <location line="+17"/>
+        <location line="+37"/>
         <source>Cannot accept MIME object: </source>
         <translation>Не может принимать объект MIME: </translation>
     </message>
@@ -1970,23 +1970,23 @@ Would you like to reload it?</source>
         <translation>Должен быть .frag или .fragparams файл.</translation>
     </message>
     <message>
-        <location line="+323"/>
+        <location line="+336"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset не найден!</translation>
     </message>
     <message>
-        <location line="+32"/>
-        <location line="+23"/>
+        <location line="+34"/>
+        <location line="+24"/>
         <source>Cmd Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location line="-5"/>
+        <location line="-6"/>
         <source>Cmd Script saved to file:</source>
         <translation>Команда скрипта сохранена в файл:</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+23"/>
         <source>Cmd Script loaded from file: </source>
         <translation>Команда скрипта загружена из файла: </translation>
     </message>
@@ -2011,7 +2011,7 @@ Would you like to reload it?</source>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+65"/>
         <source>Error %1 at line %2</source>
         <translation>Ошибка %1 в строке %2</translation>
     </message>
@@ -2726,7 +2726,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-979"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>

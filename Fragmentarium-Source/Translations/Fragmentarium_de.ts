@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+472"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Kamera: Klicken Sie auf 2D-Fenster Schwerpunkt. Siehe Hilfe-Menü für mehr.</translation>
     </message>
@@ -551,7 +551,7 @@ Initialisiert als GL_RGBA8</translation>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+112"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+114"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Kommandos</translation>
     </message>
@@ -589,13 +589,13 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
 </translation>
     </message>
     <message>
-        <location line="+34"/>
-        <location line="+2620"/>
+        <location line="+35"/>
+        <location line="+2691"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2558"/>
+        <location line="-2627"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -625,43 +625,43 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation>%1 ist hinzugefügt</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+67"/>
+        <location line="+7"/>
+        <location line="+72"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-Quelle (*.frag);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location line="-29"/>
-        <location line="+1487"/>
+        <location line="-31"/>
+        <location line="+1513"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Bitte die Combobox auf &apos;Angepasst&apos; einstellen um die Größe zu ändern.</translation>
     </message>
     <message>
-        <location line="-1479"/>
-        <location line="+15"/>
-        <location line="+915"/>
-        <location line="+1056"/>
-        <location line="+48"/>
-        <location line="+67"/>
-        <location line="+363"/>
-        <location line="+155"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+130"/>
-        <location line="+75"/>
+        <location line="-1504"/>
+        <location line="+16"/>
+        <location line="+932"/>
+        <location line="+1087"/>
+        <location line="+50"/>
+        <location line="+70"/>
+        <location line="+373"/>
+        <location line="+167"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+136"/>
+        <location line="+78"/>
         <source>No open tab</source>
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-2828"/>
-        <location line="+1380"/>
-        <location line="+1661"/>
+        <location line="-2915"/>
+        <location line="+1400"/>
+        <location line="+1736"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3012"/>
+        <location line="-3105"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -691,12 +691,12 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation>Über Fragmentarium</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+52"/>
         <source>Mouse and Keyboard Control</source>
         <translation>Maus- und Tastaturhilfe</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>&lt;h2&gt;General commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Returns the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Opens a new editor tab, loads the named fragment file, initializes default preset,&lt;br&gt;initializes keyframes and easing curves if the file contains these settings.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Returns success or fail.&lt;br&gt;Must be called after altering a locked variable before rendering an image.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt;Allgemeine Kommandos&lt;/h2&gt;
 &lt;p&gt;
@@ -763,7 +763,7 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation>Fragmentarium Script-Kommandos.</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+74"/>
         <source>Log</source>
         <translation></translation>
     </message>
@@ -803,19 +803,19 @@ Diese Option ist wieder einzuschalten in Einstellungen</translation>
         <translation>Autorun einschalten</translation>
     </message>
     <message>
-        <location line="+668"/>
+        <location line="+679"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>Zu groß!
 Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
-        <location line="+860"/>
+        <location line="+888"/>
         <source>Reloaded file: %1</source>
         <translation>Neu geladene Datei: %1</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>Reload</source>
         <translation>Neu laden</translation>
     </message>
@@ -837,22 +837,22 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Konflikt mit Änderungen im Editor!</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+37"/>
         <source>Rebuilding to update locked uniforms...</source>
         <translation>Überarbeitet, um gesperrte Uniformen zu aktualisieren ...</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+75"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Vorverarbeitete Ausgabe in neuen Registerkarten anzeigen</translation>
     </message>
     <message>
-        <location line="+96"/>
+        <location line="+99"/>
         <source>Available image formats: </source>
         <translation>Verfügbare Bildformate: </translation>
     </message>
     <message>
-        <location line="+227"/>
+        <location line="+234"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -867,7 +867,7 @@ Close this tab without saving changes?</source>
 Tab schließen ohne Änderungen zu speichern?</translation>
     </message>
     <message>
-        <location line="+397"/>
+        <location line="+419"/>
         <source>OpenGL features missing</source>
         <translation>OpenGL-Features fehlen</translation>
     </message>
@@ -877,7 +877,7 @@ Tab schließen ohne Änderungen zu speichern?</translation>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2251"/>
+        <location line="-2324"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -900,7 +900,7 @@ Bitte, lese unterstehendes:
 </translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+61"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Vollbildanzeige (mit ESC umschalten)</translation>
     </message>
@@ -941,12 +941,12 @@ Bitte, lese unterstehendes:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2546"/>
+        <location line="+2629"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2545"/>
+        <location line="-2628"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1086,7 +1086,7 @@ Bitte, lese unterstehendes:
         <translation></translation>
     </message>
     <message>
-        <location line="-794"/>
+        <location line="-816"/>
         <source>2D Texture Options</source>
         <translation>2D-Texturoptionen</translation>
     </message>
@@ -1099,17 +1099,17 @@ Continue and loose changes?</source>
 Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+307"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Hinweis: Die 3D-Ansicht muss den Tastaturfokus haben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linke Maustaste: Mitte übersetzen. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: zoom. &lt;/li&gt; &lt;li&gt; Rad: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; B / S: hoch / runter &lt;/li&gt; &lt;li&gt; Q/E : Vergrößern/Verkleinern &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Umschalt + Rechte Maustaste: Zeigt Menüs im Vollbildmodus an. &lt;/li &gt; &lt;li&gt; Linke Maustaste: Kamerarichtung ändern. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: Kamera in Bildschirmebene bewegen. &lt;/li&gt; &lt;li&gt; Linke + rechte Maustaste: Zoomen. &lt;/li&gt; &lt;li &gt; Umschalt + linke Maustaste: Objekt drehen (um Ursprung). &lt;/Li&gt; &lt;li&gt; Umschalt + Alt + linke Maustaste: Objekt drehen (um Ziel). &lt;/Li&gt; &lt;li&gt; Umschalt + Tilde (~) wird zurückgesetzt Die Ansicht, um durch den Ursprung zu schauen (0,0,0) &lt;/li&gt; &lt;li&gt; Rad: Vorwärts/Rückwärts bewegen &lt;/li&gt; &lt;li&gt; W / S: Vorwärts / Rückwärts bewegen. &lt;/li&gt; &lt;li&gt; A/D: nach links/rechts bewegen. &lt;/Li&gt; &lt;li&gt; Q/E: rollen &lt;/li&gt; &lt;li&gt; 1/3: Schrittweite erhöhen/verringern x2 &lt;/li&gt; &lt;li&gt; 2: Schrittweite erhöhen / verringern Größe x10 &lt;/li&gt; &lt;li&gt; Umschalt + Rad: Schrittgröße ändern &lt;/li&gt; &lt;li&gt; T/G: Auf/Ab bewegen. &lt;/li&gt; &lt;li&gt; R/F: Gieren &lt;/li&gt; &lt;li &gt; Y/H: Tonhöhe &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Schieberegler &lt;/h2&gt; &lt;p&gt; Wenn ein (Gleit-) Schieberegler eine rechte Maustaste erhält, wird ein Eingabedialog zum Festlegen der Schrittgröße geöffnet. &lt;br&gt; &lt;b&gt; F7-Taste &lt;/b&gt; öffnet die Beschleunigungskurve Editor für den aktuell ausgewählten Schieberegler. &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+98"/>
         <source>&lt;h2&gt;Hires image and animation dialog commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Sets the total animation duration in seconds.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Sets the tile width and height.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Sets the number of row and column tiles, this value squared = total tiles.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Sets the number of frames to accumulate.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Sets the filename for saved image,&lt;br&gt;if script has total control this must be set by the script for every frame,&lt;br&gt;if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Sets the frames per second for rendering.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the start frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the end frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE sets animation to script control exclusively.&lt;br&gt;TRUE enables control from keyframes and easing curves.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE will preview frames in a window on the desktop instead of saving image files.&lt;br&gt;WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAutoSave(bool);&lt;/b&gt;&lt;/li&gt;TRUE will save files in subfolder.&lt;br&gt;FALSE will use the path set by setOutputBaseFileName(String)&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setUniqueID(bool);&lt;/b&gt;&lt;/li&gt;Does the same thing as &quot;Add unique ID to filename&quot; in the HiResolution and Animation Dialog.&lt;br&gt;&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt; Stellt Befehle für Bild- und Animationsdialogfelder ein &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt; &lt;/li&gt; Legt die Gesamtdauer der Animation in Sekunden fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; Legt die Kachel fest width and height. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der Zeilen- und Spaltenkacheln fest. Dieser Wert ist ein Quadrat = Gesamtkacheln. &lt;/p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der zu akkumulierenden Frames fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Legt den Dateinamen für das gespeicherte Bild fest. Wenn das Skript die vollständige Kontrolle hat, muss dies für jeden Frame vom Skript festgelegt werden. Wenn die Animation Frag-Dateieinstellungen, Keyframes usw. verwendet. dann muss dies nur einmal auf basename gesetzt werden und Fragmentarium fügt einen mit 5 Ziffern aufgefüllten Index hinzu. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Setzt den Bilder pro Sekunde für das Rendern. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die Startbildnummer für das Rendern einer Reihe von Bildern fest. &lt;/p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die End-Frame-Nummer für das Rendern eines Framebereichs fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE setzt die Animation ausschließlich auf Skriptsteuerung. &lt;br&gt; TRUE aktiviert die Steuerung über Keyframes und Beschleunigungskurven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE zeigt eine Vorschau der Bilder in einem Fenster auf dem Desktop an, anstatt die Bilddateien zu speichern. &lt;br&gt; WARNUNG !!! Dies öffnet ein Fenster für jeden Frame und schließt es, wenn der nächste zur Anzeige bereit ist. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE wird gespeichert Dateien im Unterordner. &lt;br&gt; FALSE verwendet den von setOutputBaseFileName (String) festgelegten Pfad. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; Das Gleiche wie &quot;Eindeutige ID zum Dateinamen hinzufügen&quot; im HiResolution- und Animationsdialog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+233"/>
+        <location line="+236"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Werkzeuge</translation>
     </message>
@@ -1119,7 +1119,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>OpenEXR-Binärdateien konnten nicht gefunden werden !!!</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+144"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Neu laden...</translation>
     </message>
@@ -1288,7 +1288,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Fragmentarium FAQ (Web-Link)</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -1388,19 +1388,19 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>&amp;Vorbilder (Examples)</translation>
     </message>
     <message>
-        <location line="-360"/>
-        <location line="+405"/>
+        <location line="-367"/>
+        <location line="+413"/>
         <source>Unable to locate: </source>
         <translation>Unfindbar: </translation>
     </message>
     <message>
-        <location line="-966"/>
-        <location line="+2620"/>
+        <location line="-989"/>
+        <location line="+2691"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location line="-1694"/>
+        <location line="-1743"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1410,7 +1410,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+114"/>
         <source>Build the fragment first!</source>
         <translation>Baue zuerst das Fragment!</translation>
     </message>
@@ -1428,17 +1428,17 @@ Werden weiterhin Änderungen verlieren?</translation>
         <location line="+26"/>
         <location line="+8"/>
         <location line="+16"/>
-        <location line="+417"/>
-        <location line="+18"/>
-        <location line="+490"/>
-        <location line="+70"/>
-        <location line="+1075"/>
-        <location line="+21"/>
+        <location line="+421"/>
+        <location line="+19"/>
+        <location line="+514"/>
+        <location line="+72"/>
+        <location line="+1122"/>
+        <location line="+22"/>
         <source>Fragmentarium</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-2115"/>
+        <location line="-2194"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Konnte Verzeichnis nicht erstellen: %1:
@@ -1446,15 +1446,15 @@ Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+433"/>
-        <location line="+579"/>
+        <location line="+437"/>
+        <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Konnte Datei nicht erstellen: %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1006"/>
+        <location line="-1037"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment und Einstellungen gespeichert als: </translation>
     </message>
@@ -1487,17 +1487,17 @@ Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
         <location line="+275"/>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Saved file : </source>
         <translation>Datei gespeichert : </translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="-40"/>
         <source>Save file failed! : </source>
         <translation>Datei speichern gescheitert : </translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+29"/>
         <source>Images (</source>
         <translation>Bilder (</translation>
     </message>
@@ -1512,42 +1512,42 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Vorschaubild speichern...</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+24"/>
         <source>Pasted selected settings</source>
         <translation>Gewählte Einstellungen einfügen</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <location line="+46"/>
+        <location line="+6"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Fragment-Parameter (*.fragparams);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation>Einstellungen gespeichert in Datei</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+450"/>
-        <location line="+1207"/>
+        <location line="+13"/>
+        <location line="+473"/>
+        <location line="+1258"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kann Datei nicht lesen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1650"/>
+        <location line="-1724"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>File Toolbar</source>
         <translation>Datei-Symbolleiste</translation>
     </message>
@@ -1688,32 +1688,32 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Zeit: 0s </translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+138"/>
         <source>Stopping: last stored time set to</source>
         <translation>Vorgang stoppt: die zuletzt gespeicherte Zeit is festgelegt auf</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+40"/>
         <source>Time:</source>
         <translation>Zeit:</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+30"/>
         <source>Ready</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+74"/>
         <source>No data!</source>
         <translation>Keine Daten…!</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+40"/>
         <source>It looks like the file: %1
  has been changed by another program.
 Would you like to reload it?</source>
@@ -1722,12 +1722,12 @@ wurde von einem anderen Programm geändert.
 Möchten Sie es neu laden?</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+110"/>
         <source>File saved</source>
         <translation>Datei gespeichert</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+134"/>
         <source>Not a runnable fragment.</source>
         <translation>Fragment nicht lauffähig.</translation>
     </message>
@@ -1742,7 +1742,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Kompilieren Script gescheitert (%1 ms).</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+113"/>
         <source> Line in preprocessed script: </source>
         <translation> Zeile im vorbearbeiteten Script: </translation>
     </message>
@@ -1757,7 +1757,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Position: %1, Zeile: %2.</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+42"/>
         <source>Loaded file: %1</source>
         <translation>Geladene Datei: %1</translation>
     </message>
@@ -1767,7 +1767,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Unbenannt</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+73"/>
         <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
         <translation>AutoRun ist deaktiviert! Wähle &quot;Build&quot; und verwende ein Preset.</translation>
     </message>
@@ -1794,32 +1794,32 @@ Füge ein Preset mit dem Namen &quot;Range&quot; hinzu
 und vor dem Schließen speichern!</translation>
     </message>
     <message>
-        <location line="-2585"/>
-        <location line="+2620"/>
+        <location line="-2655"/>
+        <location line="+2691"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location line="+42"/>
-        <location line="+9"/>
-        <location line="+9"/>
+        <location line="+44"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Launching web browser...</source>
         <translation>Starten des Webbrowsers...</translation>
     </message>
     <message>
-        <location line="-15"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
-        <location line="+9"/>
+        <location line="-17"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Failed to open browser...</source>
         <translation>Browser starten gescheitert...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+14"/>
         <source>Save screenshot as:</source>
         <translation>Screenshot speichern als:</translation>
     </message>
@@ -1834,7 +1834,7 @@ und vor dem Schließen speichern!</translation>
         <translation>Speichern gescheitert! Dateiname: </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+48"/>
         <source>Search</source>
         <translation>Suchen</translation>
     </message>
@@ -1854,8 +1854,8 @@ und vor dem Schließen speichern!</translation>
         <translation>Nochmals versuchen?</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <location line="+36"/>
+        <location line="+17"/>
+        <location line="+37"/>
         <source>Cannot accept MIME object: </source>
         <translation>Kann MIME-Objekt nicht akzeptieren: </translation>
     </message>
@@ -1875,18 +1875,18 @@ und vor dem Schließen speichern!</translation>
         <translation>Muß eine .frag- oder .fragparams-Datei sein.</translation>
     </message>
     <message>
-        <location line="+323"/>
+        <location line="+336"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset nicht gefunden!</translation>
     </message>
     <message>
-        <location line="+32"/>
-        <location line="+23"/>
+        <location line="+34"/>
+        <location line="+24"/>
         <source>Cmd Script (*.fqs);;All Files (*.*)</source>
         <translation>CmdScript (*.fqs);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location line="-14"/>
+        <location line="-15"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Kann CmdScript nicht schreiben %1:
@@ -1898,7 +1898,7 @@ und vor dem Schließen speichern!</translation>
         <translation>CmdScript gespeichert in Datei:</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+23"/>
         <source>Cmd Script loaded from file: </source>
         <translation>CmdScript geladen aus Datei: </translation>
     </message>
@@ -1923,7 +1923,7 @@ und vor dem Schließen speichern!</translation>
         <translation>&amp;Schließen</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+65"/>
         <source>Error %1 at line %2</source>
         <translation>Fehler %1 in Zeile %2</translation>
     </message>
@@ -2638,7 +2638,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-937"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-979"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>
