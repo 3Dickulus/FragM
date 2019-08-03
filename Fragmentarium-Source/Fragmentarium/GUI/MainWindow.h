@@ -16,6 +16,7 @@
 #include <QtScript/QtScript>
 
 #include <QOpenGLShaderProgram>
+
 #include <qfilesystemwatcher.h>
 
 #include "DisplayWidget.h"
@@ -35,8 +36,6 @@ namespace Fragmentarium
 {
 namespace GUI
 {
-
-#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 #ifdef USE_OPEN_EXR
 using namespace OPENEXR_IMF_NAMESPACE;

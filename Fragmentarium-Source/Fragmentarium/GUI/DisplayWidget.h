@@ -81,8 +81,6 @@ namespace Fragmentarium
 namespace GUI
 {
 
-#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
-
 #ifdef USE_OPEN_EXR
 using namespace OPENEXR_IMF_NAMESPACE;
 using namespace IMATH_NAMESPACE;

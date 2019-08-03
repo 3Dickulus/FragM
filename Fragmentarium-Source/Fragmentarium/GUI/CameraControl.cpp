@@ -14,8 +14,6 @@
 #include "MainWindow.h"
 #include "VariableWidget.h"
 
-#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
-
 using namespace SyntopiaCore::Logging;
 
 namespace Fragmentarium
