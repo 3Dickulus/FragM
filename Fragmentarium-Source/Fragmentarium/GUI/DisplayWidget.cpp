@@ -628,6 +628,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     return loaded;
 }
 
+#ifdef USE_OPEN_EXR
 //
 // Read an RGBA image using class RgbaInputFile:
 //
@@ -690,6 +691,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     }
     return true;
 }
+#endif
 
 // Qt format image, Qt 5+ loads EXR format on linux
 bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
