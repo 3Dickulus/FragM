@@ -23,6 +23,7 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Compatibility>
 #include <QOpenGLFunctions_3_3_Core>
+#ifdef USE_OPENGL_4
 #include <QOpenGLFunctions_4_0_Compatibility>
 #include <QOpenGLFunctions_4_0_Core>
 #include <QOpenGLFunctions_4_1_Compatibility>
@@ -35,7 +36,10 @@
 #include <QOpenGLFunctions_4_4_Core>
 #include <QOpenGLFunctions_4_5_Compatibility>
 #include <QOpenGLFunctions_4_5_Core>
+#endif
+#ifdef USE_OPENGL_ES2
 #include <QOpenGLFunctions_ES2>
+#endif
 
 #include <QOpenGLFunctions>
 #include <QOpenGLVersionFunctions>
@@ -95,7 +99,11 @@ class CameraControl;
 #ifdef Q_OS_MAC
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
+#ifdef USE_OPENGL_4
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
+#else
+class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
+#endif
 #endif
 {
     Q_OBJECT
@@ -351,7 +359,9 @@ private:
     void checkForSpecialCase(QString uniformName, QString &uniformValue);
     void setFloatType(GLenum type, QString &tp);
     bool checkShaderProg(GLuint programID);
+#ifdef USE_OPENGL_4
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
+#endif
     void setupShaderVars(int w, int h);
     void draw3DHints();
     bool FBOcheck();
