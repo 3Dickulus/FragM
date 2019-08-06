@@ -47,7 +47,7 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 	fseek(file, 1, SEEK_CUR);
 
 // 	char cmd[200];
-// 	i = 0;
+	i = 0;
 	char c = 0, oldc;
 	while(true) {
 		oldc = c;

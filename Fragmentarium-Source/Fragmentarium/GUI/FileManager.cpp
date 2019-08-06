@@ -1,5 +1,5 @@
-#include "FileManager.h"
 #include "../../SyntopiaCore/Exceptions/Exception.h"
+#include "FileManager.h"
 #include <QDebug>
 #include <QDir>
 #include <QImageReader>
@@ -7,10 +7,13 @@
 using namespace SyntopiaCore::Exceptions;
 
 using namespace SyntopiaCore::Logging;
-namespace Fragmentarium {
-namespace GUI {
+namespace Fragmentarium
+{
+namespace GUI
+{
 
-QStringList FileManager::getImageFiles() {
+QStringList FileManager::getImageFiles()
+{
     QStringList extensions;
     QList<QByteArray> a;
     a << "hdr";
@@ -26,9 +29,12 @@ QStringList FileManager::getImageFiles() {
     return getFiles(extensions);
 }
 
-QStringList FileManager::getFiles(QStringList filters) {
+QStringList FileManager::getFiles(QStringList filters)
+{
     QString key = filters.join(";;");
-    if (cachedFilters.contains(key)) return cachedFilters[key];
+    if (cachedFilters.contains(key)) {
+        return cachedFilters[key];
+    }
     QStringList entries;
 
     // Check relative to current file
@@ -47,41 +53,54 @@ QStringList FileManager::getFiles(QStringList filters) {
     return entries;
 }
 
-bool FileManager::fileExists(QString fileName) {
+bool FileManager::fileExists(QString fileName)
+{
     // First check absolute filenames
-    if (QFileInfo(fileName).isAbsolute()) return QFileInfo(fileName).exists();
+    if (QFileInfo(fileName).isAbsolute()) {
+        return QFileInfo(fileName).exists();
+    }
 
     // Check relative to current file
     if (!originalFileName.isEmpty()) {
         QDir d = QFileInfo(originalFileName).absolutePath();
         QString path = d.absoluteFilePath(fileName);
-        if (QFileInfo(path).exists()) return true;
+        if (QFileInfo(path).exists()) {
+            return true;
+        }
     }
 
     // Check relative to files in include path
     foreach (QString p, includePaths) {
         QString path = QDir(p).absoluteFilePath(fileName);
-        if (QFileInfo(path).exists()) return true;
+        if (QFileInfo(path).exists()) {
+            return true;
+        }
     }
 
     return false;
 }
 
-QString FileManager::resolveName(QString fileName) {
+QString FileManager::resolveName(QString fileName)
+{
     return resolveName(fileName, originalFileName);
 }
 
-QString FileManager::resolveName(QString fileName, QString originalFileName) {
+QString FileManager::resolveName(QString fileName, QString originalFileName)
+{
 
         // First check absolute filenames
-        if (QFileInfo(fileName).isAbsolute()) return fileName;
+    if (QFileInfo(fileName).isAbsolute()) {
+        return fileName;
+    }
         QStringList pathsTried;
 
         // Check relative to current file
         if (!originalFileName.isEmpty()) {
             QDir d = QFileInfo(originalFileName).absolutePath();
             QString path = d.absoluteFilePath(fileName);
-            if (QFileInfo(path).exists() && QFileInfo(path).isFile()) return path;
+        if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
+            return path;
+        }
             pathsTried.append(path);
         }
 
@@ -89,7 +108,9 @@ QString FileManager::resolveName(QString fileName, QString originalFileName) {
         foreach (QString p, includePaths) {
             QDir d(p);
             QString path = d.absoluteFilePath(fileName);
-            if (QFileInfo(path).exists() && QFileInfo(path).isFile()) return path;
+        if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
+            return path;
+        }
             pathsTried.append(path);
         }
 
@@ -97,8 +118,7 @@ QString FileManager::resolveName(QString fileName, QString originalFileName) {
         foreach (QString s, pathsTried) {
           INFO(QCoreApplication::translate("FileManager","Tried path: ") + s);
         }
-        throw Exception(QCoreApplication::translate("FileManager","Could not resolve path for file: ") + fileName);
+    throw Exception(QCoreApplication::translate("FileManager", "Could not resolve path for file: ") + fileName);
 }
-}
-}
-
+} // namespace GUI
+} // namespace Fragmentarium

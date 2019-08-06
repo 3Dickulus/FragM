@@ -41,55 +41,53 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include <QtGui>
 #include <QPropertyAnimation>
+#include <QtGui>
 
-class Animation : public QPropertyAnimation {
+class Animation : public QPropertyAnimation
+{
 public:
-    enum PathType {
-        LinearPath,
-        CirclePath,
-        NPathTypes
-    };
-    Animation(QObject *target, const QByteArray &prop)
-        : QPropertyAnimation(target, prop)
+    enum PathType { LinearPath, CirclePath, NPathTypes };
+    Animation ( QObject *target, const QByteArray &prop )
+        : QPropertyAnimation ( target, prop )
     {
         m_pathType = NPathTypes;
         m_path = QPainterPath();
     }
 
-    void setPathType(PathType pathType)
+    void setPathType ( PathType pathType )
     {
-        if (pathType >= NPathTypes)
-            qWarning("Unknown pathType %d", pathType);
+        if ( pathType >= NPathTypes ) {
+            qWarning ( "Unknown pathType %d", pathType );
+        }
 
         m_pathType = pathType;
         m_path = QPainterPath();
     }
 
-    void updateCurrentTime(int currentTime)
+    void updateCurrentTime ( int currentTime )
     {
-        if (m_pathType == CirclePath) {
-            if (m_path.isEmpty()) {
+        if ( m_pathType == CirclePath ) {
+            if ( m_path.isEmpty() ) {
                 QPointF to = endValue().toPointF();
                 QPointF from = startValue().toPointF();
-                m_path.moveTo(from);
-                m_path.addEllipse(QRectF(from, to));
+                m_path.moveTo ( from );
+                m_path.addEllipse ( QRectF ( from, to ) );
             }
             int dura = duration();
-            const qreal progress = ((dura == 0) ? 1 : ((((currentTime - 1) % dura) + 1) / qreal(dura)));
+            const qreal progress = ( ( dura == 0 ) ? 1 : ( ( ( ( currentTime - 1 ) % dura ) + 1 ) / qreal ( dura ) ) );
 
-            qreal easedProgress = easingCurve().valueForProgress(progress);
-            if (easedProgress > 1.0) {
+            qreal easedProgress = easingCurve().valueForProgress ( progress );
+            if ( easedProgress > 1.0 ) {
                 easedProgress -= 1.0;
-            } else if (easedProgress < 0) {
+            } else if ( easedProgress < 0 ) {
                 easedProgress += 1.0;
             }
-            QPointF pt = m_path.pointAtPercent(easedProgress);
-            updateCurrentValue(pt);
-            emit valueChanged(pt);
+            QPointF pt = m_path.pointAtPercent ( easedProgress );
+            updateCurrentValue ( pt );
+            emit valueChanged ( pt );
         } else {
-            QPropertyAnimation::updateCurrentTime(currentTime);
+            QPropertyAnimation::updateCurrentTime ( currentTime );
         }
     }
 

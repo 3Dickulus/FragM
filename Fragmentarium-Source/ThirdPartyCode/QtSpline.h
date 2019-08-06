@@ -40,29 +40,30 @@
 
 #ifndef QTSPLINE_H
 #define QTSPLINE_H
-#include <QtOpenGL>
-#include <QObject>
 #include <QColor>
+#include <QObject>
 #include <QVector3D>
+#include <QtOpenGL>
 
 #include <QDebug>
 
-namespace Fragmentarium {
-namespace GUI {
-
-struct Geometry
+namespace Fragmentarium
 {
+namespace GUI
+{
+
+struct Geometry {
     QVector<QVector3D> vertices;
-    void appendVertex(const QVector3D &a);
+    void appendVertex ( const QVector3D &a );
     void loadArrays() const;
 };
 
 class Patch
 {
 public:
-    Patch(Geometry *);
-    void draw(int n = 0, int p = 0) const;
-    void addVertex(const QVector3D &a);
+    Patch ( Geometry * );
+    void draw ( int n = 0, int p = 0 ) const;
+    void addVertex ( const QVector3D &a );
     GLuint start;
     GLuint count;
     GLfloat pointSize;
@@ -73,26 +74,27 @@ public:
 class QtSpline : public QObject
 {
 public:
-    QtSpline(QOpenGLWidget* parent, int nctrl = 0, int nsegs = 0, QVector3D* cv = 0);
+    QtSpline ( QOpenGLWidget *parent, int nctrl = 0, int nsegs = 0, QVector3D *cv = 0 );
     ~QtSpline();
 
-    void setSplineColor(QColor c) const;
-    void setControlColor(QColor c) const;
-    void drawControlPoints(int n = 0) const;
+    void setSplineColor ( QColor c ) const;
+    void setControlColor ( QColor c ) const;
+    void drawControlPoints ( int n = 0 ) const;
     void drawSplinePoints() const;
 
-    QVector3D getControlPoint(int n);
-    QVector3D getSplinePoint(int n);
-    void setControlPoint(int n, QVector3D* p);
-    void recalc(int nc, int ns, QVector3D *cv);
+    QVector3D getControlPoint ( int n );
+    QVector3D getSplinePoint ( int n );
+    void setControlPoint ( int n, QVector3D *p );
+    void recalc ( int nc, int ns, QVector3D *cv );
+
 private:
-    void buildGeometry(int d, int s, QVector3D* cv);
+    void buildGeometry ( int nctrl, int nsegs, QVector3D *cv );
     QOpenGLWidget *prnt;
     Geometry *geom;
     QList<Patch *> parts;
     int num_c, num_s;
 };
-}
+} // namespace GUI
 
-}
+} // namespace Fragmentarium
 #endif // QTSPLINE_H

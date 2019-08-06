@@ -24,70 +24,73 @@
 #include <QtGui>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsItem>
-#include <QtWidgets/QGraphicsTextItem>
-#include <QtWidgets/QGraphicsRectItem>
 #include <QtWidgets/QGraphicsEllipseItem>
+#include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsItemGroup>
+#include <QtWidgets/QGraphicsRectItem>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsTextItem>
+#include <QtWidgets/QGraphicsView>
 
-#include "ui_TimeLineDialog.h"
 #include "TextEdit.h"
+#include "ui_TimeLineDialog.h"
 
 class MainWindow;
 
-namespace Fragmentarium {
-  namespace GUI {
-    
- class TimeLineDialog : public QDialog
-    {
-      Q_OBJECT
-    public:
-      TimeLineDialog(Fragmentarium::GUI::MainWindow* parent);
-      ~TimeLineDialog();
-    public slots:
-      
-    protected slots:
-      void customContextMenuRequested(QPoint);
-      void itemChange(const QList< QRectF >& region);
-      virtual void mousePressEvent(QMouseEvent *ev);
+namespace Fragmentarium
+{
+namespace GUI
+{
 
-    private slots:
-      void selectionChange();
-      void readTimeLineSettings();
-      void saveTimeLineSettings();
-      void restoreTimeLineSettings();
-      void renderKeyframeMap();
-      void renderEasingCurveMap();
-      QPainterPath createCurve(QSize sz, int type);
-    private:
-      Ui::TimeLineDialog m_ui;
-      MainWindow* mainWin;
-      QBrush greenBrush;
-      QBrush grayBrush;
-      QBrush redBrush;
-      QPen outlinePen;
-      int frames;
-      int keyframeCount;
-      QStringList uSettings;
-      int vCount;
-      int yOff;
-      int renderFPS;
-      // TimeLineScene
-      QGraphicsScene *scene;
-      
-      QMap<int, QGraphicsTextItem *> textMap; // easingcurve labels
-      QMap<int, QGraphicsRectItem*> rectMap;  // keyframe markers
-      QMap<int, QGraphicsPathItem*> pathMap;  // easingcurve path representation
-      QMap<int, QGraphicsItemGroup*> eGroupMap; // easingcurve group
-      
-      QMap<int, KeyFrameInfo*> keyframeMap;
-      QMap<int, EasingInfo*> easingMap;
-      QRectF sceneMaxRect;
-    };
-    
-  }
-}
+class TimeLineDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    TimeLineDialog ( Fragmentarium::GUI::MainWindow *parent );
+    ~TimeLineDialog();
+public slots:
+
+protected slots:
+    void customContextMenuRequested ( QPoint p );
+    void itemChange ( const QList<QRectF> &region );
+    virtual void mousePressEvent ( QMouseEvent *ev );
+
+private slots:
+    void selectionChange();
+    void readTimeLineSettings();
+    void saveTimeLineSettings();
+    void restoreTimeLineSettings();
+    void renderKeyframeMap();
+    void renderEasingCurveMap();
+    QPainterPath createCurve ( QSize sz, int t );
+
+private:
+    Ui::TimeLineDialog m_ui;
+    MainWindow *mainWin;
+    QBrush greenBrush;
+    QBrush grayBrush;
+    QBrush redBrush;
+    QPen outlinePen;
+    int frames;
+    int keyframeCount;
+    QStringList uSettings;
+    int vCount;
+    int yOff;
+    int renderFPS;
+    // TimeLineScene
+    QGraphicsScene *scene;
+
+    QMap<int, QGraphicsTextItem *> textMap;    // easingcurve labels
+    QMap<int, QGraphicsRectItem *> rectMap;    // keyframe markers
+    QMap<int, QGraphicsPathItem *> pathMap;    // easingcurve path representation
+    QMap<int, QGraphicsItemGroup *> eGroupMap; // easingcurve group
+
+    QMap<int, KeyFrameInfo *> keyframeMap;
+    QMap<int, EasingInfo *> easingMap;
+    QRectF sceneMaxRect;
+};
+
+} // namespace GUI
+} // namespace Fragmentarium
 
 #endif

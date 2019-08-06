@@ -1,9 +1,9 @@
-#include <QtCore>
-#include <QLocale>
 #include <QApplication>
-#include <QSplashScreen>
-#include <QDir>
 #include <QBitmap>
+#include <QDir>
+#include <QLocale>
+#include <QSplashScreen>
+#include <QtCore>
 
 #include "Fragmentarium/GUI/MainWindow.h"
 
@@ -19,7 +19,7 @@
 #else
 
 // segfault signal handler prints a nicer message
-#include <signal.h>
+#include <csignal>
 #include <unistd.h>
 void segv_handler(int s)
 {
@@ -41,8 +41,7 @@ void segv_handler(int s)
         "If you have an account at github you can post in <https://github.com/3Dickulus/FragM/issues>\n"
         "You can also find discussions about Fragmentarium at <https://fractalforums.org/fragmentarium/17>\n"
         "or...\n"
-        "You may email errors to 3dickulus at gmail dot com\n"
-        ;
+        "You may email errors to 3dickulus at gmail dot com\n";
     write(2 /* stderr FD */, message, strlen(message));
     abort();
 }
@@ -67,7 +66,6 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-
     QApplication::setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
 
     /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
@@ -76,33 +74,39 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName(QString("Syntopia_Software"));
     QApplication::setApplicationName(QString("Fragmentarium"));
 
-    QApplication *app = new QApplication(argc, argv);
+    auto *app = new QApplication(argc, argv);
+    app->setObjectName("Application");
 
+// this should translate all of the generic default widget texts to local language
+    QTranslator qtTranslator;
+    qtTranslator.load(QString("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app->installTranslator(&qtTranslator);
+
+// QFile f("Misc/style.qss");
+// if (!f.exists())
+// {
+//     printf("Unable to set stylesheet, file not found\n");
+// }
+// else
+// {
+//     f.open(QFile::ReadOnly | QFile::Text);
+//     QTextStream ts(&f);
+//     app->setStyleSheet(ts.readAll());
+// }
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
-    app->setApplicationVersion(mainWin->getVersion());
-
-    // this should translate all of the generic default widget texts
-    QTranslator qtTranslator;
-    qtTranslator.load(QString("qt_") + QLocale::system().name(),
-                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
 
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.setApplicationDescription(
-        QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.")
-    );
+    parser.setApplicationDescription(QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics."));
 
-    parser.addPositionalArgument(QString("filename.frag"), app->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]") );
+    parser.addPositionalArgument(QString("filename.frag"), app->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]"));
 
-//     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
-//     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
-//     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
+    //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
+    //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
+    //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
     parser.addOption(QCommandLineOption (QString("verbose"),
                                          app->translate("main", "sets reporting of shader variables to console."),
                                          QString(""),
@@ -156,23 +160,29 @@ int main(int argc, char *argv[])
     if(parser.isSet(QString("language"))) {
         langArg = parser.value(QString("language"));
         if( langArg != QString("en") ) {
-            if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg ))
+            if (myappTranslator.load(QString("Languages/Fragmentarium_") + langArg)) {
                 app->installTranslator(&myappTranslator);
-            else
+            } else {
                 qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
+            }
         }
-    }
-    else {
+    } else {
         langArg = QLocale::system().name().split("_").at(0);
         if( langArg != QString("en") ) {
-            if(myappTranslator.load(QString("Languages/Fragmentarium_") + langArg))
+            if (myappTranslator.load(QString("Languages/Fragmentarium_") + langArg)) {
                 app->installTranslator(&myappTranslator);
-            else
+            } else {
                 qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
+            }
         }
     }
 
-    mainWin->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin->setObjectName("MainWindow");
+    app->setApplicationVersion(mainWin->getVersion());
+
+    mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;
 
     mainWin->setVerbose(parser.isSet("verbose"));
@@ -183,23 +193,25 @@ int main(int argc, char *argv[])
     splash.setMask(pixmap.mask());
     QStringList openFiles = QSettings().value("openFiles").toStringList();
 
-    if(!parser.isSet("script") || openFiles.isEmpty()) splash.show();
+    if (!parser.isSet("script") || openFiles.isEmpty()) {
+        splash.show();
+    }
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
     /// load a single frag from comandline or load the default bulb
     if( !fragFile.isEmpty() ) {
         mainWin->loadFragFile( app->arguments().last() );
-    }
-    else if(openFiles.count() > 0) {
+    } else if (openFiles.count() > 0) {
 
         splash.finish(mainWin);
         while(openFiles.count() > 0) {
             mainWin->loadFragFile(openFiles.first());
             openFiles.removeFirst();
         }
-    } else
+    } else {
         mainWin->loadFragFile(QDir(mainWin->getExamplesDir()).absoluteFilePath("Historical 3D Fractals/Mandelbulb.frag"));
+    }
 
     // needs here on windows or script control gets priority over gui refresh
     app->processEvents();
@@ -223,10 +235,18 @@ int main(int argc, char *argv[])
                     app->sync();
                     // everything is now in place and ready for script control
                     mainWin->runScript( text );
-                } else qDebug() << "Script file " << filename << " open failed!";
-            } else qDebug() << "Script file " << filename << " does not exist!";
-        } else qDebug() << "Script file requires .fqs extention!";
-    } else mainWin->setSplashWidgetTimeout(&splash);
+                } else {
+                    qDebug() << "Script file " << filename << " open failed!";
+                }
+            } else {
+                qDebug() << "Script file " << filename << " does not exist!";
+            }
+        } else {
+            qDebug() << "Script file requires .fqs extention!";
+        }
+    } else {
+        mainWin->setSplashWidgetTimeout(&splash);
+    }
 
 /// BEGIN 3DTexture
 //     if(app.arguments().contains("-voxel")) {
@@ -235,7 +255,8 @@ int main(int argc, char *argv[])
 //       if(filename.endsWith(".exr")) {
 //           mainWin->setVoxelFile(filename);
 //           qDebug() << "EXR Voxel file name set.";
-//       } else qDebug() << "Wrong file type, should be an EXR file that contains sub-images.";
+//       } else qDebug() << "Wrong file type, should be an EXR file that
+//       contains sub-images.";
 //     }
 //
 //     if(app.arguments().contains("-obj")) {

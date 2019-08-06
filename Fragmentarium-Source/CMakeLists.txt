@@ -6,6 +6,8 @@ IF ( APPLE )
     cmake_policy(SET CMP0071 NEW)
 ENDIF ()
 
+set (CMAKE_CXX_STANDARD 11)
+
 IF(UNIX AND NOT APPLE)
     # for find_package ( OpenEXR REQUIRED )
     find_package(ECM REQUIRED NO_MODULE)
@@ -18,17 +20,14 @@ ENDIF ()
 
 set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )
+set ( CMAKE_AUTOUIC ON)
+set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 find_package ( OpenGL REQUIRED )
-find_package ( Qt5Core REQUIRED )
-find_package ( Qt5OpenGL REQUIRED )
-find_package ( Qt5Widgets REQUIRED )
-find_package ( Qt5Gui REQUIRED )
-find_package ( Qt5Xml REQUIRED )
-find_package ( Qt5Script REQUIRED )
-find_package ( Qt5ScriptTools REQUIRED )
-find_package ( Qt5LinguistTools )
+find_package ( Qt5LinguistTools REQUIRED )
+
+find_package ( Qt5 COMPONENTS Core OpenGL Widgets Gui Xml Script ScriptTools REQUIRED )
 
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
 
@@ -76,7 +75,7 @@ IF ( USE_OPEN_EXR )
             IexMath
             IlmThread
         )
-        
+
         set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
     ENDIF ()
 
@@ -84,7 +83,7 @@ IF ( USE_OPEN_EXR )
 
     IF ( MINGW )
         set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
-    
+
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
         set( OpenEXR_LIBS
@@ -102,12 +101,6 @@ IF ( USE_OPEN_EXR )
     ENDIF ()
 
     IF(APPLE)
-#       FIND_PATH(OpenEXR_INCLUDE_DIRS NAMES OpenEXR/ImfVersion.h )
-#       FIND_PATH(Ilmbase_INCLUDE_DIRS NAMES OpenEXR/half.h )
-
-#         FIND_PATH(OpenEXR_LIB_DIR NAMES lib/libIlmImf.dylib)
-#         FIND_PATH(Ilmbase_LIB_DIR NAMES lib/libHalf.dylib)
-
         set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.3.0/lib )
         set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.3.0/lib )
 
@@ -122,16 +115,16 @@ IF ( USE_OPEN_EXR )
             IexMath
             IlmThread
         )
-        
+
         set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
 
         ADD_DEFINITIONS ( -pthread )
 
     ENDIF ()
-  
+
 ENDIF (USE_OPEN_EXR)
 
-SET ( CMAKE_CXX_FLAGS " -std=c++11 -Wall -Wextra " )
+SET ( CMAKE_CXX_FLAGS " -Wall -Wextra " )
 
 # add_definitions ( -Wall )
 
@@ -220,42 +213,49 @@ set ( Fragmentarium_MOCS
 
 QT5_WRAP_CPP(MOCS ${Fragmentarium_MOCS})
 
-set(QM)
+set(QM_FILES)
 IF(Qt5LinguistTools_FOUND)
-    IF(NOT Qt5_LUPDATE_EXECUTABLE)
-        MESSAGE(WARNING "Qt's lupdate not found.")
-    ENDIF()
-    IF(NOT Qt5_LRELEASE_EXECUTABLE)
-        MESSAGE(WARNING "Qt's lrelease not found.")
-    ENDIF()
-    # Translation files
-    IF(Qt5_LUPDATE_EXECUTABLE AND Qt5_LRELEASE_EXECUTABLE)
-        option (UPDATE_TRANSLATIONS "Update *.ts translation files from source files." OFF)
-        if (UPDATE_TRANSLATIONS)
-          MESSAGE("Creating language files...")
-          set(FILES_TO_TRANSLATE ${Fragmentarium_HDRS} ${Fragmentarium_SRCS} ${UIS})
-          qt5_create_translation(QM ${FILES_TO_TRANSLATE} OPTIONS -no-obsolete -no-ui-lines)
-        else ()
-          MESSAGE("Adding language files...")
-          file (GLOB TRANSLATIONS Translations/*.ts)
-          qt5_add_translation(QM ${TRANSLATIONS})
-        endif () 
-        #add_custom_target (translations_target DEPENDS ${QM})
-    ENDIF()
+    OPTION(UPDATE_TRANSLATIONS ON)
     # prevent the generated files from being deleted during make clean
     set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM true)
+
+    add_custom_target(translations)
+    file (GLOB TS_FILES Translations/*.ts)
+    IF(UPDATE_TRANSLATIONS)
+    foreach(_ts_file ${TS_FILES})
+
+        # generate a sensible name for this translation file
+        get_filename_component(_ts_name ${_ts_file} NAME_WE)
+
+        # call lupdate ourselves
+        add_custom_command(
+            OUTPUT "${_ts_file}"
+            DEPENDS ${Fragmentarium_HDRS} ${Fragmentarium_SRCS} ${UIS}
+            COMMAND ${Qt5_LUPDATE_EXECUTABLE} -no-ui-lines -locations relative -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file}
+        )
+
+        # create a target that depends on the generated files
+        add_custom_target(${_ts_name} DEPENDS ${_ts_file})
+
+        # attach the custom target for this ts file to the parent target
+        add_dependencies(translations ${_ts_name})
+    endforeach()
+    ENDIF(UPDATE_TRANSLATIONS)
+
+    # generate qm files
+    qt5_add_translation(QM_FILES ${TS_FILES})
 
 ENDIF(Qt5LinguistTools_FOUND)
 
 IF ( APPLE )
-  add_executable ( ${PROJECT_NAME} MACOSX_BUNDLE ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME} MACOSX_BUNDLE ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( UNIX )
-  add_executable ( ${PROJECT_NAME} ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME} ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
 #   set ( WIN32_EXECUTABLE ON )
-  add_executable ( ${PROJECT_NAME} WIN32 ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME} WIN32 ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 #   set ( WIN32_EXECUTABLE OFF )
-  add_executable ( ${PROJECT_NAME}-console ${QM} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
+  add_executable ( ${PROJECT_NAME}-console ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
 target_link_libraries ( ${PROJECT_NAME} ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
@@ -317,11 +317,7 @@ DESTINATION
     ${DESTINATION_NAME}
 )
 
-INSTALL ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_de.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_en.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_nl.qm
-    ${CMAKE_CURRENT_BINARY_DIR}/Fragmentarium_ru.qm
+INSTALL ( FILES ${QM_FILES}
 DESTINATION
     ${DESTINATION_NAME}/Languages
 )
@@ -331,7 +327,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
 
     SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-    
+
     IF(UNIX AND NOT APPLE)
 
         IF(BUILD_LINUX_RPM)

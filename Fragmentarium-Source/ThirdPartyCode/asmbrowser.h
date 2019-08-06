@@ -20,18 +20,18 @@
 #ifndef ASMBROWSER_H
 #define ASMBROWSER_H
 
-#include <QWidget>
-#include <QTextEdit>
 #include <QPushButton>
+#include <QTextEdit>
+#include <QWidget>
 
 class AsmBrowser : public QWidget
 {
     Q_OBJECT
 
 public:
-    AsmBrowser(const QStringList &page);
+    AsmBrowser ( const QStringList &page );
 
-    static void showPage(const QStringList& page, const QString& title);
+    static void showPage ( const QStringList &page, const QString &title );
 public slots:
     void saveAsm();
 
@@ -42,4 +42,3 @@ private:
 };
 
 #endif // ASMBROWSER_H
-

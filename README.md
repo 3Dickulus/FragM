@@ -67,13 +67,13 @@ The above will install in /home/username/Fragmentarium folder with includes and 
 To install for all users change -DCMAKE_INSTALL_PREFIX=~/ to -DCMAKE_INSTALL_PREFIX=/usr/local and use sudo make install
 
 # Pre-built packages
-You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.0 (rpm), Windows (7z) and a Linux AppImage at https://github.com/3Dickulus/FragM/releases/
+You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.0 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
 ## Notes
 The deb and rpm packages should take care of any dependencies when installing via **apt / synaptic** or **yast / zypper**.
 
 The Windows .7z file is an archive with everything FragM needs to run, includes all of the required Qt and runtime DLLs, this can be extracted and placed anywhere.
 
-The Linux AppImage file was built on SuSE Leap 15.0. All support files are in the image and may not work as expected, saving, running fqScript, etc. more for testing really, the best version will be the one you compile yourself because it will be optimized for your hardware setup.
+The best version will be the one you compile yourself because it will be optimized for your hardware setup.
 
 And finally, please see the FAQ http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/ and https://fractalforums.org/fragmentarium/17 if you have any problems.
 If you don't find an answer to your problem/question you can post on the Fragmentarium board at FractalForums.org or raise an issue here on github in the FragM repo.

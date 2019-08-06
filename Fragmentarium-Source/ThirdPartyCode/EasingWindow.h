@@ -39,96 +39,168 @@
 **
 ****************************************************************************/
 
-
-#include <QtGui>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QGraphicsPixmapItem>
+#include <QtGui>
 
-#include "ui_EasingDialog.h"
 #include "EasingAnimation.h"
+#include "ui_EasingDialog.h"
 
-namespace Fragmentarium {
-    namespace GUI {
+namespace Fragmentarium
+{
+namespace GUI
+{
 
-	class PixmapItem : public QObject, public QGraphicsPixmapItem
-	{
-	    Q_OBJECT
-	    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-	public:
-	    PixmapItem(const QPixmap &pix) : QGraphicsPixmapItem(pix)
-	    {
-	    }
-	};
+class PixmapItem : public QObject, public QGraphicsPixmapItem
+{
+    Q_OBJECT
+    Q_PROPERTY ( QPointF pos READ pos WRITE setPos )
+public:
+    PixmapItem ( const QPixmap &pix ) : QGraphicsPixmapItem ( pix ) {}
+};
 
-	class EasingWindow : public QDialog {
-	    Q_OBJECT
-	public:
-	    EasingWindow(QWidget* parent, double min, double max, double start, int animLength, int loops = 1, int pp = 0);
+class EasingWindow : public QDialog
+{
+    Q_OBJECT
+public:
+    EasingWindow ( QWidget *parent, double min, double max, double start,
+                   int animLength, int loops = 1, int pp = 0 );
 
-	    QEasingCurve curve;
+    QEasingCurve curve;
 
-	    double getPeriod(){return period;}
-	    double getAmplitude(){return amplitude;}
-	    double getOvershoot(){return overshoot;}
-	    double getStartValue(){ return startVal; }
-	    double getFinishValue(){ return finishVal; }
-	    int getFirstFrame(){ return firstFrame; }
-	    int getLastFrame(){ return lastFrame; }
-	    int getDuration(){ return (lastFrame - firstFrame); }
-	    int getLoopCount(){ return loopCount; }
-	    int getPong(){ return pong; }
-
-	    void setStartValue(double v){m_ui.startSpinBox->setValue(v);startChanged(v);}
-	    void setFinishValue(double v){m_ui.finishSpinBox->setValue(v);finishChanged(v);}
-	    void setFirstFrame(int f){m_ui.firstframeSpinBox->setValue(f);firstChanged(f);}
-	    void setLastFrame(int f){m_ui.lastframeSpinBox->setValue(f);lastChanged(f);}
-	    void setCurve(int c){m_ui.easingCurvePicker->setCurrentRow(c);curveChanged(c);}
-	    void setAmplitude(double a ){m_ui.amplitudeSpinBox->setValue(a);amplitudeChanged(a);}
-	    void setPeriod(double p){m_ui.periodSpinBox->setValue(p);periodChanged(p);}
-	    void setOvershoot(double o){m_ui.overshootSpinBox->setValue(o);overshootChanged(o);}
-	    void setAnimLength( int len);
-	    void setValueRange( QPair<double,double>l);
-	    void setLoopCount( int loops ){m_ui.loopSpinBox->setValue(loops); }
-	    void setPong(int pp){ pong = pp; }
-
-	    void setTitle(QString t){ setWindowTitle(t); }
-
-	private slots:
-	    void curveChanged(int row);
-	    void pathChanged(int index);
-	    void periodChanged(double);
-	    void amplitudeChanged(double);
-	    void overshootChanged(double);
-	    void startChanged(double v);
-	    void finishChanged(double v);
-	    void firstChanged(int f);
-	    void loopChanged(int f);
-	    void lastChanged(int f);
-	    void directionChange();
-	    void frameRangeSliderChanged(QPair<int,int>fR);
-	    void valueRangeSliderChanged(QPair<double,double>vA);
-
-	private:
-	    void createCurveIcons();
-	    void startAnimation();
-
-	    Ui::EasingDialog m_ui;
-	    QGraphicsScene m_scene;
-	    PixmapItem *m_item;
-	    Animation *m_anim;
-	    QSize m_iconSize;
-
-	    double startVal = 0.0;
-            double finishVal = 0.0;
-            int firstFrame = 0;
-            int lastFrame = 0;
-            double period = 0.0;
-            double amplitude = 0.0;
-            double overshoot = 0.0;
-            int animFrames = 0;
-            int loopCount = 0;
-            int pong = 0;
-	};
+    double getPeriod()
+    {
+        return period;
     }
-}
+    double getAmplitude()
+    {
+        return amplitude;
+    }
+    double getOvershoot()
+    {
+        return overshoot;
+    }
+    double getStartValue()
+    {
+        return startVal;
+    }
+    double getFinishValue()
+    {
+        return finishVal;
+    }
+    int getFirstFrame()
+    {
+        return firstFrame;
+    }
+    int getLastFrame()
+    {
+        return lastFrame;
+    }
+    int getDuration()
+    {
+        return ( lastFrame - firstFrame );
+    }
+    int getLoopCount()
+    {
+        return loopCount;
+    }
+    int getPong()
+    {
+        return pong;
+    }
+
+    void setStartValue ( double v )
+    {
+        m_ui.startSpinBox->setValue ( v );
+        startChanged ( v );
+    }
+    void setFinishValue ( double v )
+    {
+        m_ui.finishSpinBox->setValue ( v );
+        finishChanged ( v );
+    }
+    void setFirstFrame ( int f )
+    {
+        m_ui.firstframeSpinBox->setValue ( f );
+        firstChanged ( f );
+    }
+    void setLastFrame ( int f )
+    {
+        m_ui.lastframeSpinBox->setValue ( f );
+        lastChanged ( f );
+    }
+    void setCurve ( int c )
+    {
+        m_ui.easingCurvePicker->setCurrentRow ( c );
+        curveChanged ( c );
+    }
+    void setAmplitude ( double a )
+    {
+        m_ui.amplitudeSpinBox->setValue ( a );
+        amplitudeChanged ( a );
+    }
+    void setPeriod ( double p )
+    {
+        m_ui.periodSpinBox->setValue ( p );
+        periodChanged ( p );
+    }
+    void setOvershoot ( double o )
+    {
+        m_ui.overshootSpinBox->setValue ( o );
+        overshootChanged ( o );
+    }
+    void setAnimLength ( int len );
+    void setValueRange ( QPair<double, double> vA );
+    void setLoopCount ( int loops )
+    {
+        m_ui.loopSpinBox->setValue ( loops );
+    }
+    void setPong ( int pp )
+    {
+        pong = pp;
+    }
+
+    void setTitle ( QString t )
+    {
+        setWindowTitle ( t );
+    }
+
+private slots:
+    void curveChanged ( int row );
+    void pathChanged ( int index );
+    void periodChanged ( double );
+    void amplitudeChanged ( double );
+    void overshootChanged ( double );
+    void startChanged ( double v );
+    void finishChanged ( double v );
+    void firstChanged ( int f );
+    void loopChanged ( int loop );
+    void lastChanged ( int f );
+    void directionChange();
+    void frameRangeSliderChanged ( QPair<int, int> fR );
+    void valueRangeSliderChanged ( QPair<double, double> vA );
+
+private:
+    void createCurveIcons();
+    void startAnimation();
+
+    Ui::EasingDialog m_ui;
+    QGraphicsScene m_scene;
+    PixmapItem *m_item;
+    Animation *m_anim;
+    QSize m_iconSize;
+
+    double startVal = 0.0;
+    double finishVal = 0.0;
+    int firstFrame = 0;
+    int lastFrame = 0;
+    double period = 0.0;
+    double amplitude = 0.0;
+    double overshoot = 0.0;
+    int animFrames = 0;
+    int loopCount = 0;
+    int pong = 0;
+};
+} // namespace GUI
+} // namespace Fragmentarium

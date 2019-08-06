@@ -4,27 +4,27 @@
 <context>
     <name>AsmBrowser</name>
     <message>
-        <location filename="ThirdPartyCode/asmbrowser.cpp" line="36"/>
+        <location filename="../ThirdPartyCode/asmbrowser.cpp" line="+35"/>
         <source>&amp;Save</source>
         <translation>&amp;Opslaan</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/asmbrowser.cpp" line="37"/>
+        <location line="+1"/>
         <source>Close</source>
         <translation>Sluiten</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/asmbrowser.cpp" line="75"/>
+        <location line="+38"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/asmbrowser.cpp" line="81"/>
+        <location line="+7"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/asmbrowser.cpp" line="82"/>
+        <location line="+1"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
@@ -34,25 +34,25 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="377"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+472"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Camera: Klik in het 2D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="388"/>
+        <location line="+16"/>
         <source>Could not find Center interface widget</source>
         <translation>Kan het Center-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="390"/>
+        <location line="+7"/>
         <source>Could not find Zoom interface widget</source>
         <translation>Kan het Zoom-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="416"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="422"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="428"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="434"/>
+        <location line="+33"/>
+        <location line="+6"/>
+        <location line="+6"/>
+        <location line="+6"/>
         <source>Step size: %1</source>
         <translation>Stapgrootte: %1</translation>
     </message>
@@ -60,37 +60,37 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="63"/>
+        <location line="-457"/>
         <source>Could not find Eye interface widget</source>
         <translation>Kan het Eye-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="65"/>
+        <location line="+4"/>
         <source>Could not find Target interface widget</source>
         <translation>Kan het Target-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="67"/>
+        <location line="+4"/>
         <source>Could not find Up interface widget</source>
         <translation>Kan het Up-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="69"/>
+        <location line="+4"/>
         <source>Could not find FOV interface widget</source>
         <translation>Kan het FOV-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="73"/>
+        <location line="+6"/>
         <source>Camera: Use W/S to fly. 1/3 adjusts speed. Q/E rolls. Click on 3D window for key focus. See Help Menu for more.</source>
         <translation>Camera: Gebruik W/S om te vliegen. 1/3 past de snelheid aan. Q/E rolt. Klik in het 3D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="95"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="101"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="107"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="113"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="314"/>
-        <location filename="Fragmentarium/GUI/CameraControl.cpp" line="318"/>
+        <location line="+29"/>
+        <location line="+6"/>
+        <location line="+6"/>
+        <location line="+6"/>
+        <location line="+225"/>
+        <location line="+4"/>
         <source>Step size: %1</source>
         <translation>Stapgrootte: %1</translation>
     </message>
@@ -98,122 +98,146 @@
 <context>
     <name>EasingDialog</name>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location filename="../ThirdPartyCode/EasingDialog.ui"/>
+        <location filename="../build/ui_EasingDialog.h" line="+384"/>
         <source>Easing curves</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Path type (view only)</source>
         <translation>Padtype (read-only)</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Line</source>
         <translation>Lijn</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Circle</source>
         <translation>Cirkel</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Properties</source>
         <translation>Eigenschappen</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Period</source>
         <translation>Frequentie</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Amplitude</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Overshoot</source>
         <translation>Overschrijding</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Settings</source>
         <translation>Instellingen</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Minimum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>0.0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Maximum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>1.0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value Start</source>
         <translation>Startwaarde</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value Fin</source>
         <translation>Eindwaarde</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frame In</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frame Out</source>
         <translation>Frame Uit</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Loops</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Ping</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Pong</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Total</source>
         <translation>Totaal</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>00000</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value</source>
         <translation>Waarde</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/EasingDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frames</source>
         <translation></translation>
     </message>
@@ -221,51 +245,53 @@
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="Fragmentarium/GUI/FileManager.cpp" line="98"/>
+        <location filename="../Fragmentarium/GUI/FileManager.cpp" line="+119"/>
         <source>Tried path: </source>
         <translation>Pad geprobeerd: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/FileManager.cpp" line="100"/>
+        <location line="+2"/>
         <source>Could not resolve path for file: </source>
         <translation>Kan pad niet vinden naar bestand: </translation>
     </message>
 </context>
 <context>
-    <name>Fragmentarium::GUI::ColorChooser</name>
-    <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.h" line="172"/>
-        <source>Choose color</source>
-        <translation>Kies kleur</translation>
-    </message>
-</context>
-<context>
     <name>Fragmentarium::GUI::ComboSlider</name>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.h" line="79"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+94"/>
         <source>Slider Step Multiplier</source>
-        <translation>Vermenigvuldiger voor schruifregelaarstap</translation>
+        <translation>Schuifstapvermenigvuldiger</translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>Clamping</source>
+        <translation>Klemmende</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>to min/max range!</source>
+        <translation>naar min/max bereik!</translation>
     </message>
 </context>
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="126"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+114"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Update-timer van de display ingesteld op %1 ms (max %2 FPS).</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="168"/>
+        <location line="+57"/>
         <source>Unknown camera type: </source>
         <translation>Onbekend cameratype: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="187"/>
+        <location line="+19"/>
         <source>Unknown buffertype requested: </source>
         <translation>Verzoek om onbekend buffertype: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="187"/>
+        <location line="+0"/>
         <source>.
  Type must be: NONE, RGBA8, RGBA16, RGBA16F, RGBA32F
 Initialized as GL_RGBA8</source>
@@ -274,280 +300,250 @@ Initialized as GL_RGBA8</source>
 Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="192"/>
+        <location line="+5"/>
         <source>Created front and back buffers as </source>
         <translation>Front- en backbuffers aangemaakt als </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="195"/>
+        <location line="+3"/>
         <source>Maximum texture size: %1x%1</source>
         <translation>Maximale textuurgrootte: %1x%1</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="308"/>
+        <location line="+133"/>
         <source>Asked gpu for %1 mip-map levels.</source>
         <translation>Bij GPU %1 mip-map-levels aangevraagd.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="309"/>
+        <location line="+1"/>
         <source>GPU returned %1 mip-map levels.</source>
         <translation>GPU geeft %1 mip-map-levels.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="323"/>
+        <location line="+16"/>
         <source>Asked gpu for %1 anisotropic filter.</source>
         <translation>Bij GPU %1 anisotropisch filter aangevraagd.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="324"/>
+        <location line="+1"/>
         <source>GPU returned %1 anisotropic filter.</source>
         <translation>GPU geeft %1 anisotropisch filter.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="348"/>
+        <location line="+25"/>
         <source>Unable to parse TexParameter key: </source>
         <translation>Kan TexParameter-sleutel niet parsen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="370"/>
+        <location line="+22"/>
         <source>Unable to parse TexParameter value: </source>
         <translation>Kan TexParameter-waarde niet parsen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="436"/>
+        <location line="+124"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="441"/>
+        <location line="+5"/>
         <source>Could not create vertex shader: </source>
         <translation>Kon vertex shader niet aanmaken: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="446"/>
+        <location line="+6"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Vertex shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="454"/>
+        <location line="+11"/>
         <source>Could not create fragment shader: </source>
         <translation>Kon fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="460"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="475"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="701"/>
+        <location line="+7"/>
+        <location line="+14"/>
+        <location line="+365"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="469"/>
-        <source>Could not link fragment shaders: </source>
-        <translation>Kan fragment shaders niet linken: </translation>
+        <location line="+1049"/>
+        <source>Frame:%1/%2 Time:%3</source>
+        <translation>Omlijsting:%1/%2 Tijd:%3</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="479"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="705"/>
+        <location line="+32"/>
+        <source>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Final Size: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Current&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tile: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Avg sec/tile&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</source>
+        <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
+    </message>
+    <message>
+        <location line="-1441"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="502"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="503"/>
+        <location line="+1"/>
         <source>Use the buffer define, e.g.: &apos;#buffer RGBA8&apos; </source>
         <translation>Gebruik de buffer-define, b.v.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="564"/>
+        <location line="+61"/>
         <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 x %2 is te groot! max %3x%3</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="589"/>
+        <location line="+36"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="616"/>
+        <location line="+134"/>
         <source>Not a valid texture: </source>
         <translation>Geen geldige textuur: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="617"/>
-        <source>Unused sampler2D uniform: </source>
-        <translation>Ongebruikt sampler2D-uniform: </translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="629"/>
-        <source>Removing texture from cache: </source>
-        <translation>Textuur verwijderen uit cache: </translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="639"/>
-        <source>Removing unused texture from cache: </source>
-        <translation>Ongebruikte textuur verwijderen uit cache: </translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="663"/>
-        <source>No buffer shader vertex shader found!</source>
-        <translation>Geen buffer shader vertex shader gevonden!</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="668"/>
+        <location line="+64"/>
         <source>Could not create buffer vertex shader: </source>
         <translation>Kon buffer vertex shader niet aanmaken: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="673"/>
+        <location line="+6"/>
         <source>Buffer vertex shader compiled with warnings: </source>
         <translation>Buffer vertex shader gecompileerd met waarschuwingen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="681"/>
+        <location line="+11"/>
         <source>Could not create buffer fragment shader: </source>
         <translation>Kon buffer fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="686"/>
+        <location line="+6"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Buffer fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="695"/>
+        <location line="+12"/>
         <source>Could not link buffershader: </source>
         <translation>Kan buffer shader niet linken: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="787"/>
+        <location line="+92"/>
         <source>FBO Incomplete Error!</source>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1337"/>
+        <location line="+676"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1342"/>
+        <location line="+5"/>
         <source>Non valid FBO - backBuffer</source>
         <translation>Ongeldige FBO - backBuffer</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1349"/>
+        <location line="+7"/>
         <source>BACK BUFFER FAILED!</source>
         <translation>BACKBUFFER MISLUKT!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1356"/>
+        <location line="+7"/>
         <source>PREVIEW BUFFER FAILED!</source>
         <translation>PREVIEWBUFFER MISLUKT!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1371"/>
+        <location line="+58"/>
         <source>Failed to bind FBO</source>
         <translation>Kan FBO niet verbinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1378"/>
+        <location line="+7"/>
         <source>Failed to release FBO</source>
         <translation>Kan FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1387"/>
+        <location line="+11"/>
         <source>Failed to bind target buffer</source>
         <translation>Kan target buffer niet verbinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1414"/>
+        <location line="-45"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Geen frontbuffer-sampler gevonden in buffershader. Dit is vreemd.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1455"/>
+        <location line="+90"/>
         <source>Failed to release target buffer</source>
         <translation>Kon target buffer niet vrijgeven</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1490"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1553"/>
+        <location line="+46"/>
+        <location line="+96"/>
         <source>Failed to bind hiresBuffer FBO</source>
         <translation>Kon hiresBuffer FBO niet verbinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1497"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1591"/>
+        <location line="-125"/>
+        <location line="+39"/>
+        <location line="+147"/>
         <source>Failed to release hiresBuffer FBO</source>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1502"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1544"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1617"/>
+        <location line="-1477"/>
+        <source>Could not link vertex + fragment shader: </source>
+        <translation>Kan vertex + fragmentshader niet koppelen: </translation>
+    </message>
+    <message>
+        <location line="+270"/>
+        <source>Unused sampler uniform: </source>
+        <translation>Ongebruikt monstertrekkeruniform: </translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source>No buffershader vertex shader found!</source>
+        <translation>Geen shader-hoekpuntshader gevonden!</translation>
+    </message>
+    <message>
+        <location line="+1010"/>
+        <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1508"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1550"/>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1623"/>
+        <location line="-30"/>
+        <location line="+38"/>
         <source>Failed to release previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1541"/>
+        <location line="+30"/>
         <source>Failed to create hiresBuffer FBO</source>
         <translation>Kon hiresBuffer FBO niet aanmaken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1568"/>
-        <source>Frame:%1/%2 Time:%3
-Tile:%4.%5/%6 Size:%7
- avg sec/tile:%8 ETA:%9</source>
-        <translation>Frame:%1/%2 Tijd:%3
-Tegel:%4.%5/%6 Afm:%7
- gem sec/tegel:%8 ETA:%9</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1684"/>
+        <location line="+147"/>
         <source>[%1x%2] Aspect=%3</source>
-        <translation></translation>
+        <translation>[%1x%2] Aspect=%3</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1768"/>
-        <source>This video card supports: </source>
-        <translation>Deze grafische kaart ondersteunt: </translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1779"/>
-        <source>Available output formats: </source>
-        <translation>Beschikbare output-formats: </translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1782"/>
-        <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
-        <translation>Autorun is uitgeschakeld! U moet &quot;Build&quot; selecteren en een preset toepassen.</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1783"/>
-        <source>If the preset alters locked variables &quot;Build&quot; will be required again.</source>
-        <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="1998"/>
+        <location line="+250"/>
         <source>Fix me</source>
         <translation>Los op</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="2000"/>
+        <location line="+3"/>
         <source>Easingcurve end frame %1 is greater than maximum %2               &lt;br&gt;&lt;br&gt;Select &lt;b&gt;%3 -&gt; %4&lt;/b&gt; and press &quot;F7&quot;               &lt;br&gt;&lt;br&gt;Or set the &lt;b&gt;animation length&lt;/b&gt; greater than &lt;b&gt;%5&lt;/b&gt;</source>
         <translation>Easing curve van het eindframe %1 is groter dan maximum %2               &lt;br&gt;&lt;br&gt;Select &lt;b&gt;%3 -&gt; %4&lt;/b&gt; en druk &quot;F7&quot;               &lt;br&gt;&lt;br&gt;Of stel de &lt;b&gt;animatielengte&lt;/b&gt; in op groter dan &lt;b&gt;%5&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/DisplayWidget.cpp" line="2004"/>
+        <location line="+8"/>
         <source>Easing Curve Error</source>
         <translation>Easing curve fout</translation>
     </message>
@@ -555,187 +551,178 @@ Tegel:%4.%5/%6 Afm:%7
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="80"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+114"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Commandos</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="106"/>
+        <location line="+26"/>
         <source>Special Uniforms</source>
         <translation>Bijzondere Uniforms</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="120"/>
-        <source>Presets</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="121"/>
+        <location line="+45"/>
         <source>Insert Preset from Current Settings</source>
         <translation>Voeg Preset in uit Huidige Instellingen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="123"/>
+        <location line="-18"/>
         <source>Include (from Preferences Paths)</source>
         <translation>Include (uit Voorkeuren/Paden)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="151"/>
-        <source>There are tabs with unsaved changes.%1
-Continue and loose changes?</source>
-        <translation>Er zijn tabs met onopgeslagen veranderingen.%1
-Doorgaan zonder veranderingen op te slaan?</translation>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.
+%1
+Doorgaan en verliezen veranderen?</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="152"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2730"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="vanished">
+Tip: update acceleratiecurven in voorinstelling
+en opslaan in bestand voor afsluiting.
+</translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <location line="+2691"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="197"/>
+        <location line="-2627"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="198"/>
+        <location line="+1"/>
         <source>Change the name for Preset, KeyFrame or Range</source>
         <translation>Verander de naam van Preset, Keyframe of Range</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="212"/>
+        <location line="+11"/>
         <source>Warning!</source>
         <translation>Waarschuwing!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="212"/>
+        <location line="+0"/>
         <source>Setup some parameter Easing Curves first!</source>
         <translation>Stel eerst een paar parameter-easing curves in!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="213"/>
+        <location line="+1"/>
         <source>%1 Failed!</source>
         <translation>%1 Mislukt!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="224"/>
+        <location line="+12"/>
         <source>Added %1</source>
         <translation>Toegevoegd %1</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="230"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="292"/>
+        <location line="+7"/>
+        <location line="+72"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-bron (*.frag);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="262"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1975"/>
+        <location line="-31"/>
+        <location line="+1513"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Stel de combobox in op &apos;custom-size&apos; om de grootte toe te passen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="270"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="286"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1328"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2378"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2415"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2466"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2822"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2830"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2838"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2846"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2938"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2997"/>
+        <location line="-1504"/>
+        <location line="+16"/>
+        <location line="+932"/>
+        <location line="+1087"/>
+        <location line="+50"/>
+        <location line="+70"/>
+        <location line="+373"/>
+        <location line="+167"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+136"/>
+        <location line="+78"/>
         <source>No open tab</source>
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="294"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1797"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1857"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3194"/>
+        <location line="-2915"/>
+        <location line="+1400"/>
+        <location line="+1736"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="310"/>
+        <location line="-3105"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="313"/>
+        <location line="+3"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, IÃ±igo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</oldsource>
         <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="334"/>
+        <location line="+19"/>
         <source>About Fragmentarium</source>
         <translation>Over Fragmentarium</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="342"/>
-        <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: change camera direction.&lt;/li&gt;&lt;li&gt;Right mousebutton: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mousebutton: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mousebutton: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2/X: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/H: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;T/G: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Aantekening: het 3D-scherm moet de focus van het toetsenbord hebben!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Linker muisknop: verander center.&lt;/li&gt;&lt;li&gt;Rechter muisknop: zoom.&lt;/li&gt;&lt;li&gt;Wiel: zoom&lt;/li&gt;&lt;li&gt;A/D: links/rechts&lt;/li&gt;&lt;li&gt;W/S: op/neer&lt;/li&gt;&lt;li&gt;Q/E: zoom in/uit&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Linker muisknop: verander camerarichting.&lt;/li&gt;&lt;li&gt;Rechter muisknop: beweeg camera in het schermvlak.&lt;/li&gt;&lt;li&gt;Linker+Rechter muisknop: zoom.&lt;/li&gt;&lt;li&gt;Shift+Linker muisknop: roteer object (rond oorsprong).&lt;/li&gt;&lt;li&gt;Shift+Alt+Linker muisknop: roteer object (rond doel).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) reset naar oorsprong (0,0,0)&lt;/li&gt;&lt;li&gt;Wiel: beweeg voorwaards/achterwaards&lt;/li&gt;&lt;li&gt;W/S: beweeg voorwaards/achterwaards.&lt;/li&gt;&lt;li&gt;A/D: beweeg naar links/rechts.&lt;/li&gt;&lt;li&gt;Q/E: rol&lt;/li&gt;&lt;li&gt;1/3: vermeerder/verminder stapgrootte x2&lt;/li&gt;&lt;li&gt;2/X: vermeerder/verminder stapgrootte x10&lt;/li&gt;&lt;li&gt;Shift+Wiel: verander stapgrootte&lt;/li&gt;&lt;li&gt;T/H: beweeg op/neer.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;T/G: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Schuifregelaars&lt;/h2&gt;&lt;p&gt;Wanneer een (float) schuifregelaar aangeklikt wordt door de Rechter Muisknop opent er een input-dialoog voor het instellen van de stapgrootte.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="386"/>
+        <location line="+52"/>
         <source>Mouse and Keyboard Control</source>
         <translation>Muis- en toetsenbordbesturing</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="397"/>
+        <location line="+11"/>
         <source>&lt;h2&gt;General commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Returns the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Opens a new editor tab, loads the named fragment file, initializes default preset,&lt;br&gt;initializes keyframes and easing curves if the file contains these settings.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Returns success or fail.&lt;br&gt;Must be called after altering a locked variable before rendering an image.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt;Algemene commandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Stelt het huidige framenummer in.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Geeft het huidige framenummer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Opent een nieuwe editor-tab, laadt het genoemde fragmentbestand, initialiseert het default preset,&lt;br&gt;initialiseert keyframes en easing curves wanneer het bestand deze instellingen heeft.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Geeft geslaagd of mislukt aan.&lt;br&gt;Moet aangeroepen worden na verandering van een vergrendelde variabele voor het renderen van een afbeelding.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="416"/>
+        <location line="+19"/>
         <source>&lt;h2&gt;Parameter commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String);&lt;/b&gt;&lt;/li&gt;Set a parameter from String in the form of &quot;parameter = value&quot; also accepts parameter file formated string.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, bool);&lt;/b&gt;&lt;/li&gt;Sets a boolean parameter where String is the parameter name and bool is TRUE or FALSE&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, int);&lt;/b&gt;&lt;/li&gt;Sets an integer parameter where String is the parameter name and int is any integer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x);&lt;/b&gt;&lt;/li&gt;Sets a float parameter where String is the parameter name and x is any floating point number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y);&lt;/b&gt;&lt;/li&gt;Sets a float2 parameter where String is the parameter name and x,y are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z);&lt;/b&gt;&lt;/li&gt;Sets a float3 parameter where String is the parameter name and x,y,z are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z, w);&lt;/b&gt;&lt;/li&gt;Sets a float4 parameter where String is the parameter name and x,y,z,w are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;String getParameter(String);&lt;/b&gt;&lt;/li&gt;Returns a string representing the value(s) for the named parameter, user must parse this into usable values.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void applyPresetByName(String);&lt;/b&gt;&lt;/li&gt;Applies the named preset.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt;Parameter-commandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String);&lt;/b&gt;&lt;/li&gt;Stelt een parameter van String in in de vorm van &quot;parameter = waarde&quot;, accepteert ook een door een parameterbestand geformatteerde string.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, bool);&lt;/b&gt;&lt;/li&gt;Stelt een boolean parameter in waar String de parameternaam is en bool is TRUE of FALSE&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, int);&lt;/b&gt;&lt;/li&gt;Stelt een integer parameter in waar String de parameternaam is en int een willekeurige integer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x);&lt;/b&gt;&lt;/li&gt;Stelt een float parameter in waar String de parameternaam is en x een willekeurig floating point nummer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y);&lt;/b&gt;&lt;/li&gt;Stelt een float2 parameter in waar String de parameternaam is en x,y willekeurige floating point nummers zijn.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z);&lt;/b&gt;&lt;/li&gt;Stelt een float3 parameter in waar String de parameternaam is en x,y,z willekeurige floating point nummers zijn.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z, w);&lt;/b&gt;&lt;/li&gt;Stelt een float4 parameter in waar String de parameternaam is en x,y,z,w willekeurige floating point nummers zijn.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;String getParameter(String);&lt;/b&gt;&lt;/li&gt;Geeft een string die de waarde(s) voor de genoemde parameter representeert, de gebruiker moet deze parsen naar bruikbare waarden.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void applyPresetByName(String);&lt;/b&gt;&lt;/li&gt;Past het genoemde preset toe.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="440"/>
-        <source>&lt;h2&gt;Hires image and animation dialog commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Sets the total animation duration in seconds.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Sets the tile width and height.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Sets the number of row and column tiles, this value squared = total tiles.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Sets the number of frames to accumulate.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Sets the filename for saved image,&lt;br&gt;if script has total control this must be set by the script for every frame,&lt;br&gt;if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Sets the frames per second for rendering.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the start frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the end frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE sets animation to script control exclusively.&lt;br&gt;TRUE enables control from keyframes and easing curves.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE will preview frames in a window on the desktop instead of saving image files.&lt;br&gt;WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Hires afbeeldings-en animatiedialoogcommandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Stelt de totale duur van de animatie in in seconden.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Stelt breedte en hoogte in.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Stelt het aantal rijen en kolommen in, deze waarden geven vermenigvuldigd het totaal aantal tegels weer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Stelt het te verzamelen aantal frames in.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Stelt de bestandsnaam voor de opgeslagen afbeeding in;&lt;br&gt;wanneer het script het proces volledig controleert moet deze naam door het script elke keer worden ingesteld,&lt;br&gt;wanneer de animatie gebruik maakt van fragbestandsinstellingen, keyframes, etc. hoeft deze maar een keer te worden ingesteld op de basisnaam en zal Fragmentarium een 5-cijferige index eraan toevoegen.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Stelt frames per seconde in voor het renderen.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Stelt het nummer van het startframe in voor het renderen van een framebereik.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Stelt het nummer van het eindframe in voor het renderen van een framebereik.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE stelt de animatie in voor besturing uitsluitend door het script.&lt;br&gt;TRUE schakelt besturing door keyframes en easing curves in.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE toont frames in een preview-venster in plaats van ze op te slaan.&lt;br&gt;WAARSCHUWING!!! dit opent een venster VOOR ELK FRAME en sluit dit wanneer het volgende frame klaar is voor de preview.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="471"/>
+        <location line="+60"/>
         <source>&lt;h2&gt;Control commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool scriptRunning();&lt;/b&gt;&lt;/li&gt;Returns FALSE when the user selects the [Stop] button in the script editor.For user implemented test in script to break out of the script control loop.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void stopScript();&lt;/b&gt;&lt;/li&gt;For user implemented test in script to break out of the script control loop or error like file not found, initialization fail etc.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void tileBasedRender();&lt;/b&gt;&lt;/li&gt;Begins rendering the current frame or range of frames applying the current state for keyframes and active easing settings.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;h2&gt;besturingscommandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool scriptRunning();&lt;/b&gt;&lt;/li&gt;Geeft FALSE wanneer de gebruiker de [Stop]-knop heeft geselecteerd in de script editor. Voor de gebruiker geïmplementeerde test in het script om een scriptbesturingsloop te kunnen afbreken.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void stopScript();&lt;/b&gt;&lt;/li&gt;Voor de gebruiker geïmplementeerde test in het script om een scriptbesturingsloop te kunnen afbreken of bij een fout als &apos;bestand niet gevonden&apos;, &apos;initialisatie mislukt&apos;, etc.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void tileBasedRender();&lt;/b&gt;&lt;/li&gt;Begint met het renderen van het huidige frame of framebereik onder toepassing van de huidge staat van keyframes en aktieve easing curves-instellingen.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="489"/>
+        <location line="+16"/>
         <source>Fragmentarium script commands.</source>
         <translation>Fragmentarium script-commandos.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="569"/>
-        <source>Engine failed to start!</source>
-        <translation>Engine kon niet starten!</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="595"/>
+        <location line="+74"/>
         <source>Log</source>
-        <translation></translation>
+        <translation>Log</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="612"/>
+        <location line="+17"/>
         <source>Variable Editor (uniforms)</source>
         <translation>Variabelen-editor (uniforms)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="632"/>
+        <location line="+21"/>
         <source>Welcome to Fragmentarium version %1. A Syntopia Project.</source>
         <translation>Welkom bij Fragmentarium versie %1. Een Syntopia-Project.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="633"/>
+        <location line="+1"/>
         <source>This is an experimental 3Dickulus build.</source>
         <translation>Dit is een experimentele 3Dickulus-versie.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="655"/>
+        <location line="+16"/>
         <source>It looks like the Fragmentarium program crashed during the last startup.
 
 To prevent repeated crashes, you may choose to disable &apos;Autorun on Load&apos;.
@@ -746,27 +733,91 @@ Om herhaald crashen te voorkomen kunt u &apos;Autorun bij laden&apos; uitschakel
 Deze optie kan weer worden ingeschakeld in Voorkeuren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="663"/>
+        <location line="+7"/>
         <source>Disable Autorun</source>
         <translation>Autorun uitschakelen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="664"/>
+        <location line="+1"/>
         <source>Enable Autorun</source>
         <translation>Autorun inschakelen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="685"/>
+        <location line="+679"/>
+        <source>is too large!
+Must be less than 32769x32769</source>
+        <translation>is te groot!
+Moet minder zijn dan 32769x32769</translation>
+    </message>
+    <message>
+        <location line="+888"/>
+        <source>Reloaded file: %1</source>
+        <translation>Reloaded-bestand: %1</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Reload</source>
+        <translation>Verversen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ignore</source>
+        <translation>Negeren</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Will not read file %1:
+%2.</source>
+        <translation>Bestand %1 kan niet worden gelezen:
+%2.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Conflict with changes in the editor!</source>
+        <translation>Strijdig met veranderingen in de editor!</translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>Rebuilding to update locked uniforms...</source>
+        <translation>Opnieuw bouwen om vergrendelde uniformen bij te werken ...</translation>
+    </message>
+    <message>
+        <location line="+75"/>
+        <source>Showing preprocessed output in new tabs</source>
+        <translation>Toon voorbewerkte uitvoer in nieuwe tabbladen</translation>
+    </message>
+    <message>
+        <location line="+99"/>
+        <source>Available image formats: </source>
+        <translation>Beschikbare afbeeldingsformaten: </translation>
+    </message>
+    <message>
+        <location line="+234"/>
+        <source>// Cannot read file %1:
+// %2
+</source>
+        <translation>// Kan bestand %1 niet lezen:
+// %2
+</translation>
+    </message>
+    <message>
+        <source>There are unsaved changes.%1
+Close this tab without saving changes?</source>
+        <translation type="vanished">Er zijn niet-opgeslagen wijzigingen %1
+Sluit dit tabblad zonder wijzigingen op te slaan?</translation>
+    </message>
+    <message>
+        <location line="+419"/>
         <source>OpenGL features missing</source>
         <translation>Ontbrekende OpenGL-features</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="686"/>
+        <location line="+0"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="699"/>
+        <location line="-2324"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -789,532 +840,566 @@ l
 </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="992"/>
+        <location line="+61"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Volledig scherm (aan-/uitschakelen met ESC-toets)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="995"/>
+        <location line="+3"/>
         <source>Save Screen Shot...</source>
         <translation>Schermafdruk opslaan...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="998"/>
+        <location line="+3"/>
         <source>&amp;New</source>
         <translation>&amp;Nieuw</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="999"/>
+        <location line="+1"/>
         <source>Ctrl+N</source>
-        <translation></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1000"/>
+        <location line="+1"/>
         <source>Create a new file</source>
         <translation>Nieuw bestand aanmaken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1003"/>
+        <location line="+3"/>
         <source>&amp;Open...</source>
         <translation>&amp;Openen...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1004"/>
+        <location line="+1"/>
         <source>Ctrl+O</source>
-        <translation></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1005"/>
+        <location line="+1"/>
         <source>Open an existing file</source>
         <translation>Open een bestaand bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1008"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3247"/>
+        <location line="+8"/>
+        <location line="+2629"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1009"/>
+        <location line="-2628"/>
         <source>Ctrl+S</source>
-        <translation></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1010"/>
+        <location line="+1"/>
         <source>Save the script to disk</source>
         <translation>Script opslaan op schijf</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1013"/>
+        <location line="+3"/>
         <source>Save &amp;As...</source>
         <translation>Opslaan &amp;als...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1014"/>
+        <location line="+1"/>
         <source>Ctrl+Shift+S</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1015"/>
+        <location line="+1"/>
         <source>Save the script under a new name</source>
         <translation>Script opslaan onder een nieuwe naam</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1019"/>
-        <source>Load &amp;Zappas</source>
-        <translation>&amp;Zappas laden</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1020"/>
-        <source>Ctrl+Alt+L</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1021"/>
-        <source>Load the Zappas from disk</source>
-        <translation>Laad Zappas van schijf</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1023"/>
-        <source>Save &amp;Zappas</source>
-        <translation>&amp;Zappas opslaan</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1024"/>
-        <source>Ctrl+Alt+S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1025"/>
-        <source>Save the Zappas to disk</source>
-        <translation>Zappas opslaan op schijf</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1028"/>
+        <location line="+3"/>
         <source>&amp;Close Tab</source>
         <translation>&amp;Tab sluiten</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1029"/>
+        <location line="+1"/>
         <source>Ctrl+W</source>
-        <translation></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1030"/>
+        <location line="+1"/>
         <source>Close this tab</source>
         <translation>Sluit deze tab</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1033"/>
+        <location line="+3"/>
         <source>E&amp;xit Application</source>
         <translation>&amp;Applicatie sluiten</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1034"/>
+        <location line="+1"/>
         <source>Ctrl+Q</source>
-        <translation></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1035"/>
+        <location line="+1"/>
         <source>Exit the application</source>
-        <translation></translation>
+        <translation>Verlaat de applicatie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1038"/>
+        <location line="+3"/>
         <source>Cu&amp;t</source>
         <translation>K&amp;nippen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1039"/>
+        <location line="+1"/>
         <source>Ctrl+X</source>
-        <translation></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1040"/>
+        <location line="+1"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Knip de huidige selectie en kopiëer deze naar het klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1044"/>
+        <location line="+3"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiëren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1045"/>
+        <location line="+1"/>
         <source>Ctrl+C</source>
-        <translation></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1046"/>
+        <location line="+1"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Kopiëer de huidige selectie naar het klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1050"/>
+        <location line="+3"/>
         <source>&amp;Paste</source>
         <translation>&amp;Plakken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1051"/>
+        <location line="+1"/>
         <source>Ctrl+V</source>
-        <translation></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1052"/>
+        <location line="+1"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Plak de inhoud van het klembord in de huidige selectie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1055"/>
+        <location line="+3"/>
         <source>&amp;Find</source>
         <translation>&amp;Zoek</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1056"/>
+        <location line="+1"/>
         <source>Ctrl+F</source>
-        <translation></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1057"/>
+        <location line="+1"/>
         <source>Finds the current selection</source>
         <translation>Zoek in de huidige selectie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1060"/>
+        <location line="+3"/>
         <source>Shader &amp;Asm</source>
-        <translation></translation>
+        <translation>Shader &amp;Asm</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1061"/>
+        <location line="+1"/>
         <source>Ctrl+A</source>
-        <translation></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1062"/>
+        <location line="+1"/>
         <source>NV objdump</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1065"/>
+        <location line="+3"/>
         <source>&amp;Edit Cmd Script</source>
         <translation>B&amp;ewerk Cmd Script</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1066"/>
+        <location line="-49"/>
         <source>Ctrl+R</source>
-        <translation></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1067"/>
+        <location line="-816"/>
+        <source>2D Texture Options</source>
+        <translation>2D-textuuropties</translation>
+    </message>
+    <message>
+        <source>There are tabs with unsaved changes.
+%1
+Continue and loose changes?</source>
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.
+%1
+Doorgaan en verliezen veranderen?</translation>
+    </message>
+    <message>
+        <location line="+307"/>
+        <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
+        <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+98"/>
+        <source>&lt;h2&gt;Hires image and animation dialog commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Sets the total animation duration in seconds.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Sets the tile width and height.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Sets the number of row and column tiles, this value squared = total tiles.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Sets the number of frames to accumulate.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Sets the filename for saved image,&lt;br&gt;if script has total control this must be set by the script for every frame,&lt;br&gt;if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Sets the frames per second for rendering.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the start frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the end frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE sets animation to script control exclusively.&lt;br&gt;TRUE enables control from keyframes and easing curves.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE will preview frames in a window on the desktop instead of saving image files.&lt;br&gt;WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAutoSave(bool);&lt;/b&gt;&lt;/li&gt;TRUE will save files in subfolder.&lt;br&gt;FALSE will use the path set by setOutputBaseFileName(String)&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setUniqueID(bool);&lt;/b&gt;&lt;/li&gt;Does the same thing as &quot;Add unique ID to filename&quot; in the HiResolution and Animation Dialog.&lt;br&gt;&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt; Herschrijft opdrachten voor afbeeldingen en animatiedialogen &lt;/ h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/ b&gt; &lt;/ li&gt; Stelt de totale duur van de animatie in seconden in. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/ b&gt; &lt;/ li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/ b&gt; &lt;/ li&gt; stelt de tegel in breedte en hoogte. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het aantal rij- en kolomtegels in, deze waarde in het kwadraat = totale tegels. &lt;/ p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het aantal te verzamelen frames in. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/ b&gt; &lt;/ li&gt; Stelt de bestandsnaam in voor de opgeslagen afbeelding, &lt;br&gt; als het script de volledige controle heeft, moet dit door het script voor elk frame worden ingesteld, en - als animatie frag bestandinstellingen, keyframes enz. gebruikt, dan hoeft dit slechts één keer te worden ingesteld om basename te gebruiken en voegt Fragmentarium een ​​met 5 opgevulde index toe. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/ b&gt; &lt;/ li&gt; Stelt de frames per seconde voor rendering. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het startframe-nummer in voor het weergeven van een reeks frames. &lt;/ p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het eindraamnummer in voor het renderen van een reeks frames. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/ b&gt; &lt;/ li&gt; FALSE zet alleen de animatie van het script in. &lt;br&gt; TRUE maakt controle mogelijk vanuit hoofdframes en verlichte curven. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/ b&gt; &lt;/ li&gt; TRUE geeft een voorbeeld van frames in een venster op het bureaublad in plaats van het opslaan van afbeeldingsbestanden. &lt;br&gt; WAARSCHUWING !!! dit opent een venster VOOR ELK FRAME en sluit het wanneer het volgende klaar is voor weergave. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/ b&gt; &lt;/ li&gt; TRUE zal opslaan bestanden in de submap. &lt;br&gt; FALSE gebruikt het pad ingesteld door setOutputBaseFileName (String) &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/ b&gt; &lt;/ li&gt; doet hetzelfde als &quot;Voeg een unieke ID toe aan de bestandsnaam&quot; in de HiResolution- en animatiedialoog. &lt;br&gt; &lt;/ p&gt; &lt;/ ul&gt; &lt;/ p&gt;</translation>
+    </message>
+    <message>
+        <location line="+236"/>
+        <source>EXR &amp;Tools</source>
+        <translation>EXR &amp;Tools</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Unable to locate OpenEXR binaries !!!</source>
+        <translation>Kon geen OpenEXR binaries vinden !!!</translation>
+    </message>
+    <message>
+        <location line="+144"/>
+        <source>&amp;Reload...</source>
+        <translation>&amp;Verversen...</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reload file in current tab</source>
+        <translation>Laad het bestand opnieuw in het huidige tabblad</translation>
+    </message>
+    <message>
+        <location line="+49"/>
+        <source>Ctrl+E</source>
+        <translation>Ctrl+E</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Edit the currently loaded script</source>
         <translation>Huidig script bewerken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1070"/>
+        <location line="+3"/>
         <source>&amp;Build System</source>
-        <translation></translation>
+        <translation>&amp;Build System</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1071"/>
+        <location line="+1"/>
         <source>F5</source>
-        <translation></translation>
+        <translation>F5</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1072"/>
+        <location line="+1"/>
         <source>Render the current ruleset</source>
         <translation>Render huidig regelset</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1077"/>
+        <location line="+5"/>
         <source>&amp;Video Encoding</source>
-        <translation></translation>
+        <translation>&amp;Video Codering</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1078"/>
+        <location line="+1"/>
         <source>Encode rendered frames to video</source>
         <translation>Gerenderde frames tot video encoderen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1081"/>
+        <location line="+3"/>
         <source>&amp;About</source>
         <translation>&amp;Over</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1082"/>
+        <location line="+1"/>
         <source>Shows the About box</source>
         <translation>Laat het &quot;Over&quot;-scherm zien</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1085"/>
+        <location line="+3"/>
         <source>Show Welcome Note</source>
         <translation>Laat de welkomsboodschap zien</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1088"/>
+        <location line="+3"/>
         <source>&amp;Mouse and Keyboard Help</source>
         <translation>&amp;Muis- en Toetsenbordhelp</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1089"/>
+        <location line="+1"/>
         <source>Shows information about how to control Fragmentarium</source>
         <translation>Laat informatie zien over hoe Fragmentarium wordt bestuurd</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1092"/>
+        <location line="+3"/>
         <source>&amp;Scripting General Help</source>
         <translation>&amp;Scripting Algemene Help</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1093"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1098"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1103"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1108"/>
+        <location line="+1"/>
+        <location line="+5"/>
+        <location line="+5"/>
+        <location line="+5"/>
         <source>Shows information about how to control Fragmentarium via Script</source>
         <translation>Laat informatie zien over hoe Fragmentarium wordt bestuurd door scripts</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1097"/>
+        <location line="-11"/>
         <source>&amp;Scripting Parameter Help</source>
-        <translation></translation>
+        <translation>Hulp bij &amp;scriptparameters</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1102"/>
+        <location line="+5"/>
         <source>&amp;Scripting Image Anim Dialog Help</source>
         <translation>&amp;Scripting Afbeelding Anim Dialoog Help</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1107"/>
+        <location line="+5"/>
         <source>&amp;Scripting Control Help</source>
         <translation>&amp;Scripting Controle Help</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1112"/>
+        <location line="+5"/>
         <source>Clear Texture Cache</source>
         <translation>Textuurcache leegmaken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1115"/>
+        <location line="+3"/>
         <source>&amp;Project Homepage (web link)</source>
-        <translation></translation>
+        <translation>Startpagina van &amp;project (weblink)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1116"/>
+        <location line="+1"/>
         <source>Open the project page in a browser.</source>
         <translation>Opent te projectpagina in een browser.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1119"/>
+        <location line="+3"/>
         <source>&amp;Fragmentarium@FractalForums (web link)</source>
-        <translation></translation>
+        <translation>&amp;Fragmentarium@FractalForums (web link)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1120"/>
+        <location line="+1"/>
         <source>Open a FractalForums.com Fragmentarium web page in a browser.</source>
         <translation>Opent de Fragmentarium-webpagina op FractalForums.com in een browser.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1123"/>
+        <location line="+3"/>
         <source>&amp;Fragmentarium 3Dickulus (web link)</source>
-        <translation></translation>
+        <translation>&amp;Fragmentarium 3Dickulus (web link)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1124"/>
+        <location line="+1"/>
+        <location line="+4"/>
         <source>Open a Fragmentarium reference web page in a browser.</source>
         <translation>Opent een Fragmentarium-naslaggids in een browser.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1127"/>
-        <source>&amp;Flickr Fragmentarium Group (web link)</source>
-        <translation></translation>
+        <location line="-1"/>
+        <source>&amp;Fragmentarium Documentation (web link)</source>
+        <translation>&amp;Fragmentarium-documentatie (weblink)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1128"/>
+        <location line="+4"/>
+        <source>&amp;Flickr Fragmentarium Group (web link)</source>
+        <translation>&amp;Flickr Fragmentarium Group (web link)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Opens the main Flickr group for Fragmentarium creations.</source>
         <translation>Opent de hoofd-Flickr-group voor Fragmentarium-creaties.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1131"/>
+        <location line="+3"/>
         <source>&amp;GLSL Specifications (web link)</source>
         <translation>&amp;GLSL Specificaties (web link)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1132"/>
+        <location line="+1"/>
         <source>The official specifications for all GLSL versions.</source>
         <translation>De officiële specificaties voor alle GLSL-versies.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1135"/>
+        <location line="+3"/>
         <source>Introduction to Distance Estimated Fractals (web link)</source>
-        <translation></translation>
+        <translation>Introductie tot op afstand geschatte breuken (weblink)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1138"/>
+        <location line="+3"/>
         <source>Fragmentarium FAQ (web link)</source>
-        <translation></translation>
+        <translation>Fragmentarium FAQ (web link)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1154"/>
+        <location line="+17"/>
         <source>&amp;File</source>
         <translation>&amp;Bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1167"/>
+        <location line="+16"/>
         <source>&amp;Edit</source>
         <translation>B&amp;ewerken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1176"/>
+        <location line="+9"/>
         <source>Indent Script</source>
         <translation>Script inspringen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1177"/>
+        <location line="+1"/>
         <source>Insert Command</source>
         <translation>Commando invoegen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1179"/>
+        <location line="+2"/>
         <source>Add Easing Curve</source>
         <translation>Easing curve toevoegen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1180"/>
+        <location line="+1"/>
         <source>Add Key Frame</source>
         <translation>Keyframe toevoegen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1181"/>
+        <location line="+1"/>
         <source>Select Key Frame</source>
         <translation>Keyframe selecteren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1183"/>
+        <location line="+2"/>
         <source>Preferences...</source>
         <translation>Voorkeuren...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1186"/>
+        <location line="+3"/>
         <source>&amp;Render</source>
-        <translation></translation>
+        <translation>&amp;Render</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1188"/>
+        <location line="+2"/>
         <source>High Resolution and Animation Render</source>
         <translation>Hoge-resolutie- en animatie-render</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1190"/>
+        <location line="+2"/>
         <source>Output Preprocessed Script (for Debug)</source>
         <translation>Genereer voorbewerkt script (voor Debug)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1198"/>
+        <location line="+8"/>
         <source>&amp;Parameters</source>
         <translation>&amp;Parameter</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1199"/>
+        <location line="+1"/>
         <source>Reset All</source>
         <translation>Alles herstellen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1201"/>
+        <location line="+2"/>
         <source>Copy Settings</source>
         <translation>Instellingen kopiëren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1202"/>
+        <location line="+1"/>
         <source>Copy Group</source>
         <translation>Groep kopiëren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1203"/>
+        <location line="+1"/>
         <source>Paste from Clipboard</source>
         <translation>Plakken van klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1204"/>
+        <location line="+1"/>
         <source>Paste from Selected Text</source>
         <translation>Plakken uit geselecteerde text</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1206"/>
+        <location line="+2"/>
         <source>Save to File</source>
         <translation>Opslaan als bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1207"/>
+        <location line="+1"/>
         <source>Load from File</source>
         <translation>Laden uit bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1212"/>
+        <location line="+4"/>
         <source>&amp;Examples</source>
         <translation>&amp;Voorbeelden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1219"/>
+        <location line="-367"/>
+        <location line="+413"/>
         <source>Unable to locate: </source>
         <translation>Kan niet vinden: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1264"/>
+        <location line="-989"/>
+        <location line="+2691"/>
+        <source>Continue</source>
+        <translation>Doorgaan met</translation>
+    </message>
+    <message>
+        <location line="-1743"/>
         <source>Windows</source>
-        <translation></translation>
+        <translation>ramen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1266"/>
+        <location line="+3"/>
         <source>&amp;Help</source>
-        <translation></translation>
+        <translation>&amp;Helpen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1345"/>
+        <location line="+114"/>
+        <source>Build the fragment first!</source>
+        <translation>Bouw eerst het fragment!</translation>
+    </message>
+    <message>
+        <location line="+49"/>
         <source>// Output generated from file: </source>
         <translation>// Output gegenereerd van bestand: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1346"/>
+        <location line="+1"/>
         <source>// Created: </source>
         <translation>// Aangemaakt: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1372"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1382"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1399"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1810"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1830"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1861"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1900"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2384"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3200"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3219"/>
+        <location line="+26"/>
+        <location line="+8"/>
+        <location line="+16"/>
+        <location line="+421"/>
+        <location line="+19"/>
+        <location line="+514"/>
+        <location line="+72"/>
+        <location line="+1122"/>
+        <location line="+22"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1373"/>
+        <location line="-2194"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
 .</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1383"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1811"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1862"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2385"/>
+        <location line="+8"/>
+        <location line="+437"/>
+        <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1391"/>
+        <location line="-1037"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1400"/>
+        <location line="+10"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1323,512 +1408,458 @@ l
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1435"/>
-        <source>is too large!
-Must be less than 16384x16384</source>
-        <translation>is te groot!
-Moet minder zijn dan 16384x16384</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1436"/>
+        <location line="+33"/>
         <source>Do you want to try again?</source>
         <translation>Wilt u het nog een keer proberen?</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1469"/>
+        <location line="+32"/>
         <source>Rendering</source>
         <translation>Renderen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1469"/>
+        <location line="+0"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1744"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1779"/>
+        <location line="+275"/>
+        <location line="+42"/>
         <source>Saved file : </source>
         <translation>Opgeslagen bestand: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1747"/>
+        <location line="-40"/>
         <source>Save file failed! : </source>
         <translation>Bestand opslaan mislukt! : </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1768"/>
+        <location line="+29"/>
         <source>Images (</source>
         <translation>Afbeeldingen (</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1768"/>
+        <location line="+0"/>
         <source>)</source>
-        <translation></translation>
+        <translation>)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1771"/>
+        <location line="+3"/>
         <source>Save preview image...</source>
         <translation>Voorbeeldafbeelding opslaan...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1792"/>
+        <location line="+24"/>
         <source>Pasted selected settings</source>
         <translation>Geselecteerde instellingenzijn geplakt</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1796"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1844"/>
+        <location line="+6"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Fragment-Parameters (*.fragparams);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1819"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation>Instellingen opgeslagen naar bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1831"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1901"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2630"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3220"/>
+        <location line="+13"/>
+        <location line="+473"/>
+        <location line="+1258"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kan bestand niet lezen %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1840"/>
+        <location line="-1724"/>
         <source>Settings loaded from file</source>
         <translation>Instellingen geladen uit bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1845"/>
+        <location line="+7"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1855"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1894"/>
-        <source>Fragment Parameters (*.fdbk);;All Files (*.*)</source>
-        <translation>Fragment Parameters (*.fdbk);;Alle bestanden (*.*)</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1888"/>
-        <source>Feedback saved to file</source>
-        <translation>Feedback opgeslagen naar bestand</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1896"/>
-        <source>Load From</source>
-        <translation>Laden uit</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1913"/>
-        <source>Reading Feedback vars...</source>
-        <translation>Leest feedback variabelen...</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1926"/>
-        <source>Reading Feedback data...</source>
-        <translation>Leest feedback data...</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1948"/>
-        <source>Feedback loaded from file</source>
-        <translation>Feedback geladen uit bestand</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1955"/>
+        <location line="+11"/>
         <source>File Toolbar</source>
         <translation>Werkbalk Bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1965"/>
+        <location line="+10"/>
         <source>Edit Toolbar</source>
         <translation>Werkbalk Bewerken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1973"/>
+        <location line="+8"/>
         <source>Buffer Dimensions</source>
         <translation>Buffer-Dimensies</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1974"/>
+        <location line="+1"/>
         <source>Buffer Size. X: </source>
         <translation>Buffer-Grootte. X: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1982"/>
+        <location line="+8"/>
         <source>Y: </source>
-        <translation></translation>
+        <translation>Y: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1989"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1991"/>
+        <location line="+7"/>
+        <location line="+2"/>
         <source>Lock to window size</source>
         <translation>Vergrendelen naar venstergrootte</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1992"/>
+        <location line="+1"/>
         <source>Lock to 1/2 window size</source>
         <translation>Vergrendelen naar 1/2 venstergrootte</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1993"/>
+        <location line="+1"/>
         <source>Lock to 1/4 window size</source>
         <translation>Vergrendelen naar 1/4 venstergrootte</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1994"/>
+        <location line="+1"/>
         <source>Lock to 1/6 window size</source>
         <translation>Vergrendelen naar 1/6 venstergrootte</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="1996"/>
+        <location line="+2"/>
         <source>Custom size</source>
         <translation>Aangepaste grootte</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2006"/>
+        <location line="+10"/>
         <source>Render Toolbar</source>
         <translation>Werkbalk Render</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2008"/>
+        <location line="+2"/>
         <source>Build</source>
-        <translation></translation>
+        <translation>Bouwen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2012"/>
+        <location line="+4"/>
         <source>Rendering Mode</source>
         <translation>Rendermodus</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2016"/>
+        <location line="+4"/>
         <source>Progressive</source>
         <translation>Progressief</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2019"/>
+        <location line="+3"/>
         <source>Animation</source>
         <translation>Animatie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2033"/>
+        <location line="+13"/>
         <source>Rewind</source>
         <translation>Terugspoelen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2034"/>
+        <location line="+1"/>
         <source>F10</source>
-        <translation></translation>
+        <translation>F10</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2035"/>
+        <location line="+1"/>
         <source>Rewinds animation.</source>
         <translation>Spoelt animatie terug.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2038"/>
+        <location line="+3"/>
         <source>Start</source>
-        <translation></translation>
+        <translation>Begin</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2039"/>
+        <location line="+1"/>
         <source>F11</source>
-        <translation></translation>
+        <translation>F11</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2040"/>
+        <location line="+1"/>
         <source>Starts animation or subframe rendering.</source>
         <translation>Start het renderen van animatie of subframes.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2043"/>
+        <location line="+3"/>
         <source>Stop</source>
-        <translation></translation>
+        <translation>Hou op</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2044"/>
+        <location line="+1"/>
         <source>F12</source>
-        <translation></translation>
+        <translation>F12</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2045"/>
+        <location line="+1"/>
         <source>Stops animation or subframe rendering.</source>
         <translation>Stopt het renderen van animatie of subframes.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2053"/>
+        <location line="+8"/>
         <source> Subframe Max: </source>
-        <translation></translation>
+        <translation> Subframe Max: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2065"/>
+        <location line="+11"/>
         <source> 0 rendered.</source>
         <translation> 0 gerenderd.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2070"/>
-        <source>Zappa Tools</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2075"/>
-        <source>Enable Zappa Control</source>
-        <translation>Zappabesturing inschakelen</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2080"/>
-        <source>Current Zappa Index</source>
-        <translation>Huidige Zappa-index</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2087"/>
-        <source>Clear All Zappas</source>
-        <translation>Alle Zappas wissen</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2088"/>
-        <source>Clear</source>
-        <translation>Wissen</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2094"/>
+        <location line="+5"/>
         <source>Time</source>
         <translation>Tijd</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2096"/>
+        <location line="+2"/>
         <source>Time: 0s </source>
         <translation>Tijd: 0s </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2213"/>
+        <location line="+138"/>
         <source>Stopping: last stored time set to</source>
         <translation>Stopt: laatst opgeslagen tijd ingesteld op</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2243"/>
+        <location line="+40"/>
         <source>Time:</source>
         <translation>Tijd:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2270"/>
+        <location line="+32"/>
         <source>Done</source>
         <translation>Gereed</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2293"/>
+        <location line="+30"/>
         <source>Ready</source>
         <translation>Klaar</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2343"/>
+        <location line="+74"/>
         <source>No data!</source>
         <translation>Geen data!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2363"/>
-        <source>Build to update locking...</source>
-        <translation>Build voor het updaten van vergrendeling...</translation>
+        <location line="+40"/>
+        <source>It looks like the file: %1
+ has been changed by another program.
+Would you like to reload it?</source>
+        <translation>Het lijkt op een bestand: %1
+werd veranderd door een ander programma.
+Wil je het opnieuw laden?</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2401"/>
+        <location line="+110"/>
         <source>File saved</source>
         <translation>Bestand opgeslagen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2418"/>
-        <source>Showing preprocessed output in new tab</source>
-        <translation>Voorbewerkte output wordt getoond in nieuwe tab</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2471"/>
+        <location line="+134"/>
         <source>Not a runnable fragment.</source>
         <translation>Geen uitvoerbaar fragment.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2511"/>
+        <location line="+58"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script gecompileerd in %1 ms.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2547"/>
+        <location line="+12"/>
         <source>Failed to compile script (%1 ms).</source>
         <translation>Compileren script mislukt (%1 ms).</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2604"/>
+        <location line="+113"/>
         <source> Line in preprocessed script: </source>
-        <translation>Regel in voorbewerkt script: </translation>
+        <translation> Regel in voorbewerkt script: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2606"/>
+        <location line="+2"/>
         <source> (Not part of current script) </source>
         <translation> (Geen onderdeel van huidig script) </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2609"/>
+        <location line="+3"/>
         <source>Position: %1, Line: %2.</source>
         <translation>Positie: %1, Regel: %2.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2623"/>
-        <source>// Write fragment code here...
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2636"/>
+        <location line="+42"/>
         <source>Loaded file: %1</source>
         <translation>Bestand geladen: %1</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2644"/>
+        <location line="+8"/>
         <source>Unnamed</source>
         <translation>Naamloos</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2703"/>
+        <location line="+73"/>
         <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
         <translation>Autorun is uitgeschakeld! U moet &quot;Build&quot; selecteren en een preset toepassen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2704"/>
+        <location line="+1"/>
         <source>If the preset alters locked variables &quot;Build&quot; will be required again.</source>
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2729"/>
         <source>There are unsaved changes.%1
-Close this tab without saving changes?</source>
-        <translation>Er zijn tabs met onopgeslagen veranderingen.%1
-Doorgaan zonder veranderingen op te slaan?</translation>
+Continue will discard changes.</source>
+        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
+Doorgaan en verliezen veranderen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2730"/>
-        <source>OK</source>
-        <translation></translation>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="vanished">
+U moet dit doen om Verlichtingscurven te behouden
+een voorinstelling toevoegen met de naam &quot;Bereik&quot;
+en bespaar voor sluitingstijd!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2730"/>
+        <location line="-2655"/>
+        <location line="+2691"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2761"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2767"/>
+        <location line="+44"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Launching web browser...</source>
         <translation>Start webbrowser...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2763"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2769"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2775"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2781"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2787"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2793"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2799"/>
+        <location line="-17"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+10"/>
         <source>Failed to open browser...</source>
         <translation>Kan browser niet starten...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2807"/>
+        <location line="+14"/>
         <source>Save screenshot as:</source>
         <translation>Schermafdruk opslaan als:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2814"/>
+        <location line="+9"/>
         <source>Saved screenshot as: </source>
-        <translation>Schermafdruk opgeslagen als:</translation>
+        <translation>Schermafdruk opgeslagen als: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2816"/>
+        <location line="+2"/>
         <source>Save failed! Filename: </source>
         <translation>Opslaan mislukt! Bestandsnaam: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2856"/>
+        <location line="+48"/>
         <source>Search</source>
         <translation>Zoek</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2857"/>
+        <location line="+0"/>
         <source>Text to find</source>
         <translation>Te zoeken tekst</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2862"/>
+        <location line="+4"/>
         <source>Not found</source>
         <translation>Niet gevonden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2863"/>
+        <location line="+0"/>
         <source>Try again from the start?</source>
         <translation>Nogmaals proberen vanaf het begin?</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2880"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2897"/>
+        <location line="+17"/>
+        <location line="+37"/>
         <source>Cannot accept MIME object: </source>
         <translation>Kan MIME-object niet accepteren: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2889"/>
+        <location line="-26"/>
         <source>Loading: </source>
         <translation>Laden: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2895"/>
+        <location line="+16"/>
+        <source>No parameters found in file.</source>
+        <translation>Geen parameters gevonden in bestand.</translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Must be a .frag or .fragparams file.</source>
         <translation>Moet een .frag- of .fragparams-bestand zijn.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3164"/>
+        <location line="+336"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset niet gevonden!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3193"/>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3214"/>
+        <location line="+34"/>
+        <location line="+24"/>
         <source>Cmd Script (*.fqs);;All Files (*.*)</source>
         <translation>Cmd Script (*.fqs);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3201"/>
+        <location line="-15"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Kan CmdScript niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3210"/>
+        <location line="+9"/>
         <source>Cmd Script saved to file:</source>
         <translation>Cmd Script opgeslagen naar bestand:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3229"/>
+        <location line="+23"/>
         <source>Cmd Script loaded from file: </source>
-        <translation>Cmd Script geladen uit bestand:</translation>
+        <translation>Cmd Script geladen uit bestand: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3248"/>
+        <location line="+28"/>
+        <source>&amp;Load</source>
+        <translation>&amp;Laden</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>&amp;Execute</source>
         <translation>Uitvo&amp;eren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3249"/>
+        <location line="+1"/>
         <source>&amp;Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3250"/>
+        <location line="+1"/>
         <source>&amp;Close</source>
         <translation>S&amp;luiten</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="3309"/>
+        <location line="+65"/>
         <source>Error %1 at line %2</source>
         <translation>Fout %1 in regel %2</translation>
     </message>
@@ -1836,221 +1867,244 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>Fragmentarium::GUI::OutputDialog</name>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="111"/>
+        <location filename="../Fragmentarium/GUI/OutputDialog.cpp" line="+120"/>
         <source>Save image as:</source>
         <translation>Afbeelding opslaan als:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="140"/>
+        <location line="+41"/>
         <source>dir does not exist</source>
         <translation>folder bestaat niet</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="147"/>
+        <location line="+7"/>
         <source>not a valid image extension</source>
         <translation>geen geldige afbeeldingsextensie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="184"/>
+        <location line="+41"/>
         <source>Add unique ID to filename (%1)</source>
         <translation>Voeg unieke ID toe aan bestandsnaam (%1)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="187"/>
+        <location line="+3"/>
         <source>Add unique ID to filename</source>
         <translation>Voeg unieke ID toe aan bestandsnaam</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="191"/>
+        <location line="+4"/>
         <source>Autosave fragments and settings (in directory: &apos;%1)</source>
         <translation>Automatisch opslaan van fragmenten en instellingen (in folder: &apos;%1)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="200"/>
+        <location line="+14"/>
         <source>Render tiles: (%1x%2 - %3x%4 pixels - %5 MegaPixel):</source>
         <translation>Render tegels: (%1x%2 - %3x%4 pixels - %5 MegaPixel):</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="205"/>
+        <location line="+11"/>
         <source>Padding %1%: (resulting size: %2x%3 pixels - %4 MegaPixel):</source>
         <translation>Padding %1%: (uiteindelijke grootte: %2x%3 pixels - %4 MegaPixel):</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="222"/>
+        <location line="+24"/>
         <source>Total tiles: %1x%2x%3x%4 = %5</source>
         <translation>Totaal aantal tegels: %1x%2x%3x%4 = %5</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.cpp" line="228"/>
+        <location line="+11"/>
         <source>Total tiles: %1x%2 = %3</source>
         <translation>Totaal aantal tegels: %1x%2 = %3</translation>
     </message>
 </context>
 <context>
+    <name>Fragmentarium::GUI::PreferencesDialog</name>
+    <message>
+        <location filename="../Fragmentarium/GUI/PreferencesDialog.h" line="+36"/>
+        <source>Log File (*.log);;All Files (*.*)</source>
+        <translation>Logbestand (*.log);;Alle bestanden (*.*)</translation>
+    </message>
+    <message>
+        <location line="+36"/>
+        <source>Stylesheet (*.qss);;All Files (*.*)</source>
+        <translation>Stylesheet (*.qss);;All Files (*.*)</translation>
+    </message>
+</context>
+<context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.cpp" line="641"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
         <source>Select a Texture</source>
         <translation>Kies textuur</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.cpp" line="643"/>
+        <location line="+0"/>
         <source>Images (</source>
         <translation>Afbeeldingen (</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.cpp" line="643"/>
+        <location line="+0"/>
         <source>);;All (*.*)</source>
         <translation>);;Allen (*.*)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.cpp" line="673"/>
+        <location line="+48"/>
         <source>Setting texture to: </source>
         <translation>Textuur ingesteld op: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableWidget.cpp" line="675"/>
+        <location line="+2"/>
         <source>Weird, texture not found in fragment source: </source>
         <translation>Vreemd, textuur niet gevonden in de fragmentbron: </translation>
     </message>
 </context>
 <context>
+    <name>Fragmentarium::GUI::TimeLineDialog</name>
+    <message>
+        <location filename="../ThirdPartyCode/TimeLine.cpp" line="+117"/>
+        <source>No easing curves. &quot;Apply&quot; a preset that contains easing curve settings.
+Or create them with &quot;F7&quot; hotkey for the selected float slider.</source>
+        <translation>Geen versnellende bochten. \ &quot;Apply \&quot; een preset die acceleratiecurve-instellingen bevat.
+Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevende schuifregelaar.</translation>
+    </message>
+</context>
+<context>
     <name>Fragmentarium::GUI::VariableEditor</name>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="38"/>
+        <location filename="../Fragmentarium/GUI/VariableEditor.cpp" line="+45"/>
         <source>Preset:</source>
-        <translation></translation>
+        <translation>Preset:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="44"/>
+        <location line="+6"/>
         <source>Apply</source>
         <translation>Toepassen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="57"/>
+        <location line="+13"/>
         <source>Reset All</source>
         <translation>Alles herstellen</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="61"/>
+        <location line="+4"/>
         <source>Copy Settings</source>
         <translation>Instellingen kopiëren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="65"/>
+        <location line="+4"/>
         <source>Paste Settings</source>
         <translation>Instellingen plakken</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="149"/>
+        <location line="+97"/>
         <source>Found &apos;</source>
         <translation>Gevonden &apos;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="149"/>
+        <location line="+0"/>
         <source>&apos; preset. Executing...</source>
         <translation>&apos; preset. Uitvoeren...</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="180"/>
+        <location line="+33"/>
         <source>Copied settings to clipboard</source>
         <translation>Instellingen gekopiëerd naar het klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="186"/>
+        <location line="+7"/>
         <source>Pasted settings from clipboard</source>
         <translation>Instellingen geplakt van het klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="271"/>
+        <location line="+88"/>
         <source>Copied </source>
         <translation>Gekopiëerd </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="271"/>
+        <location line="+0"/>
         <source> settings to clipboard</source>
         <translation> gekopiëerd naar het klembord</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="377"/>
+        <location line="+118"/>
         <source>%1 locked variables: %2</source>
         <translation>%1 vergrendelde variabelen: %2</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="557"/>
+        <location line="+132"/>
         <source>Unsupported parameter</source>
         <translation>Onondersteunde parameter</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="633"/>
+        <location line="+144"/>
         <source>Expected a key value pair, found: </source>
         <translation>Verwacht keywaardenpaar, gevonden: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="652"/>
+        <location line="+21"/>
         <source>Could not find: </source>
         <translation>Kon niet vinden: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="709"/>
+        <location line="+65"/>
         <source>This variable already has an Easing Curve!</source>
         <translation>Deze variabele heeft al een easing curve!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="710"/>
+        <location line="+1"/>
         <source>Apply changes? Delete existing? Do nothing?</source>
         <translation>Veranderingen toepassen? Bestaande wissen? Niets doen?</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="715"/>
+        <location line="+5"/>
         <source>Easing curve %1 replaced by %2</source>
         <translation>Easing curve %1 vervangen door %2</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="720"/>
+        <location line="+6"/>
         <source>Easing curve %1 removed!</source>
         <translation>Easing curve %1 verwijderd!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="726"/>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="846"/>
+        <location line="+6"/>
+        <location line="+125"/>
         <source>Easing curve canceled!</source>
         <translation>Easing curve afgebroken!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="732"/>
+        <location line="-120"/>
         <source>Insert a &quot;Range-nnnn-nnnn&quot; preset to keep this setting!</source>
         <translation>Voeg een &quot;Range-nnnn-nnnn&quot; preset toe om deze instelling te bewaren!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="755"/>
+        <location line="+24"/>
         <source>Camera settings handled in KeyFrames!</source>
         <translation>Camera-instellingen worden afgehandeld in keyframes!</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="780"/>
+        <location line="+21"/>
         <source>Easing Curve for %1</source>
         <translation>Easing curve voor %1</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="824"/>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="887"/>
+        <location line="+44"/>
+        <location line="+78"/>
         <source>The start value and finish value must be different.</source>
         <translation>Start- en eindwaarde moeten verschillen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="828"/>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="891"/>
+        <location line="-74"/>
+        <location line="+78"/>
         <source>The first frame and last frame must be different.</source>
         <translation>Start- en eindframe moeten verschillen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="848"/>
+        <location line="-47"/>
         <source>No Easing Curve for this parameter.</source>
         <translation>Geen easing curve voor deze parameter.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/VariableEditor.cpp" line="927"/>
+        <location line="+90"/>
         <source>Missing parameter or not applicable. %1</source>
         <translation>Ontbrekende parameter of niet toepasbaar. %1</translation>
     </message>
@@ -2058,84 +2112,84 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>Fragmentarium::GUI::VideoDialog</name>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="63"/>
+        <location filename="../ThirdPartyCode/VideoDialog.cpp" line="+65"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="63"/>
+        <location line="+0"/>
         <source>Input files not specified</source>
         <translation>Inputbestanden niet gespecifiëerd</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="68"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="74"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="82"/>
+        <location line="+5"/>
+        <location line="+6"/>
+        <location line="+9"/>
         <source>Video</source>
-        <translation></translation>
+        <translation>Video</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="68"/>
+        <location line="-15"/>
         <source>Output file not specified</source>
         <translation>Ouputbestanden niet gespecifiëerd</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="75"/>
+        <location line="+7"/>
         <source>A file called %1 already exists in the current directory. Overwrite?</source>
         <translation>Een bestand met de naam %1 bestaat al in de huidige folder. Overschrijven?</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="82"/>
+        <location line="+8"/>
         <source>%1 still exists</source>
         <translation>%1 bestaat nog steeds</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="175"/>
+        <location line="+101"/>
         <source>Images (</source>
         <translation>Afbeeldingen (</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="175"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="198"/>
+        <location line="+0"/>
+        <location line="+18"/>
         <source>)</source>
-        <translation></translation>
+        <translation>)</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="180"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="229"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="241"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="264"/>
+        <location line="-16"/>
+        <location line="+47"/>
+        <location line="+10"/>
+        <location line="+17"/>
         <source>Open File</source>
         <translation>Open bestand</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="198"/>
+        <location line="-58"/>
         <source>Videos (</source>
-        <translation></translation>
+        <translation>Videos (</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="203"/>
+        <location line="+2"/>
         <source>Save File</source>
         <translation>Bestand opslaan</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="224"/>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="259"/>
+        <location line="+27"/>
+        <location line="+27"/>
         <source>All files ( * )</source>
         <translation>Alle bestanden ( * )</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="239"/>
+        <location line="-17"/>
         <source>Cmd options ( *.opt )</source>
         <translation>Cmd opties ( *.opt )</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="244"/>
+        <location line="+5"/>
         <source>Fragmentarium</source>
-        <translation></translation>
+        <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.cpp" line="245"/>
+        <location line="+0"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kan bestand niet lezen %1:
@@ -2143,24 +2197,55 @@ Doorgaan zonder veranderingen op te slaan?</translation>
     </message>
 </context>
 <context>
+    <name>MiniParser</name>
+    <message>
+        <location filename="../SyntopiaCore/Misc/MiniParser.cpp" line="+23"/>
+        <location line="+24"/>
+        <location line="+25"/>
+        <location line="+24"/>
+        <source>Expected argument number %1 for %2</source>
+        <translation>Verwacht argumentnummer %1 voor %2</translation>
+    </message>
+    <message>
+        <location line="-65"/>
+        <source>Expected argument number %1 to be an integer. Found: %2</source>
+        <translation>Verwacht argumentnummer %1 als een geheel getal. Gevonden: %2</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Expected argument number %1 to be either true or false. Found: %2</source>
+        <translation>Verwacht argumentnummer %1 is waar of onwaar. Gevonden: %2</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Expected argument number %1 to be a double. Found: %2</source>
+        <translation>Verwacht argument nummer %1 als een dubbel. Gevonden: %2</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Expected argument number %1 to be a float. Found: %2</source>
+        <translation>Verwacht argument nummer %1 als een float. Gevonden: %2</translation>
+    </message>
+</context>
+<context>
     <name>Misc</name>
     <message>
-        <location filename="SyntopiaCore/Misc/Misc.cpp" line="23"/>
+        <location filename="../SyntopiaCore/Misc/Misc.cpp" line="+28"/>
         <source>Image Files (</source>
         <translation>Afbeeldingsbestanden (</translation>
     </message>
     <message>
-        <location filename="SyntopiaCore/Misc/Misc.cpp" line="27"/>
+        <location line="+4"/>
         <source>User cancelled save...</source>
         <translation>Gebruiker heeft opslaan afgebroken...</translation>
     </message>
     <message>
-        <location filename="SyntopiaCore/Misc/Misc.cpp" line="33"/>
+        <location line="+6"/>
         <source>Invalid image extension.</source>
         <translation>Ongeldige afbeeldingsextensie.</translation>
     </message>
     <message>
-        <location filename="SyntopiaCore/Misc/Misc.cpp" line="34"/>
+        <location line="+1"/>
         <source>File must be one of the following types: </source>
         <translation>Bestand moet van een van de volgende types zijn: </translation>
     </message>
@@ -2168,216 +2253,333 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>OutputDialog</name>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location filename="../Fragmentarium/GUI/OutputDialog.ui"/>
+        <location filename="../build/ui_OutputDialog.h" line="+342"/>
         <source>High Resolution and Animation Render</source>
         <translation>Hoge-resolutie- en animatie-render</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Number of subframes (for progressive rendering):</source>
         <translation>Aantal subframes (voor progressief renderen):</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+11"/>
         <source>Filename:</source>
         <translation>Bestandsnaam:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="-10"/>
         <source>Animation</source>
         <translation>Animatie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+8"/>
         <source>Total Frames:</source>
         <translation>Totaal aantal frames:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="-6"/>
         <source>End Frame:</source>
         <translation>Endframe:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Maximum length in seconds:</source>
         <translation>Maximale lengte in seconden:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+4"/>
         <source>File</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="-15"/>
         <source>Padding 0%: (resulting size: nnn x nnn pixels - nnn MegaPixel):</source>
         <translation>Padding 0%: (Uiteindelijke grootte: nnn x nnn pixels - nnn MegaPixel):</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Start Frame:</source>
         <translation>Startframe:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>FPS:</source>
-        <translation></translation>
+        <translation>FPS:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+9"/>
         <source>Add unique ID to name ()</source>
         <translation>Voeg unieke ID toe aan naam ()</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+1"/>
         <source>Autosave fragment (as [ImageOutputName].frag)</source>
         <translation>Automatisch opslaan van fragment (als [ImageOutputName].frag)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="-4"/>
         <source>Preview frame in window</source>
         <translation>Voorbeeldframe in venster</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="-14"/>
         <source>Render tiles: (2x2 - 1630x1920 pixels - 3.1 MPixel):</source>
         <translation>Render tegels: (2x2 - 1630x1920 pixels - 3.1 MPixel):</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>Tile width:</source>
         <translation>Tegelbreedte:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/OutputDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+1"/>
         <source>Tile height:</source>
         <translation>Tegelhoogte:</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_OutputDialog.h" line="+7"/>
+        <source>Set in Preferences.</source>
+        <translation>Instellen in Voorkeuren.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+350"/>
         <source>Preferences</source>
         <translation>Voorkeuren</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation>Voor de compatibiliteit met sommige GPUs.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Move main() to end</source>
         <translation>Verplaats main() naar het einde</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Disabling this might make debugging easier.</source>
         <translation>Wanneer u dit uitschakelt kan dat het debuggen eenvoudiger maken.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Autorun On Load</source>
         <translation>Automatisch starten bij laden</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-6"/>
         <source>Some engines use non GL matrices.</source>
         <translation>Sommige machines gebruiken non-GL matrices.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Draw spline paths for camera and target</source>
         <translation>Teken spline-paden voor camera en doel</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+9"/>
         <source>Spline Occlusion</source>
         <translation>Spline-occlusie</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-3"/>
         <source>Enabling this might be helpful when debugging.</source>
         <translation>Wanneer u dit inschakelt kan dat het debuggen eenvoudiger maken.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <source>Add line numbers to the script editing window.</source>
-        <translation>Voeg regelnummers toe aan het venster voor het bewerken van scripts.</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <source>Loop animation when playing</source>
-        <translation>Herhaal animatie bij afspelen</translation>
-    </message>
-    <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+4"/>
         <source>Presets contain easing curve settings</source>
         <translation>Presets bevatten instellingen voor easing curves</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Locked uniforms use #define or const</source>
         <translation>Vergendelde uniforms gebruiken #define of const</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>OpenGL refresh rate (in milliseconds)</source>
         <translation>OpenGL refresh rate (in milliseconden)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Animation frame rate (in frames per second)</source>
         <translation>Animatie-framerate (in frames per seconde)</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Include paths:</source>
         <translation>Include-paden:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Examples/Include;</source>
-        <translation></translation>
+        <translation>Examples/Include;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+5"/>
         <source>Editor stylesheet:</source>
         <translation>Editor-stijlblad:</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/PreferencesDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>font: 9pt Courier;</source>
-        <translation></translation>
+        <translation>font: 9pt Courier;</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-19"/>
+        <source>Add line numbers to the editing window.</source>
+        <translation>Voeg regelnummers toe aan het bewerkingsvenster.</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
+        <source>Loop animation</source>
+        <translation>Loop animatie</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
+        <source>Log File Size</source>
+        <translation>Log bestandsgrootte</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>K</source>
+        <translation>K</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>Log File Path</source>
+        <translation>Log bestandspad</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>fragm.log</source>
+        <translation>fragm.log</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <location line="+5"/>
+        <location line="+3"/>
+        <location line="+3"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-5"/>
+        <source>EXR binaries paths:</source>
+        <translation>EXR binaire paden:</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>bin;</source>
+        <translation>bin;</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+5"/>
+        <source>Max Recent Files</source>
+        <translation>Max. Recente bestanden</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>Full path in recent files menu.</source>
+        <translation>Volledig pad in het recente bestandsmenu.</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>Log to File</source>
+        <translation>Log in op bestand</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>#Include files with AutoSave Fragments</source>
+        <translation>Bestanden opnemen met AutoSave-clips</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>Autoload on change</source>
+        <translation>Herladen wanneer gewijzigd</translation>
     </message>
 </context>
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="Fragmentarium/Parser/Preprocessor.cpp" line="110"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+130"/>
         <source>Including file: </source>
         <translation>Toegevoegd bestand: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Parser/Preprocessor.cpp" line="131"/>
+        <location line="+22"/>
         <source>Including buffershader: </source>
         <translation>Toegevoegde buffershader: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Parser/Preprocessor.cpp" line="196"/>
+        <location line="+374"/>
         <source>Parse: </source>
-        <translation></translation>
+        <translation>Parse: </translation>
     </message>
 </context>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2563"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-979"/>
         <source>Could not locate directory in: </source>
         <translation>Kan folder niet vinden in: </translation>
     </message>
     <message>
-        <location filename="Fragmentarium/GUI/MainWindow.cpp" line="2564"/>
+        <location line="+1"/>
         <source>[not found]</source>
         <translation>[niet gevonden]</translation>
     </message>
@@ -2385,17 +2587,17 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>SyntopiaCore::Logging::ListWidget</name>
     <message>
-        <location filename="SyntopiaCore/Logging/ListWidgetLogger.h" line="26"/>
+        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+28"/>
         <source>Copy to Clipboard</source>
         <translation>Kopiëren naar klembord</translation>
     </message>
     <message>
-        <location filename="SyntopiaCore/Logging/ListWidgetLogger.h" line="27"/>
+        <location line="+1"/>
         <source>Clear</source>
         <translation>Wissen</translation>
     </message>
     <message>
-        <location filename="SyntopiaCore/Logging/ListWidgetLogger.h" line="38"/>
+        <location line="+11"/>
         <source>Copied %1 lines to clipboard</source>
         <translation>%1 regels gekopieëerd naar het klembord</translation>
     </message>
@@ -2403,7 +2605,8 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>TimeLineDialog</name>
     <message>
-        <location filename="ThirdPartyCode/TimeLineDialog.ui"/>
+        <location filename="../ThirdPartyCode/TimeLineDialog.ui"/>
+        <location filename="../build/ui_TimeLineDialog.h" line="+61"/>
         <source>Dialog</source>
         <translation>Dialoog</translation>
     </message>
@@ -2411,62 +2614,78 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>VideoDialog</name>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location filename="../ThirdPartyCode/VideoDialog.ui"/>
+        <location filename="../build/ui_VideoDialog.h" line="+286"/>
         <source>Video Encoding</source>
-        <translation></translation>
+        <translation>Video Codering</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>From:</source>
         <translation>Van:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
+        <location line="+2"/>
+        <location line="+2"/>
+        <location line="+2"/>
+        <location line="+4"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="-9"/>
         <source>To:</source>
         <translation>Tot:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Enc Cmd:</source>
-        <translation></translation>
+        <translation>Enc Cmd:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Options:</source>
         <translation>Opties:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Start</source>
-        <translation></translation>
+        <translation>Begin</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Encoding Status:</source>
-        <translation></translation>
+        <translation>Coderingsstatus:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Play Cmd:</source>
         <translation>Afspelen Cmd:</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Play Output</source>
         <translation>Afspelen Output</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Stop</source>
-        <translation></translation>
+        <translation>Hou op</translation>
     </message>
     <message>
-        <location filename="ThirdPartyCode/VideoDialog.ui"/>
+        <location/>
+        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Close</source>
         <translation>Sluiten</translation>
     </message>
@@ -2474,24 +2693,29 @@ Doorgaan zonder veranderingen op te slaan?</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="Fragmentarium/Main.cpp" line="46"/>
+        <location filename="../Fragmentarium/Main.cpp" line="+103"/>
         <source>Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.</source>
         <translation>Fragmentarium is een cross-platform-IDE voor het verkennen van pixel-gebaseerde GPU-graphics.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Main.cpp" line="50"/>
+        <location line="+2"/>
         <source>initial fragment to open.</source>
         <translation>initiëel fragment openen.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Main.cpp" line="56"/>
+        <location line="+6"/>
+        <source>sets reporting of shader variables to console.</source>
+        <translation>stelt shader-variabele rapportage in voor console.</translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>sets the application GUI style.
 Possible values are &apos;</source>
         <translation>stelt de GUI-stijl van de applicatie in.
 Mogelijke waarden zijn &apos;</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Main.cpp" line="82"/>
+        <location line="+26"/>
         <source>sets the application language.
 Possible values are &apos;en&apos;,&apos;de&apos;,&apos;ru&apos;,&apos;nl&apos;.</source>
         <oldsource>sets the application language.
@@ -2500,9 +2724,9 @@ Possible values are &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;.</oldsource>
 Mogelijke waarden zijn &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;,&apos;nl&apos;.</translation>
     </message>
     <message>
-        <location filename="Fragmentarium/Main.cpp" line="88"/>
-        <source>Fragmentarium script file to load.</source>
-        <translation>Fragmentarium-scriptbestand laden.</translation>
+        <location line="+6"/>
+        <source>Fragmentarium script file to load. Must be &quot;.fqs&quot; filename extention.</source>
+        <translation>Fragmentarium-scriptbestand om te laden. Moet de extensie &quot;.fqs&quot; zijn.</translation>
     </message>
 </context>
 </TS>
