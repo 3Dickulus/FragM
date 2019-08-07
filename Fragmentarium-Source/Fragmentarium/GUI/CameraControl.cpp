@@ -635,24 +635,24 @@ double Camera2D::StepSize()
 
 bool Camera2D::wheelEvent(QWheelEvent *e)
 {
-    double steps = e->delta() / 120.0;
-    double factor = 1.15;
     if (zoom == nullptr) {
         return false;
     }
     double zoomValue = zoom->getValue();
-    // Convert mouse pos to model coordinates
     QVector3D centerValue = center->getValue();
-    QVector3D pos = QVector3D((e->pos().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->pos().y() * (1.0 / double(height))), 0.0);
-    QVector3D md = pos / zoomValue + centerValue;
 
-    if (steps > 0.0) {
-        center->setValue(md);
-        zoom->setValue(zoomValue * factor);
-    } else {
-        center->setValue(md);
-        zoom->setValue(zoomValue / factor);
-    }
+    double steps = e->delta() / 120.0;
+    double factor = 1.15;
+    double g = steps > 0.0 ? factor : 1.0 / factor;
+
+    double u = (e->pos().x() / double(width) - 0.5) * 2.0 * double(width) / double(height);
+    double v = (e->pos().y() / double(height) - 0.5) * 2.0;
+
+    QVector3D pos = QVector3D(-u, v, 0.0);
+    QVector3D md = centerValue + pos / (zoomValue * g) * (1.0 - g);
+
+    center->setValue(md);
+    zoom->setValue(zoomValue * g);
     return true;
 }
 } // namespace GUI
