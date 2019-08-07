@@ -201,7 +201,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_Y)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, factor, upV);
+        m = rotate(m, glm::radians(factor), upV);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -209,7 +209,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_H)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, -factor, upV);
+        m = rotate(m, glm::radians(-factor), upV);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -217,7 +217,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_T)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, factor, right);
+        m = rotate(m, glm::radians(factor), right);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -225,7 +225,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_G)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, -factor, right);
+        m = rotate(m, glm::radians(-factor), right);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -233,7 +233,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_E)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, factor, dir);
+        m = rotate(m, glm::radians(factor), dir);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -241,7 +241,7 @@ bool Camera3D::parseKeys()
 
     if (keyDown(Qt::Key_Q)) {
         glm::dmat4 m = glm::identity<glm::dmat4>();
-        m = rotate(m, -factor, dir);
+        m = rotate(m, glm::radians(-factor), dir);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -324,9 +324,9 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
             if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
                 // Rotate about origo
                 glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, -dp.x * mouseSpeed * 10.0, upDown);
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 10.0), upDown);
                 glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, -dp.y * mouseSpeed * 10.0, rightDown);
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 10.0), rightDown);
                 glm::dvec3 oDir = (my * mx) * (-eyeDown);
                 eye->setValue(-oDir);
                 target->setValue((my * mx)*directionDown - oDir);
@@ -334,9 +334,9 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
             } else if (QApplication::keyboardModifiers() == Qt::ShiftModifier + Qt::AltModifier) {
                 // Rotate around target thanks to M.Benesi
                 glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, -dp.x * mouseSpeed * 10.0, upDown);
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 10.0), upDown);
                 glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, -dp.y * mouseSpeed * 10.0, rightDown);
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 10.0), rightDown);
                 glm::dvec3 oDir = (my * mx) * (directionDown); //was -eyeDown
                 eye->setValue(targetDown - oDir);
                 // target->setValue( (my*mx)*directionDown-oDir);
@@ -344,9 +344,9 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
             } else if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // orient camera
                 glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, -dp.x * mouseSpeed * 100.0, upDown);
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 100.0), upDown);
                 glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, -dp.y * mouseSpeed * 100.0, rightDown);
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 100.0), rightDown);
                 target->setValue((my * mx) * directionDown + eye->getValue()); // before: eyeDown
                 up->setValue((my * mx)*upDown);
             }
