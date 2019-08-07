@@ -342,7 +342,9 @@ private:
     bool initPreviewBuffer();
 
     bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
+#ifdef USE_OPEN_EXR
     bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID);
+#endif
     bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
 
     bool setTextureParms(QString textureUniformName, GLenum type);
