@@ -5,8 +5,7 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QVector>
-#include <QVector3D>
-#include <QVector4D>
+#include <glm/glm.hpp>
 #include "../../SyntopiaCore/Exceptions/Exception.h"
 #include "../../SyntopiaCore/Logging/Logging.h"
 #include "Preprocessor.h"
@@ -73,17 +72,17 @@ void setLockType(GuiParameter *p, QString lockTypeString)
     p->setLockType(l);
 }
 
-QVector4D parseQVector4D(QString s1, QString s2, QString s3, QString s4)
+glm::dvec4 parseQVector4D(QString s1, QString s2, QString s3, QString s4)
 {
     return { parseFloat(s1), parseFloat(s2), parseFloat(s3), parseFloat(s4) };
 }
 
-QVector3D parseQVector3D(QString s1, QString s2, QString s3)
+glm::dvec3 parseQVector3D(QString s1, QString s2, QString s3)
 {
     return { parseFloat(s1), parseFloat(s2), parseFloat(s3) };
 }
 
-QVector2D parseQVector2D(QString s1, QString s2)
+glm::dvec2 parseQVector2D(QString s1, QString s2)
 {
     return { parseFloat(s1), parseFloat(s2) };
 }
@@ -346,7 +345,7 @@ void Preprocessor::parseFloatColorChooser(FragmentSource *fs, int i)
     QString fromS = floatColorChooser.cap(3);
     QString defS = floatColorChooser.cap(4);
     QString toS = floatColorChooser.cap(5);
-    QVector3D defaults = parseQVector3D(floatColorChooser.cap(6), floatColorChooser.cap(7), floatColorChooser.cap(8));
+    glm::dvec3 defaults = parseQVector3D(floatColorChooser.cap(6), floatColorChooser.cap(7), floatColorChooser.cap(8));
 
     bool succes = false;
     double from = fromS.toDouble(&succes);
@@ -396,9 +395,9 @@ void Preprocessor::parseFloat2Slider(FragmentSource *fs, int i)
     QString type = float2Slider.cap(1);
     QString name = float2Slider.cap(2);
     fs->source[i] = "uniform " + type + " " + name + ";"; // uniform location
-    QVector2D from = parseQVector2D(float2Slider.cap(3), float2Slider.cap(4));
-    QVector2D defaults = parseQVector2D(float2Slider.cap(5), float2Slider.cap(6));
-    QVector2D to = parseQVector2D(float2Slider.cap(7), float2Slider.cap(8));
+    glm::dvec2 from = parseQVector2D(float2Slider.cap(3), float2Slider.cap(4));
+    glm::dvec2 defaults = parseQVector2D(float2Slider.cap(5), float2Slider.cap(6));
+    glm::dvec2 to = parseQVector2D(float2Slider.cap(7), float2Slider.cap(8));
 
     Float2Parameter *fp = new Float2Parameter(currentGroup, name, lastComment, from, to, defaults);
     setLockType(fp, float2Slider.cap(9));
@@ -411,9 +410,9 @@ void Preprocessor::parseFloat3Slider(FragmentSource *fs, int i)
     QString type = float3Slider.cap(1);
     QString name = float3Slider.cap(2);
     fs->source[i] = "uniform " + type + " " + name + ";"; // uniform location
-    QVector3D from = parseQVector3D(float3Slider.cap(3), float3Slider.cap(4), float3Slider.cap(5));
-    QVector3D defaults = parseQVector3D(float3Slider.cap(6), float3Slider.cap(7), float3Slider.cap(8));
-    QVector3D to = parseQVector3D(float3Slider.cap(9), float3Slider.cap(10), float3Slider.cap(11));
+    glm::dvec3 from = parseQVector3D(float3Slider.cap(3), float3Slider.cap(4), float3Slider.cap(5));
+    glm::dvec3 defaults = parseQVector3D(float3Slider.cap(6), float3Slider.cap(7), float3Slider.cap(8));
+    glm::dvec3 to = parseQVector3D(float3Slider.cap(9), float3Slider.cap(10), float3Slider.cap(11));
 
     Float3Parameter *fp = new Float3Parameter(currentGroup, name, lastComment, from, to, defaults);
     setLockType(fp, float3Slider.cap(12));
@@ -426,9 +425,9 @@ void Preprocessor::parseFloat4Slider(FragmentSource *fs, int i)
     QString type = float4Slider.cap(1);
     QString name = float4Slider.cap(2);
     fs->source[i] = "uniform " + type + " " + name + ";"; // uniform location
-    QVector4D from = parseQVector4D(float4Slider.cap(3), float4Slider.cap(4), float4Slider.cap(5), float4Slider.cap(6));
-    QVector4D defaults = parseQVector4D(float4Slider.cap(7), float4Slider.cap(8), float4Slider.cap(9), float4Slider.cap(10));
-    QVector4D to = parseQVector4D(float4Slider.cap(11), float4Slider.cap(12), float4Slider.cap(13), float4Slider.cap(14));
+    glm::dvec4 from = parseQVector4D(float4Slider.cap(3), float4Slider.cap(4), float4Slider.cap(5), float4Slider.cap(6));
+    glm::dvec4 defaults = parseQVector4D(float4Slider.cap(7), float4Slider.cap(8), float4Slider.cap(9), float4Slider.cap(10));
+    glm::dvec4 to = parseQVector4D(float4Slider.cap(11), float4Slider.cap(12), float4Slider.cap(13), float4Slider.cap(14));
 
     Float4Parameter *fp = new Float4Parameter(currentGroup, name, lastComment, from, to, defaults);
     setLockType(fp, float4Slider.cap(15));
@@ -441,7 +440,7 @@ void Preprocessor::parseColorChooser(FragmentSource *fs, int i)
     QString type = colorChooser.cap(1);
     QString name = colorChooser.cap(2);
     fs->source[i] = "uniform " + type + " " + name + ";";
-    QVector3D defaults = parseQVector3D(colorChooser.cap(3), colorChooser.cap(4), colorChooser.cap(5));
+    glm::dvec3 defaults = parseQVector3D(colorChooser.cap(3), colorChooser.cap(4), colorChooser.cap(5));
     ColorParameter *cp = new ColorParameter(currentGroup, name, lastComment, defaults);
     setLockType(cp, colorChooser.cap(6));
     if (type.startsWith("d")) cp->setIsDouble(true);

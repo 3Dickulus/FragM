@@ -210,15 +210,15 @@ public:
     void drawSplines();
     void createSplines ( int numberOfControlPoints, int numberOfFrames );
 
-    void addControlPoint ( QVector3D eP, QVector3D tP, QVector3D uP );
+    void addControlPoint ( glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP );
     void clearControlPoints();
 
     QStringList shaderAsm ( bool w );
 
     /// should make these private?
-    QVector<QVector3D> eyeControlPoints;
-    QVector<QVector3D> targetControlPoints;
-    QVector<QVector3D> upControlPoints;
+    QVector<glm::dvec3> eyeControlPoints;
+    QVector<glm::dvec3> targetControlPoints;
+    QVector<glm::dvec3> upControlPoints;
     QtSpline *eyeSpline;
     QtSpline *targetSpline;
     QtSpline *upSpline;

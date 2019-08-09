@@ -23,9 +23,7 @@
 #include <QTabWidget>
 #include <QTextBlockUserData>
 #include <QVBoxLayout>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
+#include <glm/glm.hpp>
 #include <QVector>
 #include <QWidget>
 #include <QtGui>
@@ -1459,10 +1457,11 @@ retry:
             if ( variableEditor->hasKeyFrames() ) {
                 if (engine->eyeSpline != nullptr) {
                     int index = timeStep+1;
-                    QVector3D e = engine->eyeSpline->getSplinePoint(index);
-                    QVector3D t = engine->targetSpline->getSplinePoint(index);
-                    QVector3D u = engine->upSpline->getSplinePoint(index);
-                    if( !e.isNull() && !t.isNull() && !u.isNull() ) {
+                    glm::dvec3 e = engine->eyeSpline->getSplinePoint(index);
+                    glm::dvec3 t = engine->targetSpline->getSplinePoint(index);
+                    glm::dvec3 u = engine->upSpline->getSplinePoint(index);
+                    glm::dvec3 zero = glm::dvec3(0.0,0.0,0.0);
+                    if( e!=zero && t!=zero && u!=zero ) {
                         setCameraSettings( e,t,u );
                     }
                 }
@@ -3340,19 +3339,19 @@ QString MainWindow::getCameraSettings()
     return r.join("\n");
 }
 
-void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u)
+void MainWindow::setCameraSettings(glm::dvec3 e, glm::dvec3 t, glm::dvec3 u)
 {
     DBOUT;
     QString r = QString("Eye = %1,%2,%3\nTarget = %4,%5,%6\nUp = %7,%8,%9\n")
-                .arg(e.x()).arg(e.y()).arg(e.z())
-                .arg(t.x()).arg(t.y()).arg(t.z())
-                .arg(u.x()).arg(u.y()).arg(u.z());
+                .arg(e.x).arg(e.y).arg(e.z)
+                .arg(t.x).arg(t.y).arg(t.z)
+                .arg(u.x).arg(u.y).arg(u.z);
     variableEditor->blockSignals(true);
     if(engine->getFragmentSource()->autoFocus) { // widget detected
         BoolWidget *btest = dynamic_cast<BoolWidget *>(variableEditor->getWidgetFromName("AutoFocus"));
         if (btest != nullptr) {
             if(btest->isChecked()) {
-                double d = e.distanceToPoint(t);
+                double d = distance(e, t);
                 r += QString("FocalPlane = %1\n").arg(d);
             }
     }
