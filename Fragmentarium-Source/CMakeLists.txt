@@ -24,9 +24,10 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-IF ( NOT MINGW )
+IF ( NOT WIN32 )
 find_package ( glm REQUIRED )
 ENDIF ()
+
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
@@ -63,14 +64,15 @@ set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
 
+    IF ( MINGW )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
+    ENDIF ()
+
 MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
 MARK_AS_ADVANCED (OpenEXR_INCLUDE_DIRS)
 MARK_AS_ADVANCED (Ilmbase_INCLUDE_DIRS)
 MARK_AS_ADVANCED (GLM_INCLUDE_DIRS)
 
-    IF ( MINGW )
-        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
-    ENDIF ()
 
 IF ( USE_OPEN_EXR )
 
