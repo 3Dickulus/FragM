@@ -39,7 +39,7 @@ ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
-OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
+OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
 OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
