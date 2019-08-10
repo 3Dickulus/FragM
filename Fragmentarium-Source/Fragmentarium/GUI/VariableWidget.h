@@ -550,10 +550,10 @@ public:
     {
         return glm::dvec2 ( comboSlider1->getValue(), comboSlider2->getValue() );
     }
-    void setValue(glm::dvec2 v);
+    void setValue(glm::dvec3 v);
     void reset()
     {
-        setValue ( defaultValue );
+        setValue ( glm::dvec3(defaultValue.x,defaultValue.y,0.0) );
     }
     QString getLockedSubstitution()
     {

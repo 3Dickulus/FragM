@@ -227,7 +227,7 @@ QString Float2Widget::toString()
            .arg(QString::number(comboSlider2->getValue(),'g',p));
 }
 
-void Float2Widget::setValue(glm::dvec2 v)
+void Float2Widget::setValue(glm::dvec3 v)
 {
     comboSlider1->setValue(v.x);
     comboSlider2->setValue(v.y);
