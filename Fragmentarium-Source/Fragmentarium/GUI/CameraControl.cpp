@@ -639,21 +639,38 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     if (zoom == nullptr) {
         return false;
     }
-    double zoomValue = zoom->getValue();
-    glm::dvec3 centerValue = glm::dvec3(center->getValue(), 0.0);
-
     double steps = e->delta() / 120.0;
     double factor = 1.15;
+    double zoomValue = zoom->getValue();
+    // Convert mouse pos to model coordinates
+    glm::dvec3 centerValue; centerValue.x = center->getValue().x; centerValue.y = center->getValue().y; centerValue.z=0.0;
+    // traveling
+//     {
+//         glm::dvec3 pos = glm::dvec3((e->pos().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->pos().y() * (1.0 / double(height))), 0.0);
+//         glm::dvec3 md = pos / zoomValue + centerValue;
+//
+//         if (steps > 0.0) {
+//             center->setValue(md);
+//             zoom->setValue(zoomValue * factor);
+//         } else {
+//             center->setValue(md);
+//             zoom->setValue(zoomValue / factor);
+//         }
+//     }
+    // fixed
+    {
     double g = steps > 0.0 ? factor : 1.0 / factor;
 
     double u = (e->pos().x() / double(width) - 0.5) * 2.0 * double(width) / double(height);
     double v = (e->pos().y() / double(height) - 0.5) * 2.0;
 
-    glm::dvec3 pos = glm::dvec3(-u, v, 0.0);
-    glm::dvec3 md = centerValue + pos / (zoomValue * g) * (1.0 - g);
+        glm::dvec3 pos = glm::dvec3(-u, v, 0.0);
+        glm::dvec3 md = centerValue + pos / (zoomValue * g) * (1.0 - g);
 
     center->setValue(md);
     zoom->setValue(zoomValue * g);
+
+    }
     return true;
 }
 } // namespace GUI
