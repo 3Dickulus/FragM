@@ -24,9 +24,9 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-IF ( NOT WIN32 )
-find_package ( glm REQUIRED )
-ENDIF ()
+# IF ( NOT WIN32 )
+#     find_package ( glm REQUIRED )
+# ENDIF ()
 
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
