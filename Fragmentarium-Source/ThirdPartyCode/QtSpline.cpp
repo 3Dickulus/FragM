@@ -60,7 +60,7 @@ static inline void qSetColor(GLfloat colorVec[], const QColor c)
 
 void Geometry::loadArrays() const
 {
-    glVertexPointer(3, GL_FLOAT, 0, vertices.constData());
+    glVertexPointer(3, GL_DOUBLE, 0, vertices.constData());
 }
 
 void Geometry::appendVertex(const glm::dvec3 &a)
@@ -77,9 +77,9 @@ Patch::Patch(Geometry *g) : start(0), count(0), geom(g)
 void Patch::draw(int n, int p) const
 {
 
-    glDepthMask(GL_TRUE); // Write to depth buffer for control points
     glPointSize(pointSize);
     if (start == 0) { /// drawing control points
+        glDepthMask(GL_TRUE); // Write to depth buffer for control points
         const glm::dvec3 *v = geom->vertices.constData();
         for (uint i = 0; i < count; i++) {
             int objIndex = i + (n * count);
@@ -89,7 +89,7 @@ void Patch::draw(int n, int p) const
                 glColor4fv(color);
             }
             glBegin(GL_POINTS);
-            glVertex3f(v[i].x, v[i].y, v[i].z);
+            glVertex3d(v[i].x, v[i].y, v[i].z);
             glEnd();
         }
         glDepthMask(GL_FALSE); // no Write to depth buffer for spline points
@@ -259,9 +259,9 @@ void QtSpline::setControlPoint(int n, glm::dvec3 *p)
 {
 
     /// new control point position
-    geom->vertices[n].x=(p->x);
-    geom->vertices[n].y=(p->y);
-    geom->vertices[n].z=(p->z);
+    geom->vertices[n].x=p->x;
+    geom->vertices[n].y=p->y;
+    geom->vertices[n].z=p->z;
     /// this bit of fudge lets the end points land on their respective
     /// controlpoints
     double enD = (1.0 / ((num_s - 1.0) + ((num_s - 1.0) * (1.0 / (parts[0]->count - 1.0)))));
