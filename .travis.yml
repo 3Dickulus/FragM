@@ -45,6 +45,7 @@ install:
     then
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
+      sudo apt-get -qq install libglm-dev
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libqt5scripttools5
