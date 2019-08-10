@@ -17,6 +17,9 @@
 #include "../../ThirdPartyCode/hdrloader.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
+#include "TextEdit.h"
+
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 namespace Fragmentarium
 {
@@ -504,16 +507,31 @@ QStringList DisplayWidget::shaderAsm(bool w)
     return asmList;
 }
 
+void DisplayWidget::jumpToErrorLine()
+{
+    // jump to error line in text editor
+        int errLineNum = shaderProgram->log().split(":").at(0).split("(").at(1).split(")").at(0).toInt();
+        QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
+        cursor.setPosition(0);
+        int incFudge = 2;
+        if( fragmentSource.source.at(0).startsWith("#version") ) incFudge = 1;
+        int gotoLine = fragmentSource.lines.at(errLineNum) - incFudge; // 0th and #version statement
+        cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,gotoLine);
+        mainWindow->getTextEdit()->setTextCursor( cursor );
+}
+
 void DisplayWidget::initFragmentShader()
 {
-
     if (shaderProgram != nullptr) {
         shaderProgram->release();
+        shaderProgram->removeAllShaders();
         delete ( shaderProgram );
         shaderProgram = nullptr;
     }
 
-    shaderProgram = new QOpenGLShaderProgram ( this );
+    QSettings settings;
+
+    shaderProgram = new QOpenGLShaderProgram ( context() );
 
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
@@ -535,12 +553,14 @@ void DisplayWidget::initFragmentShader()
     // Fragment shader
     s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentSource.getText());
 
-    if (s) {
+    if (s) { // Requests the shader program's id to be created immediately.
         s = shaderProgram->create();
     }
 
     if ( !s ) {
         WARNING ( tr("Could not create fragment shader: ") + shaderProgram->log() );
+        if(settings.value ( "jumpToLineOnError", true ).toBool())
+            jumpToErrorLine();
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -548,6 +568,8 @@ void DisplayWidget::initFragmentShader()
 
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
+        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
+            jumpToErrorLine();
     }
 
     s = shaderProgram->link();
@@ -562,6 +584,8 @@ void DisplayWidget::initFragmentShader()
 
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
+        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
+            jumpToErrorLine();
     }
 
     s = shaderProgram->bind();

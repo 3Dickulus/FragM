@@ -303,6 +303,7 @@ protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void paintEvent ( QPaintEvent * ev ) Q_DECL_OVERRIDE;
     void showEvent ( QShowEvent *ev ) Q_DECL_OVERRIDE;
+    void jumpToErrorLine();
 
     int pixelWidth()
     {
