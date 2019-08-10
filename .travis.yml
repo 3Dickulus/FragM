@@ -45,7 +45,6 @@ install:
     then
       sudo apt-get -qq install cmake
       sudo apt-get -qq install extra-cmake-modules
-      sudo apt-get -qq install libglm-dev
       sudo apt-get -qq install libopenexr-dev
       sudo apt-get -qq install libilmbase-dev
       sudo apt-get -qq install libqt5scripttools5
@@ -63,6 +62,9 @@ install:
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
+      
+      wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
+      dpkg -i libglm-dev_0.9.9.3-2_all.deb
       ## linuxdeployqt needs this
       #sudo apt-get -qq install libmtdev1
       #sudo apt-get -qq install libmtdev-dev
