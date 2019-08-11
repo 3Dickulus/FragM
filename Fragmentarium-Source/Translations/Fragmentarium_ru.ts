@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+472"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Камера: Нажмите 2D окно для управления движением с помощью клавиатуры. Для получения более подробной информации, обратитесь к меню Справка.</translation>
     </message>
@@ -258,7 +258,7 @@
 <context>
     <name>Fragmentarium::GUI::ComboSlider</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+94"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+93"/>
         <source>Slider Step Multiplier</source>
         <translation>Множитель шага слайдера</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+114"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+118"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Установка таймера обновления дисплея %1 мс ( макс %2 кадров в секунду).</translation>
     </message>
@@ -340,7 +340,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось разобрать значение параметра текстуры: </translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+139"/>
         <source>No vertex shader found!</source>
         <translation>Не найдены вершинные шейдеры!</translation>
     </message>
@@ -360,9 +360,9 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось создать фрагмент-шейдер: </translation>
     </message>
     <message>
-        <location line="+7"/>
-        <location line="+14"/>
-        <location line="+365"/>
+        <location line="+9"/>
+        <location line="+16"/>
+        <location line="+369"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
@@ -377,13 +377,13 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1441"/>
-        <location line="+365"/>
+        <location line="-1443"/>
+        <location line="+367"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
     </message>
     <message>
-        <location line="-343"/>
+        <location line="-345"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Попытка использовать backbuffer не того типа.</translation>
     </message>
@@ -393,7 +393,7 @@ Initialized as GL_RGBA8</source>
         <translation>Используйте определение буфера, например: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+62"/>
         <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
         <translation>EXR загрузчик найдено EXR изображение: %1x%2 слишком велико! макс %3x%3</translation>
     </message>
@@ -403,7 +403,7 @@ Initialized as GL_RGBA8</source>
         <translation>EXR загрузчик найдено EXR изображение: %1 не является полным</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+135"/>
         <source>Not a valid texture: </source>
         <translation>Неверная текстура: </translation>
     </message>
@@ -496,12 +496,12 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-1477"/>
+        <location line="-1481"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Не удалось связать вершинный шейдер с фрагментным шейдером: </translation>
     </message>
     <message>
-        <location line="+270"/>
+        <location line="+274"/>
         <source>Unused sampler uniform: </source>
         <translation>Неиспользуемая равномерная переменная сэмплера: </translation>
     </message>
@@ -528,7 +528,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось создать previewBuffer FBO</translation>
     </message>
     <message>
-        <location line="+147"/>
+        <location line="+148"/>
         <source>[%1x%2] Aspect=%3</source>
         <translation>[%1x%2]Соотношение сторон=%3</translation>
     </message>
@@ -551,7 +551,7 @@ Initialized as GL_RGBA8</source>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+114"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+113"/>
         <source>Host Preprocessor Commands</source>
         <translation>Команды препроцессора</translation>
     </message>
@@ -590,12 +590,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2691"/>
+        <location line="+2686"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2627"/>
+        <location line="-2622"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -632,16 +632,16 @@ and save to file before closing.
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1513"/>
+        <location line="+1509"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1504"/>
+        <location line="-1500"/>
         <location line="+16"/>
-        <location line="+932"/>
-        <location line="+1087"/>
-        <location line="+50"/>
+        <location line="+929"/>
+        <location line="+1086"/>
+        <location line="+49"/>
         <location line="+70"/>
         <location line="+373"/>
         <location line="+167"/>
@@ -654,14 +654,14 @@ and save to file before closing.
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-2915"/>
-        <location line="+1400"/>
-        <location line="+1736"/>
+        <location line="-2910"/>
+        <location line="+1397"/>
+        <location line="+1734"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3105"/>
+        <location line="-3101"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -807,12 +807,12 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+547"/>
+        <location line="+545"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
     <message>
-        <location line="+1020"/>
+        <location line="+1019"/>
         <source>Reloaded file: %1</source>
         <translation>Перезагрузка файла: %1</translation>
     </message>
@@ -844,7 +844,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Реструктуризация для обновления заблокированных переменных ...</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+74"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
@@ -879,7 +879,7 @@ Close this tab without saving changes?</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2324"/>
+        <location line="-2321"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -947,12 +947,12 @@ Please read this:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2629"/>
+        <location line="+2626"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2628"/>
+        <location line="-2625"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1092,7 +1092,7 @@ Please read this:
         <translation></translation>
     </message>
     <message>
-        <location line="-816"/>
+        <location line="-814"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
@@ -1105,7 +1105,7 @@ Continue and loose changes?</source>
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
-        <location line="+307"/>
+        <location line="+306"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1189,7 +1189,7 @@ Continue and loose changes?</source>
     &quot;&lt;/p&gt;&quot;</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="+235"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Инструменты</translation>
     </message>
@@ -1484,7 +1484,7 @@ Continue and loose changes?</source>
         <translation>&amp;Помощь</translation>
     </message>
     <message>
-        <location line="+163"/>
+        <location line="+162"/>
         <source>// Output generated from file: </source>
         <translation>// Вывод генерируется из файла: </translation>
     </message>
@@ -1502,7 +1502,7 @@ Continue and loose changes?</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+437"/>
+        <location line="+436"/>
         <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
@@ -1511,7 +1511,7 @@ Continue and loose changes?</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-1027"/>
+        <location line="-1026"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1523,9 +1523,9 @@ Continue and loose changes?</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+440"/>
+        <location line="+439"/>
         <location line="+473"/>
-        <location line="+1258"/>
+        <location line="+1257"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Невозможно прочитать файл %1:
@@ -1557,26 +1557,26 @@ and save before closing!</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-2173"/>
+        <location line="-2171"/>
         <location line="+8"/>
         <location line="+16"/>
-        <location line="+421"/>
+        <location line="+420"/>
         <location line="+19"/>
         <location line="+514"/>
         <location line="+72"/>
-        <location line="+1122"/>
+        <location line="+1121"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3335"/>
-        <location line="+2691"/>
+        <location line="-3330"/>
+        <location line="+2686"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-1536"/>
+        <location line="-1534"/>
         <source>Saved fragment + settings as: </source>
         <translation>Сохраненный фрагмент + настройки как: </translation>
     </message>
@@ -1603,18 +1603,18 @@ Must be less than 32769x32769</source>
         <translation>Прекратить</translation>
     </message>
     <message>
-        <location line="+275"/>
-        <location line="+42"/>
+        <location line="+276"/>
+        <location line="+41"/>
         <source>Saved file : </source>
         <translation>Сохранённый файл : </translation>
     </message>
     <message>
-        <location line="-40"/>
+        <location line="-39"/>
         <source>Save file failed! : </source>
         <translation>Сохранить файл не удалось! : </translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+28"/>
         <source>Images (</source>
         <translation>Изображения (</translation>
     </message>
@@ -1635,7 +1635,7 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+49"/>
+        <location line="+48"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Параметры .frag(*.fragparams );;Все файлы (*.*)</translation>
     </message>
@@ -1835,7 +1835,7 @@ Would you like to reload it?</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+133"/>
         <source>Not a runnable fragment.</source>
         <translation>Ваш код не запускается.</translation>
     </message>
@@ -1889,8 +1889,8 @@ Would you like to reload it?</source>
         <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location line="-2655"/>
-        <location line="+2691"/>
+        <location line="-2650"/>
+        <location line="+2686"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -2517,13 +2517,13 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+350"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+362"/>
         <source>Preferences</source>
         <translation>Предпочтительные настройки</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+27"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation>Для совместимости с некоторыми GPU.</translation>
     </message>
@@ -2565,7 +2565,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+4"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-37"/>
         <source>Presets contain easing curve settings</source>
         <translation>Предварительные настройки параметров плавной кривой</translation>
     </message>
@@ -2613,7 +2613,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-23"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+18"/>
         <source>Autorun On Load</source>
         <translation>Авто запуск</translation>
     </message>
@@ -2625,7 +2625,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-38"/>
         <source>Loop animation</source>
         <translation>Петля анимация</translation>
     </message>
@@ -2704,11 +2704,23 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <source>Autoload on change</source>
         <translation>Перезагрузить при изменении</translation>
     </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+18"/>
+        <source>Jump to line on Error</source>
+        <translation>Перейти к строке ошибки</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>Jump to line on Warn</source>
+        <translation>Перейти к строке предупреждения</translation>
+    </message>
 </context>
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+130"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+129"/>
         <source>Including file: </source>
         <translation>Включить файл: </translation>
     </message>

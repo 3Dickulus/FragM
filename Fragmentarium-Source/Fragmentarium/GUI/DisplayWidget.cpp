@@ -7,8 +7,9 @@
 #include <QMatrix4x4>
 #include <QMenu>
 #include <QStatusBar>
-#include <QVector2D>
-#include <QVector3D>
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 #include <QWheelEvent>
 
 #include "DisplayWidget.h"
@@ -16,6 +17,9 @@
 #include "../../ThirdPartyCode/hdrloader.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
+#include "TextEdit.h"
+
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 namespace Fragmentarium
 {
@@ -503,16 +507,31 @@ QStringList DisplayWidget::shaderAsm(bool w)
     return asmList;
 }
 
+void DisplayWidget::jumpToErrorLine()
+{
+    // jump to error line in text editor
+        int errLineNum = shaderProgram->log().split(":").at(0).split("(").at(1).split(")").at(0).toInt();
+        QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
+        cursor.setPosition(0);
+        int incFudge = 2;
+        if( fragmentSource.source.at(0).startsWith("#version") ) incFudge = 1;
+        int gotoLine = fragmentSource.lines.at(errLineNum) - incFudge; // 0th and #version statement
+        cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,gotoLine);
+        mainWindow->getTextEdit()->setTextCursor( cursor );
+}
+
 void DisplayWidget::initFragmentShader()
 {
-
     if (shaderProgram != nullptr) {
         shaderProgram->release();
+        shaderProgram->removeAllShaders();
         delete ( shaderProgram );
         shaderProgram = nullptr;
     }
 
-    shaderProgram = new QOpenGLShaderProgram ( this );
+    QSettings settings;
+
+    shaderProgram = new QOpenGLShaderProgram ( context() );
 
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
@@ -534,12 +553,14 @@ void DisplayWidget::initFragmentShader()
     // Fragment shader
     s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentSource.getText());
 
-    if (s) {
+    if (s) { // Requests the shader program's id to be created immediately.
         s = shaderProgram->create();
     }
 
     if ( !s ) {
         WARNING ( tr("Could not create fragment shader: ") + shaderProgram->log() );
+        if(settings.value ( "jumpToLineOnError", true ).toBool())
+            jumpToErrorLine();
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -547,6 +568,8 @@ void DisplayWidget::initFragmentShader()
 
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
+        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
+            jumpToErrorLine();
     }
 
     s = shaderProgram->link();
@@ -561,6 +584,8 @@ void DisplayWidget::initFragmentShader()
 
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
+        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
+            jumpToErrorLine();
     }
 
     s = shaderProgram->bind();
@@ -1195,11 +1220,11 @@ void DisplayWidget::setViewPort(int w, int h)
 //   QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
 //   float fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
 //   QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D eye = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
+//   glm::dvec3 eye = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D target = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
+//   glm::dvec3 target = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //   cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   QVector3D up = QVector3D ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
+//   glm::dvec3 up = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
 //
 //   float aspectRatio = float( ( float ) width() / ( float ) height() );
 //   float zNear = 0.00001;
@@ -2080,13 +2105,14 @@ void DisplayWidget::paintGL()
         }
         if (eyeSpline != nullptr) {
             int index = mainWindow->getFrame();
-            QVector3D e = eyeSpline->getSplinePoint ( index );
-            QVector3D t = targetSpline->getSplinePoint ( index );
+            glm::dvec3 e = eyeSpline->getSplinePoint ( index );
+            glm::dvec3 t = targetSpline->getSplinePoint ( index );
             // camera path tracking makes for a bumpy ride
             //  t = eyeSpline->getSplinePoint( index+1 );
-            QVector3D u = upSpline->getSplinePoint ( index );
-            if ( !e.isNull() && !t.isNull() && !u.isNull() ) {
-                mainWindow->setCameraSettings(e, t, u.normalized()); // normalizing Up here allows spline path animating
+            glm::dvec3 u = upSpline->getSplinePoint ( index );
+            glm::dvec3 zero = glm::dvec3(0.0,0.0,0.0);
+            if ( e!=zero && t!=zero && u!=zero ) {
+                mainWindow->setCameraSettings(e, t, normalize(u)); // normalizing Up here allows spline path animating
             }
         }
     }
@@ -2224,24 +2250,24 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 
     // if the user just clicked and didn't drag update the statusbar
     if ( ev->pos() == mouseXY ) {
-        QVector3D mXYZ = cameraControl->screenTo3D(mouseXY.x(), mouseXY.y(), ZAtMXY);
+        glm::dvec3 mXYZ = cameraControl->screenTo3D(mouseXY.x(), mouseXY.y(), ZAtMXY);
         // update statusbar
-        mainWindow->statusBar()->showMessage(QString("X:%1 Y:%2 Z:%3").arg(mXYZ.x()).arg(mXYZ.y()).arg(mXYZ.z()));
+        mainWindow->statusBar()->showMessage(QString("X:%1 Y:%2 Z:%3").arg(mXYZ.x).arg(mXYZ.y).arg(mXYZ.z));
         if(ev->button() == Qt::MiddleButton) {
           // SpotLightDir = polar coords vec2 DE-Raytracer.frag
           // LightPos = vec3 DE-Kn2.frag
           if(ev->modifiers() == Qt::ControlModifier) {
             // placement of light in DE-Kn2.frag
                 mainWindow->setParameter(QString("LightPos = %1,%2,%3")
-                                         .arg(mXYZ.x())
-                                         .arg(mXYZ.y())
-                                         .arg(mXYZ.z()));
+                                         .arg(mXYZ.x)
+                                         .arg(mXYZ.y)
+                                         .arg(mXYZ.z));
           } else {
             // placement of target
                 mainWindow->setParameter(QString("Target = %1,%2,%3")
-                                         .arg(mXYZ.x())
-                                         .arg(mXYZ.y())
-                                         .arg(mXYZ.z()));
+                                         .arg(mXYZ.x)
+                                         .arg(mXYZ.y)
+                                         .arg(mXYZ.z));
           }
             // do we have autofocus widget
             if(getFragmentSource()->autoFocus) {
@@ -2252,16 +2278,16 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
                         // get the eye pos
                         QStringList in = mainWindow->getParameter("Eye").split(",");
                         // convert parameter to 3d vector
-                        QVector3D e = QVector3D(in.at(0).toDouble(), in.at(1).toDouble(), in.at(2).toDouble());
+                        glm::dvec3 e = glm::dvec3(in.at(0).toDouble(), in.at(1).toDouble(), in.at(2).toDouble());
                         // calculate distance between camera and target
-                        double d = mXYZ.distanceToPoint(e);
+                        double d = distance(mXYZ, e);
                         // set the focal plane to this distance
                         mainWindow->setParameter( "FocalPlane", d );
                         mainWindow->statusBar()->showMessage(
                             QString("X:%1 Y:%2 Z:%3 Dist:%4")
-                            .arg(mXYZ.x())
-                            .arg(mXYZ.y())
-                            .arg(mXYZ.z())
+                            .arg(mXYZ.x)
+                            .arg(mXYZ.y)
+                            .arg(mXYZ.z)
                             .arg(d));
                     }
                 }
@@ -2412,12 +2438,12 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
 void DisplayWidget::drawLookatVector()
 {
-    QVector3D ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
-    QVector3D tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
+    glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
+    glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glColor4f ( 1.0,1.0,0.0,1.0 );
     glBegin ( GL_LINE_STRIP );
-    glVertex3f ( ec.x(),ec.y(),ec.z() );
-    glVertex3f ( tc.x(),tc.y(),tc.z() );
+    glVertex3f ( ec.x,ec.y,ec.z );
+    glVertex3f ( tc.x,tc.y,tc.z );
     glEnd();
 }
 
@@ -2427,27 +2453,26 @@ void DisplayWidget::setPerspective()
     QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
     double fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
     QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D eye = QVector3D(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
+    glm::dvec3 eye = glm::dvec3(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
     cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D target = QVector3D(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
+    glm::dvec3 target = glm::dvec3(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
     cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-    QVector3D up = QVector3D(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
+    glm::dvec3 up = glm::dvec3(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
 
     auto aspectRatio = double((double)width() / (double)height());
     double zNear = 0.00001;
     double zFar = 1000.0;
     double vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
 
-    QMatrix4x4 matrix;
-    matrix.setToIdentity();
-    matrix.perspective ( vertAngle, aspectRatio, zNear, zFar );
-    matrix.lookAt ( eye,target,up );
+    glm::dmat4 matrix;
+    matrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
+    matrix = matrix * glm::lookAt ( eye,target,up );
 
     /// BEGIN 3DTexture
     //     texMatrix = matrix;
     /// END 3DTexture
 
-    glLoadMatrixf ( matrix.constData() );
+    glLoadMatrixd ( &matrix[0][0] );
 }
 
 QStringList DisplayWidget::getCurveSettings()
@@ -2490,9 +2515,9 @@ void DisplayWidget::drawSplines()
 void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
 {
     if( cameraID() == "3D" ) {
-        auto *eyeCp = (QVector3D *)eyeControlPoints.constData();
-        auto *tarCp = (QVector3D *)targetControlPoints.constData();
-        auto *upCp = (QVector3D *)upControlPoints.constData();
+        auto *eyeCp = (glm::dvec3 *)eyeControlPoints.constData();
+        auto *tarCp = (glm::dvec3 *)targetControlPoints.constData();
+        auto *upCp = (glm::dvec3 *)upControlPoints.constData();
 
         if (eyeCp != nullptr && tarCp != nullptr && upCp != nullptr) {
             eyeSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, eyeCp);
@@ -2508,7 +2533,7 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
     }
 }
 
-void DisplayWidget::addControlPoint(QVector3D eP, QVector3D tP, QVector3D uP)
+void DisplayWidget::addControlPoint(glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP)
 {
     eyeControlPoints.append ( eP );
     targetControlPoints.append ( tP );

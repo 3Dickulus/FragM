@@ -42,7 +42,7 @@
 #define QTSPLINE_H
 #include <QColor>
 #include <QObject>
-#include <QVector3D>
+#include <glm/glm.hpp>
 #include <QtOpenGL>
 
 #include <QDebug>
@@ -53,8 +53,8 @@ namespace GUI
 {
 
 struct Geometry {
-    QVector<QVector3D> vertices;
-    void appendVertex ( const QVector3D &a );
+    QVector<glm::dvec3> vertices;
+    void appendVertex ( const glm::dvec3 &a );
     void loadArrays() const;
 };
 
@@ -63,7 +63,7 @@ class Patch
 public:
     Patch ( Geometry * );
     void draw ( int n = 0, int p = 0 ) const;
-    void addVertex ( const QVector3D &a );
+    void addVertex ( const glm::dvec3 &a );
     GLuint start;
     GLuint count;
     GLfloat pointSize;
@@ -74,7 +74,7 @@ public:
 class QtSpline : public QObject
 {
 public:
-    QtSpline ( QOpenGLWidget *parent, int nctrl = 0, int nsegs = 0, QVector3D *cv = 0 );
+    QtSpline ( QOpenGLWidget *parent, int nctrl = 0, int nsegs = 0, glm::dvec3 *cv = 0 );
     ~QtSpline();
 
     void setSplineColor ( QColor c ) const;
@@ -82,13 +82,13 @@ public:
     void drawControlPoints ( int n = 0 ) const;
     void drawSplinePoints() const;
 
-    QVector3D getControlPoint ( int n );
-    QVector3D getSplinePoint ( int n );
-    void setControlPoint ( int n, QVector3D *p );
-    void recalc ( int nc, int ns, QVector3D *cv );
+    glm::dvec3 getControlPoint ( int n );
+    glm::dvec3 getSplinePoint ( int n );
+    void setControlPoint ( int n, glm::dvec3 *p );
+    void recalc ( int nc, int ns, glm::dvec3 *cv );
 
 private:
-    void buildGeometry ( int nctrl, int nsegs, QVector3D *cv );
+    void buildGeometry ( int nctrl, int nsegs, glm::dvec3 *cv );
     QOpenGLWidget *prnt;
     Geometry *geom;
     QList<Patch *> parts;

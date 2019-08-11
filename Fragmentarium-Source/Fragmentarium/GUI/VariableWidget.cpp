@@ -196,21 +196,21 @@ void FloatWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float2Widget -----------------------------------------------
 
-Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString name, QVector2D defaultValue, QVector2D min, QVector2D max)
+Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)
 {
     auto *m = new QGridLayout(widget);
     m->setSpacing(2);
     m->setContentsMargins (0,0,0,0);
 
-    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue.x(),
-                                   min.x(), max.x());
+    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue.x,
+                                   min.x, max.x);
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
 
-    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue.y(),
-                                   min.y(), max.y());
+    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue.y,
+                                   min.y, max.y);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(valueChanged()));
@@ -227,17 +227,17 @@ QString Float2Widget::toString()
            .arg(QString::number(comboSlider2->getValue(),'g',p));
 }
 
-void Float2Widget::setValue(QVector3D v)
+void Float2Widget::setValue(glm::dvec3 v)
 {
-    comboSlider1->setValue(v.x());
-    comboSlider2->setValue(v.y());
+    comboSlider1->setValue(v.x);
+    comboSlider2->setValue(v.y);
 }
 
 bool Float2Widget::fromString(QString string)
 {
     double f1,f2;
     MiniParser(string).getDouble(f1).getDouble(f2);
-    QVector2D f(f1,f2);
+    glm::dvec2 f(f1,f2);
 
     if ( f == getValue() ) {
         return false;
@@ -258,15 +258,15 @@ void Float2Widget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float3Widget -----------------------------------------------
 
-Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString name, QVector3D defaultValue, QVector3D min, QVector3D max)
+Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)
 {
 
     normalize = false;
 
     if (min==max) {
-        min = QVector3D(-1,-1,-1);
-        max = QVector3D(1,1,1);
+        min = glm::dvec3(-1,-1,-1);
+        max = glm::dvec3(1,1,1);
         if (name != "Up") {
             normalize = true;
         } // normalizing Up at the widget level interferes with spline path animating
@@ -294,11 +294,11 @@ Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString nam
 
 }
 
-void Float3Widget::setValue(QVector3D v)
+void Float3Widget::setValue(glm::dvec3 v)
 {
-    comboSlider1->setValue(v.x());
-    comboSlider2->setValue(v.y());
-    comboSlider3->setValue(v.z());
+    comboSlider1->setValue(v.x);
+    comboSlider2->setValue(v.y);
+    comboSlider3->setValue(v.z);
 }
 
 void Float3Widget::n1Changed()
@@ -381,8 +381,8 @@ QString Float3Widget::getUniqueName()
                .arg("[0 0 0]");
     }
 
-    QString f = QString("[%1 %2 %3]").arg(min.x()).arg(min.y()).arg(min.z());
-    QString t = QString("[%1 %2 %3]").arg(max.x()).arg(max.y()).arg(max.z());
+    QString f = QString("[%1 %2 %3]").arg(min.x).arg(min.y).arg(min.z);
+    QString t = QString("[%1 %2 %3]").arg(max.x).arg(max.y).arg(max.z);
 
     return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
 }
@@ -403,7 +403,7 @@ bool Float3Widget::fromString(QString string)
 {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
-    QVector3D f(f1,f2,f3);
+    glm::dvec3 f(f1,f2,f3);
 
     if ( f == getValue() ) {
         return false;
@@ -426,7 +426,7 @@ void Float3Widget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float4Widget -----------------------------------------------
 
-Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString name, QVector4D defaultValue, QVector4D min, QVector4D max)
+Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue),
       min(min), max(max)
 {
@@ -439,8 +439,8 @@ Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString nam
     normalize = false;
 
     if (min==max) {
-        min = QVector4D(-1,-1,-1,-1);
-        max = QVector4D(1,1,1,1);
+        min = glm::dvec4(-1,-1,-1,-1);
+        max = glm::dvec4(1,1,1,1);
         normalize = true;
     }
 
@@ -466,26 +466,26 @@ Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString nam
 
 }
 
-void Float4Widget::setValue(QVector4D v)
+void Float4Widget::setValue(glm::dvec4 v)
 {
-    comboSlider1->setValue(v.x());
-    comboSlider2->setValue(v.y());
-    comboSlider3->setValue(v.z());
-    comboSlider4->setValue(v.w());
+    comboSlider1->setValue(v.x);
+    comboSlider2->setValue(v.y);
+    comboSlider3->setValue(v.z);
+    comboSlider4->setValue(v.w);
 }
 
 QString Float4Widget::getUniqueName()
 {
     QString f = QString("[%1 %2 %3 %4]")
-                .arg(min.x())
-                .arg(min.y())
-                .arg(min.z())
-                .arg(min.w());
+                .arg(min.x)
+                .arg(min.y)
+                .arg(min.z)
+                .arg(min.w);
     QString t = QString("[%1 %2 %3 %4]")
-                .arg(max.x())
-                .arg(max.y())
-                .arg(max.z())
-                .arg(max.w());
+                .arg(max.x)
+                .arg(max.y)
+                .arg(max.z)
+                .arg(max.w);
     return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
 }
 
@@ -506,7 +506,7 @@ bool Float4Widget::fromString(QString string)
 {
     double f1,f2,f3,f4;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
-    QVector4D f(f1,f2,f3,f4);
+    glm::dvec4 f(f1,f2,f3,f4);
 
     if ( f == getValue() ) {
         return false;
@@ -533,7 +533,7 @@ void Float4Widget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 /// ------------ ColorWidget ---------------------------------------
 
-ColorWidget::ColorWidget(QWidget *parent, QWidget *variableEditor, QString name, QVector3D defaultValue)
+ColorWidget::ColorWidget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec3 defaultValue)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue)
 {
 
@@ -557,19 +557,19 @@ QString ColorWidget::toString()
         p = DDEC;
     }
 
-    QVector3D c = colorChooser->getValue();
+    glm::dvec3 c = colorChooser->getValue();
 
     return QString("%1,%2,%3")
-           .arg(QString::number(c.x(),'g',p))
-           .arg(QString::number(c.y(),'g',p))
-           .arg(QString::number(c.z(),'g',p));
+           .arg(QString::number(c.x,'g',p))
+           .arg(QString::number(c.y,'g',p))
+           .arg(QString::number(c.z,'g',p));
 }
 
 bool ColorWidget::fromString(QString string)
 {
     double f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
-    QVector3D c(f1,f2,f3);
+    glm::dvec3 c(f1,f2,f3);
     if ( c == getValue() ) {
         return false;
     }
@@ -581,14 +581,14 @@ void ColorWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 {
     int l = uniformLocation(shaderProgram);
     if (l != -1) {
-        QVector3D c = colorChooser->getValue();
-        shaderProgram->setUniformValue(l, c.x(), c.y(), c.z());
+        glm::dvec3 c = colorChooser->getValue();
+        shaderProgram->setUniformValue(l, c.x, c.y, c.z);
     }
 }
 
 
 /// FloatColorWidget constructor.
-FloatColorWidget::FloatColorWidget(QWidget *parent, QWidget *variableEditor, QString name, double defaultValue, double min, double max, QVector3D defaultColorValue)
+FloatColorWidget::FloatColorWidget(QWidget *parent, QWidget *variableEditor, QString name, double defaultValue, double min, double max, glm::dvec3 defaultColorValue)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max), defaultColorValue(defaultColorValue)
 {
     auto *l = new QHBoxLayout(widget);
@@ -614,12 +614,12 @@ QString FloatColorWidget::toString()
     if (isDouble()) {
         p = DDEC;
     }
-    QVector3D c = colorChooser->getValue();
+    glm::dvec3 c = colorChooser->getValue();
     double v = comboSlider->getValue();
     return QString("%1,%2,%3,%4")
-           .arg(QString::number(c.x(),'g',p))
-           .arg(QString::number(c.y(),'g',p))
-           .arg(QString::number(c.z(),'g',p))
+           .arg(QString::number(c.x,'g',p))
+           .arg(QString::number(c.y,'g',p))
+           .arg(QString::number(c.z,'g',p))
            .arg(QString::number( v,'g',p));
 
 }
@@ -631,8 +631,8 @@ bool FloatColorWidget::fromString(QString string)
     }
     double f,f1,f2,f3;
     MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f);
-    QVector3D c(f1,f2,f3);
-    if ( QVector4D(c,f) == getValue() ) {
+    glm::dvec3 c(f1,f2,f3);
+    if ( glm::dvec4(c,f) == getValue() ) {
         return false;
     }
     colorChooser->setColor(c);
@@ -645,9 +645,9 @@ void FloatColorWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 {
     int l = uniformLocation(shaderProgram);
     if (l != -1) {
-        QVector3D c = colorChooser->getValue();
+        glm::dvec3 c = colorChooser->getValue();
         double v = comboSlider->getValue();
-        shaderProgram->setUniformValue(l,  c.x(), c.y(), c.z(), (float)v );
+        shaderProgram->setUniformValue(l,  c.x, c.y, c.z, (float)v );
     }
 }
 

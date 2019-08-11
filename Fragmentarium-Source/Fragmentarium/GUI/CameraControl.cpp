@@ -1,18 +1,19 @@
-
-#include <QMatrix4x4>
-#include <QMatrix>
 #include <QMenu>
 #include <QStatusBar>
 #include <QToolTip>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include <QWheelEvent>
 #include <QFileInfo>
 
 #include "CameraControl.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
+
+static glm::dvec3 operator*(const glm::dmat4 &m, const glm::dvec3 &v)
+{
+    return glm::dvec3(m * glm::dvec4(v, 0.0));
+}
 
 using namespace SyntopiaCore::Logging;
 
@@ -63,11 +64,11 @@ Camera3D::Camera3D(QStatusBar *statusBar) : statusBar(statusBar)
     target = nullptr;
     up = nullptr;
     fov = nullptr;
-    eyeDown = QVector3D(0, 0, -1);
-    targetDown = QVector3D(0, 0, -1);
-    upDown = QVector3D(0, 0, -1);
+    eyeDown = glm::dvec3(0, 0, -1);
+    targetDown = glm::dvec3(0, 0, -1);
+    upDown = glm::dvec3(0, 0, -1);
     fovDown = 0.0;
-    mouseDown = QVector3D(0, 0, -1);
+    mouseDown = glm::dvec3(0, 0, -1);
 
     keyStatus.clear();
     stepSize = 0.1f;
@@ -123,10 +124,10 @@ bool Camera3D::parseKeys()
     }
 
     //INFO("Parse keys...");
-    QVector3D direction = (target->getValue() - eye->getValue());
-    QVector3D dir = direction.normalized();
-    QVector3D right = QVector3D::crossProduct(direction.normalized(), up->getValue()).normalized();
-    QVector3D upV = up->getValue();
+    glm::dvec3 direction = (target->getValue() - eye->getValue());
+    glm::dvec3 dir = normalize(direction);
+    glm::dvec3 right = normalize(cross(dir, up->getValue()));
+    glm::dvec3 upV = up->getValue();
 
     double factor = stepSize * 10.0;
 
@@ -156,91 +157,91 @@ bool Camera3D::parseKeys()
     }
 
     if (keyDown(Qt::Key_A)) {
-        QVector3D offset = -right * stepSize;
+        glm::dvec3 offset = -right * stepSize;
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_D)) {
-        QVector3D offset = right * stepSize;
+        glm::dvec3 offset = right * stepSize;
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_W)) {
-        QVector3D offset = dir * stepSize;
-        QVector3D db2 = eye->getValue() + offset;
+        glm::dvec3 offset = dir * stepSize;
+        glm::dvec3 db2 = eye->getValue() + offset;
         eye->setValue(db2);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_S)) {
-        QVector3D offset = -dir * stepSize;
+        glm::dvec3 offset = -dir * stepSize;
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_R)) {
-        QVector3D offset = -upV * stepSize;
+        glm::dvec3 offset = -upV * stepSize;
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_F)) {
-        QVector3D offset = upV * stepSize;
+        glm::dvec3 offset = upV * stepSize;
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_Y)) {
-        QMatrix4x4 m;
-        m.rotate(factor, upV);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(factor), upV);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_H)) {
-        QMatrix4x4 m;
-        m.rotate(-factor, upV);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(-factor), upV);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_T)) {
-        QMatrix4x4 m;
-        m.rotate(factor, right);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(factor), right);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_G)) {
-        QMatrix4x4 m;
-        m.rotate(-factor, right);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(-factor), right);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_E)) {
-        QMatrix4x4 m;
-        m.rotate(factor, dir);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(factor), dir);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_Q)) {
-        QMatrix4x4 m;
-        m.rotate(-factor, dir);
+        glm::dmat4 m = glm::identity<glm::dmat4>();
+        m = rotate(m, glm::radians(-factor), dir);
         target->setValue(m * direction + eye->getValue());
         up->setValue(m * up->getValue());
         keysDown = true;
@@ -273,8 +274,8 @@ void Camera3D::orthogonalizeUpVector()
     if (up == nullptr || target == nullptr || eye == nullptr || fov == nullptr) {
         return;
     }
-    QVector3D dir = (target->getValue() - eye->getValue()).normalized();
-    QVector3D fixedUp = up->getValue() - QVector3D::dotProduct(up->getValue(), dir) * dir;
+    glm::dvec3 dir = normalize(target->getValue() - eye->getValue());
+    glm::dvec3 fixedUp = up->getValue() - dot(up->getValue(), dir) * dir;
     up->setValue(fixedUp);
 }
 
@@ -283,9 +284,9 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
     if (up == nullptr || target == nullptr || eye == nullptr || fov == nullptr) {
         return false;
     }
-    QVector3D pos = QVector3D(e->pos().x() / (float(w)), e->pos().y() / (float(h)), 0.0);
-    //QVector3D direction = (target->getValue()-eye->getValue());
-    // QVector3D right = QVector3D::cross(direction.normalized(), up->getValue()).normalized();
+    glm::dvec3 pos = glm::dvec3(e->pos().x() / (float(w)), e->pos().y() / (float(h)), 0.0);
+    //glm::dvec3 direction = (target->getValue()-eye->getValue());
+    // glm::dvec3 right = glm::dvec3::cross(direction.normalized(), up->getValue()).normalized();
     // Store down params
     if (e->type() ==  QEvent::MouseButtonPress) {
         orthogonalizeUpVector();
@@ -294,27 +295,27 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
         targetDown = target->getValue();
         eyeDown = eye->getValue();
     } else if (e->type() ==  QEvent::MouseButtonRelease) {
-        mouseDown = QVector3D(0, 0, -1);
+        mouseDown = glm::dvec3(0, 0, -1);
     }
 
-    if (mouseDown.z() != -1 && e->buttons() != Qt::NoButton) {
-        QVector3D dp = mouseDown - pos;
+    if (mouseDown.z != -1 && e->buttons() != Qt::NoButton) {
+        glm::dvec3 dp = mouseDown - pos;
 
         double mouseSpeed = stepSize * 10.0;
-        QVector3D directionDown = (targetDown - eyeDown);
-        QVector3D rightDown = QVector3D::crossProduct(directionDown.normalized(), upDown).normalized();
+        glm::dvec3 directionDown = (targetDown - eyeDown);
+        glm::dvec3 rightDown = normalize(cross(normalize(directionDown), upDown));
 
         if (e->buttons() == Qt::RightButton) {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // Translate in screen plane
-                QVector3D offset = (-upDown * dp.y() * mouseSpeed * 2) + (rightDown * dp.x() * mouseSpeed);
+                glm::dvec3 offset = (-upDown * dp.y * mouseSpeed * 2.0) + (rightDown * dp.x * mouseSpeed);
                 eye->setValue(eyeDown + offset);
                 target->setValue(targetDown + offset);
                 return true;
             }
         } else if (e->buttons() == (Qt::RightButton | Qt::LeftButton)) {
             // Zoom
-            QVector3D newEye = eyeDown - directionDown * dp.x() * mouseSpeed;
+            glm::dvec3 newEye = eyeDown - directionDown * dp.x * mouseSpeed;
             eye->setValue(newEye);
             target->setValue(directionDown + newEye);
             return true;
@@ -322,30 +323,30 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
 
             if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
                 // Rotate about origo
-                QMatrix4x4 mx;
-                mx.rotate(-dp.x() * mouseSpeed * 10.0, upDown);
-                QMatrix4x4 my;
-                my.rotate(-dp.y() * mouseSpeed * 10.0, rightDown);
-                QVector3D oDir = (my * mx) * (-eyeDown);
+                glm::dmat4 mx = glm::identity<glm::dmat4>();
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 10.0), upDown);
+                glm::dmat4 my = glm::identity<glm::dmat4>();
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 10.0), rightDown);
+                glm::dvec3 oDir = (my * mx) * (-eyeDown);
                 eye->setValue(-oDir);
                 target->setValue((my * mx)*directionDown - oDir);
                 up->setValue((my * mx)*upDown);
             } else if (QApplication::keyboardModifiers() == Qt::ShiftModifier + Qt::AltModifier) {
                 // Rotate around target thanks to M.Benesi
-                QMatrix4x4 mx;
-                mx.rotate(-dp.x() * mouseSpeed * 10.0, upDown);
-                QMatrix4x4 my;
-                my.rotate(-dp.y() * mouseSpeed * 10.0, rightDown);
-                QVector3D oDir = (my * mx) * (directionDown); //was -eyeDown
+                glm::dmat4 mx = glm::identity<glm::dmat4>();
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 10.0), upDown);
+                glm::dmat4 my = glm::identity<glm::dmat4>();
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 10.0), rightDown);
+                glm::dvec3 oDir = (my * mx) * (directionDown); //was -eyeDown
                 eye->setValue(targetDown - oDir);
                 // target->setValue( (my*mx)*directionDown-oDir);
                 up->setValue((my * mx)*upDown);
             } else if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // orient camera
-                QMatrix4x4 mx;
-                mx.rotate(-dp.x() * mouseSpeed * 100.0, upDown);
-                QMatrix4x4 my;
-                my.rotate(-dp.y() * mouseSpeed * 100.0, rightDown);
+                glm::dmat4 mx = glm::identity<glm::dmat4>();
+                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 100.0), upDown);
+                glm::dmat4 my = glm::identity<glm::dmat4>();
+                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 100.0), rightDown);
                 target->setValue((my * mx) * directionDown + eye->getValue()); // before: eyeDown
                 up->setValue((my * mx)*upDown);
             }
@@ -356,7 +357,7 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
     return false;
 }
 
-QVector3D Camera3D::transform(int width, int height)
+glm::dvec3 Camera3D::transform(int width, int height)
 {
     this->height = height;
     this->width = width;
@@ -389,9 +390,9 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
             stepSize = 10.0;
         }
     } else {
-        QVector3D direction = (target->getValue() - eye->getValue());
-        QVector3D dir = direction.normalized();
-        QVector3D offset = dir * stepSize * (steps);
+        glm::dvec3 direction = (target->getValue() - eye->getValue());
+        glm::dvec3 dir = normalize(direction);
+        glm::dvec3 offset = dir * stepSize * (steps);
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         return true;
@@ -402,40 +403,40 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
 }
 
 // thanks to M Benesi and FractalForums.com :D
-QVector3D Camera3D::screenTo3D(int sx, int sy, double sz)
+glm::dvec3 Camera3D::screenTo3D(int sx, int sy, double sz)
 {
 
-    QVector3D eye2 = eye->getValue(), target2 = target->getValue(),
+    glm::dvec3 eye2 = eye->getValue(), target2 = target->getValue(),
               up2 = up->getValue();
     double coordX =
         (double(sx) / double(height) * 2.0 - double(width) / double(height));
     double coordY = (double(height - sy) / double(height) * 2.0 - 1.0);
 
-    QVector3D dir2 = (target2 - eye2).normalized();
-    QVector3D up3 = (up2 - QVector3D::dotProduct(up2, dir2) * dir2).normalized();
-    QVector3D right2 = QVector3D::crossProduct(dir2, up3).normalized();
+    glm::dvec3 dir2 = normalize(target2 - eye2);
+    glm::dvec3 up3 = normalize(up2 - dot(up2, dir2) * dir2);
+    glm::dvec3 right2 = normalize(cross(dir2, up3));
 
     dir2 = (coordX * right2 + coordY * up3) * fov->getValue() + dir2; //.4 = FOV
 
-    QVector3D ret = eye2 + dir2 / sz;
+    glm::dvec3 ret = eye2 + dir2 / sz;
 #ifndef Q_OS_WIN
-    if (std::isinf(ret.x())) {
-        ret.setX(1000.0);
+    if (std::isinf(ret.x)) {
+        ret.x=(1000.0);
     }
-    if (std::isinf(ret.y())) {
-        ret.setY(1000.0);
+    if (std::isinf(ret.y)) {
+        ret.y=(1000.0);
     }
-    if (std::isinf(ret.z())) {
-        ret.setZ(1000.0);
+    if (std::isinf(ret.z)) {
+        ret.z=(1000.0);
     }
-    if (std::isnan(ret.x())) {
-        ret.setX(0.00001);
+    if (std::isnan(ret.x)) {
+        ret.x=(0.00001);
     }
-    if (std::isnan(ret.y())) {
-        ret.setY(0.00001);
+    if (std::isnan(ret.y)) {
+        ret.y=(0.00001);
     }
-    if (std::isnan(ret.z())) {
-        ret.setZ(0.00001);
+    if (std::isnan(ret.z)) {
+        ret.z=(0.00001);
     }
 #endif
     return ret;
@@ -453,7 +454,7 @@ Camera2D::Camera2D(QStatusBar *statusBar) : statusBar(statusBar)
     center = nullptr;
     zoom = nullptr;
     zoomDown = 0.0;
-    mouseDown = QVector3D(0, 0, -1);
+    mouseDown = glm::dvec3(0, 0, -1);
     keyStatus.clear();
     stepSize = 1.0;
     width = 1;
@@ -472,7 +473,7 @@ void Camera2D::printInfo()
     INFO(QCoreApplication::translate("Camera2D","Camera: Click on 2D window for key focus. See Help Menu for more."));
 }
 
-QVector3D Camera2D::transform(int w, int h)
+glm::dvec3 Camera2D::transform(int w, int h)
 {
     width = w;
     height = h;
@@ -498,12 +499,12 @@ void Camera2D::connectWidgets(VariableEditor *ve)
 
 namespace
 {
-QVector3D getModelCoord(QVector3D mouseCoord, QVector3D center, double zoom,
+glm::dvec3 getModelCoord(glm::dvec3 mouseCoord, glm::dvec3 center, double zoom,
                         int w, int h)
 {
     double ar = h / (double)w;
-    QVector3D coord = (mouseCoord / zoom + center);
-    coord.setX(ar * coord.x());
+    glm::dvec3 coord = (mouseCoord / zoom + center);
+    coord.x=(ar * coord.x);
     return coord;
 }
 } // namespace
@@ -513,7 +514,7 @@ bool Camera2D::parseKeys()
     if (center == nullptr || zoom == nullptr) {
         return false;
     }
-    QVector3D centerValue = center->getValue();
+    glm::dvec3 centerValue = glm::dvec3(center->getValue(), 0.0);
     double zoomValue = zoom->getValue();
 
     double factor = pow(1.05f, (double)stepSize);
@@ -551,23 +552,23 @@ bool Camera2D::parseKeys()
     // ---------- Movement -----------------------------
 
     if (keyDown(Qt::Key_A)) {
-        center->setValue(centerValue + QVector3D(-zFactor, 0.0, 0.0));
+        center->setValue(centerValue + glm::dvec3(-zFactor, 0.0, 0.0));
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_D)) {
-        center->setValue(centerValue + QVector3D(zFactor, 0.0, 0.0));
+        center->setValue(centerValue + glm::dvec3(zFactor, 0.0, 0.0));
         keysDown = true;
     }
 
 
     if (keyDown(Qt::Key_W)) {
-        center->setValue(centerValue + QVector3D(0.0, -zFactor, 0.0));
+        center->setValue(centerValue + glm::dvec3(0.0, -zFactor, 0.0));
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_S)) {
-        center->setValue(centerValue + QVector3D(0.0, zFactor, 0.0));
+        center->setValue(centerValue + glm::dvec3(0.0, zFactor, 0.0));
         keysDown = true;
     }
 
@@ -590,8 +591,8 @@ bool Camera2D::mouseEvent(QMouseEvent *e, int w, int h)
     if (center == nullptr || zoom == nullptr) {
         return false;
     }
-    QVector3D pos = QVector3D(e->pos().x() / (0.5 * double(w)) - 1.0, 1.0 - e->pos().y() / (0.5 * double(h)), 0.0);
-    QVector3D centerValue = center->getValue();
+    glm::dvec3 pos = glm::dvec3(e->pos().x() / (0.5 * double(w)) - 1.0, 1.0 - e->pos().y() / (0.5 * double(h)), 0.0);
+    glm::dvec3 centerValue = glm::dvec3(center->getValue(), 0.0);
     double zoomValue = zoom->getValue();
 
     if (e->type() ==  QEvent::MouseButtonPress) {
@@ -599,18 +600,18 @@ bool Camera2D::mouseEvent(QMouseEvent *e, int w, int h)
         zoomDown = zoomValue;
         centerDown = centerValue;
     } else if (e->type() ==  QEvent::MouseButtonRelease) {
-        mouseDown = QVector3D(0, 0, -1);
+        mouseDown = glm::dvec3(0, 0, -1);
     }
 
     double mouseSpeed = 1.0;
-    if (mouseDown.z() != -1 && e->buttons() != Qt::NoButton) {
-        QVector3D dp = mouseDown - pos;
+    if (mouseDown.z != -1 && e->buttons() != Qt::NoButton) {
+        glm::dvec3 dp = mouseDown - pos;
         if (e->buttons() == Qt::LeftButton) {
             center->setValue(centerDown + dp * mouseSpeed / zoomDown);
         } else if (e->buttons() == Qt::RightButton) {
             // Convert mouse down to model coordinates
-            QVector3D md = getModelCoord(mouseDown, centerDown, zoomDown, w, h);
-            double newZoom = zoomDown + dp.y() * (zoomDown) * mouseSpeed;
+            glm::dvec3 md = getModelCoord(mouseDown, centerDown, zoomDown, w, h);
+            double newZoom = zoomDown + dp.y * (zoomDown) * mouseSpeed;
             double z = newZoom / zoomDown;
             center->setValue(md - (md - centerDown) / z);
             zoom->setValue(newZoom);
@@ -638,21 +639,38 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     if (zoom == nullptr) {
         return false;
     }
-    double zoomValue = zoom->getValue();
-    QVector3D centerValue = center->getValue();
-
     double steps = e->delta() / 120.0;
     double factor = 1.15;
+    double zoomValue = zoom->getValue();
+    // Convert mouse pos to model coordinates
+    glm::dvec3 centerValue; centerValue.x = center->getValue().x; centerValue.y = center->getValue().y; centerValue.z=0.0;
+    // traveling
+//     {
+//         glm::dvec3 pos = glm::dvec3((e->pos().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->pos().y() * (1.0 / double(height))), 0.0);
+//         glm::dvec3 md = pos / zoomValue + centerValue;
+//
+//         if (steps > 0.0) {
+//             center->setValue(md);
+//             zoom->setValue(zoomValue * factor);
+//         } else {
+//             center->setValue(md);
+//             zoom->setValue(zoomValue / factor);
+//         }
+//     }
+    // fixed
+    {
     double g = steps > 0.0 ? factor : 1.0 / factor;
 
     double u = (e->pos().x() / double(width) - 0.5) * 2.0 * double(width) / double(height);
     double v = (e->pos().y() / double(height) - 0.5) * 2.0;
 
-    QVector3D pos = QVector3D(-u, v, 0.0);
-    QVector3D md = centerValue + pos / (zoomValue * g) * (1.0 - g);
+        glm::dvec3 pos = glm::dvec3(-u, v, 0.0);
+        glm::dvec3 md = centerValue + pos / (zoomValue * g) * (1.0 - g);
 
     center->setValue(md);
     zoom->setValue(zoomValue * g);
+
+    }
     return true;
 }
 } // namespace GUI

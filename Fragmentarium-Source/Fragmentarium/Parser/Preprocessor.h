@@ -6,9 +6,7 @@
 #include <QList>
 #include <QFile>
 #include <QVector>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
+#include <glm/glm.hpp>
 #include <QMap>
 
 #include "../GUI/FileManager.h"
@@ -16,8 +14,7 @@
 #include "../../SyntopiaCore/Exceptions/Exception.h"
 #include "../../SyntopiaCore/Logging/Logging.h"
 
-#define DBOUT
-// qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 namespace Fragmentarium {
 using namespace GUI;
@@ -156,104 +153,104 @@ private:
 
 class Float2Parameter : public GuiParameter {
 public:
-    Float2Parameter(QString group, QString name,QString tooltip,  QVector2D from, QVector2D to, QVector2D defaultValue) :
+    Float2Parameter(QString group, QString name,QString tooltip,  glm::dvec2 from, glm::dvec2 to, glm::dvec2 defaultValue) :
         GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        QString f = QString("[%1 %2]").arg(from.x()).arg(from.y());
-        QString t = QString("[%1 %2]").arg(to.x()).arg(to.y());
+        QString f = QString("[%1 %2]").arg(from.x).arg(from.y);
+        QString t = QString("[%1 %2]").arg(to.x).arg(to.y);
         return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
     }
-    QVector2D getFrom() {
+    glm::dvec2 getFrom() {
         return from;
     }
-    QVector2D getTo() {
+    glm::dvec2 getTo() {
         return to;
     }
-    QVector2D getDefaultValue() {
+    glm::dvec2 getDefaultValue() {
         return defaultValue;
     }
 private:
-    QVector2D from;
-    QVector2D to;
-    QVector2D defaultValue;
+    glm::dvec2 from;
+    glm::dvec2 to;
+    glm::dvec2 defaultValue;
 };
 
 class Float3Parameter : public GuiParameter {
 public:
-    Float3Parameter(QString group, QString name,QString tooltip,  QVector3D from, QVector3D to, QVector3D defaultValue) :
+    Float3Parameter(QString group, QString name,QString tooltip,  glm::dvec3 from, glm::dvec3 to, glm::dvec3 defaultValue) :
         GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        QString f = QString("[%1 %2 %3]").arg(from.x()).arg(from.y()).arg(from.z());
-        QString t = QString("[%1 %2 %3]").arg(to.x()).arg(to.y()).arg(to.z());
+        QString f = QString("[%1 %2 %3]").arg(from.x).arg(from.y).arg(from.z);
+        QString t = QString("[%1 %2 %3]").arg(to.x).arg(to.y).arg(to.z);
         return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
     }
-    QVector3D getFrom() {
+    glm::dvec3 getFrom() {
         return from;
     }
-    QVector3D getTo() {
+    glm::dvec3 getTo() {
         return to;
     }
-    QVector3D getDefaultValue() {
+    glm::dvec3 getDefaultValue() {
         return defaultValue;
     }
 private:
-    QVector3D from;
-    QVector3D to;
-    QVector3D defaultValue;
+    glm::dvec3 from;
+    glm::dvec3 to;
+    glm::dvec3 defaultValue;
 };
 
 class Float4Parameter : public GuiParameter {
 public:
-    Float4Parameter(QString group, QString name,QString tooltip,  QVector4D from, QVector4D to, QVector4D defaultValue) :
+    Float4Parameter(QString group, QString name,QString tooltip,  glm::dvec4 from, glm::dvec4 to, glm::dvec4 defaultValue) :
         GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        QString f = QString("[%1 %2 %3 %4]").arg(from.x()).arg(from.y()).arg(from.z()).arg(from.w());
-        QString t = QString("[%1 %2 %3 %4]").arg(to.x()).arg(to.y()).arg(to.z()).arg(to.w());
+        QString f = QString("[%1 %2 %3 %4]").arg(from.x).arg(from.y).arg(from.z).arg(from.w);
+        QString t = QString("[%1 %2 %3 %4]").arg(to.x).arg(to.y).arg(to.z).arg(to.w);
         return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
     }
-    QVector4D getFrom() {
+    glm::dvec4 getFrom() {
         return from;
     }
-    QVector4D getTo() {
+    glm::dvec4 getTo() {
         return to;
     }
-    QVector4D getDefaultValue() {
+    glm::dvec4 getDefaultValue() {
         return defaultValue;
     }
 private:
-    QVector4D from;
-    QVector4D to;
-    QVector4D defaultValue;
+    glm::dvec4 from;
+    glm::dvec4 to;
+    glm::dvec4 defaultValue;
 };
 
 class ColorParameter : public GuiParameter {
 public:
-    ColorParameter(QString group, QString name,QString tooltip, QVector3D defaultValue) :
+    ColorParameter(QString group, QString name,QString tooltip, glm::dvec3 defaultValue) :
         GuiParameter(group,name, tooltip), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
         return QString("%1:%2").arg(group).arg(getName());
     }
-    QVector3D getDefaultValue() {
+    glm::dvec3 getDefaultValue() {
         return defaultValue;
     }
 private:
-    QVector3D defaultValue;
+    glm::dvec3 defaultValue;
 };
 
 
 class FloatColorParameter : public GuiParameter {
 public:
-    FloatColorParameter(QString group, QString name,QString tooltip, float defaultValue, float from, float to, QVector3D defaultColorValue) :
+    FloatColorParameter(QString group, QString name,QString tooltip, float defaultValue, float from, float to, glm::dvec3 defaultColorValue) :
         GuiParameter(group,name, tooltip), defaultValue(defaultValue), from(from), to(to), defaultColorValue(defaultColorValue) {}
 
     virtual QString getUniqueName() {
         return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to);
     }
-    QVector3D getDefaultColorValue() {
+    glm::dvec3 getDefaultColorValue() {
         return defaultColorValue;
     }
     double getFrom() {
@@ -269,7 +266,7 @@ private:
     double defaultValue;
     double from;
     double to;
-    QVector3D defaultColorValue;
+    glm::dvec3 defaultColorValue;
 };
 
 class BoolParameter : public GuiParameter {
