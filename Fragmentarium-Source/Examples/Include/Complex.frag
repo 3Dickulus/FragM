@@ -233,11 +233,11 @@ double log(double x)  {
 
 	// special cases
 	if( isinf(x) )
-        return 1.0/0.0; /* return +inf */
+        return double(1.0/0.0); /* return +inf */
 	if( isnan(x) || x < 0 )
-        return -0.0; /* nan */
+        return double(-0.0); /* nan */
 	if( x == 0 )
-        return -1.0/0.0; /* return -inf */
+        return double(-1.0/0.0); /* return -inf */
 
     // Argument Reduction
     int ki;
@@ -399,7 +399,7 @@ double atan_approx(double x)
     u = u * x + 8.8145999826527008e-22;
 
     if(isnan(u) || isinf(u))
-        return 0.0;
+        return double(0.0);
     return u;
 }
 
