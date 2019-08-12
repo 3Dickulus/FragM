@@ -39,9 +39,10 @@
 ****************************************************************************/
 
 #include <QOpenGLWidget>
-#include <glm/glm.hpp>
-
 #include <qmath.h>
+
+
+#include <glm/glm.hpp>
 
 #include "QtSpline.h"
 

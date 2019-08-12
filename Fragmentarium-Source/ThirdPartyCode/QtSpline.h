@@ -42,10 +42,11 @@
 #define QTSPLINE_H
 #include <QColor>
 #include <QObject>
-#include <glm/glm.hpp>
 #include <QtOpenGL>
-
 #include <QDebug>
+
+
+#include <glm/glm.hpp>
 
 namespace Fragmentarium
 {
