@@ -7,10 +7,11 @@
 #include <QMatrix4x4>
 #include <QMenu>
 #include <QStatusBar>
-#include <glm/glm.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 #include <QWheelEvent>
+
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include "DisplayWidget.h"
 
@@ -32,14 +33,13 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
 
     QSurfaceFormat fmt;
     fmt.setSwapInterval(0);
-    fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-    fmt.setMajorVersion(4);
-    fmt.setMinorVersion(1);
-#ifdef Q_OS_MAC
-    fmt.setProfile(QSurfaceFormat::CoreProfile);
-#else
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+    fmt.setVersion(4,1);
+#ifdef Q_OS_MAC
+    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
 #endif
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
 
@@ -95,11 +95,13 @@ void DisplayWidget::initializeGL()
 {
 
     initializeOpenGLFunctions();
+
     vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
     renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
     glvers = QString ( ( char * ) glGetString ( GL_VERSION ) );
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
+
 }
 
 void DisplayWidget::updateRefreshRate()
@@ -321,7 +323,7 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
             } // just an arbitrary small number, GL default = 1000
             glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
 
-            if (context()->format().majorVersion() > 2 || context()->format().profile() == QSurfaceFormat::CompatibilityProfile) {
+            if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
                 glGenerateMipmap(GL_TEXTURE_2D); // Generate mipmaps here!!!
             }
             else {
@@ -409,12 +411,13 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
 QStringList DisplayWidget::shaderAsm(bool w)
 {
 
+    QStringList asmList;
     if (!foundnV) {
-        if( context()->format().majorVersion() < 4 &&
-                context()->format().profile() != QSurfaceFormat::CompatibilityProfile) {
-                return QStringList("nVidia GL > 4.0 required for this feature!");
+        if( format().majorVersion() < 4 ) {
+                asmList = QStringList("nVidia GL > 4.0 required for this feature!");
         }
     }
+
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
     GLint formats = 0;
     glGetIntegerv ( GL_NUM_PROGRAM_BINARY_FORMATS, &formats );
@@ -428,7 +431,6 @@ QStringList DisplayWidget::shaderAsm(bool w)
     glGetProgramBinary(progId, len, nullptr, (GLenum *)binaryFormats, &binary[0]);
 
     QString asmTxt = "";
-    QStringList asmList;
 
     // contains ALL uniforms in buffershader and shader program
     QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
@@ -507,17 +509,36 @@ QStringList DisplayWidget::shaderAsm(bool w)
     return asmList;
 }
 
-void DisplayWidget::jumpToErrorLine()
+void DisplayWidget::jumpToErrorLine(int we)
 {
     // jump to error line in text editor
-        int errLineNum = shaderProgram->log().split(":").at(0).split("(").at(1).split(")").at(0).toInt();
+    bool ok = false;
+    // test nVidia log
+    QRegExp testnvidia("([(][0-9]+[)])");
+    QRegExp testamd("([:][0-9]+[(])");
+    QRegExp num("([0-9]+)");
+
+    int errLineNum=-1;
+
+    // test AMD log first
+    if (!ok && testamd.indexIn(shaderProgram->log()) != -1)
+        if(num.indexIn(testamd.cap(1)) != -1)
+            errLineNum = num.cap(1).toInt(&ok);
+    // because nvtest will match the wrong thing in amd log but amdtest matches nothing in nVidia log
+    if (!ok && testnvidia.indexIn(shaderProgram->log()) != -1)
+        if(num.indexIn(testnvidia.cap(1)) != -1)
+            errLineNum = num.cap(1).toInt(&ok);
+
+    if(!ok) { // conversion to int failed
+        return;
+    }
+
+    if(errLineNum > 0) {
         QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
         cursor.setPosition(0);
-        int incFudge = 2;
-        if( fragmentSource.source.at(0).startsWith("#version") ) incFudge = 1;
-        int gotoLine = fragmentSource.lines.at(errLineNum) - incFudge; // 0th and #version statement
-        cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,gotoLine);
+        cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errLineNum+we);
         mainWindow->getTextEdit()->setTextCursor( cursor );
+    }
 }
 
 void DisplayWidget::initFragmentShader()
@@ -560,7 +581,7 @@ void DisplayWidget::initFragmentShader()
     if ( !s ) {
         WARNING ( tr("Could not create fragment shader: ") + shaderProgram->log() );
         if(settings.value ( "jumpToLineOnError", true ).toBool())
-            jumpToErrorLine();
+            jumpToErrorLine(-1);
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -569,7 +590,7 @@ void DisplayWidget::initFragmentShader()
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
         if(settings.value ( "jumpToLineOnWarn", true ).toBool())
-            jumpToErrorLine();
+            jumpToErrorLine(0);
     }
 
     s = shaderProgram->link();
@@ -585,7 +606,7 @@ void DisplayWidget::initFragmentShader()
     if (!shaderProgram->log().isEmpty()) {
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
         if(settings.value ( "jumpToLineOnWarn", true ).toBool())
-            jumpToErrorLine();
+            jumpToErrorLine(-1);
     }
 
     s = shaderProgram->bind();
@@ -1034,7 +1055,7 @@ void DisplayWidget::makeBuffers()
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     clearBackBuffer();
 
-    if (context()->format().majorVersion() > 2 || context()->format().profile() == QSurfaceFormat::CompatibilityProfile) {
+    if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
             qDebug( ) << tr("FBO Incomplete Error!");
@@ -1453,6 +1474,7 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
             default:
             break;
         }
+
     }
 }
 
@@ -1514,7 +1536,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         setFloatType(type, tp);
         bool foundDouble = false;
 
-        if (context()->format().majorVersion() > 2 && context()->format().minorVersion() >= 0) {
+        if (format().majorVersion() > 3 && format().minorVersion() >= 0) {
             // do not try to set special, gl_ or unused uniform even if it is double type
             if (!uniformValue.contains("variable")) {
                 setDoubleType(programID, type, uniformName, uniformValue, foundDouble, tp);

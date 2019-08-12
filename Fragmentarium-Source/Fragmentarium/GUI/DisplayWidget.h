@@ -17,12 +17,14 @@
 #include <QOpenGLFunctions_1_5>
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_2_1>
+
 #include <QOpenGLFunctions_3_0>
 #include <QOpenGLFunctions_3_1>
 #include <QOpenGLFunctions_3_2_Compatibility>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Compatibility>
 #include <QOpenGLFunctions_3_3_Core>
+
 #include <QOpenGLFunctions_4_0_Compatibility>
 #include <QOpenGLFunctions_4_0_Core>
 #include <QOpenGLFunctions_4_1_Compatibility>
@@ -35,10 +37,10 @@
 #include <QOpenGLFunctions_4_4_Core>
 #include <QOpenGLFunctions_4_5_Compatibility>
 #include <QOpenGLFunctions_4_5_Core>
+
 #include <QOpenGLFunctions_ES2>
 
 #include <QOpenGLFunctions>
-#include <QOpenGLVersionFunctions>
 
 #include <QList>
 #include <QMainWindow>
@@ -303,7 +305,7 @@ protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void paintEvent ( QPaintEvent * ev ) Q_DECL_OVERRIDE;
     void showEvent ( QShowEvent *ev ) Q_DECL_OVERRIDE;
-    void jumpToErrorLine();
+    void jumpToErrorLine( int we );
 
     int pixelWidth()
     {
@@ -352,7 +354,9 @@ private:
     void checkForSpecialCase(QString uniformName, QString &uniformValue);
     void setFloatType(GLenum type, QString &tp);
     bool checkShaderProg(GLuint programID);
+
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
+
     void setupShaderVars(int w, int h);
     void draw3DHints();
     bool FBOcheck();
