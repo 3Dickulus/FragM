@@ -1,5 +1,8 @@
 cmake_minimum_required( VERSION 3.2 )
 
+cmake_policy(SET CMP0043 NEW)
+cmake_policy(SET CMP0071 NEW)
+
 set(FRAGM_VERSION "2.5.0")
 
 project(Fragmentarium-${FRAGM_VERSION} VERSION ${FRAGM_VERSION} LANGUAGES CXX)
