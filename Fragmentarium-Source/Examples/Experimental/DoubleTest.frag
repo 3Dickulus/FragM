@@ -55,7 +55,7 @@ dvec2 domainMap(dvec2 c)
 }
 
 dvec2 Plot(dvec2 a) {
-	
+	if (Power == 2.0LF) return cSqr(a);
 	dvec2 b;
 	
 	b.x = sqrt ( a.x * a.x + a.y * a.y );
