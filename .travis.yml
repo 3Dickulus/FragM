@@ -193,6 +193,7 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
+      TRAVIS_OS_NAME=Linux
       export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
       export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
       #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
