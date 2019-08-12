@@ -195,10 +195,6 @@ before_deploy:
     then
       export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
       export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-      echo "debian package"
-       ls -l *.deb
-      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
-       ls -l *.deb
       #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     fi
   - |
