@@ -15,7 +15,7 @@ out vec2 viewCoord;
 // Use this to adjust clipping planes
 
 uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
-uniform double Zoom; slider[0,1,50000] NotLockable
+uniform double Zoom; slider[0,1,1e16] NotLockable
 
 uniform vec2 pixelSize;
 
