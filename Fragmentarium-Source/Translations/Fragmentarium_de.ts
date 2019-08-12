@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Kamera: Klicken Sie auf 2D-Fenster Schwerpunkt. Siehe Hilfe-Menü für mehr.</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+118"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+120"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Display-Updatetimer wird eingestellt auf %1 ms (max %2 FPS).</translation>
     </message>
@@ -340,7 +340,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kann nicht parsen: TexParameter value: </translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+158"/>
         <source>No vertex shader found!</source>
         <translation>Kein VertexShader gefunden!</translation>
     </message>
@@ -367,7 +367,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="+1049"/>
+        <location line="+1050"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Frame:%1/%2 Zeit:%3</translation>
     </message>
@@ -377,7 +377,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1443"/>
+        <location line="-1444"/>
         <location line="+367"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
@@ -438,7 +438,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>FBO Incomplete Fehler!!</translation>
     </message>
     <message>
-        <location line="+676"/>
+        <location line="+677"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ungültiger FBO - previewBuffer</translation>
     </message>
@@ -496,7 +496,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1482"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Vertex + Fragment-Shader konnte nicht verknüpft werden: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+1010"/>
+        <location line="+1011"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -551,7 +551,7 @@ Initialisiert als GL_RGBA8</translation>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+113"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+115"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Kommandos</translation>
     </message>
@@ -590,12 +590,12 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2686"/>
+        <location line="+2683"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2622"/>
+        <location line="-2619"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -632,36 +632,36 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1509"/>
+        <location line="+1508"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Bitte die Combobox auf &apos;Angepasst&apos; einstellen um die Größe zu ändern.</translation>
     </message>
     <message>
-        <location line="-1500"/>
+        <location line="-1499"/>
         <location line="+16"/>
-        <location line="+929"/>
+        <location line="+928"/>
         <location line="+1086"/>
         <location line="+49"/>
         <location line="+70"/>
-        <location line="+373"/>
+        <location line="+371"/>
         <location line="+167"/>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
-        <location line="+136"/>
+        <location line="+138"/>
         <location line="+78"/>
         <source>No open tab</source>
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-2910"/>
-        <location line="+1397"/>
+        <location line="-2909"/>
+        <location line="+1396"/>
         <location line="+1734"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3101"/>
+        <location line="-3100"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -803,7 +803,7 @@ Diese Option ist wieder einzuschalten in Einstellungen</translation>
         <translation>Autorun einschalten</translation>
     </message>
     <message>
-        <location line="+677"/>
+        <location line="+676"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>Zu groß!
@@ -847,12 +847,12 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Vorverarbeitete Ausgabe in neuen Registerkarten anzeigen</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+100"/>
         <source>Available image formats: </source>
         <translation>Verfügbare Bildformate: </translation>
     </message>
     <message>
-        <location line="+234"/>
+        <location line="+231"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -867,17 +867,16 @@ Close this tab without saving changes?</source>
 Tab schließen ohne Änderungen zu speichern?</translation>
     </message>
     <message>
-        <location line="+419"/>
         <source>OpenGL features missing</source>
-        <translation>OpenGL-Features fehlen</translation>
+        <translation type="vanished">OpenGL-Features fehlen</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+419"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2321"/>
+        <location line="-2319"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1086,7 +1085,7 @@ Bitte, lese unterstehendes:
         <translation></translation>
     </message>
     <message>
-        <location line="-814"/>
+        <location line="-813"/>
         <source>2D Texture Options</source>
         <translation>2D-Texturoptionen</translation>
     </message>
@@ -1109,7 +1108,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>&lt;h2&gt; Stellt Befehle für Bild- und Animationsdialogfelder ein &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt; &lt;/li&gt; Legt die Gesamtdauer der Animation in Sekunden fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; Legt die Kachel fest width and height. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der Zeilen- und Spaltenkacheln fest. Dieser Wert ist ein Quadrat = Gesamtkacheln. &lt;/p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der zu akkumulierenden Frames fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Legt den Dateinamen für das gespeicherte Bild fest. Wenn das Skript die vollständige Kontrolle hat, muss dies für jeden Frame vom Skript festgelegt werden. Wenn die Animation Frag-Dateieinstellungen, Keyframes usw. verwendet. dann muss dies nur einmal auf basename gesetzt werden und Fragmentarium fügt einen mit 5 Ziffern aufgefüllten Index hinzu. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Setzt den Bilder pro Sekunde für das Rendern. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die Startbildnummer für das Rendern einer Reihe von Bildern fest. &lt;/p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die End-Frame-Nummer für das Rendern eines Framebereichs fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE setzt die Animation ausschließlich auf Skriptsteuerung. &lt;br&gt; TRUE aktiviert die Steuerung über Keyframes und Beschleunigungskurven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE zeigt eine Vorschau der Bilder in einem Fenster auf dem Desktop an, anstatt die Bilddateien zu speichern. &lt;br&gt; WARNUNG !!! Dies öffnet ein Fenster für jeden Frame und schließt es, wenn der nächste zur Anzeige bereit ist. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE wird gespeichert Dateien im Unterordner. &lt;br&gt; FALSE verwendet den von setOutputBaseFileName (String) festgelegten Pfad. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; Das Gleiche wie &quot;Eindeutige ID zum Dateinamen hinzufügen&quot; im HiResolution- und Animationsdialog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+235"/>
+        <location line="+234"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Werkzeuge</translation>
     </message>
@@ -1394,13 +1393,13 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Unfindbar: </translation>
     </message>
     <message>
-        <location line="-987"/>
-        <location line="+2686"/>
+        <location line="-986"/>
+        <location line="+2683"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location line="-1740"/>
+        <location line="-1738"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1727,7 +1726,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Datei gespeichert</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+134"/>
         <source>Not a runnable fragment.</source>
         <translation>Fragment nicht lauffähig.</translation>
     </message>
@@ -1742,7 +1741,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Kompilieren Script gescheitert (%1 ms).</translation>
     </message>
     <message>
-        <location line="+113"/>
+        <location line="+110"/>
         <source> Line in preprocessed script: </source>
         <translation> Zeile im vorbearbeiteten Script: </translation>
     </message>
@@ -1794,8 +1793,8 @@ Füge ein Preset mit dem Namen &quot;Range&quot; hinzu
 und vor dem Schließen speichern!</translation>
     </message>
     <message>
-        <location line="-2650"/>
-        <location line="+2686"/>
+        <location line="-2647"/>
+        <location line="+2683"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1875,7 +1874,7 @@ und vor dem Schließen speichern!</translation>
         <translation>Muß eine .frag- oder .fragparams-Datei sein.</translation>
     </message>
     <message>
-        <location line="+336"/>
+        <location line="+338"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset nicht gefunden!</translation>
     </message>
@@ -2429,7 +2428,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+362"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+369"/>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
@@ -2628,11 +2627,17 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <source>Jump to line on Warn</source>
         <translation>Gehen Sie zur Warnzeile</translation>
     </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>2D Camera Mode on=traveling off=fixed</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+129"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+156"/>
         <source>Including file: </source>
         <translation>Schließt Datei ein: </translation>
     </message>
@@ -2650,7 +2655,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-979"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-978"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>
