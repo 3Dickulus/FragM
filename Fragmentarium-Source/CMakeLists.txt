@@ -1,10 +1,8 @@
-project( Fragmentarium-2.5.0 )
-cmake_minimum_required( VERSION 2.8.12 )
+cmake_minimum_required( VERSION 3.2 )
 
-cmake_policy(SET CMP0043 NEW)
-IF ( APPLE )
-    cmake_policy(SET CMP0071 NEW)
-ENDIF ()
+set(FRAGM_VERSION "2.5.0")
+
+project(Fragmentarium-${FRAGM_VERSION} VERSION ${FRAGM_VERSION} LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -59,7 +57,7 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-set (GLM_INCLUDE_DIRS "")
+set (GLM_INCLUDE_DIRS ${glm_DIR})
 set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
@@ -72,7 +70,6 @@ MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
 MARK_AS_ADVANCED (OpenEXR_INCLUDE_DIRS)
 MARK_AS_ADVANCED (Ilmbase_INCLUDE_DIRS)
 MARK_AS_ADVANCED (GLM_INCLUDE_DIRS)
-
 
 IF ( USE_OPEN_EXR )
 
@@ -135,7 +132,7 @@ IF ( USE_OPEN_EXR )
 
 ENDIF (USE_OPEN_EXR)
 
-SET ( CMAKE_CXX_FLAGS " -Wall -Wextra " )
+# SET ( CMAKE_CXX_FLAGS " -Wall -Wextra " )
 
 # add_definitions ( -Wall )
 
