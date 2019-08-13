@@ -183,7 +183,7 @@ class ColorChooser : public QFrame
 {
     Q_OBJECT
 public:
-    ColorChooser(QWidget* parent, QVector3D defaultValue)
+    ColorChooser(QWidget* parent, glm::dvec3 defaultValue)
         : QFrame ( parent ), defaultValue ( defaultValue ), value ( defaultValue )
     {
         setLayout(new QHBoxLayout(this));
@@ -193,11 +193,11 @@ public:
     }
 
 public slots:
-    void setColor ( QVector3D v )
+    void setColor ( glm::dvec3 v )
     {
         QPalette p = palette();
         QColor c;
-        c.setRgbF(v.x(),v.y(),v.z());
+        c.setRgbF(v.x,v.y,v.z);
         p.setColor(backgroundRole(), c);
         setAutoFillBackground( true );
         setPalette(p);
@@ -207,13 +207,13 @@ public slots:
     void setColor ( QColor c )
     {
         if (c.isValid()) {
-            value = QVector3D(c.redF(), c.greenF(), c.blueF());
+            value = glm::dvec3(c.redF(), c.greenF(), c.blueF());
             setColor(value);
             emit changed();
         }
     }
 
-    QVector3D getValue()
+    glm::dvec3 getValue()
     {
         return value;
     }
@@ -222,7 +222,7 @@ private slots:
     void mouseReleaseEvent ( QMouseEvent * )
     {
         QColor initial;
-        initial.setRgbF( value.x(), value.y(), value.z() );
+        initial.setRgbF( value.x, value.y, value.z );
 
         qcd = new QColorDialog(initial);
         connect ( qcd, SIGNAL ( currentColorChanged ( QColor ) ), this, SLOT ( setColor ( QColor ) ) );
@@ -236,8 +236,8 @@ signals:
 
 private:
     QColorDialog *qcd;
-    QVector3D defaultValue;
-    QVector3D value;
+    glm::dvec3 defaultValue;
+    glm::dvec3 value;
 };
 
 
@@ -523,12 +523,12 @@ class Float2Widget : public VariableWidget
 {
 public:
     Float2Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   QVector2D defaultValue, QVector2D min, QVector2D max );
+                   glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max );
 
     virtual QString getUniqueName()
     {
-        QString f = QString("[%1 %2]").arg(min.x()).arg(min.y());
-        QString t = QString("[%1 %2]").arg(max.x()).arg(max.y());
+        QString f = QString("[%1 %2]").arg(min.x).arg(min.y);
+        QString t = QString("[%1 %2]").arg(max.x).arg(max.y);
         return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
     }
 
@@ -546,26 +546,26 @@ public:
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
 
     // Third component unused for these
-    QVector2D getValue()
+    glm::dvec2 getValue()
     {
-        return QVector2D ( comboSlider1->getValue(), comboSlider2->getValue() );
+        return glm::dvec2 ( comboSlider1->getValue(), comboSlider2->getValue() );
     }
-    void setValue(QVector3D v);
+    void setValue(glm::dvec3 v);
     void reset()
     {
-        setValue ( defaultValue );
+        setValue ( glm::dvec3(defaultValue.x,defaultValue.y,0.0) );
     }
     QString getLockedSubstitution()
     {
         QString type = isDouble() ? "dvec2" : "vec2";
         return "const " + type + " " + name + " = " + type + "(" +
-               toGLSL ( getValue().x() ) + "," + toGLSL ( getValue().y() ) + ");";
+               toGLSL ( getValue().x ) + "," + toGLSL ( getValue().y ) + ");";
     }
     QString getLockedSubstitution2()
     {
         QString type = isDouble() ? " dvec2(" : " vec2(";
-        return "#define " + name + type + toGLSL ( getValue().x() ) + "," +
-               toGLSL ( getValue().y() ) + ")";
+        return "#define " + name + type + toGLSL ( getValue().x ) + "," +
+               toGLSL ( getValue().y ) + ")";
     }
     void setIsDouble ( bool wd = false )
     {
@@ -578,9 +578,9 @@ private:
 
     ComboSlider* comboSlider1;
     ComboSlider* comboSlider2;
-    QVector2D defaultValue;
-    QVector2D min;
-    QVector2D max;
+    glm::dvec2 defaultValue;
+    glm::dvec2 min;
+    glm::dvec2 max;
 };
 
 
@@ -591,7 +591,7 @@ class Float3Widget : public VariableWidget
 public:
     /// FloatVariable constructor.
     Float3Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   QVector3D defaultValue, QVector3D min, QVector3D max );
+                   glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max );
     virtual QString getUniqueName();
     virtual QString getValueAsText()
     {
@@ -605,12 +605,12 @@ public:
     }
     virtual QString toString();
     virtual bool fromString(QString string);
-    QVector3D getValue()
+    glm::dvec3 getValue()
     {
-        return QVector3D ( comboSlider1->getValue(), comboSlider2->getValue(),
+        return glm::dvec3 ( comboSlider1->getValue(), comboSlider2->getValue(),
                            comboSlider3->getValue() );
     }
-    void setValue(QVector3D v);
+    void setValue(glm::dvec3 v);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
     void reset()
     {
@@ -620,14 +620,14 @@ public:
     {
         QString type = isDouble() ? "dvec3" : "vec3";
         return "const " + type + " " + name + " = " + type + "(" +
-               toGLSL ( getValue().x() ) + "," + toGLSL ( getValue().y() ) + "," +
-               toGLSL ( getValue().z() ) + ");";
+               toGLSL ( getValue().x ) + "," + toGLSL ( getValue().y ) + "," +
+               toGLSL ( getValue().z ) + ");";
     }
     QString getLockedSubstitution2()
     {
         QString type = isDouble() ? " dvec3(" : " vec3(";
-        return "#define " + name + type + toGLSL ( getValue().x() ) + "," +
-               toGLSL ( getValue().y() ) + "," + toGLSL ( getValue().z() ) + ")";
+        return "#define " + name + type + toGLSL ( getValue().x ) + "," +
+               toGLSL ( getValue().y ) + "," + toGLSL ( getValue().z ) + ")";
     }
     void setIsDouble ( bool wd = false )
     {
@@ -648,9 +648,9 @@ private:
     ComboSlider* comboSlider1;
     ComboSlider* comboSlider2;
     ComboSlider* comboSlider3;
-    QVector3D defaultValue;
-    QVector3D min;
-    QVector3D max;
+    glm::dvec3 defaultValue;
+    glm::dvec3 min;
+    glm::dvec3 max;
 };
 
 /// A widget editor for a float4 variable.
@@ -660,7 +660,7 @@ class Float4Widget : public VariableWidget
 public:
     /// FloatVariable constructor.
     Float4Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   QVector4D defaultValue, QVector4D min, QVector4D max );
+                   glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max );
     virtual QString getUniqueName();
     virtual QString getValueAsText()
     {
@@ -675,12 +675,12 @@ public:
     }
     virtual QString toString();
     virtual bool fromString(QString string);
-    QVector4D getValue()
+    glm::dvec4 getValue()
     {
-        return QVector4D ( comboSlider1->getValue(), comboSlider2->getValue(),
+        return glm::dvec4 ( comboSlider1->getValue(), comboSlider2->getValue(),
                            comboSlider3->getValue(), comboSlider4->getValue() );
     }
-    void setValue(QVector4D v);
+    void setValue(glm::dvec4 v);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
     void reset()
     {
@@ -690,15 +690,15 @@ public:
     {
         QString type = isDouble() ? "dvec4" : "vec4";
         return "const " + type + " " + name + " = " + type + "(" +
-               toGLSL ( getValue().x() ) + "," + toGLSL ( getValue().y() ) + "," +
-               toGLSL ( getValue().z() ) + "," + toGLSL ( getValue().w() ) + ");";
+               toGLSL ( getValue().x ) + "," + toGLSL ( getValue().y ) + "," +
+               toGLSL ( getValue().z ) + "," + toGLSL ( getValue().w ) + ");";
     }
     QString getLockedSubstitution2()
     {
         QString type = isDouble() ? " dvec4(" : " vec4(";
-        return "#define " + name + type + toGLSL ( getValue().x() ) + "," +
-               toGLSL ( getValue().y() ) + "," + toGLSL ( getValue().z() ) + "," +
-               toGLSL ( getValue().w() ) + ")";
+        return "#define " + name + type + toGLSL ( getValue().x ) + "," +
+               toGLSL ( getValue().y ) + "," + toGLSL ( getValue().z ) + "," +
+               toGLSL ( getValue().w ) + ")";
     }
     void setIsDouble ( bool wd = false )
     {
@@ -717,9 +717,9 @@ private:
     ComboSlider* comboSlider2;
     ComboSlider* comboSlider3;
     ComboSlider* comboSlider4;
-    QVector4D defaultValue;
-    QVector4D min;
-    QVector4D max;
+    glm::dvec4 defaultValue;
+    glm::dvec4 min;
+    glm::dvec4 max;
 };
 
 class ColorWidget : public VariableWidget
@@ -727,28 +727,28 @@ class ColorWidget : public VariableWidget
 public:
     /// FloatVariable constructor.
     ColorWidget ( QWidget *parent, QWidget *variableEditor, QString name,
-                  QVector3D defaultValue );
+                  glm::dvec3 defaultValue );
     virtual QString getUniqueName()
     {
         return QString ( "%1:%2" ).arg ( group ).arg ( getName() );
     }
     virtual QString getValueAsText()
     {
-        QVector3D t = colorChooser->getValue();
+        glm::dvec3 t = colorChooser->getValue();
         int p = FDEC;
         if ( isDouble() ) {
             p = DDEC;
         }
-        return QString::number ( t.x(), 'g', p ) + "," +
-               QString::number ( t.y(), 'g', p ) + "," +
-               QString::number ( t.z(), 'g', p );
+        return QString::number ( t.x, 'g', p ) + "," +
+               QString::number ( t.y, 'g', p ) + "," +
+               QString::number ( t.z, 'g', p );
     }
 
-    QVector3D getValue()
+    glm::dvec3 getValue()
     {
         return colorChooser->getValue();
     }
-    void setValue(QVector3D v);
+    void setValue(glm::dvec3 v);
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -760,16 +760,16 @@ public:
     {
         QString type = isDouble() ? "dvec3" : "vec3";
         return "const " + type + " " + name + " = " + type + "(" +
-               toGLSL ( colorChooser->getValue().x() ) + "," +
-               toGLSL ( colorChooser->getValue().y() ) + "," +
-               toGLSL ( colorChooser->getValue().z() ) + ");";
+               toGLSL ( colorChooser->getValue().x ) + "," +
+               toGLSL ( colorChooser->getValue().y ) + "," +
+               toGLSL ( colorChooser->getValue().z ) + ");";
     }
     QString getLockedSubstitution2()
     {
         QString type = isDouble() ? " dvec3(" : " vec3(";
-        return "#define " + name + type + toGLSL ( colorChooser->getValue().x() ) +
-               "," + toGLSL ( colorChooser->getValue().y() ) + "," +
-               toGLSL ( colorChooser->getValue().z() ) + ")";
+        return "#define " + name + type + toGLSL ( colorChooser->getValue().x ) +
+               "," + toGLSL ( colorChooser->getValue().y ) + "," +
+               toGLSL ( colorChooser->getValue().z ) + ")";
     }
     void setIsDouble ( bool wd = false )
     {
@@ -777,7 +777,7 @@ public:
     };
 private:
     ColorChooser* colorChooser;
-    QVector3D defaultValue;
+    glm::dvec3 defaultValue;
 };
 
 class FloatColorWidget : public VariableWidget
@@ -786,28 +786,28 @@ public:
     /// FloatVariable constructor.
     FloatColorWidget ( QWidget *parent, QWidget *variableEditor, QString name,
                        double defaultValue, double min, double max,
-                       QVector3D defaultColorValue );
+                       glm::dvec3 defaultColorValue );
     virtual QString getUniqueName()
     {
         return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( max );
     }
     virtual QString getValueAsText()
     {
-        QVector3D t = colorChooser->getValue();
+        glm::dvec3 t = colorChooser->getValue();
         int p = FDEC;
         if ( isDouble() ) {
             p = DDEC;
         }
-        return QString::number ( t.x(), 'g', p ) + "," +
-               QString::number ( t.y(), 'g', p ) + "," +
-               QString::number ( t.z(), 'g', p ) + "," +
+        return QString::number ( t.x, 'g', p ) + "," +
+               QString::number ( t.y, 'g', p ) + "," +
+               QString::number ( t.z, 'g', p ) + "," +
                QString::number ( comboSlider->getValue(), 'g', p );
     }
-    QVector4D getValue()
+    glm::dvec4 getValue()
     {
-        return QVector4D ( colorChooser->getValue(), comboSlider->getValue() );
+        return glm::dvec4 ( colorChooser->getValue(), comboSlider->getValue() );
     }
-    void setValue(QVector4D v);
+    void setValue(glm::dvec4 v);
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -820,17 +820,17 @@ public:
     {
         QString type = isDouble() ? "dvec4" : "vec4";
         return "const " + type + " " + name + " = " + type + "(" +
-               toGLSL ( colorChooser->getValue().x() ) + "," +
-               toGLSL ( colorChooser->getValue().y() ) + "," +
-               toGLSL ( colorChooser->getValue().z() ) + "," +
+               toGLSL ( colorChooser->getValue().x ) + "," +
+               toGLSL ( colorChooser->getValue().y ) + "," +
+               toGLSL ( colorChooser->getValue().z ) + "," +
                toGLSL ( comboSlider->getValue() ) + ");";
     }
     QString getLockedSubstitution2()
     {
         QString type = isDouble() ? " dvec4(" : " vec4(";
-        return "#define " + name + type + toGLSL ( colorChooser->getValue().x() ) +
-               "," + toGLSL ( colorChooser->getValue().y() ) + "," +
-               toGLSL ( colorChooser->getValue().z() ) + "," +
+        return "#define " + name + type + toGLSL ( colorChooser->getValue().x ) +
+               "," + toGLSL ( colorChooser->getValue().y ) + "," +
+               toGLSL ( colorChooser->getValue().z ) + "," +
                toGLSL ( comboSlider->getValue() ) + ")";
     }
     void setIsDouble ( bool wd = false )
@@ -844,7 +844,7 @@ private:
     double defaultValue;
     double min;
     double max;
-    QVector3D defaultColorValue;
+    glm::dvec3 defaultColorValue;
 };
 
 class IntWidget : public VariableWidget

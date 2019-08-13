@@ -23,9 +23,6 @@
 #include <QTabWidget>
 #include <QTextBlockUserData>
 #include <QVBoxLayout>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
 #include <QVector>
 #include <QWidget>
 #include <QtGui>
@@ -36,6 +33,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QtScriptTools/QScriptEngineDebugger>
+
+
+#include <glm/glm.hpp>
 
 #include "MainWindow.h"
 #include "TextEdit.h"
@@ -50,6 +50,8 @@
 #include "Preprocessor.h"
 #include "VariableEditor.h"
 
+// #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+
 namespace Fragmentarium
 {
 namespace GUI
@@ -58,7 +60,6 @@ namespace GUI
 MainWindow::MainWindow(QSplashScreen *splashWidget)
     : splashWidget(splashWidget), cmdScriptDebugger(nullptr)
 {
-    DBOUT;
 
     bufferXSpinBox = nullptr;
     bufferYSpinBox = nullptr;
@@ -79,7 +80,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190802, "");
+    version = Version(2, 5, 0, 190811, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -110,7 +111,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
                                        MainWindow *mainWindow)
 {
-    DBOUT;
+
     QMenu *preprocessorMenu = new QMenu(tr("Host Preprocessor Commands"), nullptr);
     preprocessorMenu->addAction("#info sometext", textEdit , SLOT(insertText()));
     preprocessorMenu->addAction("#include \"some.frag\"", textEdit, SLOT(insertText()));
@@ -187,7 +188,7 @@ void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
-    DBOUT;
+
     bool modification = false;
     for (auto &i : tabInfo) {
         if (i.unsaved) {
@@ -234,13 +235,13 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
 void MainWindow::newFile()
 {
-    DBOUT;
+
     insertTabPage("");
 }
 
 void MainWindow::insertPreset()
 {
-    DBOUT;
+
     bool ok = false;
     QString newPreset;
     QTextCursor tc = getTextEdit()->textCursor();
@@ -294,7 +295,7 @@ void MainWindow::insertPreset()
 
 void MainWindow::open()
 {
-    DBOUT;
+
     QString filter = tr("Fragment Source (*.frag);;All Files (*.*)");
     QString fileName =
         QFileDialog::getOpenFileName(this, QString(), QString(), filter);
@@ -305,7 +306,7 @@ void MainWindow::open()
 
 void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 {
-    DBOUT;
+
 
     if (ev->key() == Qt::Key_Escape) {
         toggleFullScreen();
@@ -328,21 +329,21 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 
 void MainWindow::clearTextures()
 {
-    DBOUT;
+
     engine->clearTextureCache(nullptr);
 }
 
 void MainWindow::bufferSpinBoxChanged(int value)
 {
     Q_UNUSED(value)
-    DBOUT;
+
     QToolTip::showText(bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
 }
 
 
 bool MainWindow::save()
 {
-    DBOUT;
+
     int index = tabBar->currentIndex();
     if (index == -1) {
         WARNING(tr("No open tab"));
@@ -358,7 +359,7 @@ bool MainWindow::save()
 
 bool MainWindow::saveAs()
 {
-    DBOUT;
+
     int index = tabBar->currentIndex();
     if (index == -1) {
         WARNING(tr("No open tab"));
@@ -383,7 +384,6 @@ bool MainWindow::saveAs()
 
 void MainWindow::showHelpMessage(const QString title, const QString mess)
 {
-    DBOUT;
 
     QMessageBox mb(this);
     mb.setText(mess);
@@ -397,7 +397,7 @@ void MainWindow::showHelpMessage(const QString title, const QString mess)
 
 void MainWindow::about()
 {
-    DBOUT;
+
     QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
 
     text += tr("<h1>Fragmentarium</h1>"
@@ -428,7 +428,7 @@ void MainWindow::about()
 
 void MainWindow::showControlHelp()
 {
-    DBOUT;
+
   QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
     text += tr("<p>"
   "Notice: the 3D view must have keyboard focus!"
@@ -480,7 +480,7 @@ void MainWindow::showControlHelp()
 
 void MainWindow::showScriptingHelp()
 {
-    DBOUT;
+
   QString reqObj = sender()->objectName();
 
   QString text = QString("<!DOCTYPE html><html lang=\"%1\">").arg(langID);
@@ -586,7 +586,7 @@ void MainWindow::showScriptingHelp()
 
 void MainWindow::documentWasModified()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() < 0) {
         return;
     }
@@ -616,7 +616,7 @@ void MainWindow::documentWasModified()
 
 void MainWindow::init()
 {
-    DBOUT;
+
     lastTime = new QTime();
     lastTime->start();
 
@@ -753,13 +753,11 @@ initTools();
     setupScriptEngine();
     play();
     veDockChanged(true);
-
 }
 
 #ifdef USE_OPEN_EXR
 void MainWindow::initTools()
 {
-    DBOUT;
 
     QStringList filters;
 
@@ -815,7 +813,7 @@ void MainWindow::initTools()
 
 void MainWindow::runTool()
 {
-    DBOUT;
+
     QString cmnd = sender()->objectName();
     // execute once with -h option and capture the output
     cmnd += " -h &> .htxt"; // > filename 2>&1
@@ -859,7 +857,7 @@ void MainWindow::runTool()
 
 void MainWindow::showWelcomeNote()
 {
-    DBOUT;
+
     QString s =
         tr("This is your first run of Fragmentarium.\nPlease read this:\n\n"
         "(1) Fragmentarium requires a decent GPU, preferably a NVIDIA or ATI discrete graphics card with recent drivers.\n\n"
@@ -874,7 +872,7 @@ void MainWindow::showWelcomeNote()
 
 void MainWindow::variablesChanged(bool lockedChanged)
 {
-    DBOUT;
+
     if (lockedChanged) {
         highlightBuildButton(true);
     }
@@ -883,7 +881,7 @@ void MainWindow::variablesChanged(bool lockedChanged)
 
 void MainWindow::createOpenGLContextMenu()
 {
-    DBOUT;
+
     openGLContextMenu = new QMenu();
     openGLContextMenu->addAction(fullScreenAction);
     openGLContextMenu->addMenu(fileMenu);
@@ -896,7 +894,7 @@ void MainWindow::createOpenGLContextMenu()
 
 void MainWindow::toggleFullScreen()
 {
-    DBOUT;
+
     if (fullScreenEnabled) {
         frameMainWindow->setMargin(4);
         showNormal();
@@ -921,7 +919,7 @@ void MainWindow::toggleFullScreen()
 
 void MainWindow::createActions()
 {
-    DBOUT;
+
     fullScreenAction = new QAction(tr("Fullscreen (ESC key toggles)"), this);
     connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 
@@ -1080,7 +1078,7 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    DBOUT;
+
     // -- File Menu --
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAction);
@@ -1180,7 +1178,7 @@ void MainWindow::createMenus()
 
 void MainWindow::buildExamplesMenu()
 {
-    DBOUT;
+
     QStringList filters;
     // Scan examples dir...
     QDir d(getExamplesDir());
@@ -1239,7 +1237,7 @@ void MainWindow::buildExamplesMenu()
 QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
                                     const QString fileName)
 {
-    DBOUT;
+
     QString name = fileName;
 
     if (timeSteps > 1) {
@@ -1261,7 +1259,6 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
 
 void MainWindow::tileBasedRender()
 {
-    DBOUT;
 
     if (!engine->hasShader()) {
         WARNING(tr("Build the fragment first!"));
@@ -1459,10 +1456,11 @@ retry:
             if ( variableEditor->hasKeyFrames() ) {
                 if (engine->eyeSpline != nullptr) {
                     int index = timeStep+1;
-                    QVector3D e = engine->eyeSpline->getSplinePoint(index);
-                    QVector3D t = engine->targetSpline->getSplinePoint(index);
-                    QVector3D u = engine->upSpline->getSplinePoint(index);
-                    if( !e.isNull() && !t.isNull() && !u.isNull() ) {
+                    glm::dvec3 e = engine->eyeSpline->getSplinePoint(index);
+                    glm::dvec3 t = engine->targetSpline->getSplinePoint(index);
+                    glm::dvec3 u = engine->upSpline->getSplinePoint(index);
+                    glm::dvec3 zero = glm::dvec3(0.0,0.0,0.0);
+                    if( e!=zero && t!=zero && u!=zero ) {
                         setCameraSettings( e,t,u );
                     }
                 }
@@ -1724,7 +1722,6 @@ retry:
 
 void MainWindow::savePreview()
 {
-    DBOUT;
 
     QDialog *qd;
     if (findChild<QDialog *>("PREVIEW") != 0) {
@@ -1754,7 +1751,7 @@ void MainWindow::savePreview()
 
 void MainWindow::pasteSelected()
 {
-    DBOUT;
+
     QString settings = getTextEdit()->textCursor().selectedText();
     // Note: If the selection obtained from an editor spans a line break,
     // the text will contain a Unicode U+2029 paragraph separator character
@@ -1767,7 +1764,7 @@ void MainWindow::pasteSelected()
 
 void MainWindow::saveParameters()
 {
-    DBOUT;
+
     QString filter = tr("Fragment Parameters (*.fragparams);;All Files (*.*)");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), "", filter);
 
@@ -1777,7 +1774,6 @@ void MainWindow::saveParameters()
 
 void MainWindow::saveParameters(const QString fileName)
 {
-    DBOUT;
 
     if (fileName.isEmpty()) {
         return;
@@ -1796,7 +1792,7 @@ void MainWindow::saveParameters(const QString fileName)
 
 void MainWindow::loadParameters(const QString fileName)
 {
-    DBOUT;
+
     QFile file(fileName);
     if (fileName.toLower().endsWith(".png") && file.exists()) {
       variableEditor->setSettings(QImage(fileName).text("frAg"));
@@ -1816,7 +1812,7 @@ void MainWindow::loadParameters(const QString fileName)
 
 void MainWindow::loadParameters()
 {
-    DBOUT;
+
     QString filter = tr("Fragment Parameters (*.fragparams);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Load"), "", filter);
     if (fileName.isEmpty()) {
@@ -1828,7 +1824,7 @@ void MainWindow::loadParameters()
 
 void MainWindow::createToolBars()
 {
-    DBOUT;
+
     fileToolBar = addToolBar(tr("File Toolbar"));
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
@@ -1974,7 +1970,7 @@ void MainWindow::createToolBars()
 
 void MainWindow::setTimeSliderValue(int value)
 {
-    DBOUT;
+
     // timeslider max = animation length in frames set here to keep in sync with framerate/duration changes
     timeSlider->setMaximum(timeMaxSpinBox->value()*renderFPS);
 
@@ -1995,7 +1991,7 @@ void MainWindow::setTimeSliderValue(int value)
 
 void MainWindow::bufferActionChanged(QAction *action)
 {
-    DBOUT;
+
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
         bufferSizeMultiplier = 1;
@@ -2013,7 +2009,7 @@ void MainWindow::bufferActionChanged(QAction *action)
 
 void MainWindow::timeLineRequest(QPoint p)
 {
-    DBOUT;
+
     Q_UNUSED(p)
     auto *timeDialog = new TimeLineDialog(this);
     timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
@@ -2023,7 +2019,7 @@ void MainWindow::timeLineRequest(QPoint p)
 
 void MainWindow::videoEncoderRequest()
 {
-    DBOUT;
+
     auto *vDialog = new VideoDialog(this);
     vDialog->exec();
 
@@ -2031,7 +2027,7 @@ void MainWindow::videoEncoderRequest()
 
 void MainWindow::timeChanged(int value)
 {
-    DBOUT;
+
     Q_UNUSED(value)
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
@@ -2041,7 +2037,7 @@ void MainWindow::timeChanged(int value)
 
 void MainWindow::timeMaxChanged(int value)
 {
-    DBOUT;
+
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
@@ -2056,7 +2052,7 @@ void MainWindow::timeMaxChanged(int value)
 
 void MainWindow::rewind()
 {
-    DBOUT;
+
     lastTime->restart();
     lastStoredTime = 0;
     getTime();
@@ -2065,7 +2061,7 @@ void MainWindow::rewind()
 
 void MainWindow::play()
 {
-    DBOUT;
+
     playAction->setEnabled(false);
     stopAction->setEnabled(true);
     lastTime->restart();
@@ -2076,7 +2072,7 @@ void MainWindow::play()
 
 void MainWindow::stop()
 {
-    DBOUT;
+
     playAction->setEnabled(true);
     stopAction->setEnabled(false);
     lastStoredTime = getTime();
@@ -2093,19 +2089,19 @@ void MainWindow::stop()
 
 void MainWindow::maxSubSamplesChanged(int value)
 {
-    DBOUT;
+
     engine->setMaxSubFrames(value);
 }
 
 void MainWindow::setSubframeMax(int i)
 {
-    DBOUT;
+
     frameSpinBox->setValue(i);
 }
 
 double MainWindow::getTime()
 {
-    DBOUT;
+
     DisplayWidget::DrawingState state = engine->getState();
 
     int time = 0;
@@ -2133,7 +2129,7 @@ double MainWindow::getTime()
 
 void MainWindow::renderModeChanged()
 {
-    DBOUT;
+
     engine->setMaxSubFrames(frameSpinBox->value());
     setFPS(-1);
     QObject* o = QObject::sender();
@@ -2153,13 +2149,13 @@ void MainWindow::renderModeChanged()
 
 void MainWindow::setSubFrameDisplay(int i)
 {
-    DBOUT;
+
     frameLabel->setText(QString(" %1 %2").arg(tr("Done")).arg(i));
 }
 
 void MainWindow::callRedraw()
 {
-    DBOUT;
+
     bool state = engine->isRedrawDisabled();
     engine->setDisableRedraw(false);
     engine->setDisableRedraw(state);
@@ -2167,7 +2163,7 @@ void MainWindow::callRedraw()
 
 void MainWindow::disableAllExcept(QWidget *w)
 {
-    DBOUT;
+
     disabledWidgets.clear();
     disabledWidgets = findChildren<QWidget *>("");
     while (w != nullptr) {
@@ -2183,13 +2179,13 @@ void MainWindow::disableAllExcept(QWidget *w)
 
 void MainWindow::createStatusBar()
 {
-    DBOUT;
+
     statusBar()->showMessage(tr("Ready"));
 }
 
 void MainWindow::readSettings()
 {
-    DBOUT;
+
     QSettings settings;
     maxRecentFiles = settings.value("maxRecentFiles", 5).toInt();
     renderFPS = settings.value("fps", 25).toInt();
@@ -2215,7 +2211,7 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
-    DBOUT;
+
     QSettings settings;
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
@@ -2253,7 +2249,7 @@ void MainWindow::writeSettings()
 
 void MainWindow::openFile()
 {
-    DBOUT;
+
     auto *action = qobject_cast<QAction *>(sender());
     if (action != nullptr) {
         loadFragFile(action->data().toString());
@@ -2264,14 +2260,14 @@ void MainWindow::openFile()
 
 void MainWindow::reloadFrag()
 {
-    DBOUT;
+
     int index = tabBar->currentIndex();
     reloadFragFile( index );
 }
 
 void MainWindow::reloadFragFile( int index )
 {
-    DBOUT;
+
     QString filename = tabInfo[index].filename;
     TextEdit* te = getTextEdit();
 
@@ -2292,7 +2288,7 @@ void MainWindow::reloadFragFile( int index )
 /// fragWatch
 void MainWindow::reloadFragFile( QString f )
 {
-    DBOUT;
+
     static bool first = true; // TODO: why this gets called twice ???
 
     bool autoLoad = QSettings().value("autoload", false).toBool();
@@ -2334,7 +2330,7 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
-    DBOUT;
+
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
@@ -2378,7 +2374,7 @@ update();
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
@@ -2420,13 +2416,12 @@ bool MainWindow::saveFile(const QString &fileName)
 
 QString MainWindow::strippedName(const QString &fullFileName)
 {
-    DBOUT;
+
     return QFileInfo(fullFileName).fileName();
 }
 
 void MainWindow::showPreprocessedScript()
 {
-    DBOUT;
 
     logger->getListWidget()->clear();
     if (tabBar->currentIndex() == -1) {
@@ -2468,7 +2463,7 @@ void MainWindow::showPreprocessedScript()
 
 void MainWindow::highlightBuildButton(bool value)
 {
-    DBOUT;
+
     QWidget* w = buildLabel->parentWidget();
     if (value) {
         QPalette pal = buildLabel->palette();
@@ -2488,7 +2483,7 @@ void MainWindow::highlightBuildButton(bool value)
 
 void MainWindow::addToWatch(QStringList fileList)
 {
-    DBOUT;
+
     foreach(QString f, fileList) {
         if(QFile(f).exists() && !fragWatch->files().contains(f)) {
             fragWatch->addPaths(fileList);
@@ -2498,7 +2493,7 @@ void MainWindow::addToWatch(QStringList fileList)
 
 bool MainWindow::initializeFragment()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
@@ -2512,7 +2507,7 @@ bool MainWindow::initializeFragment()
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();
     if (prof == 1 || prof == 2) {
-        INFO(QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+        INFO(QString("Using GL %1.%2 %3 profile").arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
     } else if (prof == 0) {
         INFO( "No GL profile." );
 //         return false;
@@ -2532,6 +2527,7 @@ bool MainWindow::initializeFragment()
     foreach ( QByteArray s, a ) {
         imgFileExtensions.append ( QString ( s ) );
     }
+
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
     INFO("");
 
@@ -2619,7 +2615,7 @@ bool MainWindow::initializeFragment()
 
 void MainWindow::hideUnusedVariableWidgets()
 {
-    DBOUT;
+
     /// hide unused widgets unless the default state is locked
     QStringList wnames = variableEditor->getWidgetNames();
     for (int i = 0; i < wnames.count(); i++) {
@@ -2652,7 +2648,7 @@ namespace
 // Returns the first valid directory.
 QString findDirectory(QStringList guesses)
 {
-    DBOUT;
+
     QStringList invalid;
     for (int i = 0; i < guesses.size(); i++) {
         if (QFile::exists(guesses[i])) {
@@ -2670,7 +2666,7 @@ QString findDirectory(QStringList guesses)
 // Mac needs to step two directories up, when debugging in XCode...
 QString MainWindow::getExamplesDir()
 {
-    DBOUT;
+
     QStringList examplesDir;
     examplesDir << "Examples"
                 << "../Examples"
@@ -2681,7 +2677,7 @@ QString MainWindow::getExamplesDir()
 
 QString MainWindow::getMiscDir()
 {
-    DBOUT;
+
     QStringList miscDir;
     miscDir << "Misc"
             << "../Misc"
@@ -2692,13 +2688,13 @@ QString MainWindow::getMiscDir()
 
 TextEdit *MainWindow::getTextEdit()
 {
-    DBOUT;
+
     return (TextEdit *)stackedTextEdits->currentWidget();
 }
 
 void MainWindow::cursorPositionChanged()
 {
-    DBOUT;
+
     TextEdit *te = getTextEdit();
 
     if (te == 0) {
@@ -2712,12 +2708,9 @@ void MainWindow::cursorPositionChanged()
     QString x;
     QStringList ex;
     QString filename = tabInfo[tabBar->currentIndex()].filename;
-    // when there is no #version statement as the first line the line number is off by 2
-    // default is to insert #version statements into vertex shaders (both makes 2) so they match the fragment shaders
 
-    int incFudge = 0;
+    int incFudge = 1;
     if (!(fs->source.count())) return;
-    if( !fs->source.at(0).contains("#version") ) incFudge = 2;
     for (int i = 0; i < fs->lines.count(); i++) {
         // fs->sourceFiles[fs->sourceFile[i]]->fileName()
         if (fs->lines[i] == blockNumber && QString::compare(filename, fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive) == 0) {
@@ -2730,12 +2723,12 @@ void MainWindow::cursorPositionChanged()
         x = tr(" (Not part of current script) ");
     }
 
-    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber) + x, 5000);
+    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber+incFudge) + x, 5000);
 }
 
 TextEdit *MainWindow::insertTabPage(QString filename)
 {
-    DBOUT;
+
     auto *textEdit = new TextEdit(this);
     textEdit->setStyleSheet(editorStylesheet);
 
@@ -2825,13 +2818,13 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
 
 void MainWindow::resetCamera(bool fullReset)
 {
-    DBOUT;
+
     engine->resetCamera(fullReset);
 }
 
 void MainWindow::tabChanged(int index)
 {
-    DBOUT;
+
     if (index > tabInfo.size()) {
         return;
     }
@@ -2871,7 +2864,7 @@ void MainWindow::tabChanged(int index)
 
 void MainWindow::closeTab()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -2882,7 +2875,7 @@ void MainWindow::closeTab()
 
 void MainWindow::closeTab(int index)
 {
-    DBOUT;
+
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
         QString mess =
@@ -2919,7 +2912,7 @@ void MainWindow::closeTab(int index)
 
 void MainWindow::clearKeyFrames()
 {
-    DBOUT;
+
     // clear the easingcurve settings
     if(variableEditor->hasEasing()) {
         engine->setCurveSettings( QStringList() );
@@ -2933,7 +2926,7 @@ void MainWindow::clearKeyFrames()
 
 void MainWindow::launchDocumentation()
 {
-    DBOUT;
+
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("https://en.wikibooks.org/wiki/Fractals/fragmentarium"));
     if (!s) {
@@ -2943,7 +2936,7 @@ void MainWindow::launchDocumentation()
 
 void MainWindow::launchSfHome()
 {
-    DBOUT;
+
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("http://syntopia.github.com/Fragmentarium/"));
     if (!s) {
@@ -2953,7 +2946,7 @@ void MainWindow::launchSfHome()
 
 void MainWindow::launchGLSLSpecs()
 {
-    DBOUT;
+
     INFO(tr("Launching web browser..."));
     bool s = QDesktopServices::openUrl(QUrl("http://www.opengl.org/registry/"));
     if (!s) {
@@ -2963,7 +2956,7 @@ void MainWindow::launchGLSLSpecs()
 
 void MainWindow::launchIntro()
 {
-    DBOUT;
+
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://blog.hvidtfeldts.net/index.php/2011/06/distance-estimated-3d-fractals-part-i/"));
     if (!s) {
@@ -2973,7 +2966,7 @@ void MainWindow::launchIntro()
 
 void MainWindow::launchFAQ()
 {
-    DBOUT;
+
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://blog.hvidtfeldts.net/index.php/2011/12/fragmentarium-faq/"));
     if (!s) {
@@ -2983,7 +2976,7 @@ void MainWindow::launchFAQ()
 
 void MainWindow::launchReferenceHome()
 {
-    DBOUT;
+
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://www.fractalforums.com/fragmentarium/"));
     if (!s) {
@@ -2993,7 +2986,7 @@ void MainWindow::launchReferenceHome()
 
 void MainWindow::launchReferenceHome2()
 {
-    DBOUT;
+
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://www.digilanti.org/fragmentarium/"));
     if (!s) {
@@ -3003,7 +2996,7 @@ void MainWindow::launchReferenceHome2()
 
 void MainWindow::launchGallery()
 {
-    DBOUT;
+
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://flickr.com/groups/fragmentarium/"));
     if (!s) {
@@ -3013,14 +3006,14 @@ void MainWindow::launchGallery()
 
 void MainWindow::makeScreenshot()
 {
-    DBOUT;
+
     engine->update();
     saveImage(engine->grabFramebuffer());
 }
 
 void MainWindow::saveImage(QImage image)
 {
-    DBOUT;
+
     QString filename = GetImageFileName(this, tr("Save screenshot as:"));
     if (filename.isEmpty()) {
         return;
@@ -3038,7 +3031,7 @@ void MainWindow::saveImage(QImage image)
 
 void MainWindow::copy()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3048,7 +3041,7 @@ void MainWindow::copy()
 
 void MainWindow::cut()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3058,7 +3051,7 @@ void MainWindow::cut()
 
 void MainWindow::paste()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3068,7 +3061,7 @@ void MainWindow::paste()
 
 void MainWindow::search()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3097,7 +3090,7 @@ restart:
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
 {
-    DBOUT;
+
     if (ev->mimeData()->hasUrls()) {
         ev->acceptProposedAction();
     } else {
@@ -3107,7 +3100,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
 
 void MainWindow::dropEvent(QDropEvent *ev)
 {
-    DBOUT;
+
     if (ev->mimeData()->hasUrls() && ev->source() == nullptr) {
         QList<QUrl> urls = ev->mimeData()->urls();
         for (auto &url : urls) {
@@ -3144,7 +3137,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
 
 void MainWindow::setRecentFile(const QString &fileName)
 {
-    DBOUT;
+
     QSettings settings;
 
     QStringList files = settings.value("recentFileList").toStringList();
@@ -3180,22 +3173,24 @@ void MainWindow::setRecentFile(const QString &fileName)
 
 void MainWindow::setSplashWidgetTimeout(QSplashScreen *w)
 {
-    DBOUT;
+
     splashWidget = w;
     QTimer::singleShot(2000, this, SLOT(removeSplash()));
     // test for nVidia card and GL > 4.0
     if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-        WARNING(tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+        WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+
         if (asmAction != nullptr) {
             editMenu->removeAction(asmAction);
         }
+
     }
 
 }
 
 void MainWindow::removeSplash()
 {
-    DBOUT;
+
     if (splashWidget != nullptr) {
         splashWidget->finish(this);
     }
@@ -3204,7 +3199,7 @@ void MainWindow::removeSplash()
 
 void MainWindow::insertText()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3216,7 +3211,7 @@ void MainWindow::insertText()
 
 void MainWindow::preferences()
 {
-    DBOUT;
+
     PreferencesDialog pd(this);
     pd.exec();
     readSettings();
@@ -3237,7 +3232,7 @@ initTools();
 
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
 {
-    DBOUT;
+
     if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY =  bufferYSpinBox->value();
@@ -3282,7 +3277,7 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
 
 void MainWindow::indent()
 {
-    DBOUT;
+
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return;
@@ -3316,7 +3311,7 @@ void MainWindow::indent()
 
 void MainWindow::setFPS(float fps)
 {
-    DBOUT;
+
     if (fps>0) {
         fpsLabel->setText("FPS: " + QString::number(fps, 'f', 1) + " (" + QString::number(1.0 / fps, 'g', 1) + "s)");
     } else {
@@ -3326,7 +3321,7 @@ void MainWindow::setFPS(float fps)
 
 QString MainWindow::getCameraSettings()
 {
-    DBOUT;
+
     QString settings = variableEditor->getSettings();
     QStringList l = settings.split("\n");
     QStringList r;
@@ -3340,19 +3335,19 @@ QString MainWindow::getCameraSettings()
     return r.join("\n");
 }
 
-void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u)
+void MainWindow::setCameraSettings(glm::dvec3 e, glm::dvec3 t, glm::dvec3 u)
 {
-    DBOUT;
+
     QString r = QString("Eye = %1,%2,%3\nTarget = %4,%5,%6\nUp = %7,%8,%9\n")
-                .arg(e.x()).arg(e.y()).arg(e.z())
-                .arg(t.x()).arg(t.y()).arg(t.z())
-                .arg(u.x()).arg(u.y()).arg(u.z());
+                .arg(e.x).arg(e.y).arg(e.z)
+                .arg(t.x).arg(t.y).arg(t.z)
+                .arg(u.x).arg(u.y).arg(u.z);
     variableEditor->blockSignals(true);
     if(engine->getFragmentSource()->autoFocus) { // widget detected
         BoolWidget *btest = dynamic_cast<BoolWidget *>(variableEditor->getWidgetFromName("AutoFocus"));
         if (btest != nullptr) {
             if(btest->isChecked()) {
-                double d = e.distanceToPoint(t);
+                double d = distance(e, t);
                 r += QString("FocalPlane = %1\n").arg(d);
             }
     }
@@ -3363,7 +3358,7 @@ void MainWindow::setCameraSettings(QVector3D e, QVector3D t, QVector3D u)
 
 QString MainWindow::getPresetNames(bool keyframesORpresets)
 {
-    DBOUT;
+
     int c = variableEditor->getPresetCount(); // total preset count including keyframes
     QStringList k, p;
     if (c > 1) {
@@ -3383,7 +3378,7 @@ QString MainWindow::getPresetNames(bool keyframesORpresets)
 
 void MainWindow::initKeyFrameControl()
 {
-    DBOUT;
+
     if (engine->eyeSpline != nullptr || engine->targetSpline != nullptr || engine->upSpline != nullptr) {
         clearKeyFrameControl();
     }
@@ -3420,7 +3415,7 @@ void MainWindow::initKeyFrameControl()
 
 void MainWindow::clearKeyFrameControl()
 {
-    DBOUT;
+
     variableEditor->setKeyFramesEnabled(false);
     if (engine->eyeSpline != nullptr || engine->targetSpline != nullptr || engine->upSpline != nullptr) {
         engine->clearControlPoints();
@@ -3435,7 +3430,7 @@ void MainWindow::clearKeyFrameControl()
 
 void MainWindow::addKeyFrame(QStringList kfps)
 {
-    DBOUT;
+
     /// for each key frame add ctrl point to the list
     if(engine->cameraID() == "3D" ) {
         KeyFrameInfo kf(kfps);
@@ -3449,7 +3444,7 @@ void MainWindow::addKeyFrame(QStringList kfps)
 
 void MainWindow::selectPreset()
 {
-    DBOUT;
+
     QString pName;
 
     pName = QString("#preset %1").arg(variableEditor->getPresetName());
@@ -3479,7 +3474,7 @@ void MainWindow::selectPreset()
 
 void MainWindow::processGuiEvents()
 {
-    DBOUT;
+
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
@@ -3489,7 +3484,7 @@ void MainWindow::processGuiEvents()
 
 void MainWindow::dumpShaderAsm()
 {
-    DBOUT;
+
     if (engine->hasShader()) {
         AsmBrowser::showPage(engine->shaderAsm(true), "Rendershader Program");
     }
@@ -3500,7 +3495,7 @@ void MainWindow::dumpShaderAsm()
 
 void MainWindow::saveCmdScript()
 {
-    DBOUT;
+
     auto *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
     scriptText = e->toPlainText();
 
@@ -3527,7 +3522,7 @@ void MainWindow::saveCmdScript()
 
 void MainWindow::loadCmdScript()
 {
-    DBOUT;
+
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, QString(), QString(), filter);
     QSettings settings;
@@ -3557,7 +3552,7 @@ void MainWindow::loadCmdScript()
 
 void MainWindow::editScript()
 {
-    DBOUT;
+
     if (scriptText.isEmpty()) {
         loadCmdScript();
     }
@@ -3622,7 +3617,7 @@ void MainWindow::editScript()
 
 void MainWindow::executeScript()
 {
-    DBOUT;
+
     QTextEdit *e = nullptr;
 
     QSettings settings;
@@ -3676,7 +3671,7 @@ void MainWindow::executeScript()
 
 void MainWindow::setupScriptEngine()
 {
-    DBOUT;
+
     runningScript=false;
     // expose these widgets to the script
     appContext = scriptEngine.newQObject(this);

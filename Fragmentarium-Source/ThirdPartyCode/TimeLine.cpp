@@ -460,23 +460,23 @@ void TimeLineDialog::mousePressEvent(QMouseEvent *ev)
                         kfr = keyframeMap.count() - 1;
                     }
                     // get values from our keframe map
-                    QVector3D e = keyframeMap.value(kfr)->eye;
-                    QVector3D t = keyframeMap.value(kfr)->target;
-                    QVector3D u = keyframeMap.value(kfr)->up;
+                    glm::dvec3 e = keyframeMap.value(kfr)->eye;
+                    glm::dvec3 t = keyframeMap.value(kfr)->target;
+                    glm::dvec3 u = keyframeMap.value(kfr)->up;
                     // put them in a stext string for display
                     QString dlist = QString("");
                     dlist += QString("EYE:\t X %1 Y %2 Z %3 \n")
-                             .arg(e.x())
-                             .arg(e.y())
-                             .arg(e.z());
+                             .arg(e.x)
+                             .arg(e.y)
+                             .arg(e.z);
                     dlist += QString("TARGET:\t X %1 Y %2 Z %3 \n")
-                             .arg(t.x())
-                             .arg(t.y())
-                             .arg(t.z());
+                             .arg(t.x)
+                             .arg(t.y)
+                             .arg(t.z);
                     dlist += QString("UP:\t X %1 Y %2 Z %3 \n")
-                             .arg(u.x())
-                             .arg(u.y())
-                             .arg(u.z());
+                             .arg(u.x)
+                             .arg(u.y)
+                             .arg(u.z);
                     // fudge for last frame ?
                     if (kf.key() + 1 > frames) {
                         dlist += QString("\nLast Frame %1").arg(frames);

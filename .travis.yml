@@ -62,6 +62,9 @@ install:
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
+      
+      wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
+      sudo dpkg -i libglm-dev_0.9.9.3-2_all.deb
       ## linuxdeployqt needs this
       #sudo apt-get -qq install libmtdev1
       #sudo apt-get -qq install libmtdev-dev
@@ -192,7 +195,6 @@ before_deploy:
     then
       export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
       export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-      mv Fragmentarium-2.5.0-0.1.1-Linux.deb Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
       #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     fi
   - |
@@ -205,7 +207,7 @@ before_deploy:
       cd ./Fragmentarium-Source/build
     fi
   - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
@@ -214,7 +216,7 @@ deploy:
     api_key:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file:
-        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.deb
+        - fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
         #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     skip_cleanup: true
     on:
