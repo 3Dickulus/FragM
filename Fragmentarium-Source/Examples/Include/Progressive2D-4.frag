@@ -15,7 +15,7 @@ out vec2 viewCoord;
 // Use this to adjust clipping planes
 
 uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
-uniform double Zoom; slider[0,1,50000] NotLockable
+uniform double Zoom; slider[0,1,1e16] NotLockable
 
 uniform vec2 pixelSize;
 
@@ -25,11 +25,13 @@ void main(void)
 	double ar = pixelSize.y/pixelSize.x;
 	gl_Position =  gl_Vertex;
 	viewCoord = gl_Vertex.xy;
-	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom)+  vec2(Center));
+	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom));
 	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/float(Zoom);
 }
 
 #endvertex
+
+uniform dvec2 Center;
 
 #group Post
 
@@ -88,7 +90,7 @@ void main() {
     //  dvec2 r = rand(viewCoord*(double(subframe)+1.0))-dvec2(0.5);
 #ifdef providesFiltering
 	 dvec4 prev = texture(backbuffer,(viewCoord+vec2(1.0))/2.0);
-	dvec4 new = color(coord.xy);
+	dvec4 new = color(coord.xy+Center);
 #ifdef linearGamma
      FragColor = prev+ new;
 #else
@@ -107,7 +109,7 @@ void main() {
 	} // else {  w =pow( 1.0-length(r),1.0);};
 
 	r*=AARange;
-	dvec2 c = coord.xy+aaScale*r;
+	dvec2 c = coord.xy+Center+aaScale*r;
 #ifdef linearGamma
 	dvec3 color =  color(c);
 #else

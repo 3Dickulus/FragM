@@ -23,7 +23,6 @@
 #include <QTabWidget>
 #include <QTextBlockUserData>
 #include <QVBoxLayout>
-#include <glm/glm.hpp>
 #include <QVector>
 #include <QWidget>
 #include <QtGui>
@@ -34,6 +33,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QtScriptTools/QScriptEngineDebugger>
+
+
+#include <glm/glm.hpp>
 
 #include "MainWindow.h"
 #include "TextEdit.h"
@@ -78,7 +80,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190810, "");
+    version = Version(2, 5, 0, 190811, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -751,7 +753,6 @@ initTools();
     setupScriptEngine();
     play();
     veDockChanged(true);
-
 }
 
 #ifdef USE_OPEN_EXR
@@ -2506,7 +2507,7 @@ bool MainWindow::initializeFragment()
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();
     if (prof == 1 || prof == 2) {
-        INFO(QString("Using GL %1 profile").arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+        INFO(QString("Using GL %1.%2 %3 profile").arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
     } else if (prof == 0) {
         INFO( "No GL profile." );
 //         return false;
@@ -2526,6 +2527,7 @@ bool MainWindow::initializeFragment()
     foreach ( QByteArray s, a ) {
         imgFileExtensions.append ( QString ( s ) );
     }
+
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
     INFO("");
 
@@ -2706,12 +2708,9 @@ void MainWindow::cursorPositionChanged()
     QString x;
     QStringList ex;
     QString filename = tabInfo[tabBar->currentIndex()].filename;
-    // when there is no #version statement as the first line the line number is off by 2
-    // default is to insert #version statements into vertex shader (both makes 2) so they match the fragment shader
 
-    int incFudge = 0;
+    int incFudge = 1;
     if (!(fs->source.count())) return;
-    if( !fs->source.at(0).contains("#version") ) incFudge = 2;
     for (int i = 0; i < fs->lines.count(); i++) {
         // fs->sourceFiles[fs->sourceFile[i]]->fileName()
         if (fs->lines[i] == blockNumber && QString::compare(filename, fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive) == 0) {
@@ -2724,7 +2723,7 @@ void MainWindow::cursorPositionChanged()
         x = tr(" (Not part of current script) ");
     }
 
-    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber) + x, 5000);
+    statusBar()->showMessage(tr("Position: %1, Line: %2.").arg(pos).arg(blockNumber+incFudge) + x, 5000);
 }
 
 TextEdit *MainWindow::insertTabPage(QString filename)
@@ -3179,10 +3178,12 @@ void MainWindow::setSplashWidgetTimeout(QSplashScreen *w)
     QTimer::singleShot(2000, this, SLOT(removeSplash()));
     // test for nVidia card and GL > 4.0
     if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-        WARNING(tr("OpenGL features missing") + tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+        WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+
         if (asmAction != nullptr) {
             editMenu->removeAction(asmAction);
         }
+
     }
 
 }

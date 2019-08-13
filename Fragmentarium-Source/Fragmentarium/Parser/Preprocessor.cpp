@@ -5,7 +5,10 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QVector>
+
+
 #include <glm/glm.hpp>
+
 #include "../../SyntopiaCore/Exceptions/Exception.h"
 #include "../../SyntopiaCore/Logging/Logging.h"
 #include "Preprocessor.h"
@@ -93,8 +96,35 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     fs->sourceFileNames.append(originalFileName);
     int sf = fs->sourceFileNames.count() - 1;
 
+    QRegExp includeCommand("^#include(.*)\\s\"([^\"]+)\"\\s*$");    // Look for #include "test.frag"
+    QRegExp bufferShaderCommand("^#buffershader\\s\"([^\"]+)\"\\s*$");    // Look for #buffershader "test.frag"
+
     QStringList in = input.split(QRegExp("\r\n|\r|\n"));
     if (!isCreatingAutoSave) in.append("#group default");      // make sure we fall back to the default group after including a file.
+
+    // scan for included files
+    bool found = false;
+    int lastInc=0;
+    for (int i = 0; i < in.count(); i++) {
+        if (includeCommand.indexIn(in[i]) != -1) {
+            QString fileName = includeCommand.cap(2);
+            QString post = includeCommand.cap(1);
+            if (post == "") {
+                found = true;
+                lastInc=i;
+            } else {
+                throw Exception("'#include' expected");
+            }
+        }
+    }
+
+    if(!found) { // this file has no #include statements
+        in.insert( 1, QString("#line %1 \"%2\"").arg(1).arg(originalFileName) );
+    }
+    else // insert line after last #include statement
+    {
+        in.insert( lastInc+1, QString("#line %1 \"%2\"").arg(lastInc + ((in.at(0).startsWith("#version"))?2:1)).arg(originalFileName) );
+    }
 
     QList<int> lines;
     for (int i = 0; i < in.count(); i++) lines.append(i);
@@ -103,9 +133,6 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     QList<int> source;
     for (int i = 0; i < in.count(); i++) source.append(sf);
     source.append(-1);
-
-    QRegExp includeCommand("^#include(.*)\\s\"([^\"]+)\"\\s*$");    // Look for #include "test.frag"
-    QRegExp bufferShaderCommand("^#buffershader\\s\"([^\"]+)\"\\s*$");    // Look for #buffershader "test.frag"
 
     for (int i = 0; i < in.count(); i++) {
         if (includeCommand.indexIn(in[i]) != -1) {

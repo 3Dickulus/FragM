@@ -6,8 +6,10 @@
 #include <QList>
 #include <QFile>
 #include <QVector>
-#include <glm/glm.hpp>
 #include <QMap>
+
+
+#include <glm/glm.hpp>
 
 #include "../GUI/FileManager.h"
 

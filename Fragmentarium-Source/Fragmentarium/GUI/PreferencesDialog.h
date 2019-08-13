@@ -111,6 +111,7 @@ private slots:
         m_ui.includeWithAutoSaveCheckBox->setChecked (settings.value ( "includeWithAutoSave", true ).toBool() );
         m_ui.jtloeCheckBox->setChecked (settings.value ( "jumpToLineOnError", true ).toBool() );
         m_ui.jtlowCheckBox->setChecked (settings.value ( "jumpToLineOnWarn", false ).toBool() );
+        m_ui.ddCameraModeCheckBox->setChecked (settings.value ( "ddCameraMode", false ).toBool() );
 #ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
 #endif // USE_OPEN_EXR
@@ -140,6 +141,7 @@ private slots:
         settings.setValue ( "includeWithAutoSave", m_ui.includeWithAutoSaveCheckBox->isChecked() );
         settings.setValue ( "jumpToLineOnError", m_ui.jtloeCheckBox->isChecked() );
         settings.setValue ( "jumpToLineOnWarn", m_ui.jtlowCheckBox->isChecked() );
+        settings.setValue ( "ddCameraMode", m_ui.ddCameraModeCheckBox->isChecked() );
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR

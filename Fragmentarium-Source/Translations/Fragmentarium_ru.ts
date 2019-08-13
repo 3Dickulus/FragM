@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Камера: Нажмите 2D окно для управления движением с помощью клавиатуры. Для получения более подробной информации, обратитесь к меню Справка.</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+118"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+120"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Установка таймера обновления дисплея %1 мс ( макс %2 кадров в секунду).</translation>
     </message>
@@ -340,7 +340,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось разобрать значение параметра текстуры: </translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+158"/>
         <source>No vertex shader found!</source>
         <translation>Не найдены вершинные шейдеры!</translation>
     </message>
@@ -367,7 +367,7 @@ Initialized as GL_RGBA8</source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="+1049"/>
+        <location line="+1050"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Кадр:%1/%2 Время:%3</translation>
     </message>
@@ -377,7 +377,7 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1443"/>
+        <location line="-1444"/>
         <location line="+367"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
@@ -438,7 +438,7 @@ Initialized as GL_RGBA8</source>
         <translation>Неполное FBO Ошибка!</translation>
     </message>
     <message>
-        <location line="+676"/>
+        <location line="+677"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Недействительное FBO - просмотр буфера</translation>
     </message>
@@ -496,7 +496,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1482"/>
         <source>Could not link vertex + fragment shader: </source>
         <translation>Не удалось связать вершинный шейдер с фрагментным шейдером: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialized as GL_RGBA8</source>
         <translation>Вершинный шейдер не найден!</translation>
     </message>
     <message>
-        <location line="+1010"/>
+        <location line="+1011"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Не удалось связать previewBuffer FBO</translation>
@@ -551,7 +551,7 @@ Initialized as GL_RGBA8</source>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+113"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+115"/>
         <source>Host Preprocessor Commands</source>
         <translation>Команды препроцессора</translation>
     </message>
@@ -590,12 +590,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2686"/>
+        <location line="+2683"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2622"/>
+        <location line="-2619"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -632,36 +632,36 @@ and save to file before closing.
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1509"/>
+        <location line="+1508"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1500"/>
+        <location line="-1499"/>
         <location line="+16"/>
-        <location line="+929"/>
+        <location line="+928"/>
         <location line="+1086"/>
         <location line="+49"/>
         <location line="+70"/>
-        <location line="+373"/>
+        <location line="+371"/>
         <location line="+167"/>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
-        <location line="+136"/>
+        <location line="+138"/>
         <location line="+78"/>
         <source>No open tab</source>
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-2910"/>
-        <location line="+1397"/>
+        <location line="-2909"/>
+        <location line="+1396"/>
         <location line="+1734"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3101"/>
+        <location line="-3100"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -807,7 +807,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+545"/>
+        <location line="+544"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
@@ -849,12 +849,12 @@ This option may be re-enabled through Preferences</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+100"/>
         <source>Available image formats: </source>
         <translation>Доступные форматы изображений: </translation>
     </message>
     <message>
-        <location line="+234"/>
+        <location line="+231"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -869,17 +869,16 @@ Close this tab without saving changes?</source>
 Закрыть эту вкладку без сохранения изменений?</translation>
     </message>
     <message>
-        <location line="+419"/>
         <source>OpenGL features missing</source>
-        <translation>Функции OpenGL отсутствуют</translation>
+        <translation type="vanished">Функции OpenGL отсутствуют</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+419"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2321"/>
+        <location line="-2319"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1092,7 +1091,7 @@ Please read this:
         <translation></translation>
     </message>
     <message>
-        <location line="-814"/>
+        <location line="-813"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
@@ -1189,7 +1188,7 @@ Continue and loose changes?</source>
     &quot;&lt;/p&gt;&quot;</translation>
     </message>
     <message>
-        <location line="+235"/>
+        <location line="+234"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Инструменты</translation>
     </message>
@@ -1570,13 +1569,13 @@ and save before closing!</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3330"/>
-        <location line="+2686"/>
+        <location line="-3329"/>
+        <location line="+2683"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-1534"/>
+        <location line="-1532"/>
         <source>Saved fragment + settings as: </source>
         <translation>Сохраненный фрагмент + настройки как: </translation>
     </message>
@@ -1835,7 +1834,7 @@ Would you like to reload it?</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+134"/>
         <source>Not a runnable fragment.</source>
         <translation>Ваш код не запускается.</translation>
     </message>
@@ -1850,7 +1849,7 @@ Would you like to reload it?</source>
         <translation>Не удалось скомпилировать скрипт (%1 мс).</translation>
     </message>
     <message>
-        <location line="+113"/>
+        <location line="+110"/>
         <source> Line in preprocessed script: </source>
         <translation> Линия в скрипте препроцессора: </translation>
     </message>
@@ -1889,8 +1888,8 @@ Would you like to reload it?</source>
         <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location line="-2650"/>
-        <location line="+2686"/>
+        <location line="-2647"/>
+        <location line="+2683"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -1970,7 +1969,7 @@ Would you like to reload it?</source>
         <translation>Должен быть .frag или .fragparams файл.</translation>
     </message>
     <message>
-        <location line="+336"/>
+        <location line="+338"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset не найден!</translation>
     </message>
@@ -2517,7 +2516,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+362"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+369"/>
         <source>Preferences</source>
         <translation>Предпочтительные настройки</translation>
     </message>
@@ -2716,11 +2715,17 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <source>Jump to line on Warn</source>
         <translation>Перейти к строке предупреждения</translation>
     </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
+        <source>2D Camera Mode on=traveling off=fixed</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+129"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+156"/>
         <source>Including file: </source>
         <translation>Включить файл: </translation>
     </message>
@@ -2738,7 +2743,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-979"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-978"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>

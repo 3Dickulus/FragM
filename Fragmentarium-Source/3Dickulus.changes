@@ -197,6 +197,7 @@ Changes since v0.9.5
 + added "jump to line on error/warn" for the text editor
 + fixed some texture issues when running under script control
 
++ added preferences option for 2DCameraMode, fixed vs traveling
 
  Tested on Linux desktop
  Compiled with gcc (SuSE Leap 15.1) Qt 5.9.4
