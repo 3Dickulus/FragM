@@ -44,6 +44,114 @@ TODO:
   
 ----------------------------------------------------------------*/
 #if __VERSION__ >= 400 && defined(USE_DOUBLE)
+
+//--------------------------------------------------------------------
+// 2019-08-13 {{{ improved sqrt by claude
+
+// save built in square root
+float _builtin_sqrt(float x) { return sqrt(x); }
+vec2 _builtin_sqrt(vec2 x) { return sqrt(x); }
+vec3 _builtin_sqrt(vec3 x) { return sqrt(x); }
+vec4 _builtin_sqrt(vec4 x) { return sqrt(x); }
+double _builtin_sqrt(double x) { return sqrt(x); }
+dvec2 _builtin_sqrt(dvec2 x) { return sqrt(x); }
+dvec3 _builtin_sqrt(dvec3 x) { return sqrt(x); }
+dvec4 _builtin_sqrt(dvec4 x) { return sqrt(x); }
+
+// redefine new square root for overloading
+float sqrt(float x) { return _builtin_sqrt(x); }
+vec2 sqrt(vec2 x) { return _builtin_sqrt(x); }
+vec3 sqrt(vec3 x) { return _builtin_sqrt(x); }
+vec4 sqrt(vec4 x) { return _builtin_sqrt(x); }
+
+// implement improved square root
+double sqrt(double x); // defined below
+dvec2 sqrt(dvec2 x) { return dvec2(sqrt(x.x), sqrt(x.y)); }
+dvec3 sqrt(dvec3 x) { return dvec3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }
+dvec4 sqrt(dvec4 x) { return dvec4(sqrt(x.x), sqrt(x.y), sqrt(x.z), sqrt(x.w)); }
+
+// Hardware sqrt improved by the Babylonian algorithm (Newton Raphson)
+double sqrt(double m)
+{
+  if (! (m > 0.0LF)) { return 0.0LF; } // FIXME return NaN for < 0?
+  double z = _builtin_sqrt(m);
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  return z;
+}
+
+// save built in length
+float _builtin_length(float x) { return length(x); }
+float _builtin_length(vec2 x) { return length(x); }
+float _builtin_length(vec3 x) { return length(x); }
+float _builtin_length(vec4 x) { return length(x); }
+double _builtin_length(double x) { return length(x); }
+double _builtin_length(dvec2 x) { return length(x); }
+double _builtin_length(dvec3 x) { return length(x); }
+double _builtin_length(dvec4 x) { return length(x); }
+
+// redefine new length for overloading
+float length(float x) { return _builtin_length(x); }
+float length(vec2 x) { return _builtin_length(x); }
+float length(vec3 x) { return _builtin_length(x); }
+float length(vec4 x) { return _builtin_length(x); }
+
+// implement improved length
+double length(double x) { return abs(x); }
+double length(dvec2 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+double length(dvec3 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+double length(dvec4 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+
+// save built in distance
+float _builtin_distance(float x, float y) { return distance(x, y); }
+float _builtin_distance(vec2 x, vec2 y) { return distance(x, y); }
+float _builtin_distance(vec3 x, vec3 y) { return distance(x, y); }
+float _builtin_distance(vec4 x, vec4 y) { return distance(x, y); }
+double _builtin_distance(double x, double y) { return distance(x, y); }
+double _builtin_distance(dvec2 x, dvec2 y) { return distance(x, y); }
+double _builtin_distance(dvec3 x, dvec3 y) { return distance(x, y); }
+double _builtin_distance(dvec4 x, dvec4 y) { return distance(x, y); }
+
+// redefine new distance for overloading
+float distance(float x, float y) { return _builtin_distance(x, y); }
+float distance(vec2 x, vec2 y) { return _builtin_distance(x, y); }
+float distance(vec3 x, vec3 y) { return _builtin_distance(x, y); }
+float distance(vec4 x, vec4 y) { return _builtin_distance(x, y); }
+
+// implement improved length
+double distance(double x, double y) { return length(x - y); }
+double distance(dvec2 x, dvec2 y) { return length(x - y); }
+double distance(dvec3 x, dvec3 y) { return length(x - y); }
+double distance(dvec4 x, dvec4 y) { return length(x - y); }
+
+// save built in normalize
+float _builtin_normalize(float x) { return normalize(x); }
+vec2 _builtin_normalize(vec2 x) { return normalize(x); }
+vec3 _builtin_normalize(vec3 x) { return normalize(x); }
+vec4 _builtin_normalize(vec4 x) { return normalize(x); }
+double _builtin_normalize(double x) { return normalize(x); }
+dvec2 _builtin_normalize(dvec2 x) { return normalize(x); }
+dvec3 _builtin_normalize(dvec3 x) { return normalize(x); }
+dvec4 _builtin_normalize(dvec4 x) { return normalize(x); }
+
+// redefine new normalize for overloading
+float normalize(float x) { return _builtin_normalize(x); }
+vec2 normalize(vec2 x) { return _builtin_normalize(x); }
+vec3 normalize(vec3 x) { return _builtin_normalize(x); }
+vec4 normalize(vec4 x) { return _builtin_normalize(x); }
+
+// implement improved normalize
+double normalize(double x) { double l = length(x); return l > 0.0LF ? x / l : 0.0LF; }
+dvec2 normalize(dvec2 x) { double l = length(x); return l > 0.0LF ? x / l : dvec2(0.0LF); }
+dvec3 normalize(dvec3 x) { double l = length(x); return l > 0.0LF ? x / l : dvec3(0.0LF); }
+dvec4 normalize(dvec4 x) { double l = length(x); return l > 0.0LF ? x / l : dvec4(0.0LF); }
+
+// 2018-08-13 }}} improved sqrt by claude
+//--------------------------------------------------------------------
+
+
 //--------------------------------------------------------------------
 // 11/12/17
 // double cos() sin() remez exp() by FractalForums.org user clacker
