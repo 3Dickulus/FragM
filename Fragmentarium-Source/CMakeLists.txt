@@ -34,6 +34,13 @@ find_package ( Qt5LinguistTools REQUIRED )
 
 find_package ( Qt5 COMPONENTS Core OpenGL Widgets Gui Xml Script ScriptTools REQUIRED )
 
+# ON if you want opengl 4+ capabilities
+OPTION ( USE_OPENGL_4 "Build with OpenGL 4.1" ON)
+MARK_AS_ADVANCED (USE_OPENGL_4)
+IF ( USE_OPENGL_4 )
+    ADD_DEFINITIONS ( -DUSE_OPENGL_4=1 )
+ENDIF ()
+
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
 
 # ON if you have OpenEXR libs and include files
