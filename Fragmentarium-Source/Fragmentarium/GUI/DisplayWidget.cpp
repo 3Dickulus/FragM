@@ -541,6 +541,14 @@ void DisplayWidget::jumpToErrorLine(int we)
     }
 }
 
+void DisplayWidget::dumpFileMap()
+{
+  for (int i = 0; i < fragmentSource.sourceFileNames.length(); ++i)
+  {
+    INFO( QString("%1 -> %2").arg(i).arg(fragmentSource.sourceFileNames[i]) );
+  }
+}
+
 void DisplayWidget::initFragmentShader()
 {
     if (shaderProgram != nullptr) {
@@ -562,6 +570,7 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
+        dumpFileMap();
         WARNING ( tr("Could not create vertex shader: ") + shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;
@@ -579,6 +588,7 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
+        dumpFileMap();
         WARNING ( tr("Could not create fragment shader: ") + shaderProgram->log() );
         if(settings.value ( "jumpToLineOnError", true ).toBool())
             jumpToErrorLine(-1);
@@ -588,6 +598,7 @@ void DisplayWidget::initFragmentShader()
     }
 
     if (!shaderProgram->log().isEmpty()) {
+        dumpFileMap();
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
         if(settings.value ( "jumpToLineOnWarn", true ).toBool())
             jumpToErrorLine(0);
@@ -596,6 +607,7 @@ void DisplayWidget::initFragmentShader()
     s = shaderProgram->link();
 
     if ( !s ) {
+        dumpFileMap();
         WARNING( tr("Could not link vertex + fragment shader: ") );
         CRITICAL( shaderProgram->log() );
         delete ( shaderProgram );
@@ -604,6 +616,7 @@ void DisplayWidget::initFragmentShader()
     }
 
     if (!shaderProgram->log().isEmpty()) {
+        dumpFileMap();
         INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
         if(settings.value ( "jumpToLineOnWarn", true ).toBool())
             jumpToErrorLine(-1);
@@ -611,6 +624,7 @@ void DisplayWidget::initFragmentShader()
 
     s = shaderProgram->bind();
     if ( !s ) {
+        dumpFileMap();
         WARNING ( tr("Could not bind shaders: ") + shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;

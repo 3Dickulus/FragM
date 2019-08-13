@@ -306,6 +306,7 @@ protected:
     void paintEvent ( QPaintEvent * ev ) Q_DECL_OVERRIDE;
     void showEvent ( QShowEvent *ev ) Q_DECL_OVERRIDE;
     void jumpToErrorLine( int we );
+    void dumpFileMap();
 
     int pixelWidth()
     {
