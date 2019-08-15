@@ -593,12 +593,12 @@ bool Camera2D::parseKeys()
 
 
     if (keyDown(Qt::Key_W)) {
-        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, -zFactor), 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, zFactor), 0.0));
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_S)) {
-        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, zFactor), 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, -zFactor), 0.0));
         keysDown = true;
     }
 
