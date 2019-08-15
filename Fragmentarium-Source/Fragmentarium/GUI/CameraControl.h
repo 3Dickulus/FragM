@@ -19,6 +19,7 @@ class VariableEditor;
 class Float3Widget;
 class Float2Widget;
 class FloatWidget;
+class BoolWidget;
 
 // CameraControl maintains camera position, and respond to user control.
 class CameraControl : public QObject
@@ -124,11 +125,16 @@ public:
     virtual bool parseKeys();
     virtual void reset(bool fullReset);
     virtual double StepSize();
+    virtual glm::dmat2 getTransform();
 private:
     int height;
     int width;
     Float2Widget* center;
     FloatWidget* zoom;
+    BoolWidget* enableTransform;
+    FloatWidget* rotateAngle;
+    FloatWidget* stretchAngle;
+    FloatWidget* stretchAmount;
     QStatusBar* statusBar;
     glm::dvec3 mouseDown;
     double zoomDown;

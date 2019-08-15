@@ -454,6 +454,10 @@ Camera2D::Camera2D(QStatusBar *statusBar) : statusBar(statusBar)
 {
     center = nullptr;
     zoom = nullptr;
+    enableTransform = nullptr;
+    rotateAngle = nullptr;
+    stretchAngle = nullptr;
+    stretchAmount = nullptr;
     zoomDown = 0.0;
     mouseDown = glm::dvec3(0, 0, -1);
     keyStatus.clear();
@@ -496,6 +500,11 @@ void Camera2D::connectWidgets(VariableEditor *ve)
     if (zoom == nullptr) {
         WARNING(QCoreApplication::translate("Camera2D", "Could not find Zoom interface widget"));
     }
+
+    enableTransform = dynamic_cast<BoolWidget *>(ve->getWidgetFromName("EnableTransform"));
+    rotateAngle = dynamic_cast<FloatWidget *>(ve->getWidgetFromName("RotateAngle"));
+    stretchAngle = dynamic_cast<FloatWidget *>(ve->getWidgetFromName("StretchAngle"));
+    stretchAmount = dynamic_cast<FloatWidget *>(ve->getWidgetFromName("StretchAmount"));
 }
 
 namespace
@@ -509,6 +518,26 @@ glm::dvec3 getModelCoord(glm::dvec3 mouseCoord, glm::dvec3 center, double zoom,
     return coord;
 }
 } // namespace
+
+glm::dmat2 Camera2D::getTransform()
+{
+    glm::dmat2 transform = glm::dmat2(1.0, 0.0, 0.0, 1.0);
+    if (enableTransform && enableTransform->isChecked()) {
+        double b = glm::radians(rotateAngle ? rotateAngle->getValue() : 0.0);
+        double bc = std::cos(b);
+        double bs = std::sin(b);
+        double a = glm::radians(stretchAngle ? stretchAngle->getValue() : 0.0);
+        double ac = std::cos(a);
+        double as = std::sin(a);
+        double s = std::sqrt(std::pow(2.0, stretchAmount ? stretchAmount->getValue() : 0.0));
+        glm::dmat2 m1 = glm::dmat2(ac, as, -as, ac);
+        glm::dmat2 m2 = glm::dmat2(s, 0.0, 0.0, 1.0 / s);
+        glm::dmat2 m3 = glm::dmat2(ac, -as, as, ac);
+        glm::dmat2 m4 = glm::dmat2(bc, bs, -bs, bc);
+        transform = m1 * m2 * m3 * m4;
+    }
+    return transform;
+}
 
 bool Camera2D::parseKeys()
 {
@@ -553,23 +582,23 @@ bool Camera2D::parseKeys()
     // ---------- Movement -----------------------------
 
     if (keyDown(Qt::Key_A)) {
-        center->setValue(centerValue + glm::dvec3(-zFactor, 0.0, 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(-zFactor, 0.0), 0.0));
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_D)) {
-        center->setValue(centerValue + glm::dvec3(zFactor, 0.0, 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(zFactor, 0.0), 0.0));
         keysDown = true;
     }
 
 
     if (keyDown(Qt::Key_W)) {
-        center->setValue(centerValue + glm::dvec3(0.0, -zFactor, 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, -zFactor), 0.0));
         keysDown = true;
     }
 
     if (keyDown(Qt::Key_S)) {
-        center->setValue(centerValue + glm::dvec3(0.0, zFactor, 0.0));
+        center->setValue(centerValue + glm::dvec3(getTransform() * glm::dvec2(0.0, zFactor), 0.0));
         keysDown = true;
     }
 
@@ -607,6 +636,7 @@ bool Camera2D::mouseEvent(QMouseEvent *e, int w, int h)
     double mouseSpeed = 1.0;
     if (mouseDown.z != -1 && e->buttons() != Qt::NoButton) {
         glm::dvec3 dp = mouseDown - pos;
+        dp = glm::dvec3(getTransform() * glm::dvec2(dp), 0.0);
         if (e->buttons() == Qt::LeftButton) {
             center->setValue(centerDown + dp * mouseSpeed / zoomDown);
         } else if (e->buttons() == Qt::RightButton) {
@@ -650,6 +680,7 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     if( settings.value("ddCameraMode").toBool() )
     {
         glm::dvec3 pos = glm::dvec3((e->pos().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->pos().y() * (1.0 / double(height))), 0.0);
+        pos = glm::dvec3(getTransform() * glm::dvec2(pos), 0.0);
         glm::dvec3 md = pos / zoomValue + centerValue;
 
         if (steps > 0.0) {
@@ -668,6 +699,7 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     double v = (e->pos().y() / double(height) - 0.5) * 2.0;
 
         glm::dvec3 pos = glm::dvec3(-u, v, 0.0);
+        pos = glm::dvec3(getTransform() * glm::dvec2(pos), 0.0);
         glm::dvec3 md = centerValue + pos / (zoomValue * g) * (1.0 - g);
 
     center->setValue(md);

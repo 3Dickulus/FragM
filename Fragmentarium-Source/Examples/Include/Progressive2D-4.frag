@@ -17,15 +17,36 @@ out vec2 viewCoord;
 uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
 uniform double Zoom; slider[0,1,1e16] NotLockable
 
+uniform bool EnableTransform; checkbox[true]
+uniform float RotateAngle; slider[-360,0,360]
+uniform float StretchAngle; slider[-360,0,360]
+uniform float StretchAmount; slider[-100,0,100]
+
 uniform vec2 pixelSize;
 
 
 void main(void)
 {
-	double ar = pixelSize.y/pixelSize.x;
+	mat2 transform = mat2(1.0, 0.0, 0.0, 1.0);
+	if (EnableTransform)
+	{
+		float b = radians(RotateAngle);
+		float bc = cos(b);
+		float bs = sin(b);
+		float a = radians(StretchAngle);
+		float ac = cos(a);
+		float as = sin(a);
+		float s = sqrt(pow(2.0, StretchAmount));
+		mat2 m1 = mat2(ac, as, -as, ac);
+		mat2 m2 = mat2(s, 0.0, 0.0, 1.0 / s);
+		mat2 m3 = mat2(ac, -as, as, ac);
+		mat2 m4 = mat2(bc, bs, -bs, bc);
+		transform = m1 * m2 * m3 * m4;
+	}
+	float ar = pixelSize.y/pixelSize.x;
 	gl_Position =  gl_Vertex;
 	viewCoord = gl_Vertex.xy;
-	coord = vec2(((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom));
+	coord = vec2(transform * ((gl_ProjectionMatrix*gl_Vertex).xy*vec2(ar,1.0))/float(Zoom));
 	aaScale = vec2(gl_ProjectionMatrix[0][0],gl_ProjectionMatrix[1][1])*pixelSize/float(Zoom);
 }
 
