@@ -509,44 +509,59 @@ QStringList DisplayWidget::shaderAsm(bool w)
     return asmList;
 }
 
-void DisplayWidget::jumpToErrorLine(int we)
+void DisplayWidget::createErrorLineLog ( QString message, QString log, bool infoOrWarn )
 {
-    // jump to error line in text editor
-    bool ok = false;
+    QStringList logList = log.split ( "\n" );
     // test nVidia log
-    QRegExp testnvidia("([(][0-9]+[)])");
-    QRegExp testamd("([:][0-9]+[(])");
-    QRegExp num("([0-9]+)");
+    QRegExp testnvidia ( "^([0-9]+)[(]([0-9]+)[)]" );
+    QRegExp testamd ( "^([0-9]+)[:]([0-9]+)[(]" );
+    QRegExp num ( "([0-9]+)" );
+    int errorCount=0;
+    int errorLine=0;
+    int fileIndex=0;
 
-    int errLineNum=-1;
+    infoOrWarn ? WARNING ( message ) : INFO ( message );
 
-    // test AMD log first
-    if (!ok && testamd.indexIn(shaderProgram->log()) != -1)
-        if(num.indexIn(testamd.cap(1)) != -1)
-            errLineNum = num.cap(1).toInt(&ok);
-    // because nvtest will match the wrong thing in amd log but amdtest matches nothing in nVidia log
-    if (!ok && testnvidia.indexIn(shaderProgram->log()) != -1)
-        if(num.indexIn(testnvidia.cap(1)) != -1)
-            errLineNum = num.cap(1).toInt(&ok);
+    foreach ( const QString &str, logList ) {
+        QString newStr=str;
+        if ( testamd.indexIn ( str ) != -1 ) {
+            if ( num.indexIn ( testamd.cap ( 1 ) ) != -1 ) {
+                fileIndex=num.cap ( 1 ).toInt();
+                newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+            }
+            if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
+                errorLine=num.cap ( 1 ).toInt()-fileIndex;
+            }
+            errorCount++;
+        }
+        if ( testnvidia.indexIn ( str ) != -1 ) {
+            if ( num.indexIn ( testnvidia.cap ( 1 ) ) != -1 ) {
+                fileIndex=num.cap ( 1 ).toInt();
+                newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+            }
+            if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
+                errorLine=num.cap ( 1 ).toInt()-fileIndex;
+            errorCount++;
+        }
 
-    if(!ok) { // conversion to int failed
-        return;
+        QSettings settings;
+        if ( infoOrWarn ) {
+            WARNING ( newStr );
+        } else {
+            INFO ( newStr );
+        }
+
+        // only jump to first error as later errors may be caused by this one so fix it first
+        if ( (settings.value ( "jumpToLineOnWarn", true ).toBool() || settings.value ( "jumpToLineOnError", true ).toBool())) {
+            if(errorCount == 1 && fileIndex == 0) {
+                // jump to error line in text editor
+                QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
+                cursor.setPosition(0);
+                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
+                mainWindow->getTextEdit()->setTextCursor( cursor );
+            }
+        }
     }
-
-    if(errLineNum > 0) {
-        QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
-        cursor.setPosition(0);
-        cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errLineNum+we);
-        mainWindow->getTextEdit()->setTextCursor( cursor );
-    }
-}
-
-void DisplayWidget::dumpFileMap()
-{
-  for (int i = 0; i < fragmentSource.sourceFileNames.length(); ++i)
-  {
-    INFO( QString("%1 -> %2").arg(i).arg(fragmentSource.sourceFileNames[i]) );
-  }
 }
 
 void DisplayWidget::initFragmentShader()
@@ -570,7 +585,6 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
-        dumpFileMap();
         WARNING ( tr("Could not create vertex shader: ") + shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;
@@ -588,26 +602,19 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
-        dumpFileMap();
-        WARNING ( tr("Could not create fragment shader: ") + shaderProgram->log() );
-        if(settings.value ( "jumpToLineOnError", true ).toBool())
-            jumpToErrorLine(-1);
+        createErrorLineLog( tr("Could not create fragment shader: "), shaderProgram->log(), true /*Warn*/ );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
     }
 
     if (!shaderProgram->log().isEmpty()) {
-        dumpFileMap();
-        INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
-        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
-            jumpToErrorLine(0);
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
     }
 
     s = shaderProgram->link();
 
     if ( !s ) {
-        dumpFileMap();
         WARNING( tr("Could not link vertex + fragment shader: ") );
         CRITICAL( shaderProgram->log() );
         delete ( shaderProgram );
@@ -616,15 +623,11 @@ void DisplayWidget::initFragmentShader()
     }
 
     if (!shaderProgram->log().isEmpty()) {
-        dumpFileMap();
-        INFO(tr("Fragment shader compiled with warnings: ") + shaderProgram->log());
-        if(settings.value ( "jumpToLineOnWarn", true ).toBool())
-            jumpToErrorLine(-1);
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
     }
 
     s = shaderProgram->bind();
     if ( !s ) {
-        dumpFileMap();
         WARNING ( tr("Could not bind shaders: ") + shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;

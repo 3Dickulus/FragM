@@ -118,12 +118,15 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
         }
     }
 
+    // offset line == the number of #include lines == number of included files
+    int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
+
     if(!found) { // this file has no #include statements
-        in.insert( 1, QString("#line %1 %2").arg(1).arg(sf) );
+        in.insert( 1, QString("#line %1 %2").arg(originalFileIndex).arg(originalFileIndex) );
     }
     else // insert line after last #include statement
     {
-        in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc + ((in.at(0).startsWith("#version"))?2:1)).arg(sf) );
+        in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(fs->sourceFileNames.indexOf(originalFileName)) );
     }
 
     QList<int> lines;
