@@ -440,7 +440,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     if (dynamic_cast<Parser::FloatParameter *>(p) != nullptr) {
         auto *fp = dynamic_cast<Parser::FloatParameter *>(p);
         QString name = fp->getName();
-        FloatWidget *fw = new FloatWidget(currentWidget, this, name, fp->getDefaultValue(), fp->getFrom(), fp->getTo());
+        FloatWidget *fw = new FloatWidget(currentWidget, this, name, fp->getDefaultValue(), fp->getFrom(), fp->getTo(), fp->getSliderType() == Logarithmic);
         fw->setToolTip(fp->getTooltip());
 //                 fw->setStatusTip(fp->getTooltip());
         fw->setGroup(fp->getGroup());
@@ -452,7 +452,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     } else if (dynamic_cast<Parser::Float2Parameter *>(p) != nullptr) {
         auto *f2p = dynamic_cast<Parser::Float2Parameter *>(p);
         QString name = f2p->getName();
-        Float2Widget *f2w = new Float2Widget(currentWidget, this, name, f2p->getDefaultValue(), f2p->getFrom(), f2p->getTo());
+        Float2Widget *f2w = new Float2Widget(currentWidget, this, name, f2p->getDefaultValue(), f2p->getFrom(), f2p->getTo(), f2p->getSliderType() == Logarithmic);
         f2w->setToolTip(f2p->getTooltip());
 //                 f2w->setStatusTip(f2p->getTooltip());
         f2w->setGroup(f2p->getGroup());
@@ -464,7 +464,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     } else if (dynamic_cast<Parser::Float3Parameter *>(p) != nullptr) {
         auto *f3p = dynamic_cast<Parser::Float3Parameter *>(p);
         QString name = f3p->getName();
-        Float3Widget *f3w = new Float3Widget(currentWidget, this, name, f3p->getDefaultValue(), f3p->getFrom(), f3p->getTo());
+        Float3Widget *f3w = new Float3Widget(currentWidget, this, name, f3p->getDefaultValue(), f3p->getFrom(), f3p->getTo(), f3p->getSliderType() == Logarithmic);
         f3w->setToolTip(f3p->getTooltip());
 //                 f3w->setStatusTip(f3p->getTooltip());
         f3w->setGroup(f3p->getGroup());
@@ -476,7 +476,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     } else if (dynamic_cast<Parser::Float4Parameter *>(p) != nullptr) {
         auto *f4p = dynamic_cast<Parser::Float4Parameter *>(p);
         QString name = f4p->getName();
-        Float4Widget *f4w = new Float4Widget(currentWidget, this, name, f4p->getDefaultValue(), f4p->getFrom(), f4p->getTo());
+        Float4Widget *f4w = new Float4Widget(currentWidget, this, name, f4p->getDefaultValue(), f4p->getFrom(), f4p->getTo(), f4p->getSliderType() == Logarithmic);
         f4w->setToolTip(f4p->getTooltip());
 //                 f4w->setStatusTip(f4p->getTooltip());
         f4w->setGroup(f4p->getGroup());

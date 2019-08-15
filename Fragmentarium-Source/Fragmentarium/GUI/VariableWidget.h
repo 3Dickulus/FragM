@@ -40,8 +40,8 @@ class ComboSlider : public QWidget
     Q_OBJECT
     Q_PROPERTY(double value READ getValue WRITE setValue)
 public:
-    ComboSlider ( QWidget *parent, QWidget *variableEditor, double defaultValue, double minimum, double maximum )
-        : QWidget ( parent ), variableEditor ( variableEditor ), defaultValue ( defaultValue ), minimum ( minimum ), maximum ( maximum )
+    ComboSlider ( QWidget *parent, QWidget *variableEditor, double defaultValue, double minimum, double maximum, bool logarithmic = false)
+        : QWidget ( parent ), variableEditor ( variableEditor ), defaultValue ( defaultValue ), minimum ( minimum ), maximum ( maximum ), logarithmic ( logarithmic )
     {
 
         setMinimumSize(160,20);
@@ -52,11 +52,15 @@ public:
         l->setContentsMargins(0,0,0,0);
 
         // 4294967295
-        scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1);
+        if (logarithmic) {
+            scale = (1.0/(std::log(maximum)-std::log(minimum)))*(int(__INT32_MAX__*0.5)+1);
+        } else {
+            scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1);
+        }
 
         slider = new QSlider(Qt::Horizontal,this);
-        slider->setRange(minimum*scale,(maximum*scale)+1);
-        slider->setValue(defaultValue*scale);
+        slider->setRange((logarithmic ? std::log(minimum) : minimum)*scale,((logarithmic ? std::log(maximum) : maximum)*scale)+1);
+        slider->setValue((logarithmic ? std::log(defaultValue) : defaultValue)*scale);
         slider->setSingleStep(scale/1000);
         slider->setPageStep(scale/100);
         slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
@@ -137,6 +141,10 @@ public slots:
             QString msg = QString ( tr ( "Clamping" ) + " " + objectName() + " " + tr ( "to min/max range!" ) );
             WARNING( msg );
         }
+        if (logarithmic && ! (d > 0 && minimum > 0 && maximum > 0 && defaultValue > 0)) {
+            // this warns on every change, but WARNING() in the constructor is invisible
+            WARNING("Logarithmic slider " + objectName() + " must be strictly positive!");
+        }
     }
 
 signals:
@@ -149,7 +157,7 @@ protected slots:
         // the slider must be kept quiet while adjusting from spinner
         slider->blockSignals(true);
 
-        slider->setValue(d*scale);
+        slider->setValue((logarithmic ? std::log(d) : d)*scale);
 
         slider->blockSignals(false);
         // let the main gui thread know something happened
@@ -162,7 +170,7 @@ protected slots:
         // the spinner must be kept quiet while adjusting from slider
         spinner->blockSignals(true);
 
-        spinner->setValue(i/scale);
+        spinner->setValue(logarithmic ? std::exp(i/scale) : i/scale);
 
         spinner->blockSignals(false);
         // let the main gui thread know something happened
@@ -176,6 +184,7 @@ private:
     double defaultValue;
     double minimum;
     double maximum;
+    bool logarithmic;
     double scale;
 };
 
@@ -472,7 +481,7 @@ class FloatWidget : public VariableWidget
 public:
     /// FloatVariable constructor.
     FloatWidget ( QWidget *parent, QWidget *variableEditor, QString name,
-                  double defaultValue, double min, double max );
+                  double defaultValue, double min, double max, bool logarithmic );
     virtual QString getUniqueName()
     {
         return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( max );
@@ -523,7 +532,7 @@ class Float2Widget : public VariableWidget
 {
 public:
     Float2Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max );
+                   glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max, bool logarithmic );
 
     virtual QString getUniqueName()
     {
@@ -591,7 +600,7 @@ class Float3Widget : public VariableWidget
 public:
     /// FloatVariable constructor.
     Float3Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max );
+                   glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max, bool logarithmic );
     virtual QString getUniqueName();
     virtual QString getValueAsText()
     {
@@ -660,7 +669,7 @@ class Float4Widget : public VariableWidget
 public:
     /// FloatVariable constructor.
     Float4Widget ( QWidget *parent, QWidget *variableEditor, QString name,
-                   glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max );
+                   glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max, bool logarithmic );
     virtual QString getUniqueName();
     virtual QString getValueAsText()
     {
