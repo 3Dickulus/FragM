@@ -189,8 +189,18 @@ Changes since v0.9.5
 + Log to file, Sabine's idea ;)
 + using Qt Script Debugger
 
+****** 2.5.0.190810 ******
++ clean up with clangtidy
++ moved to GLM @claude
++ 2d camera control improvement @claude
++ better openexr handling @claude
++ added "jump to line on error/warn" for the text editor
++ fixed some texture issues when running under script control
+
++ added preferences option for 2DCameraMode, fixed vs traveling
+
  Tested on Linux desktop
- Compiled with gcc (SuSE Leap 15.0) Qt 5.9.4
+ Compiled with gcc (SuSE Leap 15.1) Qt 5.9.4
 
  Tested on Windows 10
  Compiled with MinGW 4.9.2 Qt 5.6.2

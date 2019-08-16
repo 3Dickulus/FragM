@@ -79,27 +79,27 @@ struct KeyFrameInfo {
                          .split ( "=" )
                          .at ( 1 )
                          .split ( "," );
-        eye = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+        eye = glm::dvec3 ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
         cv = settings.filter ( "Target", Qt::CaseInsensitive )
              .at ( 0 )
              .split ( "=" )
              .at ( 1 )
              .split ( "," );
         target =
-            QVector3D ( cv.at ( 0 ).toFloat(), cv.at ( 1 ).toFloat(), cv.at ( 2 ).toFloat() );
+            glm::dvec3 ( cv.at ( 0 ).toFloat(), cv.at ( 1 ).toFloat(), cv.at ( 2 ).toFloat() );
         cv = settings.filter ( "Up", Qt::CaseInsensitive )
              .at ( 0 )
              .split ( "=" )
              .at ( 1 )
              .split ( "," );
-        up = QVector3D ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
+        up = glm::dvec3 ( cv.at ( 0 ).toFloat(),cv.at ( 1 ).toFloat(),cv.at ( 2 ).toFloat() );
     }
     QString name = QString ( "" );
     QStringList rawsettings = QStringList ( "" );
     int index = 0;
-    QVector3D eye = QVector3D ( 0,0,0 );
-    QVector3D target = QVector3D ( 0,0,0 );
-    QVector3D up = QVector3D ( 0,0,0 );
+    glm::dvec3 eye = glm::dvec3 ( 0,0,0 );
+    glm::dvec3 target = glm::dvec3 ( 0,0,0 );
+    glm::dvec3 up = glm::dvec3 ( 0,0,0 );
     int first = 0;
     int last = 0;
 };
@@ -227,7 +227,7 @@ public:
     {
         return timeMaxSpinBox->value();
     }
-    void setCameraSettings ( QVector3D e, QVector3D t, QVector3D u );
+    void setCameraSettings ( glm::dvec3 e, glm::dvec3 t, glm::dvec3 u );
     int getCurrentCtrlPoint()
     {
         return variableEditor->getCurrentKeyFrame();

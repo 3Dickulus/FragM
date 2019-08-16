@@ -17,12 +17,14 @@
 #include <QOpenGLFunctions_1_5>
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_2_1>
+
 #include <QOpenGLFunctions_3_0>
 #include <QOpenGLFunctions_3_1>
 #include <QOpenGLFunctions_3_2_Compatibility>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Compatibility>
 #include <QOpenGLFunctions_3_3_Core>
+
 #ifdef USE_OPENGL_4
 #include <QOpenGLFunctions_4_0_Compatibility>
 #include <QOpenGLFunctions_4_0_Core>
@@ -37,12 +39,12 @@
 #include <QOpenGLFunctions_4_5_Compatibility>
 #include <QOpenGLFunctions_4_5_Core>
 #endif
+
 #ifdef USE_OPENGL_ES2
 #include <QOpenGLFunctions_ES2>
 #endif
 
 #include <QOpenGLFunctions>
-#include <QOpenGLVersionFunctions>
 
 #include <QList>
 #include <QMainWindow>
@@ -218,15 +220,15 @@ public:
     void drawSplines();
     void createSplines ( int numberOfControlPoints, int numberOfFrames );
 
-    void addControlPoint ( QVector3D eP, QVector3D tP, QVector3D uP );
+    void addControlPoint ( glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP );
     void clearControlPoints();
 
     QStringList shaderAsm ( bool w );
 
     /// should make these private?
-    QVector<QVector3D> eyeControlPoints;
-    QVector<QVector3D> targetControlPoints;
-    QVector<QVector3D> upControlPoints;
+    QVector<glm::dvec3> eyeControlPoints;
+    QVector<glm::dvec3> targetControlPoints;
+    QVector<glm::dvec3> upControlPoints;
     QtSpline *eyeSpline;
     QtSpline *targetSpline;
     QtSpline *upSpline;
@@ -311,7 +313,7 @@ protected:
     void initializeGL() Q_DECL_OVERRIDE;
     void paintEvent ( QPaintEvent * ev ) Q_DECL_OVERRIDE;
     void showEvent ( QShowEvent *ev ) Q_DECL_OVERRIDE;
-
+    void createErrorLineLog( QString message, QString log, bool infoOrWarn );
     int pixelWidth()
     {
         return width() * devicePixelRatio();
@@ -362,6 +364,7 @@ private:
 #ifdef USE_OPENGL_4
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 #endif
+
     void setupShaderVars(int w, int h);
     void draw3DHints();
     bool FBOcheck();

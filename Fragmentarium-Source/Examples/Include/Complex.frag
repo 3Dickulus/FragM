@@ -44,6 +44,114 @@ TODO:
   
 ----------------------------------------------------------------*/
 #if __VERSION__ >= 400 && defined(USE_DOUBLE)
+
+//--------------------------------------------------------------------
+// 2019-08-13 {{{ improved sqrt by claude
+
+// save built in square root
+float _builtin_sqrt(float x) { return sqrt(x); }
+vec2 _builtin_sqrt(vec2 x) { return sqrt(x); }
+vec3 _builtin_sqrt(vec3 x) { return sqrt(x); }
+vec4 _builtin_sqrt(vec4 x) { return sqrt(x); }
+double _builtin_sqrt(double x) { return sqrt(x); }
+dvec2 _builtin_sqrt(dvec2 x) { return sqrt(x); }
+dvec3 _builtin_sqrt(dvec3 x) { return sqrt(x); }
+dvec4 _builtin_sqrt(dvec4 x) { return sqrt(x); }
+
+// redefine new square root for overloading
+float sqrt(float x) { return _builtin_sqrt(x); }
+vec2 sqrt(vec2 x) { return _builtin_sqrt(x); }
+vec3 sqrt(vec3 x) { return _builtin_sqrt(x); }
+vec4 sqrt(vec4 x) { return _builtin_sqrt(x); }
+
+// implement improved square root
+double sqrt(double x); // defined below
+dvec2 sqrt(dvec2 x) { return dvec2(sqrt(x.x), sqrt(x.y)); }
+dvec3 sqrt(dvec3 x) { return dvec3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }
+dvec4 sqrt(dvec4 x) { return dvec4(sqrt(x.x), sqrt(x.y), sqrt(x.z), sqrt(x.w)); }
+
+// Hardware sqrt improved by the Babylonian algorithm (Newton Raphson)
+double sqrt(double m)
+{
+  if (! (m > 0.0LF)) { return 0.0LF; } // FIXME return NaN for < 0?
+  double z = _builtin_sqrt(m);
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  z = (z + m / z) / 2.0LF;
+  return z;
+}
+
+// save built in length
+float _builtin_length(float x) { return length(x); }
+float _builtin_length(vec2 x) { return length(x); }
+float _builtin_length(vec3 x) { return length(x); }
+float _builtin_length(vec4 x) { return length(x); }
+double _builtin_length(double x) { return length(x); }
+double _builtin_length(dvec2 x) { return length(x); }
+double _builtin_length(dvec3 x) { return length(x); }
+double _builtin_length(dvec4 x) { return length(x); }
+
+// redefine new length for overloading
+float length(float x) { return _builtin_length(x); }
+float length(vec2 x) { return _builtin_length(x); }
+float length(vec3 x) { return _builtin_length(x); }
+float length(vec4 x) { return _builtin_length(x); }
+
+// implement improved length
+double length(double x) { return abs(x); }
+double length(dvec2 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+double length(dvec3 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+double length(dvec4 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+
+// save built in distance
+float _builtin_distance(float x, float y) { return distance(x, y); }
+float _builtin_distance(vec2 x, vec2 y) { return distance(x, y); }
+float _builtin_distance(vec3 x, vec3 y) { return distance(x, y); }
+float _builtin_distance(vec4 x, vec4 y) { return distance(x, y); }
+double _builtin_distance(double x, double y) { return distance(x, y); }
+double _builtin_distance(dvec2 x, dvec2 y) { return distance(x, y); }
+double _builtin_distance(dvec3 x, dvec3 y) { return distance(x, y); }
+double _builtin_distance(dvec4 x, dvec4 y) { return distance(x, y); }
+
+// redefine new distance for overloading
+float distance(float x, float y) { return _builtin_distance(x, y); }
+float distance(vec2 x, vec2 y) { return _builtin_distance(x, y); }
+float distance(vec3 x, vec3 y) { return _builtin_distance(x, y); }
+float distance(vec4 x, vec4 y) { return _builtin_distance(x, y); }
+
+// implement improved length
+double distance(double x, double y) { return length(x - y); }
+double distance(dvec2 x, dvec2 y) { return length(x - y); }
+double distance(dvec3 x, dvec3 y) { return length(x - y); }
+double distance(dvec4 x, dvec4 y) { return length(x - y); }
+
+// save built in normalize
+float _builtin_normalize(float x) { return normalize(x); }
+vec2 _builtin_normalize(vec2 x) { return normalize(x); }
+vec3 _builtin_normalize(vec3 x) { return normalize(x); }
+vec4 _builtin_normalize(vec4 x) { return normalize(x); }
+double _builtin_normalize(double x) { return normalize(x); }
+dvec2 _builtin_normalize(dvec2 x) { return normalize(x); }
+dvec3 _builtin_normalize(dvec3 x) { return normalize(x); }
+dvec4 _builtin_normalize(dvec4 x) { return normalize(x); }
+
+// redefine new normalize for overloading
+float normalize(float x) { return _builtin_normalize(x); }
+vec2 normalize(vec2 x) { return _builtin_normalize(x); }
+vec3 normalize(vec3 x) { return _builtin_normalize(x); }
+vec4 normalize(vec4 x) { return _builtin_normalize(x); }
+
+// implement improved normalize
+double normalize(double x) { double l = length(x); return l > 0.0LF ? x / l : 0.0LF; }
+dvec2 normalize(dvec2 x) { double l = length(x); return l > 0.0LF ? x / l : dvec2(0.0LF); }
+dvec3 normalize(dvec3 x) { double l = length(x); return l > 0.0LF ? x / l : dvec3(0.0LF); }
+dvec4 normalize(dvec4 x) { double l = length(x); return l > 0.0LF ? x / l : dvec4(0.0LF); }
+
+// 2018-08-13 }}} improved sqrt by claude
+//--------------------------------------------------------------------
+
+
 //--------------------------------------------------------------------
 // 11/12/17
 // double cos() sin() remez exp() by FractalForums.org user clacker
@@ -135,17 +243,17 @@ double cos( double x ){
  * with a polynomial of degree 10.
  */
  double exp_approx( double x ) {
-    double u = 4.5714785424007307e-7;
-    u = u * x + 2.2861717525121477e-6;
-    u = u * x + 2.5459354562599535e-5;
-    u = u * x + 1.9784992840356075e-4;
-    u = u * x + 1.389195677460962e-3;
-    u = u * x + 8.3332264219304372e-3;
-    u = u * x + 4.1666689828374069e-2;
-    u = u * x + 1.6666666374456794e-1;
-    u = u * x + 5.0000000018885691e-1;
-    u = u * x + 9.9999999999524239e-1;
-    u = u * x + 1.0000000000000198;
+    double u = 4.5714785424007307e-7LF;
+    u = u * x + 2.2861717525121477e-6LF;
+    u = u * x + 2.5459354562599535e-5LF;
+    u = u * x + 1.9784992840356075e-4LF;
+    u = u * x + 1.389195677460962e-3LF;
+    u = u * x + 8.3332264219304372e-3LF;
+    u = u * x + 4.1666689828374069e-2LF;
+    u = u * x + 1.6666666374456794e-1LF;
+    u = u * x + 5.0000000018885691e-1LF;
+    u = u * x + 9.9999999999524239e-1LF;
+    u = u * x + 1.0000000000000198LF;
 	if(isnan(u) || isinf(u))
 		return 0.0LF;
     return u;
@@ -201,14 +309,14 @@ double tan(double x) {
  * with a polynomial of degree 7. */
 double log_approx(double x)
 {
-    double u = 1.3419648079694775;
-    u = u * x + -8.159823646011416;
-    u = u * x + 2.1694837976736115e+1;
-    u = u * x + -3.3104943376189169e+1;
-    u = u * x + 3.2059105806949116e+1;
-    u = u * x + -2.0778140811001331e+1;
-    u = u * x + 9.8897820531599449;
-    return u * x + -2.9427826194103015;
+    double u = 1.3419648079694775LF;
+    u = u * x + -8.159823646011416LF;
+    u = u * x + 2.1694837976736115e+1LF;
+    u = u * x + -3.3104943376189169e+1LF;
+    u = u * x + 3.2059105806949116e+1LF;
+    u = u * x + -2.0778140811001331e+1LF;
+    u = u * x + 9.8897820531599449LF;
+    return u * x + -2.9427826194103015LF;
 }
 
 // ln_ieee754(double x)
@@ -233,11 +341,11 @@ double log(double x)  {
 
 	// special cases
 	if( isinf(x) )
-        return 1.0/0.0; /* return +inf */
+        return double(1.0/0.0); /* return +inf */
 	if( isnan(x) || x < 0 )
-        return -0.0; /* nan */
+        return double(-0.0); /* nan */
 	if( x == 0 )
-        return -1.0/0.0; /* return -inf */
+        return double(-1.0/0.0); /* return -inf */
 
     // Argument Reduction
     int ki;
@@ -371,35 +479,35 @@ dvec3 pow(dvec3 A, dvec3 B)
  */
 double atan_approx(double x)
 {
-    double u = -2.9140257478972053e-3;
-    u = u * x + 3.2005571699830107e-2;
-    u = u * x + -1.627659300903442e-1;
-    u = u * x + 5.0513223367120972e-1;
-    u = u * x + -1.0595254685451083;
-    u = u * x + 1.5689337521140527;
-    u = u * x + -1.6640521237136246;
-    u = u * x + 1.270853367426007;
-    u = u * x + -7.356602708332424e-1;
-    u = u * x + 4.0096549787833572e-1;
-    u = u * x + -2.317084220916499e-1;
-    u = u * x + 5.5673464120677798e-2;
-    u = u * x + 6.1518997985636844e-2;
-    u = u * x + 3.4871637890152628e-3;
-    u = u * x + -9.1551371689992248e-2;
-    u = u * x + 9.5405115942529782e-5;
-    u = u * x + 1.1109982274527962e-1;
-    u = u * x + 1.0462503881004859e-6;
-    u = u * x + -1.4285721713962809e-1;
-    u = u * x + 3.9206483284047854e-9;
-    u = u * x + 1.9999999985236683e-1;
-    u = u * x + 3.7405487051591751e-12;
-    u = u * x + -3.3333333333339171e-1;
-    u = u * x + 4.8455084038412012e-16;
-    u = u * x + 1.0;
-    u = u * x + 8.8145999826527008e-22;
+    double u = -2.9140257478972053e-3LF;
+    u = u * x + 3.2005571699830107e-2LF;
+    u = u * x + -1.627659300903442e-1LF;
+    u = u * x + 5.0513223367120972e-1LF;
+    u = u * x + -1.0595254685451083LF;
+    u = u * x + 1.5689337521140527LF;
+    u = u * x + -1.6640521237136246LF;
+    u = u * x + 1.270853367426007LF;
+    u = u * x + -7.356602708332424e-1LF;
+    u = u * x + 4.0096549787833572e-1LF;
+    u = u * x + -2.317084220916499e-1LF;
+    u = u * x + 5.5673464120677798e-2LF;
+    u = u * x + 6.1518997985636844e-2LF;
+    u = u * x + 3.4871637890152628e-3LF;
+    u = u * x + -9.1551371689992248e-2LF;
+    u = u * x + 9.5405115942529782e-5LF;
+    u = u * x + 1.1109982274527962e-1LF;
+    u = u * x + 1.0462503881004859e-6LF;
+    u = u * x + -1.4285721713962809e-1LF;
+    u = u * x + 3.9206483284047854e-9LF;
+    u = u * x + 1.9999999985236683e-1LF;
+    u = u * x + 3.7405487051591751e-12LF;
+    u = u * x + -3.3333333333339171e-1LF;
+    u = u * x + 4.8455084038412012e-16LF;
+    u = u * x + 1.0LF;
+    u = u * x + 8.8145999826527008e-22LF;
 
     if(isnan(u) || isinf(u))
-        return 0.0;
+        return double(0.0);
     return u;
 }
 

@@ -5,7 +5,7 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QStatusBar>
-#include <QVector3D>
+#include <glm/glm.hpp>
 #include <QVector>
 #include <QWheelEvent>
 
@@ -29,8 +29,8 @@ public:
 
     CameraControl();
     virtual ~CameraControl() {}
-    virtual QVector3D transform(int width, int height) = 0;
-    virtual QVector3D screenTo3D(int sx, int sy, double sz) = 0;
+    virtual glm::dvec3 transform(int width, int height) = 0;
+    virtual glm::dvec3 screenTo3D(int sx, int sy, double sz) = 0;
     virtual void printInfo() = 0;
     virtual QString getID() =0;
     virtual QVector<VariableWidget *> addWidgets ( QWidget *group,
@@ -77,8 +77,8 @@ public:
         return "3D";
     }
     virtual void printInfo();
-    virtual QVector3D screenTo3D(int sx, int sy, double sz);
-    virtual QVector3D transform(int width, int height);
+    virtual glm::dvec3 screenTo3D(int sx, int sy, double sz);
+    virtual glm::dvec3 transform(int width, int height);
     virtual void connectWidgets(VariableEditor* ve);
     virtual bool mouseEvent(QMouseEvent* e, int w, int h);
     virtual bool wheelEvent(QWheelEvent* /*e*/);
@@ -93,11 +93,11 @@ private:
     Float3Widget* target ;
     Float3Widget* up ;
     FloatWidget* fov;
-    QVector3D eyeDown ;
-    QVector3D targetDown ;
-    QVector3D upDown ;
+    glm::dvec3 eyeDown ;
+    glm::dvec3 targetDown ;
+    glm::dvec3 upDown ;
     double fovDown;
-    QVector3D mouseDown;
+    glm::dvec3 mouseDown;
 protected:
     void orthogonalizeUpVector();
         };
@@ -108,9 +108,9 @@ class Camera2D : public CameraControl
 public:
     Camera2D(QStatusBar* statusBar);
     virtual QVector<VariableWidget*> addWidgets(QWidget* group, QWidget* parent);
-    virtual QVector3D screenTo3D ( int sx, int sy, double sz )
+    virtual glm::dvec3 screenTo3D ( int sx, int sy, double sz )
     {
-        return QVector3D ( sx, sy, sz );
+        return glm::dvec3 ( sx, sy, sz );
     };
             virtual void connectWidgets(VariableEditor* ve);
     virtual QString getID()
@@ -118,7 +118,7 @@ public:
         return "2D";
     }
     virtual void printInfo();
-    virtual QVector3D transform ( int w, int h );
+    virtual glm::dvec3 transform ( int w, int h );
     virtual bool mouseEvent(QMouseEvent* e, int w, int h);
     virtual bool wheelEvent(QWheelEvent* /*e*/);
     virtual bool parseKeys();
@@ -130,9 +130,9 @@ private:
     Float2Widget* center;
     FloatWidget* zoom;
     QStatusBar* statusBar;
-    QVector3D mouseDown;
+    glm::dvec3 mouseDown;
     double zoomDown;
-    QVector3D centerDown;
+    glm::dvec3 centerDown;
 };
 } // namespace GUI
 

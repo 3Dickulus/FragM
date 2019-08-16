@@ -30,53 +30,6 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="moveMainCheckBox">
-        <property name="toolTip">
-         <string>For compatibility with some GPU's.</string>
-        </property>
-        <property name="text">
-         <string>Move main() to end</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="drawGLPathsCheckBox">
-        <property name="toolTip">
-         <string>Some engines use non GL matrices.</string>
-        </property>
-        <property name="text">
-         <string>Draw spline paths for camera and target</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="autoRunCheckBox">
-        <property name="toolTip">
-         <string>Disabling this might make debugging easier.</string>
-        </property>
-        <property name="text">
-         <string>Autorun On Load</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="lineNumbersCheckBox">
-        <property name="toolTip">
-         <string>Enabling this might be helpful when debugging.</string>
-        </property>
-        <property name="text">
-         <string>Add line numbers to the editing window.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="splineOccCheckBox">
-        <property name="text">
-         <string>Spline Occlusion</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1">
        <widget class="QCheckBox" name="saveEasingCheckBox">
         <property name="text">
@@ -98,7 +51,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -111,7 +64,7 @@
         </property>
        </spacer>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -182,7 +135,7 @@
         </item>
        </layout>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="refreshRateLabel">
@@ -206,7 +159,7 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="11" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="animFrameRateLabel">
@@ -230,7 +183,7 @@
         </item>
        </layout>
       </item>
-      <item row="11" column="0" colspan="2">
+      <item row="12" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="includePathsLabel">
@@ -258,7 +211,7 @@
         </item>
        </layout>
       </item>
-      <item row="12" column="0" colspan="2">
+      <item row="13" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QLabel" name="exrBinPathsLabel">
@@ -286,7 +239,7 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0" colspan="2">
+      <item row="14" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="stylesheetLabel">
@@ -314,7 +267,7 @@
         </item>
        </layout>
       </item>
-      <item row="14" column="0">
+      <item row="15" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="maxRecentFilesLabel">
@@ -335,7 +288,7 @@
         </item>
        </layout>
       </item>
-      <item row="15" column="0" colspan="2">
+      <item row="16" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -348,14 +301,14 @@
         </property>
        </spacer>
       </item>
-      <item row="14" column="1">
+      <item row="15" column="1">
        <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
         <property name="text">
          <string>Full path in recent files menu.</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QCheckBox" name="logToFileCheckBox">
         <property name="text">
          <string>Log to File</string>
@@ -373,6 +326,77 @@
        <widget class="QCheckBox" name="autoLoadCheckBox">
         <property name="text">
          <string>Autoload on change</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="moveMainCheckBox">
+        <property name="toolTip">
+         <string>For compatibility with some GPU's.</string>
+        </property>
+        <property name="text">
+         <string>Move main() to end</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+        <property name="toolTip">
+         <string>Some engines use non GL matrices.</string>
+        </property>
+        <property name="text">
+         <string>Draw spline paths for camera and target</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="autoRunCheckBox">
+        <property name="toolTip">
+         <string>Disabling this might make debugging easier.</string>
+        </property>
+        <property name="text">
+         <string>Autorun On Load</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="lineNumbersCheckBox">
+        <property name="toolTip">
+         <string>Enabling this might be helpful when debugging.</string>
+        </property>
+        <property name="text">
+         <string>Add line numbers to the editing window.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="splineOccCheckBox">
+        <property name="text">
+         <string>Spline Occlusion</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QCheckBox" name="jtloeCheckBox">
+        <property name="text">
+         <string>Jump to line on Error</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="jtlowCheckBox">
+        <property name="text">
+         <string>Jump to line on Warn</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="ddCameraModeCheckBox">
+        <property name="text">
+         <string>2D Camera Mode on=traveling off=fixed</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

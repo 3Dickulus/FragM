@@ -47,6 +47,9 @@ Please see https://github.com/3Dickulus/FragM/blob/master/Fragmentarium-Source/3
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
+#### We need the latest version of GLM
+      wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
+      sudo dpkg -i libglm-dev_0.9.9.3-2_all.deb
 
 ## Get the source...
 
