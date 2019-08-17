@@ -51,16 +51,23 @@ public:
         l->setSpacing(2);
         l->setContentsMargins(0,0,0,0);
 
-        // 4294967295
+        double rangemin, rangemax;
         if (logarithmic) {
-            scale = (1.0/(std::log(maximum)-std::log(minimum)))*(int(__INT32_MAX__*0.5)+1);
+            rangemin = std::log(std::min(std::abs(minimum), std::abs(maximum)));
+            rangemax = std::log(std::max(std::abs(minimum), std::abs(maximum)));
+            if (maximum < 0) {
+              double tmp = rangemin; rangemin = rangemax; rangemax = tmp;
+            }
         } else {
-            scale = (1.0/(maximum-minimum))*(int(__INT32_MAX__*0.5)+1);
+            rangemin = minimum;
+            rangemax = maximum;
         }
+        // 4294967295
+        scale = (1.0/(rangemax-rangemin))*(int(__INT32_MAX__*0.5)+1);
 
         slider = new QSlider(Qt::Horizontal,this);
-        slider->setRange((logarithmic ? std::log(minimum) : minimum)*scale,((logarithmic ? std::log(maximum) : maximum)*scale)+1);
-        slider->setValue((logarithmic ? std::log(defaultValue) : defaultValue)*scale);
+        slider->setRange(rangemin*scale,rangemax*scale+1);
+        slider->setValue((logarithmic ? std::log(std::abs(defaultValue)) : defaultValue)*scale);
         slider->setSingleStep(scale/1000);
         slider->setPageStep(scale/100);
         slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
@@ -141,9 +148,9 @@ public slots:
             QString msg = QString ( tr ( "Clamping" ) + " " + objectName() + " " + tr ( "to min/max range!" ) );
             WARNING( msg );
         }
-        if (logarithmic && ! (d > 0 && minimum > 0 && maximum > 0 && defaultValue > 0)) {
+        if (logarithmic && ! ((d < 0 && minimum < 0 && maximum < 0 && defaultValue < 0) || (d > 0 && minimum > 0 && maximum > 0 && defaultValue > 0))) {
             // this warns on every change, but WARNING() in the constructor is invisible
-            WARNING("Logarithmic slider " + objectName() + " must be strictly positive!");
+            WARNING("Logarithmic slider " + objectName() + " range contains 0!");
         }
     }
 
@@ -157,7 +164,11 @@ protected slots:
         // the slider must be kept quiet while adjusting from spinner
         slider->blockSignals(true);
 
-        slider->setValue((logarithmic ? std::log(d) : d)*scale);
+        if (logarithmic && ! ((d < 0 && minimum < 0 && maximum < 0 && defaultValue < 0) || (d > 0 && minimum > 0 && maximum > 0 && defaultValue > 0))) {
+            // this warns on every change, but WARNING() in the constructor is invisible
+            WARNING("Logarithmic slider " + objectName() + " range contains 0!");
+        }
+        slider->setValue((logarithmic ? std::log(std::abs(d)) : d)*scale);
 
         slider->blockSignals(false);
         // let the main gui thread know something happened
@@ -170,7 +181,7 @@ protected slots:
         // the spinner must be kept quiet while adjusting from slider
         spinner->blockSignals(true);
 
-        spinner->setValue(logarithmic ? std::exp(i/scale) : i/scale);
+        spinner->setValue(logarithmic ? (maximum < 0 ? -1 : +1) * std::exp(i/scale) : i/scale);
 
         spinner->blockSignals(false);
         // let the main gui thread know something happened
