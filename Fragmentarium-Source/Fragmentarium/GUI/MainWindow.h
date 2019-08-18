@@ -176,7 +176,9 @@ public:
 
     QVector<VariableWidget *> getUserUniforms()
     {
-        return variableEditor->getUserUniforms();
+        QVector<VariableWidget *> v = variableEditor->getUserUniforms();
+        v.append(variableEditor2->getUserUniforms());
+        return v;
     };
 
     DisplayWidget *getEngine()
@@ -191,7 +193,7 @@ public:
     QString getCameraSettings();
     QString getSettings()
     {
-        return variableEditor->getSettings();
+        return variableEditor->getSettings() + variableEditor2->getSettings();
     };
     void disableAllExcept ( QWidget *w );
     void setSplashWidgetTimeout ( QSplashScreen *w );
@@ -222,6 +224,10 @@ public:
     VariableEditor *getVariableEditor()
     {
         return variableEditor;
+    }
+    VariableEditor *getVariableEditor2()
+    {
+        return variableEditor2;
     }
     double getTimeMax()
     {
@@ -254,6 +260,7 @@ public:
     void setDefault()
     {
         variableEditor->setDefault();
+        variableEditor2->setDefault();
     };
     bool wantSplineOcc()
     {
@@ -278,6 +285,7 @@ public:
         verbose = v;
         getEngine()->setVerbose ( v );
         getVariableEditor()->setVerbose ( v );
+        getVariableEditor2()->setVerbose ( v );
     };
 
     QString langID;
@@ -300,29 +308,30 @@ public slots:
     void setParameter ( QString settings )
     {
         variableEditor->setSettings ( settings );
+        variableEditor2->setSettings ( settings );
     };
     void setParameter ( QString setting, bool b )
     {
-        variableEditor->setSettings (QString ( "%1 = %2\n" ).arg ( setting ).arg ( b ? "true" : "false" ) );
+        setParameter (QString ( "%1 = %2\n" ).arg ( setting ).arg ( b ? "true" : "false" ) );
     };
     void setParameter ( QString setting, int v )
     {
-        variableEditor->setSettings ( QString ( "%1 = %2\n" ).arg ( setting ).arg ( v ) );
+        setParameter ( QString ( "%1 = %2\n" ).arg ( setting ).arg ( v ) );
     };
     void setParameter ( QString setting, double v )
     {
-        variableEditor->setSettings (QString ( "%1 = %2\n" ).arg ( setting ).arg ( v, 0, 'g', DDEC ) );
+        setParameter (QString ( "%1 = %2\n" ).arg ( setting ).arg ( v, 0, 'g', DDEC ) );
     };
     void setParameter ( QString setting, double x, double y )
     {
-        variableEditor->setSettings ( QString ( "%1 = %2,%3\n" )
+        setParameter ( QString ( "%1 = %2,%3\n" )
                                       .arg ( setting )
                                       .arg ( x, 0, 'g', DDEC )
                                       .arg ( y, 0, 'g', DDEC ) );
     };
     void setParameter ( QString setting, double x, double y, double z )
     {
-        variableEditor->setSettings ( QString ( "%1 = %2,%3,%4\n" )
+        setParameter ( QString ( "%1 = %2,%3,%4\n" )
                                       .arg ( setting )
                                       .arg ( x, 0, 'g', DDEC )
                                       .arg ( y, 0, 'g', DDEC )
@@ -330,7 +339,7 @@ public slots:
     };
     void setParameter ( QString setting, double x, double y, double z, double w )
     {
-        variableEditor->setSettings ( QString ( "%1 = %2,%3,%4,%5\n" )
+        setParameter ( QString ( "%1 = %2,%3,%4,%5\n" )
                                       .arg ( setting )
                                       .arg ( x, 0, 'g', DDEC )
                                       .arg ( y, 0, 'g', DDEC )
@@ -441,6 +450,7 @@ public slots:
     bool applyPresetByName ( QString n )
     {
         rebuildRequired = variableEditor->setPreset ( n );
+        rebuildRequired |= variableEditor2->setPreset ( n );
         rebuildRequired |= initializeFragment();
         rebuildRequired |= initializeFragment();
         processGuiEvents();
@@ -529,6 +539,7 @@ private slots:
     void veDockChanged ( bool t )
     {
         variableEditor->dockChanged ( t );
+        variableEditor2->dockChanged ( t );
     }; // 05/22/17 Sabine ;)
     void clearKeyFrameControl();
     void bufferSpinBoxChanged ( int value );
@@ -549,6 +560,7 @@ private slots:
     void preferences();
     void insertText();
     void variablesChanged ( bool lockedChanged );
+    void variablesChanged2 ( bool lockedChanged ); // BufferShader
     void cut();
     void copy();
     void paste();
@@ -579,7 +591,8 @@ private slots:
     void setEasing()
     {
         variableEditor->setEasingCurve();
-        tabInfo[tabBar->currentIndex()].unsaved = ( variableEditor->hasEasing() ) ? true : tabInfo[tabBar->currentIndex()].unsaved;
+        variableEditor2->setEasingCurve();
+        tabInfo[tabBar->currentIndex()].unsaved = ( variableEditor->hasEasing() || variableEditor2->hasEasing() ) ? true : tabInfo[tabBar->currentIndex()].unsaved;
     }
 
     void timeMaxChanged ( int value );
@@ -689,6 +702,7 @@ private:
     QVector<TabInfo> tabInfo;
     QVBoxLayout *frameMainWindow;
     VariableEditor *variableEditor;
+    VariableEditor *variableEditor2; // BufferShader
     QDockWidget *editorDockWidget;
     QVector<QAction *> recentFileActions;
     QAction *recentFileSeparator;

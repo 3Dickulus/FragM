@@ -198,7 +198,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
     if (modification) {
         QString mess = tr("There are unsaved changes.\r\n%1\r\nContinue will discard changes.")
-            .arg(variableEditor->hasEasing() ? tr("\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n") : "\r\n");
+            .arg( ( variableEditor->hasEasing() || variableEditor2->hasEasing() ) ? tr("\r\nTip: Update easing curves in preset\r\nand save to file before closing.\r\n") : "\r\n");
 
         int i = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("Continue"), tr("Cancel"));
         if (i == 1) {
@@ -273,7 +273,7 @@ void MainWindow::insertPreset()
         if(newPresetName.contains("KeyFrame.")) { /// adding keyframe
             getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getCameraSettings() + "\n#endpreset\n");
         } else if (newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
-            if(variableEditor->hasEasing()) {
+            if(variableEditor->hasEasing() || variableEditor2->hasEasing()) {
                 getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getEngine()->getCurveSettings().join("\n") + "\n#endpreset\n");
             } else {
                 QMessageBox::warning(this, tr("Warning!"), tr("Setup some parameter Easing Curves first!"));
@@ -287,6 +287,7 @@ void MainWindow::insertPreset()
         needRebuild(ok);
         initializeFragment(); // once to add the new preset to the list
         variableEditor->setPreset(newPresetName); // apply the settings
+        variableEditor2->setPreset(newPresetName); // apply the settings
         initializeFragment(); // once to initialize any textures
 
         INFO(tr("Added %1").arg(newPresetName));
@@ -684,9 +685,14 @@ void MainWindow::init()
     variableEditor->setObjectName("VariableEditor");
     variableEditor->setMinimumWidth(320);
     vboxLayout2->addWidget(variableEditor);
+    variableEditor2 = new VariableEditor(editorDockWidget, this);
+    variableEditor2->setObjectName("VariableEditor2");
+    variableEditor2->setMinimumWidth(320);
+    vboxLayout2->addWidget(variableEditor2);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
     connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
+    connect(variableEditor2, SIGNAL(changed(bool)), this, SLOT(variablesChanged2(bool))); // BufferShader
     connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
 
     editorDockWidget->setHidden(true);
@@ -876,7 +882,16 @@ void MainWindow::variablesChanged(bool lockedChanged)
     if (lockedChanged) {
         highlightBuildButton(true);
     }
-    engine->uniformsHasChanged();
+    engine->uniformsHasChanged(false);
+}
+
+void MainWindow::variablesChanged2(bool lockedChanged)
+{
+
+    if (lockedChanged) {
+        highlightBuildButton(true);
+    }
+    engine->uniformsHasChanged(true);
 }
 
 void MainWindow::createOpenGLContextMenu()
@@ -1312,7 +1327,7 @@ retry:
 
             QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
             prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
-            QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
+            QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + variableEditor2->getSettings() + "\n";
 
             append += "#endpreset\n\n";
 
@@ -1449,11 +1464,11 @@ retry:
             break;
         }
         if((totalSteps/maxTiles/maxTiles/maxSubframes) > 1) {
-            if(variableEditor->hasEasing()) {
+            if(variableEditor->hasEasing() || variableEditor2->hasEasing()) {
                 engine->updateEasingCurves( timeStep ); // current frame
             }
 
-            if ( variableEditor->hasKeyFrames() ) {
+            if ( variableEditor->hasKeyFrames() || variableEditor2->hasKeyFrames() ) {
                 if (engine->eyeSpline != nullptr) {
                     int index = timeStep+1;
                     glm::dvec3 e = engine->eyeSpline->getSplinePoint(index);
@@ -1695,7 +1710,7 @@ retry:
                 qd->show();
 
             } else if (!exrMode) {
-              finalImage.setText("frAg", variableEditor->getSettings());
+              finalImage.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings() );
               imageSaved=finalImage.save(name);
             }
 
@@ -1740,7 +1755,7 @@ void MainWindow::savePreview()
             auto *label = qd->findChild<QLabel *>("previewImage");
             if (label != nullptr) {
                 QImage img = label->pixmap()->toImage();
-                img.setText("frAg", variableEditor->getSettings());
+                img.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings());
                 img.save(fn);
                 qd->close();
                 INFO(tr("Saved file : ") + fn);
@@ -1759,6 +1774,7 @@ void MainWindow::pasteSelected()
     // characters with newlines
     settings = settings.replace(QChar::ParagraphSeparator,"\n");
     variableEditor->setSettings(settings);
+    variableEditor2->setSettings(settings);
     INFO(tr("Pasted selected settings"));
 }
 
@@ -1786,7 +1802,7 @@ void MainWindow::saveParameters(const QString fileName)
     }
 
     QTextStream out(&file);
-    out << variableEditor->getSettings();
+    out << variableEditor->getSettings() << variableEditor2->getSettings();
     INFO(tr("Settings saved to file"));
 }
 
@@ -1795,7 +1811,9 @@ void MainWindow::loadParameters(const QString fileName)
 
     QFile file(fileName);
     if (fileName.toLower().endsWith(".png") && file.exists()) {
-      variableEditor->setSettings(QImage(fileName).text("frAg"));
+      QString f = QImage(fileName).text("frAg");
+      variableEditor->setSettings(f);
+      variableEditor2->setSettings(f);
       return;
     }
 
@@ -1807,6 +1825,7 @@ void MainWindow::loadParameters(const QString fileName)
     QTextStream in(&file);
     QString settings = in.readAll();
     variableEditor->setSettings(settings);
+    variableEditor2->setSettings(settings);
     INFO(tr("Settings loaded from file") );
 }
 
@@ -2045,7 +2064,7 @@ void MainWindow::timeMaxChanged(int value)
     timeSlider->setSingleStep(1);        // should be one frame
     timeSlider->setPageStep(renderFPS); // should be one second
     timeMax = value;
-    if (variableEditor->hasKeyFrames()) {
+    if (variableEditor->hasKeyFrames() || variableEditor2->hasKeyFrames()) {
         initKeyFrameControl();
     }
 }
@@ -2196,7 +2215,9 @@ void MainWindow::readSettings()
     wantLoopPlay = settings.value("loopPlay", true).toBool();
     editorStylesheet = settings.value("editorStylesheet", "font: 9pt Courier;").toString();
     variableEditor->updateGeometry();
+    variableEditor2->updateGeometry();
     variableEditor->setSaveEasing(settings.value("saveEasing", true).toBool());
+    variableEditor2->setSaveEasing(settings.value("saveEasing", true).toBool());
     fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";", QString::SkipEmptyParts));
     loggingToFile = settings.value("logToFile", false).toBool();
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
@@ -2352,11 +2373,12 @@ void MainWindow::loadFragFile(const QString &fileName)
 //         }
         if (QSettings().value("autorun", true).toBool()) {
             rebuildRequired = initializeFragment();// once to initialize presets
-            bool requiresRecompile = variableEditor->setDefault();
+            bool requiresRecompile = variableEditor->setDefault() || variableEditor2->setDefault();
             if (requiresRecompile || rebuildRequired) {
                 INFO(tr("Rebuilding to update locked uniforms..."));
                 rebuildRequired = initializeFragment();
                 variableEditor->setDefault();
+                variableEditor2->setDefault();
             }
             rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
@@ -2442,7 +2464,7 @@ void MainWindow::showPreprocessedScript()
 //                            "#define lowp\n";
         variableEditor->substituteLockedVariables(&fs);
         if (fs.bufferShaderSource != nullptr) {
-            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+            variableEditor2->substituteLockedVariables(fs.bufferShaderSource);
         }
         insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
         // Use a real name instead of "unnamed" suggested by FF user Sabine62 18/10/12
@@ -2547,7 +2569,7 @@ bool MainWindow::initializeFragment()
     //     readSettings();
     fileManager.setOriginalFileName(filename);
 
-    if (variableEditor->hasKeyFrames()) {
+    if (variableEditor->hasKeyFrames() || variableEditor2->hasKeyFrames()) {
         clearKeyFrames();
     }
 
@@ -2556,6 +2578,7 @@ bool MainWindow::initializeFragment()
     QString camSet = getCameraSettings();
 
     variableEditor->locksUseDefines(QSettings().value("useDefines", true).toBool());
+    variableEditor2->locksUseDefines(QSettings().value("useDefines", true).toBool());
     int ms = 0;
     FragmentSource fs = p.parse(inputText,filename,moveMain);
 
@@ -2569,7 +2592,9 @@ bool MainWindow::initializeFragment()
     variableEditor->substituteLockedVariables(&fs);
 
     if (fs.bufferShaderSource != nullptr) {
-            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+            variableEditor2->updateFromFragmentSource(fs.bufferShaderSource);
+            variableEditor2->updateTextures(fs.bufferShaderSource, &fileManager);
+            variableEditor2->substituteLockedVariables(fs.bufferShaderSource);
     }
 
     try {
@@ -2586,8 +2611,9 @@ bool MainWindow::initializeFragment()
         // BUG Fixs Up vector
         if (getCameraSettings() != camSet) {
             variableEditor->setSettings(camSet);
+            variableEditor2->setSettings(camSet);
         }
-        editorDockWidget->setHidden( variableEditor->getWidgetCount() == 0 );
+        editorDockWidget->setHidden( variableEditor->getWidgetCount() + variableEditor2->getWidgetCount() == 0 );
         variableEditor->updateCamera(engine->getCameraControl());
         engine->requireRedraw(true);
         engine->resetTime();
@@ -2624,10 +2650,28 @@ void MainWindow::hideUnusedVariableWidgets()
         if (vw != nullptr) {
                 /// get the uniform location from the shader
                 int uloc = vw->uniformLocation(engine->getShader());
-            if (uloc == -1 && engine->hasBufferShader()) {
-                    /// get the uniform location from the buffershader
-                    uloc = vw->uniformLocation(engine->getBufferShader());
+            /// locked widgets are transformed into const or #define so don't show up as uniforms
+            /// AutoFocus is a dummy so does not exist inside shader program
+            if(uloc == -1 &&
+                    !(vw->getLockType() == Parser::Locked ||
+                    vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                    vw->getDefaultLockType() == Parser::NotLockable) &&
+                    !wnames.at(i).contains("AutoFocus")  )  {
+                vw->hide();
+            } else {
+                vw->show();
             }
+        }
+    }
+
+    /// hide unused widgets unless the default state is locked
+    wnames = variableEditor2->getWidgetNames();
+    for (int i = 0; i < wnames.count(); i++) {
+        // find a widget in the variable editor
+        auto *vw = variableEditor2->findChild<VariableWidget *>(wnames.at(i));
+        if (vw != nullptr) {
+                /// get the uniform location from the buffer shader
+                int uloc = vw->uniformLocation(engine->getBufferShader());
             /// locked widgets are transformed into const or #define so don't show up as uniforms
             /// AutoFocus is a dummy so does not exist inside shader program
             if(uloc == -1 &&
@@ -2798,7 +2842,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     if (loadingSucceded) {
         tabInfo.append(TabInfo(displayName, textEdit, false, true));
         setRecentFile(filename);
-        textEdit->saveSettings( variableEditor->getSettings() );
+        textEdit->saveSettings( variableEditor->getSettings() + variableEditor2->getSettings() );
 
     } else {
         tabInfo.append(TabInfo(displayName, textEdit, true));
@@ -2834,7 +2878,7 @@ void MainWindow::tabChanged(int index)
 
     TextEdit *te = getTextEdit();
 
-    te->saveSettings( variableEditor->getSettings() );
+    te->saveSettings( variableEditor->getSettings() + variableEditor2->getSettings() );
 
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
@@ -2855,7 +2899,7 @@ void MainWindow::tabChanged(int index)
     initializeFragment(); // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if (!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings())) {
+        if (!te->lastSettings().isEmpty() && (variableEditor->setSettings(te->lastSettings()) || variableEditor2->setSettings(te->lastSettings()))) {
             initializeFragment();
         }
     }
@@ -2880,7 +2924,7 @@ void MainWindow::closeTab(int index)
     if (t.unsaved) {
         QString mess =
             tr("There are unsaved changes.%1\r\nContinue will discard changes.")
-                .arg(variableEditor->hasEasing()
+                .arg( (variableEditor->hasEasing() || variableEditor2->hasEasing())
                 ? tr("\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!")
                 : "\r\n");
         int answer = QMessageBox::warning(this, tr("Unsaved changes"), mess, tr("Continue"), tr("Cancel"));
@@ -2905,7 +2949,7 @@ void MainWindow::closeTab(int index)
         return;
     }    // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
-    if (variableEditor->setSettings(te->lastSettings())) {
+    if (variableEditor->setSettings(te->lastSettings()) || variableEditor2->setSettings(te->lastSettings())) {
         initializeFragment();
     } // this bit of fudge preserves textures ???
 }
@@ -2914,12 +2958,13 @@ void MainWindow::clearKeyFrames()
 {
 
     // clear the easingcurve settings
-    if(variableEditor->hasEasing()) {
+    if(variableEditor->hasEasing() || variableEditor2->hasEasing()) {
         engine->setCurveSettings( QStringList() );
         variableEditor->setEasingEnabled(false);
+        variableEditor2->setEasingEnabled(false);
     }
     // clear the spline data
-    if (variableEditor->hasKeyFrames()) {
+    if (variableEditor->hasKeyFrames() || variableEditor2->hasKeyFrames()) {
         clearKeyFrameControl();
 }
 }
@@ -3019,7 +3064,7 @@ void MainWindow::saveImage(QImage image)
         return;
     }
 
-    image.setText("frAg", variableEditor->getSettings());
+    image.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings());
 
     bool succes = image.save(filename);
     if (succes) {
@@ -3125,6 +3170,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
                 } else {
                     // use the params found in png
                     variableEditor->setSettings(fromPNG);
+                    variableEditor2->setSettings(fromPNG);
                 }
             } else {
                 INFO(tr("Must be a .frag or .fragparams file."));
@@ -3321,7 +3367,7 @@ void MainWindow::setFPS(float fps)
 
 QString MainWindow::getCameraSettings()
 {
-
+    // not variableEditor2, camera is not in BufferShader
     QString settings = variableEditor->getSettings();
     QStringList l = settings.split("\n");
     QStringList r;
@@ -3354,6 +3400,7 @@ void MainWindow::setCameraSettings(glm::dvec3 e, glm::dvec3 t, glm::dvec3 u)
     }
     variableEditor->setSettings(r);
     variableEditor->blockSignals(false);
+    // not variableEditor2, camera is not in BufferShader
 }
 
 QString MainWindow::getPresetNames(bool keyframesORpresets)
@@ -3392,6 +3439,7 @@ void MainWindow::initKeyFrameControl()
 
     if(k>1) {
         variableEditor->setKeyFramesEnabled(true);
+        variableEditor2->setKeyFramesEnabled(true);
         timeSlider->setTickInterval( timeSlider->maximum()/(k-1));
         timeSlider->setTickPosition(QSlider::TicksBelow);
         /// more than 1? try to spline
@@ -3417,6 +3465,7 @@ void MainWindow::clearKeyFrameControl()
 {
 
     variableEditor->setKeyFramesEnabled(false);
+    variableEditor2->setKeyFramesEnabled(false);
     if (engine->eyeSpline != nullptr || engine->targetSpline != nullptr || engine->upSpline != nullptr) {
         engine->clearControlPoints();
         engine->eyeSpline = nullptr;

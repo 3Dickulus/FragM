@@ -190,7 +190,7 @@ public:
         maxSubFrames = i;
     }
 
-    void uniformsHasChanged();
+    void uniformsHasChanged( bool bufferShaderOnly );
     void setClearOnChange ( bool v )
     {
         clearOnChange = v;

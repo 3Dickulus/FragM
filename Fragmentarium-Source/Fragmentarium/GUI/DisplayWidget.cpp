@@ -233,7 +233,7 @@ void DisplayWidget::requireRedraw(bool clear)
     }
 }
 
-void DisplayWidget::uniformsHasChanged()
+void DisplayWidget::uniformsHasChanged( bool bufferShaderOnly )
 {
   if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
@@ -243,7 +243,7 @@ void DisplayWidget::uniformsHasChanged()
     }
   }
 
-  requireRedraw ( clearOnChange );
+  requireRedraw ( bufferShaderOnly ? false : clearOnChange );
 }
 
 /// /* Texture mapping */
@@ -1499,8 +1499,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
 
     // this should speed things up a little because we are only setting uniforms on
-    // the first subframe of the first tile
-    if (subframeCounter > 1) {
+    // the first subframe (except for buffer shader, FIXME hack) of the first tile
+    if (subframeCounter > 1 && shaderProg != bufferShaderProgram) {
         return;
     }
     // same for tiles
