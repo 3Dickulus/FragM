@@ -219,7 +219,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
 }
 
-void DisplayWidget::requireRedraw(bool clear)
+void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
 {
     if (disableRedraw) {
         return;
@@ -227,6 +227,8 @@ void DisplayWidget::requireRedraw(bool clear)
 
     if ( clear ) {
         clearBackBuffer();
+        pendingRedraws = 1;
+    } else if ( bufferShaderOnly ) {
         pendingRedraws = 1;
     } else {
         subframeCounter = 0;
@@ -243,7 +245,7 @@ void DisplayWidget::uniformsHasChanged( bool bufferShaderOnly )
     }
   }
 
-  requireRedraw ( bufferShaderOnly ? false : clearOnChange );
+  requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
 }
 
 /// /* Texture mapping */

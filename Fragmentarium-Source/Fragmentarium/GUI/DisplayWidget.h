@@ -118,7 +118,7 @@ public:
 
     /// Use this whenever a redraw is required.
     /// Calling this function multiple times will still only result in one redraw
-    void requireRedraw ( bool clear );
+    void requireRedraw ( bool clear, bool bufferShaderOnly = false );
     void updateRefreshRate();
     void setState ( DrawingState state );
     DrawingState getState()
