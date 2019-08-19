@@ -190,7 +190,7 @@ public:
         maxSubFrames = i;
     }
 
-    void uniformsHasChanged();
+    void uniformsHasChanged(Provenance provenance);
     void setClearOnChange ( bool v )
     {
         clearOnChange = v;
@@ -262,9 +262,9 @@ public slots:
     {
         return renderFPS;
     }
-    int isPending()
+    bool isPending()
     {
-        return pendingRedraws || pendingBufferShaderRedraws;
+        return pendingRedraws || bufferUniformsHaveChanged;
     }
     void setHasKeyFrames ( bool yn )
     {
@@ -356,13 +356,14 @@ private:
 
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 
+    void resetUniformProvenance();
     void setupShaderVars(int w, int h);
     void draw3DHints();
     bool FBOcheck();
     void setupBufferShaderVars(int w, int h);
 
     int pendingRedraws; // the number of times we must redraw
-    int pendingBufferShaderRedraws;
+    bool bufferUniformsHaveChanged;
     QColor backgroundColor;
 
     QMenu* contextMenu;

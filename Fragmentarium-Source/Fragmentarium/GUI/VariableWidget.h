@@ -359,6 +359,18 @@ public:
     {
         return group;
     }
+    void setProvenance(Provenance p)
+    {
+        provenance = p;
+    }
+    void addProvenance(Provenance p)
+    {
+        provenance = Provenance(provenance | p);
+    }
+    Provenance getProvenance() const
+    {
+        return provenance;
+    }
     bool isUpdated() const
     {
         return updated;
@@ -406,7 +418,7 @@ public slots:
     void valueChanged();
 
 signals:
-    void changed(bool lockedChanged);
+    void changed(bool lockedChanged, Provenance provenance);
 
 protected:
     QString toGLSL ( double d )
@@ -429,6 +441,7 @@ protected:
     bool wantDouble=false;
     QWidget* widget;
     QWidget* variableEditor;
+    Provenance provenance;
 };
 
 class SamplerWidget : public VariableWidget

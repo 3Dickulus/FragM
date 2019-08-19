@@ -70,7 +70,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     disabled = false;
     updatePerspective();
     pendingRedraws = 0;
-    pendingBufferShaderRedraws = 0;
     setMouseTracking ( true );
     backgroundColor = QColor ( 30,30,30 );
     contextMenu = nullptr;
@@ -216,6 +215,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         initBufferShader();
     }
 
+    resetUniformProvenance();
 }
 
 void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
@@ -227,15 +227,14 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
     if ( clear ) {
         clearBackBuffer();
         pendingRedraws = 1;
-        pendingBufferShaderRedraws = 1;
     } else if ( bufferShaderOnly ) {
-        pendingBufferShaderRedraws = 1;
+        // nop
     } else {
         subframeCounter = 0;
     }
 }
 
-void DisplayWidget::uniformsHasChanged()
+void DisplayWidget::uniformsHasChanged(Provenance provenance)
 {
   if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
@@ -244,7 +243,8 @@ void DisplayWidget::uniformsHasChanged()
       depthToAlpha = btest->isChecked();
     }
   }
-
+  bufferUniformsHaveChanged |= !!(provenance & FromBufferShader);
+  bool bufferShaderOnly = provenance == FromBufferShader;
   requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
 }
 
@@ -1508,18 +1508,45 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
     }
 }
 
+void DisplayWidget::resetUniformProvenance()
+{
+    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
+    foreach (VariableWidget *w, vw) {
+        w->setProvenance(FromUnknown);
+    }
+    QOpenGLShaderProgram *programs[2] = { shaderProgram, bufferShaderProgram };
+    Provenance provenances[2] = { FromMainShader, FromBufferShader };
+    for (int k = 0; k < 2; ++k) {
+        QOpenGLShaderProgram *shaderProg = programs[k];
+        Provenance provenance = provenances[k];
+        if (shaderProg == nullptr) continue;
+        GLuint programID = shaderProg->programId();
+        if (programID == 0) continue;
+        GLint count = 0;
+        // this only returns uniforms that have not been optimized out
+        glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
+        for (int i = 0; i < count; i++) {
+            GLsizei bufSize = 256;
+            GLsizei length;
+            GLint size;
+            GLenum type;
+            GLchar name[bufSize];
+            glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
+            QString uniformName = (char *)name;
+            // FIXME this is quadratic: O(number of active uniforms * number of widgets declared)
+            // FIXME could go to n log n by sorting each by name and zip ascending?
+            foreach (VariableWidget *w, vw) {
+                if (uniformName == w->getName()) {
+                    w->addProvenance(provenance);
+                    break; // can't have more than one uniform with the same name
+                }
+            }
+        }
+    }
+}
+
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
-
-    // this should speed things up a little because we are only setting uniforms on
-    // the first subframe of the first tile
-    if (subframeCounter > 1) {
-        return;
-    }
-    // same for tiles
-    if (tilesCount > 1) {
-        return;
-    }
 
     GLuint programID = shaderProg->programId();
 
@@ -1722,7 +1749,12 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     setupShaderVars(w, h);
 
     // Setup User Uniforms
-    setShaderUniforms(shaderProgram);
+
+    // this should speed things up a little because we are only setting uniforms on
+    // the first subframe of the first tile
+    if (subframeCounter <= 1 && tilesCount <= 1) {
+        setShaderUniforms(shaderProgram);
+    }
 
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -1818,7 +1850,10 @@ void DisplayWidget::setupBufferShaderVars(int w, int h)
             WARNING(tr("No front buffer sampler found in buffer shader. This doesn't make sense."));
         }
         // Setup User Uniforms
-        setShaderUniforms ( bufferShaderProgram );
+        if (bufferUniformsHaveChanged) {
+            setShaderUniforms ( bufferShaderProgram );
+            bufferUniformsHaveChanged = false;
+        }
 }
 
 void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast, bool doMain)
@@ -2130,9 +2165,6 @@ void DisplayWidget::paintGL()
     if (pendingRedraws > 0) {
         pendingRedraws--;
     }
-    if (pendingBufferShaderRedraws > 0) {
-        pendingBufferShaderRedraws--;
-    }
 
     if (disabled || shaderProgram == nullptr) {
         glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
@@ -2234,7 +2266,6 @@ void DisplayWidget::timerSignal()
 
             // render
             pendingRedraws = 1;
-            pendingBufferShaderRedraws = 1;
             update();
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );

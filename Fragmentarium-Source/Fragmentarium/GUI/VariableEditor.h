@@ -123,7 +123,7 @@ public:
     }
 
 signals:
-    void changed(bool lockedChanged);
+    void changed(bool lockedChanged, Provenance provenance);
 
 public slots:
     void sliderDestroyed ( QObject *obj );
@@ -136,7 +136,7 @@ public slots:
     void copy();
     void copyGroup();
     void paste();
-    void childChanged(bool lockedChanged);
+    void childChanged(bool lockedChanged, Provenance provenance);
     void presetSelected(QString presetName);
     void dockChanged ( bool t )
     {

@@ -23,6 +23,8 @@ namespace Parser {
 
 using namespace SyntopiaCore::Logging;
 
+enum Provenance { FromUnknown = 0, FromMainShader = 1, FromBufferShader = 2, FromBothShaders = 3 };
+
 enum LockTypeInner { Locked, NotLocked, NotLockable, AlwaysLocked, Unknown } ;
 
 class LockType {
@@ -125,7 +127,7 @@ private:
 
 class GuiParameter {
 public:
-    GuiParameter(QString group, QString name, QString tooltip) : group(group), name(name), tooltip(tooltip) {
+    GuiParameter(QString group, QString name, QString tooltip) : lockType(Unknown), sliderType(UnknownSliderType), provenance(FromUnknown), group(group), name(name), tooltip(tooltip) {
     };
 
     QString getName() {
@@ -150,6 +152,15 @@ public:
     void setSliderType(SliderType l) {
         sliderType = l;
     }
+    Provenance getProvenance() {
+        return provenance;
+    }
+    void setProvenance(Provenance l) {
+        provenance = l;
+    }
+    void addProvenance(Provenance l) {
+        provenance = Provenance(provenance | l);
+    }
     void setIsDouble(bool v) {
         wantDouble = v;
     }
@@ -159,6 +170,7 @@ public:
 protected:
     LockType lockType;
     SliderType sliderType;
+    Provenance provenance;
     QString group;
     QString name;
     QString tooltip;
