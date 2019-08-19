@@ -75,6 +75,20 @@ void setLockType(GuiParameter *p, QString lockTypeString)
     p->setLockType(l);
 }
 
+void setSliderType(GuiParameter *p, QString sliderTypeString)
+{
+    sliderTypeString = sliderTypeString.toLower().trimmed();
+    SliderType l = Linear;
+    if (sliderTypeString == "logarithmic") {
+        l = Logarithmic;
+    } else if (sliderTypeString == "linear" || sliderTypeString.isEmpty()) {
+        l = Linear;
+    } else {
+        WARNING("Not able to parse slider type: " + sliderTypeString + " Default linear!");
+    }
+    p->setSliderType(l);
+}
+
 glm::dvec4 parseQVector4D(QString s1, QString s2, QString s3, QString s4)
 {
     return { parseFloat(s1), parseFloat(s2), parseFloat(s3), parseFloat(s4) };
@@ -415,7 +429,8 @@ void Preprocessor::parseFloat1Slider(FragmentSource *fs, int i)
     }
 
     FloatParameter *fp = new FloatParameter(currentGroup, name, lastComment, from, to, def);
-    setLockType(fp, float1Slider.cap(6));
+    setSliderType(fp, float1Slider.cap(6));
+    setLockType(fp, float1Slider.cap(7));
     if (type.startsWith("d")) fp->setIsDouble(true);
     fs->params.append(fp);
 }
@@ -430,7 +445,8 @@ void Preprocessor::parseFloat2Slider(FragmentSource *fs, int i)
     glm::dvec2 to = parseQVector2D(float2Slider.cap(7), float2Slider.cap(8));
 
     Float2Parameter *fp = new Float2Parameter(currentGroup, name, lastComment, from, to, defaults);
-    setLockType(fp, float2Slider.cap(9));
+    setSliderType(fp, float2Slider.cap(9));
+    setLockType(fp, float2Slider.cap(10));
     if (type.startsWith("d")) fp->setIsDouble(true);
     fs->params.append(fp);
 }
@@ -445,7 +461,8 @@ void Preprocessor::parseFloat3Slider(FragmentSource *fs, int i)
     glm::dvec3 to = parseQVector3D(float3Slider.cap(9), float3Slider.cap(10), float3Slider.cap(11));
 
     Float3Parameter *fp = new Float3Parameter(currentGroup, name, lastComment, from, to, defaults);
-    setLockType(fp, float3Slider.cap(12));
+    setSliderType(fp, float3Slider.cap(12));
+    setLockType(fp, float3Slider.cap(13));
     if (type.startsWith("d")) fp->setIsDouble(true);
     fs->params.append(fp);
 }
@@ -460,7 +477,8 @@ void Preprocessor::parseFloat4Slider(FragmentSource *fs, int i)
     glm::dvec4 to = parseQVector4D(float4Slider.cap(11), float4Slider.cap(12), float4Slider.cap(13), float4Slider.cap(14));
 
     Float4Parameter *fp = new Float4Parameter(currentGroup, name, lastComment, from, to, defaults);
-    setLockType(fp, float4Slider.cap(15));
+    setSliderType(fp, float4Slider.cap(15));
+    setLockType(fp, float4Slider.cap(16));
     if (type.startsWith("d")) fp->setIsDouble(true);
     fs->params.append(fp);
 }
