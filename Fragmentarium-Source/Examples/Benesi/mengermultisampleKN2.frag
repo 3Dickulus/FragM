@@ -200,7 +200,7 @@ void hTextureIT (inout vec3 z) {
 	} else  if (hMapType==8) {
  		hcolor = texture2DProj (tex2, z*htexturespeed)*hintensity;
 	} else if (hMapType==9) {
-		 hcolor = texture2D(tex2,dir.xy*htexturespeed)*hintensity;
+		 hcolor = texture2D(tex2,Dir.xy*htexturespeed)*hintensity;
 	} else if (hMapType==10) {
  		hcolor = texture2D(tex2, coord*htexturespeed)*hintensity;
 	}
