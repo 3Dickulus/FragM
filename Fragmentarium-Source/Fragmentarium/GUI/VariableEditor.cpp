@@ -158,6 +158,11 @@ void VariableEditor::setPresets(QMap<QString, QString> presets)
     }
 }
 
+void VariableEditor::setPresets(const VariableEditor &other)
+{
+    setPresets(other.presets);
+}
+
 bool VariableEditor::setDefault()
 {
     if (!(QSettings().value("autorun", true).toBool())) {
@@ -174,14 +179,7 @@ bool VariableEditor::setDefault()
 
 bool VariableEditor::applyPreset()
 {
-    QString presetName = presetComboBox->currentText();
-    QString preset = presets[presetName];
-    /// this bit of fudge sets the current time to keyframe time
-    QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
-    if(rx.indexIn(presetName) != -1)  { /// found a keyframe
-        mainWindow->setTimeSliderValue(getCurrentKeyFrame() * ((mainWindow->getTimeMax() * mainWindow->renderFPS) / (getKeyFrameCount() - 1)));
-    }
-    return setSettings(preset);
+    return mainWindow->applyPresetByName(presetComboBox->currentText());
 }
 
 void VariableEditor::resetUniforms(bool clear)
@@ -1053,7 +1051,7 @@ bool VariableEditor::setPreset(QString p)
 {
     int item = presetComboBox->findText(p, Qt::MatchFixedString);
     presetComboBox->setCurrentIndex(item);
-    return applyPreset();
+    return setSettings(getPresetByName(p).join("\n"));
     /// this bit of fudge sets the current time to keyframe time
 //     if(hasKeyFrames())
     //         mainWindow->setTimeSliderValue( getCurrentKeyFrame() *

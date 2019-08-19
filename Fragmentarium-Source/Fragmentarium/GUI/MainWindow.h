@@ -455,6 +455,13 @@ public slots:
         rebuildRequired |= initializeFragment();
         processGuiEvents();
         processGuiEvents();
+        if (! rebuildRequired) {
+            /// this bit of fudge sets the current time to keyframe time
+            QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
+            if(rx.indexIn(n) != -1)  { /// found a keyframe
+                setTimeSliderValue(variableEditor->getCurrentKeyFrame() * ((getTimeMax() * renderFPS) / (variableEditor->getKeyFrameCount() - 1)));
+            }
+        }
         return !rebuildRequired; // if rebuild is required applying the preset failed
     };
 

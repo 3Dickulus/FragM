@@ -2615,6 +2615,7 @@ bool MainWindow::initializeFragment()
         }
         editorDockWidget->setHidden( variableEditor->getWidgetCount() + variableEditor2->getWidgetCount() == 0 );
         variableEditor->updateCamera(engine->getCameraControl());
+        variableEditor2->setPresets(*variableEditor);
         engine->requireRedraw(true);
         engine->resetTime();
 

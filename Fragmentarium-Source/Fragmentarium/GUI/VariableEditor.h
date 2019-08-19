@@ -47,6 +47,7 @@ public:
     void createGroup(QString g);
     VariableWidget* getWidgetFromName(QString name);
     void setPresets(QMap<QString, QString> presets);
+    void setPresets(const VariableEditor &other);
     ComboSlider *getCurrentComboSlider()
     {
         return currentComboSlider;
