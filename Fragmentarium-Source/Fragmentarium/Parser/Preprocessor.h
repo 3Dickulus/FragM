@@ -79,6 +79,51 @@ private:
     LockTypeInner inner = NotLocked;
 };
 
+enum SliderTypeInner { Linear, Logarithmic, UnknownSliderType } ;
+
+class SliderType {
+public:
+    SliderType() {}
+    SliderType(QString s) {
+        fromString(s);
+    }
+    SliderType(SliderTypeInner l) : inner(l) {}
+    bool operator ==(const SliderTypeInner lty) {
+        return inner==lty;
+    }
+    bool operator !=(const SliderTypeInner lty) {
+        return inner!=lty;
+    }
+    bool operator ==(const SliderType &lty) {
+        return inner==lty.inner;
+    }
+    bool operator !=(const SliderType &lty) {
+        return inner!=lty.inner;
+    }
+    QString toString() {
+        if (inner == Linear) {
+            return "Linear";
+        } else if (inner == Logarithmic) {
+            return "Logarithmic";
+        } else {
+            return "???";
+        }
+    }
+
+    void fromString(QString s) {
+        s = s.toLower();
+        if (s == "linear") {
+            inner = Linear;
+        } else if (s == "logarithmic") {
+            inner = Logarithmic;
+        } else {
+            inner = UnknownSliderType;
+        }
+    }
+
+private:
+    SliderTypeInner inner = Linear;
+};
 
 class GuiParameter {
 public:
@@ -101,6 +146,12 @@ public:
     void setLockType(LockType l) {
         lockType = l;
     }
+    SliderType getSliderType() {
+        return sliderType;
+    }
+    void setSliderType(SliderType l) {
+        sliderType = l;
+    }
     void setIsDouble(bool v) {
         wantDouble = v;
     }
@@ -109,6 +160,7 @@ public:
     }
 protected:
     LockType lockType;
+    SliderType sliderType;
     QString group;
     QString name;
     QString tooltip;
@@ -341,13 +393,14 @@ public:
 };
 
 /// The preprocessor is responsible for including files and resolve user uniform variables
+    const QString sliderTypeString = "\\s*(Linear|Logarithmic)?";
     const QString lockTypeString = "\\s*(Locked|NotLocked|NotLockable)?\\s*.?$";
 
     // Look for patterns like 'uniform float varName; slider[0.1,1,2.0]'
-    static QRegExp float4Slider ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\)\\]"+lockTypeString );
-    static QRegExp float3Slider ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\)\\]"+lockTypeString );
-    static QRegExp float2Slider ( "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\)\\]"+lockTypeString );
-    static QRegExp float1Slider ( "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+    static QRegExp float4Slider ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float3Slider ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float2Slider ( "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float1Slider ( "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+sliderTypeString+lockTypeString );
 
     static QRegExp colorChooser ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
     static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
