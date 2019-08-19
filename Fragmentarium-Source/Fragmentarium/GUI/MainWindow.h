@@ -507,10 +507,7 @@ public slots:
 
     void dumpShaderAsm();
 
-    void logMessage ( QString message )
-    {
-        logger->log ( message, InfoLevel );
-    };
+    void loadErrorSourceFile(QString fileName, int LineNumber);
 
     QString getVersion()
     {

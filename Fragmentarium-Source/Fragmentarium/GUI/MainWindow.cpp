@@ -80,7 +80,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190811, "");
+    version = Version(2, 5, 0, 190817, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -408,7 +408,7 @@ void MainWindow::about()
     "<p><b>Notice</b>: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing."
     "<h1>Acknowledgement</h1>"
     "<p>"
-    "Much of the inspiration and formulas for Fragmentarium came from the community at <a href=http://www.fractalforums.com>FractalForums.com</a>, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions."
+    "Much of the inspiration and formulas for Fragmentarium came from the community at <a href=http://www.fractalforums.com>FractalForums.com</a>, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions."
     "</p>"
     "<p>The icons used are part of the <a href=\"http://www.everaldo.com/crystal/\">Everaldo: Crystal</a> project. </p>"
     "<p>Fragmentarium is built using the <a href=\"http://trolltech.com/developer/downloads/qt/index\">Qt cross-platform GUI framework</a>. </p>"
@@ -664,6 +664,8 @@ void MainWindow::init()
     vboxLayout1->setContentsMargins(0, 0, 0, 0);
 
     logger = new ListWidgetLogger(dockLog);
+    connect (logger->getListWidget(), SIGNAL(loadSourceFile(QString, int)), this, SLOT(loadErrorSourceFile(QString, int)));
+
     vboxLayout1->addWidget(logger->getListWidget());
     dockLog->setWidget(dockLogContents);
     addDockWidget(Qt::BottomDockWidgetArea, dockLog);
@@ -3682,6 +3684,34 @@ void MainWindow::setupScriptEngine()
         cmdScriptDebugger->standardWindow()->setWindowModality(Qt::ApplicationModal);
         cmdScriptDebugger->standardWindow()->resize(1280, 704);
     }
+}
+
+// this function is connected to a signal from listwidget in logger
+// if the file is already loaded then jump to line else load the file and jump to line
+void MainWindow::loadErrorSourceFile(QString fileName, int LineNumber)
+{
+    QStringList openFiles;
+    if (!tabInfo.isEmpty()) {
+        for (auto &i : tabInfo) {
+            openFiles << i.filename;
+            if(fileName == i.filename) {
+                tabBar->setCurrentIndex( i.tabIndex );
+            }
+        }
+    }
+
+    if(!openFiles.contains(fileName)) {
+
+        loadFragFile(fileName);
+    }
+    // jump to error line in text editor
+    TextEdit *te = getTextEdit();
+    QTextCursor cursor(te->textCursor());
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,LineNumber+10);
+    te->setTextCursor( cursor );
+    cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,11);
+    te->setTextCursor( cursor );
 }
 
 /// BEGIN 3DTexture
