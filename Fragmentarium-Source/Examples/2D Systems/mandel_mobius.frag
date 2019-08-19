@@ -17,12 +17,12 @@ vec2 mobius(vec2 p) {
 
 	if (rightWrap && p.x>width) {
 		p.x=-width+dist;
-		p.y*=-1;
+		p.y*=-1.0;
 	};
 
 	if (leftWrap && p.x<-width) {
 		p.x=width-dist;
-		p.y*=-1;
+		p.y*=-1.0;
 	};
 
 	return p;
@@ -31,7 +31,7 @@ vec2 mobius(vec2 p) {
 vec2 formula(in vec2 p, in vec2 c) {
 	float X=p.x, Y=p.y;
 	p.x=X*X-Y*Y;
-	p.y=2*X*Y;
+	p.y=2.0*X*Y;
 	p+=c;
 	p=mobius(p);
 	return p;
@@ -45,8 +45,8 @@ vec3 color(in vec2 p) {
 		p = formula(p,c);
 		k+=1;
 	};
-	float f =k/(iters+1.0);
-	return vec3(sin(f*3.1415926/2));
+	float f =float(k)/float(iters+1);
+	return vec3(sin(f*3.1415926/2.0));
 };
 
 #preset default
