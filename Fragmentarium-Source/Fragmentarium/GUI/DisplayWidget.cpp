@@ -70,6 +70,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     disabled = false;
     updatePerspective();
     pendingRedraws = 0;
+    pendingBufferShaderRedraws = 0;
     setMouseTracking ( true );
     backgroundColor = QColor ( 30,30,30 );
     contextMenu = nullptr;
@@ -228,8 +229,9 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
     if ( clear ) {
         clearBackBuffer();
         pendingRedraws = 1;
+        pendingBufferShaderRedraws = 1;
     } else if ( bufferShaderOnly ) {
-        pendingRedraws = 1;
+        pendingBufferShaderRedraws = 1;
     } else {
         subframeCounter = 0;
     }
@@ -1810,7 +1812,7 @@ void DisplayWidget::setupBufferShaderVars(int w, int h)
         setShaderUniforms ( bufferShaderProgram );
 }
 
-void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
+void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast, bool doMain)
 {
 
     if (!this->isValid() || !FBOcheck()) {
@@ -1819,7 +1821,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     QSize s = backBuffer->size();
 
-    if ( !drawLast ) {
+    if ( !drawLast && doMain ) {
         for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
@@ -2115,8 +2117,12 @@ void DisplayWidget::paintGL()
         return;
     }
 
+    bool doMain = pendingRedraws > 0;
     if (pendingRedraws > 0) {
         pendingRedraws--;
+    }
+    if (pendingBufferShaderRedraws > 0) {
+        pendingBufferShaderRedraws--;
     }
 
     if (disabled || shaderProgram == nullptr) {
@@ -2158,7 +2164,7 @@ void DisplayWidget::paintGL()
         }
     }
 
-    drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0));
+    drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0), doMain );
 
 }
 
@@ -2201,7 +2207,7 @@ void DisplayWidget::timerSignal()
         cameraControl->updateState();
     }
 
-    if (pendingRedraws != 0) {
+    if (isPending()) {
         if (buttonDown) {
             pendingRedraws = 0;
         }
@@ -2218,6 +2224,8 @@ void DisplayWidget::timerSignal()
             QTime t = QTime::currentTime();
 
             // render
+            pendingRedraws = 1;
+            pendingBufferShaderRedraws = 1;
             update();
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );

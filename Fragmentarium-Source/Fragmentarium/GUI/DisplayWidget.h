@@ -264,7 +264,7 @@ public slots:
     }
     int isPending()
     {
-        return pendingRedraws;
+        return pendingRedraws || pendingBufferShaderRedraws;
     }
     void setHasKeyFrames ( bool yn )
     {
@@ -294,7 +294,7 @@ public slots:
 
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
-    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
+    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast, bool doMain = true );
 /// BEGIN 3DTexture
 //       void draw3DTexture();
 /// END 3DTexture
@@ -362,6 +362,7 @@ private:
     void setupBufferShaderVars(int w, int h);
 
     int pendingRedraws; // the number of times we must redraw
+    int pendingBufferShaderRedraws;
     QColor backgroundColor;
 
     QMenu* contextMenu;
