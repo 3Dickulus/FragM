@@ -33,10 +33,10 @@ vec3 getMapColor2D(vec2 c) {
 	int i = 0;
 	for (i = 0; i < Iterations; i++) {	
 		z = complexMul(z,z) +p;	
-		if (dot(z,z)> 200.0) break;	
+		if (! (dot(z,z) < 200.0)) break;
 	}
 	
-	if (i < Iterations) {	
+	if (! (dot(z,z) < 200.0)) {
 		float co = float( i) + 1.0 - log2(.5*log2(dot(z,z)));	
 		co = sqrt(co/256.0);	
 		return vec3( .5+.5*cos(6.2831*co),.5+.5*cos(6.2831*co),.5+.5*cos(6.2831*co) );	
@@ -77,14 +77,14 @@ vec3 color(vec2 c) {
 			avg +=  lastAdded;
 		}
 		z2 = dot(z,z);
-		if (z2> EscapeRadius2 && i>Skip) break;
+		if (! (z2 < EscapeRadius2) && i>Skip) break;
 	}
 	float prevAvg = (avg -lastAdded)/(count-1.0);
 	avg = avg/count;
 	float frac =1.0+(log2(log(EscapeRadius2)/log(z2)));	
 	frac*=Test;
 	float mix = frac*avg+(1.0-frac)*prevAvg;
-	if (i < Iterations) {		
+	if (i < Iterations && mix == mix) { // NaN check
 		float co = mix*pow(10.0,Multiplier);
 		co = clamp(co,0.0,10000.0);
 		return vec3( .5+.5*cos(6.2831*co+R),.5+.5*cos(6.2831*co + G),.5+.5*cos(6.2831*co +B) );		
