@@ -151,14 +151,14 @@ int VariableWidget::uniformLocation(QOpenGLShaderProgram *shaderProgram)
 }
 
 /// FloatVariable constructor.
-FloatWidget::FloatWidget(QWidget *parent, QWidget *variableEditor, QString name, double defaultValue, double min, double max)
+FloatWidget::FloatWidget(QWidget *parent, QWidget *variableEditor, QString name, double defaultValue, double min, double max, bool logarithmic)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)
 {
     auto *l = new QHBoxLayout(widget);
     l->setSpacing(2);
     l->setContentsMargins (0,0,0,0);
 
-    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue, min, max);
+    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue, min, max, logarithmic);
     comboSlider1->setObjectName(QString("%1%2").arg(name).arg("1"));
     l->addWidget(comboSlider1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
@@ -196,7 +196,7 @@ void FloatWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float2Widget -----------------------------------------------
 
-Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max)
+Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec2 defaultValue, glm::dvec2 min, glm::dvec2 max, bool logarithmic)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)
 {
     auto *m = new QGridLayout(widget);
@@ -204,13 +204,13 @@ Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString nam
     m->setContentsMargins (0,0,0,0);
 
     comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue.x,
-                                   min.x, max.x);
+                                   min.x, max.x, logarithmic);
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
 
     comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue.y,
-                                   min.y, max.y);
+                                   min.y, max.y, logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(valueChanged()));
@@ -258,7 +258,7 @@ void Float2Widget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float3Widget -----------------------------------------------
 
-Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max)
+Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max, bool logarithmic)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), min(min), max(max)
 {
 
@@ -276,17 +276,17 @@ Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString nam
     m->setSpacing(2);
     m->setContentsMargins (0,0,0,0);
 
-    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue[0], min[0], max[0]);
+    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue[0], min[0], max[0], logarithmic);
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(n1Changed()));
 
-    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1]);
+    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1], logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(n2Changed()));
 
-    comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2]);
+    comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2], logarithmic);
     comboSlider3->setObjectName( QString("%1%2").arg(name).arg("3") );
     m->addWidget(comboSlider3,2,1);
     connect(comboSlider3, SIGNAL(changed()), this, SLOT(n3Changed()));
@@ -426,7 +426,7 @@ void Float3Widget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 
 //// ----- Float4Widget -----------------------------------------------
 
-Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max)
+Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString name, glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max, bool logarithmic)
     : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue),
       min(min), max(max)
 {
@@ -444,22 +444,22 @@ Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString nam
         normalize = true;
     }
 
-    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue[0], min[0], max[0]);
+    comboSlider1 = new ComboSlider(parent, variableEditor, defaultValue[0], min[0], max[0], logarithmic);
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
 
-    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1]);
+    comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1], logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(valueChanged()));
 
-    comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2]);
+    comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2], logarithmic);
     comboSlider3->setObjectName( QString("%1%2").arg(name).arg("3") );
     m->addWidget(comboSlider3,2,1);
     connect(comboSlider3, SIGNAL(changed()), this, SLOT(valueChanged()));
 
-    comboSlider4 = new ComboSlider(parent, variableEditor, defaultValue[3], min[3], max[3]);
+    comboSlider4 = new ComboSlider(parent, variableEditor, defaultValue[3], min[3], max[3], logarithmic);
     comboSlider4->setObjectName( QString("%1%2").arg(name).arg("4") );
     m->addWidget(comboSlider4,3,1);
     connect(comboSlider4, SIGNAL(changed()), this, SLOT(valueChanged()));
