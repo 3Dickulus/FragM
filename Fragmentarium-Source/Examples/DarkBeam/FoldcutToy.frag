@@ -25,8 +25,8 @@ void init() {
 float DE(vec3 z)
 {
 	float t; int n = 0;
-      float scalep = 1;
-      float DE1 = 1000;
+      float scalep = 1.0;
+      float DE1 = 1000.0;
       vec3 z0=z;
 	// Folds.
 	//Dodecahedral
