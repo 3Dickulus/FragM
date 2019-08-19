@@ -1,12 +1,12 @@
-//#version 400 compatibility
+#version 330 compatibility
 #info MandalayBox Distance Estimator.
 #define providesInit
 #define WANG_HASH
 #define KN_VOLUMETRIC
 //#define USE_IQ_CLOUDS
-uniform float time;
 #include "MathUtils.frag"
 #include "DE-Kn2cr11.frag"
+uniform float time;
 #group MandalayBox
 // Number of iterations.
 uniform int Iterations;  slider[0,10,20]

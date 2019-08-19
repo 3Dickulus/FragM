@@ -1,4 +1,4 @@
-//#version 400 compatibility
+#version 330 compatibility
 // Output generated from file: Fragmentarium/Examples/Experimental/3Dickulus.frag
 // Created: Fri Nov 13 21:43:17 2015
 #info Mandelbulb Distance Estimator + Menger Sphere (knighty) + MandelBox (originaly devised by Buddhi)

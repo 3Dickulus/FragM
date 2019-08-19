@@ -43,7 +43,7 @@ mat3 rot;
 
 
 bool inside(vec3 pos) {
-	orbitTrap=10000;
+	orbitTrap=vec4(10000.0);
 	vec3 z;
 	if (Inversion) {
 		z=pos/dot(pos,pos);
