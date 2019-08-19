@@ -11,10 +11,10 @@
 const float pi=3.1415926535897932384626;
 const float pi2=6.283185307179586476925;
 //#define providesColor
-const	float sr32=sqrt(3./2.);
-const	float sr23=sqrt(2./3.);
-const	float sr13=sqrt(1./3.);
-const	float sr12=sqrt(.5);
+/*const*/	float sr32=sqrt(3./2.);
+/*const*/	float sr23=sqrt(2./3.);
+/*const*/	float sr13=sqrt(1./3.);
+/*const*/	float sr12=sqrt(.5);
 
 
 void init() {
