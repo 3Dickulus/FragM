@@ -36,12 +36,6 @@ uniform dvec2 Center;
 #group Post
 
 uniform double Gamma; slider[0.0,2.2,5.0]
-uniform double Exposure; slider[0.0,1.0,30.0]
-uniform double Brightness; slider[0.0,1.0,5.0]
-uniform double Contrast; slider[0.0,1.0,5.0]
-uniform double Saturation; slider[0.0,1.0,5.0]
-// 1: Linear, 2: Exponential, 3: Filmic, 4: Reinhart
-uniform int ToneMapping; slider[1,1,4]
 uniform double AARange; slider[0.0,2.,15.3]
 uniform double AAExp; slider[0.0,1,15.3]
 uniform bool GaussianAA; checkbox[true]

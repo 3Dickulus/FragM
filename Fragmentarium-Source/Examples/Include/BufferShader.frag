@@ -14,15 +14,20 @@ void main(void)
 
 #endvertex
 
-uniform float Gamma;
-uniform float Exposure;
-uniform float Brightness;
-uniform float Contrast;
-uniform float Saturation;
-uniform int ToneMapping;
-uniform float Hue;
-uniform vec3 LumCoeff;
-uniform vec3 AvgLumin;
+#group Post
+
+uniform float Gamma; // widget in Main frag (eg Progressive2D)
+
+// 1: Linear, 2: Exponential, 3: Filmic, 4: Reinhart
+uniform int ToneMapping; slider[1,1,4]
+uniform float Exposure; slider[0.0,1.0,30.0]
+uniform float Brightness; slider[0.0,1.0,5.0];
+uniform float Contrast; slider[0.0,1.0,5.0];
+uniform float Saturation; slider[0.0,1.0,5.0];
+
+uniform float Hue; slider[0,0,1]
+uniform vec3 LumCoeff; color[1,1,1]
+uniform vec3 AvgLumin; color[0,0,0]
 
 // RGB <-> HSV conversion, thanks to http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl
 vec3 rgb2hsv(vec3 c)

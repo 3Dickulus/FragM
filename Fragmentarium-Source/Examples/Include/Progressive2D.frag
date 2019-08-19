@@ -34,12 +34,6 @@ void main(void)
 
 #group Post
 uniform float Gamma; slider[0.0,2.2,5.0]
-// 1: Linear, 2: Exponential, 3: Filmic, 4: Reinhart
-uniform int ToneMapping; slider[1,1,4]
-uniform float Exposure; slider[0.0,1.0,30.0]
-uniform float Brightness; slider[0.0,1.0,5.0];
-uniform float Contrast; slider[0.0,1.0,5.0];
-uniform float Saturation; slider[0.0,1.0,5.0];
 
 uniform float AARange; slider[0.0,2.,15.3]
 uniform float AAExp; slider[0.0,1,15.3]

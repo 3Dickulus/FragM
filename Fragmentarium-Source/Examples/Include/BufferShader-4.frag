@@ -22,11 +22,12 @@ out vec4 FragColor;
 #group Post
 
 uniform double Gamma;
-uniform double Exposure;
-uniform double Brightness;
-uniform double Contrast;
-uniform double Saturation;
-uniform int ToneMapping;
+uniform double Exposure; slider[0.0,1.0,30.0]
+uniform double Brightness; slider[0.0,1.0,5.0]
+uniform double Contrast; slider[0.0,1.0,5.0]
+uniform double Saturation; slider[0.0,1.0,5.0]
+// 1: Linear, 2: Exponential, 3: Filmic, 4: Reinhart
+uniform int ToneMapping; slider[1,1,4]
 
 /*
 ** Based on: http://mouaif.wordpress.com/2009/01/22/photoshop-gamma-correction-shader/
