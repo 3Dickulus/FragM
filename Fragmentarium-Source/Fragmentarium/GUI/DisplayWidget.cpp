@@ -831,7 +831,10 @@ void DisplayWidget::initFragmentTextures()
         bool loaded = false;
         if(!texturePath.isEmpty()) {
 
-            int l = shaderProgram->uniformLocation ( textureUniformName );
+            int l = -1;
+            if (shaderProgram) {
+                l = shaderProgram->uniformLocation ( textureUniformName );
+            }
 
             if ( l != -1 ) { // found named texture in shader program
 
