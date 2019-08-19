@@ -146,26 +146,8 @@ void init() {}
 
 #group Post
 uniform float Gamma; slider[0.0,1.0,5.0]
-// 1: Linear, 2: Expontial, 3: Filmic, 4: Reinhart; 5: Syntopia
-uniform int ToneMapping; slider[1,1,5]
-uniform float Exposure; slider[0.0,1.0,3.0]
-uniform float Brightness; slider[0.0,1.0,5.0];
-uniform float Contrast; slider[0.0,1.0,5.0];
-uniform float Saturation; slider[0.0,1.0,5.0];
 uniform float GaussianWeight; slider[0.0,1.0,10.0];
 uniform float AntiAliasScale; slider[0,2.5,10]
-//Apply Bloom. Note: specularity parameters (Light tab) have a huge impact.
-uniform bool Bloom; checkbox[false]
-uniform float BloomIntensity; slider[0,0,2]
-uniform float BloomPow; slider[0,2,10]
-uniform int   BloomTaps; slider[1,4,100]
-uniform float BloomStrong; slider[1,1,20]
-uniform bool  LensFlare; checkbox[false]
-uniform float FlareIntensity; slider[0.0,0.25,2]
-uniform int   FlareSamples; slider[1,8,9]
-uniform float FlareDispersal; slider[0.0,0.25,1.0]
-uniform float FlareHaloWidth; slider[0.0,0.5,1.0]
-uniform float FlareDistortion; slider[0.0,1.0,2.0]
 
 varying vec2 PixelScale;
 uniform float FOV;

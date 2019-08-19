@@ -7,16 +7,10 @@
 
 #group Raytracer
 
-uniform float NormalScale;slider[0,1,5]
-uniform float AOScale;slider[0,1,5]
-uniform float Glow;slider[0,0.1,1]
-uniform float AOStrength;slider[0,0.6,1]
-
 // Maximum number of  raymarching steps.
 uniform int Samples;  slider[0,40,2000]
 uniform bool Stratify; checkbox[true]
 uniform bool DebugInside; checkbox[false]
-uniform bool CentralDifferences; checkbox[true]
 uniform bool SampleNeighbors; checkbox[true]
 
 uniform float Near; slider[0,0,12]
@@ -24,23 +18,6 @@ uniform float Far; slider[0,5,12]
 
 // Available when using exr image filename extention
 uniform bool DepthToAlpha; checkbox[false];
-
-uniform bool  DebugNormals; checkbox[false]
-
-#group Light
-
-// The specular intensity of the directional light
-uniform float Specular; slider[0,4.0,10.0];
-// The specular exponent
-uniform float SpecularExp; slider[0,16.0,100.0];
-// Color and strength of the directional light
-uniform vec4 SpotLight; color[0.0,0.4,1.0,1.0,1.0,1.0];
-// Direction to the spot light (spherical coordinates)
-uniform vec2 SpotLightDir;  slider[(-1,-1),(0.1,0.1),(1,1)]
-// Light coming from the camera position (diffuse lightning)
-uniform vec4 CamLight; color[0,0.3,2,1.0,1.0,1.0];
-// Controls the minimum ambient light, regardless of directionality
-uniform float CamLightMin; slider[0.0,0.0,1.0]
 
 uniform float Fog; slider[0,0.0,2]
 

@@ -14,16 +14,23 @@ void main(void)
 
 #endvertex
 
+#group Post
+
 uniform float Gamma;
-uniform int ToneMapping;
-uniform float Exposure;
-uniform float Brightness;
-uniform float Contrast;
-uniform float Saturation;
-uniform bool Bloom;
-uniform float BloomIntensity;
-uniform float BloomPow;
-uniform int   BloomTaps;
+
+// 1: Linear, 2: Expontial, 3: Filmic, 4: Reinhart; 5: Syntopia
+uniform int ToneMapping; slider[1,1,5]
+uniform float Exposure; slider[0.0,1.0,3.0]
+uniform float Brightness; slider[0.0,1.0,5.0];
+uniform float Contrast; slider[0.0,1.0,5.0];
+uniform float Saturation; slider[0.0,1.0,5.0];
+
+#group Bloom
+//Apply Bloom. Note: specularity parameters (Light tab) have a huge impact.
+uniform bool  Bloom; checkbox[false]
+uniform float BloomIntensity; slider[0,0.25,2]
+uniform float BloomPow; slider[0,2,30]
+uniform int   BloomTaps; slider[1,4,160]
 
 /*
 ** Based on: http://mouaif.wordpress.com/2009/01/22/photoshop-gamma-correction-shader/
@@ -63,12 +70,16 @@ uniform sampler2D frontbuffer;
 /*----------------------------------------------------------------------------*/
 // modified from...
 // http://john-chapman-graphics.blogspot.ca/2013/02/pseudo-lens-flare.html
-uniform bool LensFlare;
-uniform float FlareIntensity;
-uniform int   FlareSamples;
-uniform float FlareDispersal;
-uniform float FlareHaloWidth;
-uniform float FlareDistortion;
+
+#group Flare
+uniform bool  LensFlare; checkbox[false]
+uniform float FlareIntensity; slider[0.0,0.25,2]
+uniform int   FlareSamples; slider[1,8,9]
+uniform float FlareDispersal; slider[0.0,0.25,1.0]
+uniform float FlareHaloWidth; slider[0.0,0.5,1.0]
+uniform float FlareDistortion; slider[0.0,1.0,2.0]
+
+
 
 vec4 textureDistorted(
         in vec2 texcoord,

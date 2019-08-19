@@ -33,7 +33,6 @@ uniform vec2 pixelSize;
 varying vec2 coord;
 varying vec2 viewCoord;
 varying vec2 viewCoord2;
-varying vec3 dir;
 varying vec3 Dir;
 varying vec3 UpOrtho;
 varying vec3 Right;
@@ -98,7 +97,6 @@ uniform bool ApStarShaped; checkbox[false] Locked
 
 // Camera position and target.
 varying vec3 from;
-varying vec3 dir;
 varying vec3 dirDx;
 varying vec3 dirDy;
 varying vec2 coord;
@@ -160,26 +158,8 @@ void init() {}
 //out vec4 gl_FragColor;
 #group Post
 uniform float Gamma; slider[0.0,1.0,5.0]
-// 1: Linear, 2: Expontial, 3: Filmic, 4: Reinhart; 5: Syntopia
-uniform int ToneMapping; slider[1,1,5]
-uniform float Exposure; slider[0.0,1.0,3.0]
-uniform float Brightness; slider[0.0,1.0,5.0];
-uniform float Contrast; slider[0.0,1.0,5.0];
-uniform float Saturation; slider[0.0,1.0,5.0];
 uniform float GaussianWeight; slider[0.0,1.0,10.0];
-
 uniform float AntiAliasScale; slider[0,2,10]
-//Apply Bloom. Note: specularity parameters (Light tab) have a huge impact.
-uniform bool  Bloom; checkbox[false]
-uniform float BloomIntensity; slider[0,0.25,2]
-uniform float BloomPow; slider[0,2,30]
-uniform int   BloomTaps; slider[1,4,160]
-uniform bool  LensFlare; checkbox[false]
-uniform float FlareIntensity; slider[0.0,0.25,2]
-uniform int   FlareSamples; slider[1,8,9]
-uniform float FlareDispersal; slider[0.0,0.25,1.0]
-uniform float FlareHaloWidth; slider[0.0,0.5,1.0]
-uniform float FlareDistortion; slider[0.0,1.0,2.0]
 
 varying vec2 PixelScale;
 uniform float FOV;

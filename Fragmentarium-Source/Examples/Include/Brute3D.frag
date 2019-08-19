@@ -96,14 +96,6 @@ void init(); // forward declare
 void init() {}
 #endif
 //out vec4 gl_FragColor;
-#group Post
-uniform float Gamma; slider[0.0,1.0,5.0]
-// 1: Linear, 2: Expontial, 3: Filmic, 4: Reinhart
-uniform int ToneMapping; slider[1,1,4]
-uniform float Exposure; slider[0.0,1.0,3.0]
-uniform float Brightness; slider[0.0,1.0,5.0];
-uniform float Contrast; slider[0.0,1.0,5.0];
-uniform float Saturation; slider[0.0,1.0,5.0];
 
 varying vec2 PixelScale;
 uniform float FOV;

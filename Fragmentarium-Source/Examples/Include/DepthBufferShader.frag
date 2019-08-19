@@ -34,12 +34,15 @@ void main(void)
 
 #endvertex
 
-uniform float Gamma;
-uniform float Exposure;
-uniform float Brightness;
-uniform float Contrast;
-uniform float Saturation;
-uniform int ToneMapping;
+#group Post
+uniform float Gamma; slider[0.0,1.0,5.0]
+// 1: Linear, 2: Expontial, 3: Filmic, 4: Reinhart
+uniform int ToneMapping; slider[1,1,4]
+uniform float Exposure; slider[0.0,1.0,3.0]
+uniform float Brightness; slider[0.0,1.0,5.0];
+uniform float Contrast; slider[0.0,1.0,5.0];
+uniform float Saturation; slider[0.0,1.0,5.0];
+
 /*
 ** Based on: http://mouaif.wordpress.com/2009/01/22/photoshop-gamma-correction-shader/
 **
@@ -65,23 +68,30 @@ varying vec2 coord;
 varying vec2 viewCoord;
 uniform sampler2D frontbuffer;
 uniform bool ShowDepth;
-uniform bool DebugNormals;
-uniform float NormalScale;
-uniform float AOScale;
 
+#group Raytracer
+
+uniform float NormalScale;slider[0,1,5]
+uniform float AOScale;slider[0,1,5]
+uniform float Glow;slider[0,0.1,1]
+uniform float AOStrength;slider[0,0.6,1]
+uniform bool CentralDifferences; checkbox[true]
+uniform bool DebugNormals; checkbox[false]
+
+#group Light
 
 // The specular intensity of the directional light
-uniform float Specular;
+uniform float Specular; slider[0,4.0,10.0];
 // The specular exponent
-uniform float SpecularExp;
+uniform float SpecularExp; slider[0,16.0,100.0];
 // Color and strength of the directional light
-uniform vec4 SpotLight;
+uniform vec4 SpotLight; color[0.0,0.4,1.0,1.0,1.0,1.0];
 // Direction to the spot light (spherical coordinates)
-uniform vec2 SpotLightDir;
+uniform vec2 SpotLightDir;  slider[(-1,-1),(0.1,0.1),(1,1)]
 // Light coming from the camera position (diffuse lightning)
-uniform vec4 CamLight;
+uniform vec4 CamLight; color[0,0.3,2,1.0,1.0,1.0];
 // Controls the minimum ambient light, regardless of directionality
-uniform float CamLightMin;
+uniform float CamLightMin; slider[0.0,0.0,1.0]
 
 uniform float FOV;
 uniform vec3 Eye;
@@ -98,8 +108,7 @@ float rand(vec2 co){
 }
 
 uniform int subframe;
-uniform float Glow;
-uniform float AOStrength;
+
 uniform float Near;
 uniform float Far;
 uniform vec2 globalPixelSize;
@@ -108,7 +117,6 @@ uniform vec2 pixelSize;
 varying vec3 Dir;
 varying vec3 UpOrtho;
 varying vec3 Right;
-uniform bool CentralDifferences; 
 
 void main() {
 	vec2 pos = (coord+vec2(1.0))/2.0;
