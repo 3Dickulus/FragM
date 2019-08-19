@@ -46,7 +46,7 @@ vec3 color(vec2 p)
 void main()
 {
   vec2 p = coord;
-  next = vec4(color(p + vec2(Center)), 1.0);
+  vec4 next = vec4(color(p + vec2(Center)), 1.0);
   vec4 prev = texture(backbuffer, vec2(viewCoord + vec2(1.0)) * 0.5);
   if (! (next == next)) // NaN check
   {
