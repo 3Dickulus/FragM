@@ -20,7 +20,7 @@ Notice: some fragment (GLSL) shaders are copyright by other authors, and may car
 
 Acknowledgement
 
-Much of the inspiration and formulas for Fragmentarium came from the community at FractalForums.com, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.
+Much of the inspiration and formulas for Fragmentarium came from the community at FractalForums.com, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all the help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.
 
 The icons used are part of the Everaldo: Crystal project. 
 
