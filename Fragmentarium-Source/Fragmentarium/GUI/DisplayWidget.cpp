@@ -207,15 +207,13 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     initFragmentShader();
 
-    if (shaderProgram == nullptr) { // something went wrong so do not try to setup textures or buffer shader
-        return;
-    }
-
     if (fs.textures.count() != 0) {
         initFragmentTextures();
     }
 
-    initBufferShader();
+    if (shaderProgram != nullptr) {
+        initBufferShader();
+    }
 
 }
 
@@ -813,6 +811,10 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 
 void DisplayWidget::initFragmentTextures()
 {
+    if (shaderProgram == nullptr) { // something went wrong so do not try to setup textures
+        return;
+    }
+
     int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
     QMap<QString, bool> textureCacheUsed;
 
