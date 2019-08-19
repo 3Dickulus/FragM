@@ -34,7 +34,7 @@ find_package ( Qt5LinguistTools REQUIRED )
 
 find_package ( Qt5 COMPONENTS Core OpenGL Widgets Gui Xml Script ScriptTools REQUIRED )
 
-ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
+ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
 
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
