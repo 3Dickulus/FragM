@@ -193,7 +193,7 @@ public:
     QString getCameraSettings();
     QString getSettings()
     {
-        return variableEditor->getSettings() + variableEditor2->getSettings();
+        return variableEditor->getSettings() + "\n" + variableEditor2->getSettings();
     };
     void disableAllExcept ( QWidget *w );
     void setSplashWidgetTimeout ( QSplashScreen *w );

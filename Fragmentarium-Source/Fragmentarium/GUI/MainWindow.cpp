@@ -1327,7 +1327,7 @@ retry:
 
             QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
             prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
-            QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + variableEditor2->getSettings() + "\n";
+            QString append = "\n\n#preset Default\n" + getSettings() + "\n";
 
             append += "#endpreset\n\n";
 
@@ -1710,7 +1710,7 @@ retry:
                 qd->show();
 
             } else if (!exrMode) {
-              finalImage.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings() );
+              finalImage.setText("frAg", getSettings() );
               imageSaved=finalImage.save(name);
             }
 
@@ -1755,7 +1755,7 @@ void MainWindow::savePreview()
             auto *label = qd->findChild<QLabel *>("previewImage");
             if (label != nullptr) {
                 QImage img = label->pixmap()->toImage();
-                img.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings());
+                img.setText("frAg", getSettings());
                 img.save(fn);
                 qd->close();
                 INFO(tr("Saved file : ") + fn);
@@ -1802,7 +1802,7 @@ void MainWindow::saveParameters(const QString fileName)
     }
 
     QTextStream out(&file);
-    out << variableEditor->getSettings() << variableEditor2->getSettings();
+    out << getSettings();
     INFO(tr("Settings saved to file"));
 }
 
@@ -2842,7 +2842,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     if (loadingSucceded) {
         tabInfo.append(TabInfo(displayName, textEdit, false, true));
         setRecentFile(filename);
-        textEdit->saveSettings( variableEditor->getSettings() + variableEditor2->getSettings() );
+        textEdit->saveSettings( getSettings() );
 
     } else {
         tabInfo.append(TabInfo(displayName, textEdit, true));
@@ -2878,7 +2878,7 @@ void MainWindow::tabChanged(int index)
 
     TextEdit *te = getTextEdit();
 
-    te->saveSettings( variableEditor->getSettings() + variableEditor2->getSettings() );
+    te->saveSettings( getSettings() );
 
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
@@ -3064,7 +3064,7 @@ void MainWindow::saveImage(QImage image)
         return;
     }
 
-    image.setText("frAg", variableEditor->getSettings() + variableEditor2->getSettings());
+    image.setText("frAg", getSettings());
 
     bool succes = image.save(filename);
     if (succes) {
