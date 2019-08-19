@@ -2673,27 +2673,30 @@ void MainWindow::hideUnusedVariableWidgets()
     }
 
     /// hide unused widgets unless the default state is locked
-    if (engine->getBufferShader() != nullptr) {
-      wnames = variableEditor2->getWidgetNames();
-      for (int i = 0; i < wnames.count(); i++) {
-          // find a widget in the variable editor
-          auto *vw = variableEditor2->findChild<VariableWidget *>(wnames.at(i));
-          if (vw != nullptr) {
-              /// get the uniform location from the buffer shader
-              int uloc = vw->uniformLocation(engine->getBufferShader());
-              /// locked widgets are transformed into const or #define so don't show up as uniforms
-              /// AutoFocus is a dummy so does not exist inside shader program
-              if(uloc == -1 &&
-                      !(vw->getLockType() == Parser::Locked ||
-                      vw->getDefaultLockType() == Parser::AlwaysLocked ||
-                      vw->getDefaultLockType() == Parser::NotLockable) &&
-                      !wnames.at(i).contains("AutoFocus")  )  {
-                  vw->hide();
-              } else {
-                  vw->show();
-              }
-          }
-      }
+    wnames = variableEditor2->getWidgetNames();
+    for (int i = 0; i < wnames.count(); i++) {
+        // find a widget in the variable editor
+        auto *vw = variableEditor2->findChild<VariableWidget *>(wnames.at(i));
+        if (vw != nullptr) {
+            if (engine->getBufferShader() != nullptr) {
+                /// get the uniform location from the buffer shader
+                int uloc = vw->uniformLocation(engine->getBufferShader());
+                /// locked widgets are transformed into const or #define so don't show up as uniforms
+                /// AutoFocus is a dummy so does not exist inside shader program
+                if(uloc == -1 &&
+                        !(vw->getLockType() == Parser::Locked ||
+                        vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                        vw->getDefaultLockType() == Parser::NotLockable) &&
+                        !wnames.at(i).contains("AutoFocus")  )  {
+                    vw->hide();
+                } else {
+                    vw->show();
+                }
+            } else {
+                // hide all widgets if there is no BufferShader
+                vw->hide();
+            }
+        }
     }
 }
 
