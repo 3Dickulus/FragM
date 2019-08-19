@@ -2652,7 +2652,7 @@ void MainWindow::hideUnusedVariableWidgets()
             int uloc = vw->uniformLocation(engine->getShader());
             // FIXME support old-style specifications of BufferShader widges in Main shader
             // ticket: <https://github.com/3Dickulus/FragM/issues/56>
-            if (uloc == -1) {
+            if (uloc == -1 && engine->getBufferShader() != nullptr) {
                 uloc = vw->uniformLocation(engine->getBufferShader());
                 if (uloc != -1) {
                     WARNING("Widget for " + wnames.at(i) + " should be specified in buffer shader!");
@@ -2673,25 +2673,27 @@ void MainWindow::hideUnusedVariableWidgets()
     }
 
     /// hide unused widgets unless the default state is locked
-    wnames = variableEditor2->getWidgetNames();
-    for (int i = 0; i < wnames.count(); i++) {
-        // find a widget in the variable editor
-        auto *vw = variableEditor2->findChild<VariableWidget *>(wnames.at(i));
-        if (vw != nullptr) {
-                /// get the uniform location from the buffer shader
-                int uloc = vw->uniformLocation(engine->getBufferShader());
-            /// locked widgets are transformed into const or #define so don't show up as uniforms
-            /// AutoFocus is a dummy so does not exist inside shader program
-            if(uloc == -1 &&
-                    !(vw->getLockType() == Parser::Locked ||
-                    vw->getDefaultLockType() == Parser::AlwaysLocked ||
-                    vw->getDefaultLockType() == Parser::NotLockable) &&
-                    !wnames.at(i).contains("AutoFocus")  )  {
-                vw->hide();
-            } else {
-                vw->show();
-            }
-        }
+    if (engine->getBufferShader() != nullptr) {
+      wnames = variableEditor2->getWidgetNames();
+      for (int i = 0; i < wnames.count(); i++) {
+          // find a widget in the variable editor
+          auto *vw = variableEditor2->findChild<VariableWidget *>(wnames.at(i));
+          if (vw != nullptr) {
+              /// get the uniform location from the buffer shader
+              int uloc = vw->uniformLocation(engine->getBufferShader());
+              /// locked widgets are transformed into const or #define so don't show up as uniforms
+              /// AutoFocus is a dummy so does not exist inside shader program
+              if(uloc == -1 &&
+                      !(vw->getLockType() == Parser::Locked ||
+                      vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                      vw->getDefaultLockType() == Parser::NotLockable) &&
+                      !wnames.at(i).contains("AutoFocus")  )  {
+                  vw->hide();
+              } else {
+                  vw->show();
+              }
+          }
+      }
     }
 }
 
