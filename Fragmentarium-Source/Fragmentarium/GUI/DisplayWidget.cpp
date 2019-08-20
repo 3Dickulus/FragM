@@ -229,6 +229,7 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
     if ( clear ) {
         clearBackBuffer();
         pendingRedraws = 1;
+        bufferUniformsHaveChanged = true; // fixed bad image after rebuild
     } else if ( bufferShaderOnly ) {
         // nop
     } else {
