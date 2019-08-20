@@ -2577,7 +2577,8 @@ bool MainWindow::initializeFragment()
     try {
         QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
-        engine->initFragmentTextures();
+        if(engine->hasShader() && (fs.textures.count() > 0) )
+            engine->initFragmentTextures();
         ms = start.msecsTo(QTime::currentTime());
     } catch (Exception& e) {
         WARNING(e.getMessage());
