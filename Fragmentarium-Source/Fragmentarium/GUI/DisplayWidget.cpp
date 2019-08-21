@@ -410,6 +410,9 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
 // this function parses the assembler text and returns a string list containing the lines
 QStringList DisplayWidget::shaderAsm(bool w)
 {
+#ifndef USE_OPENGL_4
+                return QStringList("This build is compiled without support for OpenGL 4!");
+#else
 
     QStringList asmList;
     if (!foundnV) {
@@ -507,6 +510,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
 //     }
 
     return asmList;
+#endif
 }
 
 void DisplayWidget::createErrorLineLog ( QString message, QString log, bool infoOrWarn )
@@ -1437,6 +1441,7 @@ void DisplayWidget::setFloatType(GLenum type, QString &tp)
         }
 }
 
+#ifdef USE_OPENGL_4
 void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
 {
     double x,y,z,w;
@@ -1505,6 +1510,7 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
 
     }
 }
+#endif
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
@@ -1567,7 +1573,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         if (format().majorVersion() > 3 && format().minorVersion() >= 0) {
             // do not try to set special, gl_ or unused uniform even if it is double type
             if (!uniformValue.contains("variable")) {
+#ifdef USE_OPENGL_4
                 setDoubleType(programID, type, uniformName, uniformValue, foundDouble, tp);
+#else
+                setFloatType(type, tp);
+#endif
             }
         }
 
