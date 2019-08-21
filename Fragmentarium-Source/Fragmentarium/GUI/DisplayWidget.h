@@ -150,7 +150,7 @@ public:
     void setFragmentShader ( FragmentSource fs );
     bool hasShader()
     {
-        return ( shaderProgram!=0 );
+        return ( shaderProgram!=nullptr );
     }
     bool hasBufferShader()
     {

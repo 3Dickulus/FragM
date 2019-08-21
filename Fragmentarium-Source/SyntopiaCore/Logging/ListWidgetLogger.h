@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -8,6 +9,7 @@
 #include <QMenu>
 #include <QString>
 #include <QVector>
+#include <QRegExp>
 
 #include "Logging.h"
 
@@ -18,19 +20,33 @@ namespace Logging
 
 class ListWidget : public QListWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 public:
     ListWidget ( QWidget *parent ) : QListWidget ( parent ) {}
 
     void contextMenuEvent ( QContextMenuEvent *ev )
     {
         QMenu contextMenu;
+        QAction openFileAction ( tr ( "Open file" ), &contextMenu );
         QAction copyAction ( tr ( "Copy to Clipboard" ), &contextMenu );
         QAction clearAction ( tr ( "Clear" ), &contextMenu );
+        contextMenu.addAction ( &openFileAction );
         contextMenu.addAction ( &copyAction );
         contextMenu.addAction ( &clearAction );
+
         QAction *choice = contextMenu.exec ( ev->globalPos() );
-        if ( choice == &copyAction ) {
+
+        if ( choice == &openFileAction ) {
+            QList<QListWidgetItem *> items = selectedItems();
+            QRegExp test ( "^(.*[.frag])\\s[(]([0-9]+)[)]" );
+            foreach ( QListWidgetItem *i, items ) {
+                if (test.indexIn(i->text()) != -1) {
+                    // send signal to mainWindow to open this file and jump to line
+                    emit(loadSourceFile(test.cap(1), test.cap(2).toInt()));
+                }
+            }
+
+        } else if ( choice == &copyAction ) {
             QClipboard *clipboard = QApplication::clipboard();
             QList<QListWidgetItem *> items = selectedItems();
             QStringList l;
@@ -44,6 +60,9 @@ public:
             clear();
         }
     }
+
+signals:
+    void loadSourceFile(QString fileName, int lineNumber);
 };
 
 class ListWidgetLogger : public Logger

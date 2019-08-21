@@ -199,6 +199,10 @@ Changes since v0.9.5
 
 + added preferences option for 2DCameraMode, fixed vs traveling
 
+****** 2.5.0.190817 ******
++ Complex.frag improvements by claudeha
++ loadfile added to log widget for error lines via context menu (RMB)
+
  Tested on Linux desktop
  Compiled with gcc (SuSE Leap 15.1) Qt 5.9.4
 

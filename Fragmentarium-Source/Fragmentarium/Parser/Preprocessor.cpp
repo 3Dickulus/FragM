@@ -119,9 +119,9 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     // scan for included files
     bool found = false;
     int lastInc=0;
+    // figure out the line number for #include statement in this file
     for (int i = 0; i < in.count(); i++) {
         if (includeCommand.indexIn(in[i]) != -1) {
-            QString fileName = includeCommand.cap(2);
             QString post = includeCommand.cap(1);
             if (post == "") {
                 found = true;
@@ -133,12 +133,13 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     }
 
     // offset line == the number of #include lines == number of included files
+    // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet
     int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
 
     if(!found) { // this file has no #include statements
-        in.insert( 1, QString("#line %1 %2").arg(originalFileIndex).arg(originalFileIndex) );
+        in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
     }
-    else // insert line after last #include statement
+    else // insert #line directive after last #include statement
     {
         in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(fs->sourceFileNames.indexOf(originalFileName)) );
     }

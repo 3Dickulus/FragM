@@ -1,4 +1,4 @@
-#include "ListWidgetLogger.h"
+#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -6,6 +6,8 @@
 #include <QMenu>
 #include <QSettings>
 #include <QTextStream>
+
+#include "ListWidgetLogger.h"
 
 namespace SyntopiaCore
 {

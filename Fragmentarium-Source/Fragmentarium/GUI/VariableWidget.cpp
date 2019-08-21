@@ -1,8 +1,3 @@
-#include "VariableWidget.h"
-
-#include "../../SyntopiaCore/Logging/ListWidgetLogger.h"
-#include "../../SyntopiaCore/Misc/MiniParser.h"
-#include "MainWindow.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QDoubleSpinBox>
@@ -16,6 +11,12 @@
 #include <QSlider>
 #include <QString>
 #include <QToolButton>
+
+#include "VariableWidget.h"
+
+#include "../../SyntopiaCore/Logging/ListWidgetLogger.h"
+#include "../../SyntopiaCore/Misc/MiniParser.h"
+#include "MainWindow.h"
 
 using namespace SyntopiaCore::Logging;
 

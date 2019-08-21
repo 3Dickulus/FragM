@@ -41,7 +41,7 @@ IF ( USE_OPENGL_4 )
     ADD_DEFINITIONS ( -DUSE_OPENGL_4=1 )
 ENDIF ()
 
-ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 )
+ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
 
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)

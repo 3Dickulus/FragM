@@ -516,9 +516,6 @@ QStringList DisplayWidget::shaderAsm(bool w)
 void DisplayWidget::createErrorLineLog ( QString message, QString log, bool infoOrWarn )
 {
     QStringList logList = log.split ( "\n" );
-    // test nVidia log
-    QRegExp testnvidia ( "^([0-9]+)[(]([0-9]+)[)]" );
-    QRegExp testamd ( "^([0-9]+)[:]([0-9]+)[(]" );
     QRegExp num ( "([0-9]+)" );
     int errorCount=0;
     int errorLine=0;
@@ -528,41 +525,52 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, bool info
 
     foreach ( const QString &str, logList ) {
         QString newStr=str;
-        if ( testamd.indexIn ( str ) != -1 ) {
-            if ( num.indexIn ( testamd.cap ( 1 ) ) != -1 ) {
-                fileIndex=num.cap ( 1 ).toInt();
-                newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
-            }
-            if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
-                errorLine=num.cap ( 1 ).toInt()-fileIndex;
-            }
-            errorCount++;
-        }
-        if ( testnvidia.indexIn ( str ) != -1 ) {
-            if ( num.indexIn ( testnvidia.cap ( 1 ) ) != -1 ) {
-                fileIndex=num.cap ( 1 ).toInt();
-                newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
-            }
-            if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
-                errorLine=num.cap ( 1 ).toInt()-fileIndex;
-            errorCount++;
-        }
 
-        QSettings settings;
+        if(foundnV) {
+            // test nVidia log
+            QRegExp testnvidia ( "^([0-9]+)[(]([0-9]+)[)]" );
+            if ( testnvidia.indexIn ( str ) != -1 ) {
+                if ( num.indexIn ( testnvidia.cap ( 1 ) ) != -1 ) {
+                    fileIndex=num.cap ( 1 ).toInt();
+                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                }
+                if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
+                    errorLine=num.cap ( 1 ).toInt()-fileIndex;
+                errorCount++;
+            }
+        }
+        else {
+            // test AMD RX 580 ? Mesa ?
+            QRegExp testamd ( "^([0-9]+)[:]([0-9]+)[(]" );
+            if ( testamd.indexIn ( str ) != -1 ) {
+                if ( num.indexIn ( testamd.cap ( 1 ) ) != -1 ) {
+                    fileIndex=num.cap ( 1 ).toInt();
+                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                }
+                if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
+                    errorLine=num.cap ( 1 ).toInt()-fileIndex;
+                }
+                errorCount++;
+            }
+        }
+        // emit a single log widget line for each line in the log
         if ( infoOrWarn ) {
             WARNING ( newStr );
         } else {
             INFO ( newStr );
         }
 
-        // only jump to first error as later errors may be caused by this one so fix it first
+        QSettings settings; // only jump to first error as later errors may be caused by this one so fix it first
         if ( (settings.value ( "jumpToLineOnWarn", true ).toBool() || settings.value ( "jumpToLineOnError", true ).toBool())) {
             if(errorCount == 1 && fileIndex == 0) {
                 // jump to error line in text editor
-                QTextCursor cursor(mainWindow->getTextEdit()->textCursor());
+                TextEdit *te = mainWindow->getTextEdit();
+                QTextCursor cursor(te->textCursor());
                 cursor.setPosition(0);
-                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
-                mainWindow->getTextEdit()->setTextCursor( cursor );
+                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine+10);
+                te->setTextCursor( cursor );
+                cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,11);
+                te->setTextCursor( cursor );
             }
         }
     }
@@ -589,13 +597,13 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
-        WARNING ( tr("Could not create vertex shader: ") + shaderProgram->log() );
+        createErrorLineLog( tr("Could not create vertex shader: "), shaderProgram->log(), true /*Warn*/ );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
     }
     if (!shaderProgram->log().isEmpty()) {
-        INFO(tr("Vertex shader compiled with warnings: ") + shaderProgram->log());
+        createErrorLineLog( tr("Vertex shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
     }
 
     // Fragment shader
@@ -619,8 +627,7 @@ void DisplayWidget::initFragmentShader()
     s = shaderProgram->link();
 
     if ( !s ) {
-        WARNING( tr("Could not link vertex + fragment shader: ") );
-        CRITICAL( shaderProgram->log() );
+        createErrorLineLog( tr("Could not link vertex + fragment shader: "), shaderProgram->log(), true /*Warn*/ );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -632,7 +639,7 @@ void DisplayWidget::initFragmentShader()
 
     s = shaderProgram->bind();
     if ( !s ) {
-        WARNING ( tr("Could not bind shaders: ") + shaderProgram->log() );
+        createErrorLineLog( tr("Could not bind shaders: "), shaderProgram->log(), true /*Warn*/ );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -817,6 +824,10 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 
 void DisplayWidget::initFragmentTextures()
 {
+    if (shaderProgram == nullptr || fragmentSource.textures.count() < 1) {
+        return; // something went wrong so do not try to setup textures
+    }
+
     int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
     QMap<QString, bool> textureCacheUsed;
 

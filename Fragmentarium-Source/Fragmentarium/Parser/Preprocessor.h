@@ -16,8 +16,6 @@
 #include "../../SyntopiaCore/Exceptions/Exception.h"
 #include "../../SyntopiaCore/Logging/Logging.h"
 
-#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
-
 namespace Fragmentarium {
 using namespace GUI;
 
