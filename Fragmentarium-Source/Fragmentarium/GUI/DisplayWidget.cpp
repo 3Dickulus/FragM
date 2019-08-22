@@ -2252,9 +2252,6 @@ void DisplayWidget::timerSignal()
     }
 
     if (isPending()) {
-        if (buttonDown) {
-            pendingRedraws = 0;
-        }
         update();
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
