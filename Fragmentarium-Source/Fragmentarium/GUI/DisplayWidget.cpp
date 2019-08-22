@@ -517,6 +517,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
 {
     QStringList logList = log.split ( "\n" );
     QRegExp num ( "([0-9]+)" );
+
     int errorCount=0;
     int errorLine=0;
     int fileIndex=0;
@@ -538,7 +539,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
                         newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
                 }
                 if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
-                    errorLine=num.cap ( 1 ).toInt()-fileIndex;
+                    errorLine=num.cap ( 1 ).toInt();
                 errorCount++;
             }
         }
@@ -554,7 +555,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
                         newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
                 }
                 if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
-                    errorLine=num.cap ( 1 ).toInt()-fileIndex;
+                    errorLine=num.cap ( 1 ).toInt();
                 }
                 errorCount++;
             }

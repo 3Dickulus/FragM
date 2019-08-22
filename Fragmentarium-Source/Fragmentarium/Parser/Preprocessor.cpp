@@ -116,6 +116,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     QStringList in = input.split(QRegExp("\r\n|\r|\n"));
     if (!isCreatingAutoSave) in.append("#group default");      // make sure we fall back to the default group after including a file.
 
+    int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
     // scan for included files
     bool found = false;
     int lastInc=0;
@@ -130,18 +131,18 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                 throw Exception("'#include' expected");
             }
         }
+        if(in[i].startsWith("#vertex")) {
+            in.insert( i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
+        }
     }
 
-    // offset line == the number of #include lines == number of included files
-    // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet
-    int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
-
+    // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
     if(!found) { // this file has no #include statements
         in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
     }
     else // insert #line directive after last #include statement
     {
-        in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(fs->sourceFileNames.indexOf(originalFileName)) );
+        in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(originalFileIndex) );
     }
 
     QList<int> lines;
