@@ -513,7 +513,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
 #endif
 }
 
-void DisplayWidget::createErrorLineLog ( QString message, QString log, bool infoOrWarn )
+void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel priority, bool bS )
 {
     QStringList logList = log.split ( "\n" );
     QRegExp num ( "([0-9]+)" );
@@ -521,7 +521,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, bool info
     int errorLine=0;
     int fileIndex=0;
 
-    infoOrWarn ? WARNING ( message ) : INFO ( message );
+    LOG ( message, priority );
 
     foreach ( const QString &str, logList ) {
         QString newStr=str;
@@ -532,7 +532,10 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, bool info
             if ( testnvidia.indexIn ( str ) != -1 ) {
                 if ( num.indexIn ( testnvidia.cap ( 1 ) ) != -1 ) {
                     fileIndex=num.cap ( 1 ).toInt();
-                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                    if(!bS)
+                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                    else
+                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
                 }
                 if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
                     errorLine=num.cap ( 1 ).toInt()-fileIndex;
@@ -545,7 +548,10 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, bool info
             if ( testamd.indexIn ( str ) != -1 ) {
                 if ( num.indexIn ( testamd.cap ( 1 ) ) != -1 ) {
                     fileIndex=num.cap ( 1 ).toInt();
-                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                    if(!bS)
+                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                    else
+                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
                 }
                 if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
                     errorLine=num.cap ( 1 ).toInt()-fileIndex;
@@ -554,11 +560,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, bool info
             }
         }
         // emit a single log widget line for each line in the log
-        if ( infoOrWarn ) {
-            WARNING ( newStr );
-        } else {
-            INFO ( newStr );
-        }
+        LOG ( newStr, priority );
 
         QSettings settings; // only jump to first error as later errors may be caused by this one so fix it first
         if ( (settings.value ( "jumpToLineOnWarn", true ).toBool() || settings.value ( "jumpToLineOnError", true ).toBool())) {
@@ -597,13 +599,13 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
-        createErrorLineLog( tr("Could not create vertex shader: "), shaderProgram->log(), true /*Warn*/ );
+        createErrorLineLog( tr("Could not create vertex shader: "), shaderProgram->log(), WarningLevel, false );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
     }
     if (!shaderProgram->log().isEmpty()) {
-        createErrorLineLog( tr("Vertex shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
+        createErrorLineLog( tr("Vertex shader compiled with warnings: "), shaderProgram->log(), InfoLevel ,false );
     }
 
     // Fragment shader
@@ -614,32 +616,33 @@ void DisplayWidget::initFragmentShader()
     }
 
     if ( !s ) {
-        createErrorLineLog( tr("Could not create fragment shader: "), shaderProgram->log(), true /*Warn*/ );
+        createErrorLineLog( tr("Could not create fragment shader: "), shaderProgram->log(), WarningLevel, false );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
     }
 
     if (!shaderProgram->log().isEmpty()) {
-        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), InfoLevel, false );
     }
 
     s = shaderProgram->link();
 
     if ( !s ) {
-        createErrorLineLog( tr("Could not link vertex + fragment shader: "), shaderProgram->log(), true /*Warn*/ );
+        WARNING ( tr("Could not link buffershader: ") );
+        CRITICAL ( shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
     }
 
     if (!shaderProgram->log().isEmpty()) {
-        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), false /*Info*/ );
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), shaderProgram->log(), InfoLevel, false );
     }
 
     s = shaderProgram->bind();
     if ( !s ) {
-        createErrorLineLog( tr("Could not bind shaders: "), shaderProgram->log(), true /*Warn*/ );
+        WARNING ( tr("Could not bind shaders: ") + shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -963,13 +966,13 @@ void DisplayWidget::initBufferShader()
     }
 
     if ( !s ) {
-        WARNING(tr("Could not create buffer vertex shader: ") + bufferShaderProgram->log());
+        createErrorLineLog( tr("Could not create buffer vertex shader: "), bufferShaderProgram->log(), WarningLevel , true );
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
         return;
     }
     if (!bufferShaderProgram->log().isEmpty()) {
-        INFO(tr("Buffer vertex shader compiled with warnings: ") + bufferShaderProgram->log());
+        createErrorLineLog( tr("Buffer vertex shader compiled with warnings: "), bufferShaderProgram->log(), InfoLevel, true );
     }
 
     // Fragment shader
@@ -980,32 +983,26 @@ void DisplayWidget::initBufferShader()
     }
 
     if ( !s ) {
-        WARNING(tr("Could not create buffer fragment shader: ") + bufferShaderProgram->log());
+        createErrorLineLog( tr("Could not create buffer fragment shader: "), bufferShaderProgram->log(), WarningLevel, true );
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
         return;
     }
     if (!bufferShaderProgram->log().isEmpty()) {
-        INFO(tr("Buffer fragment shader compiled with warnings: ") + bufferShaderProgram->log());
+        createErrorLineLog( tr("Buffer fragment shader compiled with warnings: "), bufferShaderProgram->log(), InfoLevel, true );
     }
 
     s = bufferShaderProgram->link();
 
     if ( !s ) {
-        QStringList tmp = bufferShaderProgram->log().split ( '\n' );
-        QStringList logStrings; // the first 5 lines
-        for (int i = 0; i < 5; i++) {
-            logStrings << tmp.at(i);
-        }
-        logStrings << "";
         WARNING ( tr("Could not link buffershader: ") );
-        CRITICAL ( logStrings.join ( '\n' ) );
+        CRITICAL ( bufferShaderProgram->log() );
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
         return;
     }
     if (!bufferShaderProgram->log().isEmpty()) {
-        INFO(tr("Fragment shader compiled with warnings: ") + bufferShaderProgram->log());
+        createErrorLineLog( tr("Buffer fragment shader compiled with warnings: "), bufferShaderProgram->log(), InfoLevel, true );
     }
 
     s = bufferShaderProgram->bind();
