@@ -463,11 +463,12 @@ public slots:
     };
     QString currentFragmentName()
     {
-        return tabInfo[tabBar->currentIndex()]
+        QStringList parts = tabInfo[tabBar->currentIndex()]
                .filename.split ( QDir::separator() )
                .last()
-               .split ( "." )
-               .first();
+               .split ( "." );
+        parts.removeLast();
+        return parts.join ( "." );
     };
     void scriptExitProgram ( int x = 0 )
     {

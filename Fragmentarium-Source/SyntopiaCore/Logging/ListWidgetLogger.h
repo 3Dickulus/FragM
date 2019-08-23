@@ -30,15 +30,23 @@ public:
         QAction openFileAction ( tr ( "Open file" ), &contextMenu );
         QAction copyAction ( tr ( "Copy to Clipboard" ), &contextMenu );
         QAction clearAction ( tr ( "Clear" ), &contextMenu );
-        contextMenu.addAction ( &openFileAction );
+
+        // check to see if we should add an Open File menu item
+        QList<QListWidgetItem *> items = selectedItems();
+        QRegExp test ( "^(.*[.frag])\\s.([0-9]+)[)]" );
+        foreach ( QListWidgetItem *i, items ) {
+            if (test.indexIn(i->text()) != -1) {
+                contextMenu.addAction ( &openFileAction );
+                break;
+            }
+        }
+        // always add these menu items
         contextMenu.addAction ( &copyAction );
         contextMenu.addAction ( &clearAction );
 
         QAction *choice = contextMenu.exec ( ev->globalPos() );
 
         if ( choice == &openFileAction ) {
-            QList<QListWidgetItem *> items = selectedItems();
-            QRegExp test ( "^(.*[.frag])\\s[(]([0-9]+)[)]" );
             foreach ( QListWidgetItem *i, items ) {
                 if (test.indexIn(i->text()) != -1) {
                     // send signal to mainWindow to open this file and jump to line
