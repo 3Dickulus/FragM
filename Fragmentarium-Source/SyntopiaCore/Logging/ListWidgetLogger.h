@@ -33,7 +33,7 @@ public:
 
         // check to see if we should add an Open File menu item
         QList<QListWidgetItem *> items = selectedItems();
-        QRegExp test ( "^(.*[.frag])\\s.([0-9]+)[)]" );
+        QRegExp test ( "^(.*[.frag])\\s.([0-9]+)[^0-9]" );
         foreach ( QListWidgetItem *i, items ) {
             if (test.indexIn(i->text()) != -1) {
                 contextMenu.addAction ( &openFileAction );
