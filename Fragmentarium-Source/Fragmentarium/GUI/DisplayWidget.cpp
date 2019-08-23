@@ -2240,7 +2240,10 @@ void DisplayWidget::timerSignal()
         cameraControl->updateState();
     }
 
-    if (isPending()) {
+    if (pendingRedraws != 0) {
+        if (buttonDown) {
+            pendingRedraws = 1;
+        }
         update();
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
