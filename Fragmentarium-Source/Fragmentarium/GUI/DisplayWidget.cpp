@@ -231,8 +231,8 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
         pendingRedraws = 1;
         bufferUniformsHaveChanged = true; // fixed bad image after rebuild
     } else if ( bufferShaderOnly ) {
-        // nop
-    } else {
+        pendingRedraws = 1;
+    } else if ( clearOnChange ) {
         subframeCounter = 0;
     }
 }
