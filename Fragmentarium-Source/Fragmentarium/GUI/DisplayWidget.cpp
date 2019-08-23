@@ -527,39 +527,20 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
     foreach ( const QString &str, logList ) {
         QString newStr=str;
 
-        if(foundnV) {
-            // test nVidia log
-            QRegExp testnvidia ( "^([0-9]+)[(]([0-9]+)[)]" );
-            if ( testnvidia.indexIn ( str ) != -1 ) {
-                if ( num.indexIn ( testnvidia.cap ( 1 ) ) != -1 ) {
-                    fileIndex=num.cap ( 1 ).toInt();
-                    if(!bS)
-                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
-                    else
-                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
-                }
-                if ( num.indexIn ( testnvidia.cap ( 2 ) ) != -1 )
-                    errorLine=num.cap ( 1 ).toInt();
-                errorCount++;
+        QRegExp test ( "^([0-9]+).([0-9]+)[)]" );
+        if ( test.indexIn ( str ) != -1 ) {
+            if ( num.indexIn ( test.cap ( 1 ) ) != -1 ) {
+                fileIndex=num.cap ( 1 ).toInt();
+                if(!bS)
+                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
+                else
+                    newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
             }
+            if ( num.indexIn ( test.cap ( 2 ) ) != -1 )
+                errorLine=num.cap ( 1 ).toInt();
+            errorCount++;
         }
-        else {
-            // test AMD RX 580 ? Mesa ?
-            QRegExp testamd ( "^([0-9]+)[:]([0-9]+)[(]" );
-            if ( testamd.indexIn ( str ) != -1 ) {
-                if ( num.indexIn ( testamd.cap ( 1 ) ) != -1 ) {
-                    fileIndex=num.cap ( 1 ).toInt();
-                    if(!bS)
-                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.sourceFileNames[fileIndex] + " " );
-                    else
-                        newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
-                }
-                if ( num.indexIn ( testamd.cap ( 2 ) ) != -1 ) {
-                    errorLine=num.cap ( 1 ).toInt();
-                }
-                errorCount++;
-            }
-        }
+
         // emit a single log widget line for each line in the log
         LOG ( newStr, priority );
 
