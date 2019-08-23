@@ -527,7 +527,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
     foreach ( const QString &str, logList ) {
         QString newStr=str;
 
-        QRegExp test ( "^([0-9]+).([0-9]+)[)]" );
+        QRegExp test ( "^([0-9]+)[^0-9]([0-9]+)[^0-9]" );
         if ( test.indexIn ( str ) != -1 ) {
             if ( num.indexIn ( test.cap ( 1 ) ) != -1 ) {
                 fileIndex=num.cap ( 1 ).toInt();
