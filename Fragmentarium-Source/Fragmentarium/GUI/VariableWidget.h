@@ -439,7 +439,7 @@ public:
                     QWidget *variableEditor, QString name, QString defaultValue );
     virtual QString toString();
     virtual bool fromString(QString string);
-    virtual void setUserUniform ( QOpenGLShaderProgram *shaderProg );
+    virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
     virtual void updateTextures(FragmentSource* fs, FileManager* fileManager);
     virtual void setLockType ( LockType /*lt*/ )
     {
