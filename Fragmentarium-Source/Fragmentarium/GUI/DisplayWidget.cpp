@@ -1531,6 +1531,13 @@ void DisplayWidget::resetUniformProvenance()
             }
         }
     }
+    foreach (VariableWidget *w, vw) {
+        if (w->getProvenance() == FromBufferShader) {
+            w->setStyleSheet("QLabel { border-style: outset; border-width: 2px; border-color: beige; }");
+        } else {
+            w->setStyleSheet("QLabel { border: none; }");
+        }
+    }
 }
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
