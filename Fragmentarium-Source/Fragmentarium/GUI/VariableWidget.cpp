@@ -789,12 +789,12 @@ bool SamplerWidget::fromString(QString string)
     return isLocked();
 }
 
-void SamplerWidget::setUserUniform(QOpenGLShaderProgram *shaderProg)
+void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram)
 {
     if (texID != 0) {
-        int l = uniformLocation(shaderProg);
+        int l = uniformLocation(shaderProgram);
         if(l != -1) {
-            shaderProg->setUniformValue(l, texID);
+            shaderProgram->setUniformValue(l, texID);
 //  DBOUT << shaderProg->programId() << " TextureCache[" << texID << "] " << name;
         }
     }
