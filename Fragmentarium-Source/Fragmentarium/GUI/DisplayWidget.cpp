@@ -36,7 +36,12 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
+#ifdef USE_OPENGL_4
     fmt.setVersion(4,1);
+#else
+    fmt.setVersion(3,3);
+#endif
+
 #ifdef Q_OS_MAC
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
     fmt.setProfile(QSurfaceFormat::CoreProfile);
