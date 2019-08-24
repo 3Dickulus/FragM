@@ -115,35 +115,43 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     QRegExp bufferShaderCommand("^#buffershader\\s\"([^\"]+)\"\\s*$");    // Look for #buffershader "test.frag"
 
     QStringList in = input.split(QRegExp("\r\n|\r|\n"));
-    if (!isCreatingAutoSave) in.append("#group default");      // make sure we fall back to the default group after including a file.
 
-    int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
-    // scan for included files
-    bool found = false;
-    int lastInc=0;
-    // figure out the line number for #include statement in this file
-    for (int i = 0; i < in.count(); i++) {
-        if (includeCommand.indexIn(in[i]) != -1) {
-            QString post = includeCommand.cap(1);
-            if (post == "") {
-                found = true;
-                lastInc=i;
-            } else {
-                throw Exception("'#include' expected");
+    if (!isCreatingAutoSave) {
+        // make sure we fall back to the default group after including a file.
+        in.append("#group default");
+        // insert #line directives so the compiler reports accurate error line numbers.
+        int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
+        // scan for included files
+        bool found = false;
+        int lastInc = 0;
+        // figure out the line number for last #include statement in this file
+        for (int i = 0; i < in.count(); i++) {
+            if (includeCommand.indexIn(in[i]) != -1) {
+                QString post = includeCommand.cap(1);
+                if (post == "") {
+                    found = true;
+                    lastInc = i;
+                } else {
+                    throw Exception("'#include' expected");
+                }
+            }
+            // vertex code is removed compiled and linked separately so we need #line directives here
+            if(in[i].startsWith("#vertex")) {
+                in.insert( i+1, QString("#line %1 %2").arg(i+2).arg(originalFileIndex) );
+            }
+            if(in[i].startsWith("#endvertex")) {
+                in.insert( i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
             }
         }
-        if(in[i].startsWith("#vertex")) {
-            in.insert( i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
-        }
-    }
 
-    // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
-    if(!found) { // this file has no #include statements
-        in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
-    }
-    else // insert #line directive after last #include statement
-    {
-        in.insert( lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(originalFileIndex) );
+        // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
+        if(!found) { // this file has no #include statements
+            in.insert( 1, QString("#line %1 %2").arg(2).arg(originalFileIndex) );
+        }
+        else {
+            // insert #line directive after last #include statement
+            in.insert(lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(originalFileIndex) );
+        }
     }
 
     QList<int> lines;
