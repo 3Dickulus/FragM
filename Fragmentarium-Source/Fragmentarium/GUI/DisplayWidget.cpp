@@ -1533,7 +1533,8 @@ void DisplayWidget::resetUniformProvenance()
     }
     foreach (VariableWidget *w, vw) {
         if (w->getProvenance() == FromBufferShader) {
-            w->setStyleSheet("QLabel { border-style: outset; border-width: 2px; border-color: beige; }");
+            QColor c = qApp->palette().color(QPalette::Inactive, QPalette::Mid);
+            w->setStyleSheet("QLabel { border-style: outset; border-width: 2px; border-color: " + c.name() + "; }");
         } else {
             w->setStyleSheet("QLabel { border: none; }");
         }
