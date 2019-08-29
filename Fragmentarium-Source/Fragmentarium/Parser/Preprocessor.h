@@ -102,19 +102,19 @@ public:
     }
     QString toString() {
         if (inner == Linear) {
-            return "Linear";
+            return "";
         } else if (inner == Logarithmic) {
             return "Logarithmic";
         } else {
-            return "???";
+            return "";
         }
     }
 
     void fromString(QString s) {
         s = s.toLower();
-        if (s == "linear") {
+        if (s == "" || s == "Linear") {
             inner = Linear;
-        } else if (s == "logarithmic") {
+        } else if (s == "Logarithmic") {
             inner = Logarithmic;
         } else {
             inner = UnknownSliderType;
