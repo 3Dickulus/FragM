@@ -546,7 +546,7 @@ private slots:
     void indent();
     void preferences();
     void insertText();
-    void variablesChanged ( bool lockedChanged );
+    void variablesChanged ( bool lockedChanged, Provenance provenance );
     void cut();
     void copy();
     void paste();

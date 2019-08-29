@@ -688,7 +688,7 @@ void MainWindow::init()
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
-    connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
+    connect(variableEditor, SIGNAL(changed(bool,Provenance)), this, SLOT(variablesChanged(bool,Provenance)));
     connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
 
     editorDockWidget->setHidden(true);
@@ -872,13 +872,13 @@ void MainWindow::showWelcomeNote()
 
 }
 
-void MainWindow::variablesChanged(bool lockedChanged)
+void MainWindow::variablesChanged(bool lockedChanged, Provenance provenance)
 {
 
     if (lockedChanged) {
         highlightBuildButton(true);
     }
-    engine->uniformsHasChanged();
+    engine->uniformsHasChanged(provenance);
 }
 
 void MainWindow::createOpenGLContextMenu()

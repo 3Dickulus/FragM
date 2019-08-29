@@ -126,7 +126,7 @@ public:
 
     /// Use this whenever a redraw is required.
     /// Calling this function multiple times will still only result in one redraw
-    void requireRedraw ( bool clear );
+    void requireRedraw ( bool clear, bool bufferShaderOnly = false );
     void updateRefreshRate();
     void setState ( DrawingState state );
     DrawingState getState()
@@ -198,7 +198,7 @@ public:
         maxSubFrames = i;
     }
 
-    void uniformsHasChanged();
+    void uniformsHasChanged(Provenance provenance);
     void setClearOnChange ( bool v )
     {
         clearOnChange = v;
@@ -270,9 +270,9 @@ public slots:
     {
         return renderFPS;
     }
-    int isPending()
+    bool isPending()
     {
-        return pendingRedraws;
+        return pendingRedraws || bufferUniformsHaveChanged;
     }
     void setHasKeyFrames ( bool yn )
     {
@@ -302,7 +302,7 @@ public slots:
 
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
-    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
+    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast, bool doMain = true );
 /// BEGIN 3DTexture
 //       void draw3DTexture();
 /// END 3DTexture
@@ -365,12 +365,14 @@ private:
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 #endif
 
+    void resetUniformProvenance();
     void setupShaderVars(int w, int h);
     void draw3DHints();
     bool FBOcheck();
     void setupBufferShaderVars(int w, int h);
 
     int pendingRedraws; // the number of times we must redraw
+    bool bufferUniformsHaveChanged;
     QColor backgroundColor;
 
     QMenu* contextMenu;
