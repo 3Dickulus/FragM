@@ -62,7 +62,7 @@ bool VariableWidget::isLocked()
 
 void VariableWidget::valueChanged()
 {
-    if (lockType == Locked || lockType == AlwaysLocked ) {
+    if (lockType == Locked || lockType == AlwaysLocked || oldLockType != lockType) {
         QPalette pal = palette();
         pal.setColor(backgroundRole(), Qt::yellow);
         setPalette(pal);
@@ -71,10 +71,14 @@ void VariableWidget::valueChanged()
     } else {
         emit(changed(false, getProvenance()));
     }
+    oldLockType = lockType;
 }
 
 void VariableWidget::locked(bool l)
 {
+
+    oldLockType = lockType;
+
     if (defaultLockType == NotLockable) {
         lockButton->setIcon(QIcon());
         lockType = NotLockable;
@@ -109,11 +113,15 @@ void VariableWidget::setLockType(LockType lt)
 
 QString VariableWidget::toSettingsString()
 {
-    QString l;
+    QString l = "";
     if (lockType != defaultLockType) {
         l = " " + lockType.toString();
     }
-    return toString() + l;
+    QString s = "";
+    if (sliderType != defaultSliderType) {
+        s = " " + sliderType.toString();
+    }
+    return toString() + s + l;
 }
 
 bool VariableWidget::fromSettingsString(QString string)
@@ -132,11 +140,19 @@ bool VariableWidget::fromSettingsString(QString string)
         }
     }
 
-    requiresRecompile |= fromString(string.trimmed());
-
     if (requiresRecompile) {
         locked( lockType == Locked || lockType == AlwaysLocked);
     }
+
+    const QRegExp sliderTypeString("(Logarithmic)\\s*.?$");
+    if (sliderTypeString.indexIn(string)!=-1) {
+        QString s = sliderTypeString.cap(1);
+        setSliderType(Logarithmic);
+        string.remove(s);
+
+    } else setSliderType(Linear);
+
+    requiresRecompile |= fromString(string.trimmed());
 
     return requiresRecompile;
 }

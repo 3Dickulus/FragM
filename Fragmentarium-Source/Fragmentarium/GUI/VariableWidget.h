@@ -154,6 +154,32 @@ public slots:
         }
     }
 
+    void setSliderType(SliderType st) {
+
+        logarithmic = (st.toString() == QString("Logarithmic"));
+
+        double rangemin, rangemax;
+        if (logarithmic) {
+            rangemin = std::log(std::min(std::abs(minimum), std::abs(maximum)));
+            rangemax = std::log(std::max(std::abs(minimum), std::abs(maximum)));
+            if (maximum < 0) {
+              double tmp = rangemin; rangemin = rangemax; rangemax = tmp;
+            }
+        } else {
+            rangemin = minimum;
+            rangemax = maximum;
+        }
+        // 4294967295
+        scale = (1.0/(rangemax-rangemin))*(int(__INT32_MAX__*0.5)+1);
+
+        slider->setRange(rangemin*scale,rangemax*scale+1);
+        slider->setValue((logarithmic ? std::log(std::abs(spinner->value())) : spinner->value())*scale);
+        slider->setSingleStep(scale/1000);
+        slider->setPageStep(scale/100);
+        slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+
+    }
+
 signals:
     void changed();
 
@@ -190,6 +216,7 @@ protected slots:
 
 private:
     QSlider* slider;
+    SliderType sliderType;
     QDoubleSpinBox* spinner;
     QWidget* variableEditor;
     double defaultValue;
@@ -412,6 +439,7 @@ public:
     virtual void setLockType(LockType lt) ;
     virtual QString getLockedSubstitution() = 0;
     virtual QString getLockedSubstitution2() = 0;
+    virtual void setSliderType(SliderType ){};
 
 public slots:
     void locked(bool l);
@@ -433,6 +461,10 @@ protected:
 
     LockType defaultLockType;
     LockType lockType;
+    LockType oldLockType;
+    SliderType defaultSliderType;
+    SliderType sliderType;
+
     QPushButton* lockButton;
     QString name;
     QString group;
@@ -544,6 +576,12 @@ public:
         wantDouble = wd;
         comboSlider1->setDecimals(wd ? DDEC : FDEC);
     };
+
+    virtual void setSliderType ( SliderType st ){
+        comboSlider1->setSliderType(st);
+        sliderType = st;
+    };
+
 private:
     ComboSlider* comboSlider1;
     double defaultValue;
@@ -607,6 +645,12 @@ public:
         comboSlider2->setDecimals(wd ? DDEC : FDEC);
     };
 
+    virtual void setSliderType ( SliderType st ){
+        comboSlider1->setSliderType(st);
+        comboSlider2->setSliderType(st);
+        sliderType = st;
+    };
+
 private:
 
     ComboSlider* comboSlider1;
@@ -668,6 +712,13 @@ public:
         comboSlider1->setDecimals(wd?DDEC:FDEC);
         comboSlider2->setDecimals(wd?DDEC:FDEC);
         comboSlider3->setDecimals(wd?DDEC:FDEC);
+    };
+
+    virtual void setSliderType ( SliderType st ){
+        comboSlider1->setSliderType(st);
+        comboSlider2->setSliderType(st);
+        comboSlider3->setSliderType(st);
+        sliderType = st;
     };
 
 public slots:
@@ -740,6 +791,14 @@ public:
         comboSlider2->setDecimals(wd?DDEC:FDEC);
         comboSlider3->setDecimals(wd?DDEC:FDEC);
         comboSlider4->setDecimals(wd?DDEC:FDEC);
+    };
+
+    virtual void setSliderType ( SliderType st ){
+        comboSlider1->setSliderType(st);
+        comboSlider2->setSliderType(st);
+        comboSlider3->setSliderType(st);
+        comboSlider4->setSliderType(st);
+        sliderType = st;
     };
 
 signals:
