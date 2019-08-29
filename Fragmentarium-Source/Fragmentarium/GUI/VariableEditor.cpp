@@ -177,7 +177,7 @@ bool VariableEditor::applyPreset()
     QString presetName = presetComboBox->currentText();
     QString preset = presets[presetName];
     /// this bit of fudge sets the current time to keyframe time
-    QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
+    QRegExp rx = QRegExp("(KeyFrame\\.[0-9]+)");
     if(rx.indexIn(presetName) != -1)  { /// found a keyframe
         mainWindow->setTimeSliderValue(getCurrentKeyFrame() * ((mainWindow->getTimeMax() * mainWindow->renderFPS) / (getKeyFrameCount() - 1)));
     }
@@ -290,7 +290,7 @@ void VariableEditor::copyGroup()
     QString gs;
     foreach (VariableWidget* variable, variables) {
         if (variable->getGroup() == g) {
-            gs += variable->getName() + " = " + variable->getValueAsText() + "\n";
+            gs += variable->getName() + " = " + variable->toSettingsString() + "\n";
         }
     }
 
@@ -347,6 +347,7 @@ void VariableEditor::createGroup(QString g)
     w->setParent(sa);
 
     tabWidget->addTab(sa, g);
+    tabWidget->setMovable(true);
     tabs[g] = w;
 
     QWidget* a = new QWidget();
@@ -1051,7 +1052,7 @@ void VariableEditor::setEasingCurves(QString ecset)
 int VariableEditor::getKeyFrameCount()
 {
     int cnt = 0;
-    QRegExp rx = QRegExp("(KeyFrame\\.\\d\\d\\d)");
+    QRegExp rx = QRegExp("(KeyFrame\\.[0-9]+)");
     foreach (QString preset, presets.keys()) {
         if (rx.indexIn(preset) != -1) {
             cnt++;
@@ -1074,7 +1075,7 @@ QStringList VariableEditor::getPresetByName(QString name)
 int VariableEditor::getCurrentKeyFrame()
 {
 
-    QRegExp rx = QRegExp(R"(KeyFrame\.\d\d\d)");
+    QRegExp rx = QRegExp(R"(KeyFrame\\.[0-9]+)");
     if(rx.indexIn(presetComboBox->currentText()) != -1) {
         return presetComboBox->currentText().split(".").at(1).toInt();
     }
