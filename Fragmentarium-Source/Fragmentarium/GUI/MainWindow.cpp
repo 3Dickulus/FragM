@@ -632,7 +632,7 @@ void MainWindow::init()
 
     tabBar = new QTabBar(this);
     tabBar->setObjectName("TabBar");
-
+    tabBar->setMovable(true);
     tabBar->setTabsClosable(true);
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
@@ -3402,7 +3402,7 @@ void MainWindow::initKeyFrameControl()
         if(c>1) {
             for(int i =0; i<c; i++) {
                 QString presetname = variableEditor->getPresetName(i);
-                QRegExp rx = QRegExp(R"(KeyFrame\.\d\d\d)");
+                QRegExp rx = QRegExp("(KeyFrame\\.[0-9]+)");
                 if (rx.indexIn(presetname) != -1) { /// found a keyframe, add to keyframeMap
                     QStringList p;
                     p << presetname << variableEditor->getPresetByName( presetname );
