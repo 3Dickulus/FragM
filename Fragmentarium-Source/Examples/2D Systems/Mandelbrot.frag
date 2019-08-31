@@ -38,9 +38,9 @@ vec3 getMapColor2D(vec2 c) {
 	int i = 0;
 	for (i = 0; i < Iterations; i++) {
 		z = complexMul(z,z) +p;
-		if (dot(z,z)> 200.0) break;
+		if (! (dot(z,z) < 200.0)) break;
 	}
-	if (i < Iterations) {
+	if (! (dot(z,z) < 200.0)) {
 		float co =  float( i) + 1.0 - log2(.5*log2(dot(z,z)));
 		co = sqrt(co/256.0);
 		return vec3( .5+.5*cos(6.2831*co),.5+.5*cos(6.2831*co),.5+.5*cos(6.2831*co) );
@@ -64,9 +64,9 @@ vec3 color(vec2 c) {
 	for (i = 0; i < Iterations; i++) {
 		z = complexMul(z,z) + (Julia ? c2 : c);
 		
-		if (dot(z,z)> 100.0) break;
+		if (! (dot(z,z) < 100.0)) break;
 	}
-	if (i < Iterations) {
+	if (! (dot(z,z) < 100.0)) {
 		// The color scheme here is based on one
 		// from Inigo Quilez's Shader Toy:
 		float co =  float( i) + 1.0 - log2(.5*log2(dot(z,z)));

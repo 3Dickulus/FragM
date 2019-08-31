@@ -43,9 +43,9 @@ uniform vec3 boffset; slider[(-5,-5,-5),(2,0,0),(5,5,5)]
 // Pine formula will execute at this bulb iteration
 uniform int PineIterAt;slider[0,10,10]
 
-const	float sr23=sqrt(2./3.);
-const	float sr13=sqrt(1./3.);
-const	float sr12=sqrt(.5);
+/*const*/	float sr23=sqrt(2./3.);
+/*const*/	float sr13=sqrt(1./3.);
+/*const*/	float sr12=sqrt(.5);
 
 void BenesiFold(inout vec3 b) {
 // STEP1: "Benesi fold 1"

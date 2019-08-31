@@ -52,7 +52,7 @@ float Coloring(vec3 p) {
 		r2 = dot(p, p);
 		p *= clamp(max(MinRad2/r2, MinRad2), 0.0, 1.0);  
 		p = p* Scale/MinRad2;
-		p += (DoJulia ? vec4(Julia,0) : vec4(0.0));
+		p += (DoJulia ? Julia : vec3(0.0));
 		expsmooth+=exp(-1.0/abs(r1-r2));	
 	}
 	return expsmooth;

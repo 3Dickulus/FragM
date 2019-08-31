@@ -139,7 +139,7 @@ void main() {
 
       vec4 prev = texture(backbuffer,vec2(viewCoord+vec2(1.0))/2.0);
 
-	if (color!=color) { color =dvec3( 0.0); w = 0.0; } // NAN check
+	if (! (color==color)) { color =dvec3( 0.0); w = 0.0; } // NAN check
       FragColor = vec4(prev+vec4(color*w, w));
 
 #endif

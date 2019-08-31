@@ -7,9 +7,9 @@
 #include "MathUtils.frag"
 //#include "Brute-RaytracerExp.frag"
 #include "Brute-Raytracer.frag"
-const	float sr23=sqrt(2./3.);
-const	float sr13=sqrt(1./3.);
-const	float sr12=sqrt(.5);
+/*const*/	float sr23=sqrt(2./3.);
+/*const*/	float sr13=sqrt(1./3.);
+/*const*/	float sr12=sqrt(.5);
 
 #group Fractal
 // Number of fractal iterations.

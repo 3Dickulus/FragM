@@ -271,11 +271,11 @@ float dB;
 float CE(in vec3 z0){//same but also colors
 	float d=DE(z0);
 	if(abs(d-dB)<0.001)mcol+=vec3(1.0,mix(0.5,(.5-0.25*sin(z0.x*100.0)),1.-0.1*rCoC),0.0);
-	else mcol+=(1.0/subframe)*texture2D(backbuffer, 1.*z0.xy, 100.*rCoC).xyz;//vec3(0.0,abs(sin(z0.z*40.0)),1.0);
+	else mcol+=(1.0/float(subframe))*texture2D(backbuffer, 1.*z0.xy, 100.*rCoC).xyz;//vec3(0.0,abs(sin(z0.z*40.0)),1.0);
 	return d+abs(sin(z0.y*100.0))*0.005;//just giving the surface some procedural texture
 }
 float CircleOfConfusion(float t){//calculates the radius of the circle of confusion at length t
-	return max(0.01,abs(dot(from,dir)-t)*0.01*Aperture);
+	return max(0.01,abs(dot(from,Dir)-t)*0.01*Aperture);
 	//return (focalDistance+aperature*abs(t-focalDistance))/(focalDistance*size.y);
 }
 
@@ -288,7 +288,7 @@ vec3 trace(vec3 from, vec3 dir, inout vec3 hit, inout vec3 hitNormal) {
 	vec3 ro=from;//vec3(cos(time),0.25+sin(time*0.3)*0.3,sin(time))*3.4;//camera setup
 	vec3 L=normalize(ro+vec3(0.5,2.5,-0.5));
 	vec3 rd=dir;//lookat(-ro*vec3(1.0,2.0,1.0)-vec3(1.0,0.0,0.0),vec3(0.0,1.0,0.0))*normalize(vec3((2.0*gl_FragCoord.xy-pixelSize.xy)/pixelSize.y,1.0));
-	vec4 col=texture2D(backbuffer,(viewCoord+vec2(1.0))*0.5) * (1.0/subframe); //color accumulator
+	vec4 col=texture2D(backbuffer,(viewCoord+vec2(1.0))*0.5) * (1.0/float(subframe)); //color accumulator
 	float t=0.0;//distance traveled
 	for(int i=1;i<64;i++){//march loop
 		if(col.w>0.9 || t>20.0)continue;//bail if we hit a surface or go out of bounds

@@ -9,11 +9,11 @@
 
 const float pi=2.*1.570796326794897;
 const float pi2=2.*pi;
-const float sr13=sqrt(1./3.);
-const float sr23=sqrt (2./3.);
-const float sr83=sqrt(8/3);
-const float sr3=1./sr13;
-const float sr2=sqrt(2);
+/*const*/ float sr13=sqrt(1./3.);
+/*const*/ float sr23=sqrt (2./3.);
+/*const*/ float sr83=sqrt(8./3.);
+/*const*/ float sr3=1./sr13;
+/*const*/ float sr2=sqrt(2.);
 uniform float Scale; slider[0.00,3.0,4.00]
 uniform float s; slider[0.000,0.000,0.100]
 uniform bool Sphere;checkbox[false]

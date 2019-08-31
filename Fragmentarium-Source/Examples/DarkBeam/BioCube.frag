@@ -31,7 +31,7 @@ void init() {
 float DE(vec3 z)
 {
 	float t; int n = 0;
-      float scalep = 1;
+      float scalep = 1.0;
 
       vec3 z0=z;
 	z = abs(z);
@@ -56,7 +56,7 @@ float DE(vec3 z)
 	if (z.y>z.x) z.xy =z.yx;
 
 	n++;  scalep *= Scale;
-       DE1 = abs(min(Qube/n-DE1,(+z.x)/scalep));
+       DE1 = abs(min(Qube/float(n)-DE1,(+z.x)/scalep));
       //DE1 = z.x/scalep;
       }
        //DE1 = z.x/scalep;

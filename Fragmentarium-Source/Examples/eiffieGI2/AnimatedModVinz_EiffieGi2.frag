@@ -232,9 +232,9 @@ float DEMenger(vec3 z)
 {
 	int n = 0;
 	if(UseDupli) {
-	if(OffsetDupX.x!=0)z.x = mod((z.x),OffsetDupX.x) - OffsetDupX.y; // instance on XZ
-	if(OffsetDupY.x!=0)z.y = mod((z.y),OffsetDupY.x) - OffsetDupY.y; // instance on XZ
-	if(OffsetDupZ.x!=0)z.z = mod((z.z),OffsetDupZ.x) - OffsetDupZ.y; // instance on XZ
+	if(OffsetDupX.x!=0.)z.x = mod((z.x),OffsetDupX.x) - OffsetDupX.y; // instance on XZ
+	if(OffsetDupY.x!=0.)z.y = mod((z.y),OffsetDupY.x) - OffsetDupY.y; // instance on XZ
+	if(OffsetDupZ.x!=0.)z.z = mod((z.z),OffsetDupZ.x) - OffsetDupZ.y; // instance on XZ
 	}
 	while (n < MengerIterations) {
 		z = rot *z;
@@ -309,7 +309,7 @@ float  DECurvedSol(vec3 p) {
 	p = p *  floorrot + vec3(CurvedSol_Placement,.0) ;
 	p.xy-=vec2(width);
 	float l=length(pow(abs(p.xy),vec2(curvature))); l=pow(l,1./curvature);
-	float d=max(abs(p.z)-depth*10,max(-l+(width),l-(width+.01)));
+	float d=max(abs(p.z)-depth*10.,max(-l+(width),l-(width+.01)));
 	d=max(d,p.x-width/2.); d=max(d,p.y-width/2.)-.01;
 return d ;
 }

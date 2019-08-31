@@ -21,7 +21,7 @@ uniform float RotAngle; slider[0.00,0,360]
 
 mat3 rot;
 
-const vec3 fl0=vec3(cos(PI/6.),-sin(PI/6.),0.);
+/*const*/ vec3 fl0=vec3(cos(PI/6.),-sin(PI/6.),0.);
 vec3 fl1=vec3(0.);
 vec3 fp1=vec3(0.);
 float scl=1.;

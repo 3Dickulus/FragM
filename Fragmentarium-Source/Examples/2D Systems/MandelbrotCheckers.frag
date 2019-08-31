@@ -43,14 +43,14 @@ vec3 color(vec2 c) {
 	vec3 last = vec3(0.0);
 	for (i = 0; i < Iterations; i++) {
 		z = complexMul(z,z) + (Julia ? c2 : c);
-		if (dot(z,z)> breakout) break;
+		if (! (dot(z,z) < breakout)) break;
 		last =  getColor(z);
 		sum += last;
 	}
 	sum=sum/float(i);
 	if (!Accumulate) sum = last;
 	
-	if (i < Iterations) {
+	if (! (dot(z,z) < breakout)) {
 		// The color scheme here is based on one
 		// from Inigo Quilez's Shader Toy:
 		float co =  float( i) + 1.0 - log2(.5*log2(dot(z,z)));

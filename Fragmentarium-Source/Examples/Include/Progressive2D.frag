@@ -136,7 +136,7 @@ void main() {
 
       vec4 prev = texture2D(backbuffer,(viewCoord+vec2(1.0))/2.0);
 
-	if (color!=color) { color =vec3( 0.0); w = 0.0; } // NAN check
+	if (! (color==color)) { color =vec3( 0.0); w = 0.0; } // NAN check
       gl_FragColor = prev+vec4(color*w, w);
 #endif
 }

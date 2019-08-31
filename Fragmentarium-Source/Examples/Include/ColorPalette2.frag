@@ -1,3 +1,4 @@
+#donotrun
 #define providesColor
 #group ColorPalette
 uniform vec3 Color1; color[1.0,0.0,0.0];

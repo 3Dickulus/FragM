@@ -8,8 +8,8 @@
 float sr32=1.2247448713915890491;   
 const float pi=2.*1.570796326794897;
 const float pi2=2.*pi;
-const float sr13=sqrt(1./3.);
-const float sr23=sqrt (2./3.);
+/*const*/ float sr13=sqrt(1./3.);
+/*const*/ float sr23=sqrt (2./3.);
 // Scale parameter. A perfect Menger is 3.0
 uniform float Scale; slider[0.00,3.0,4.00]
 uniform float s; slider[0.000,0.005,0.100]

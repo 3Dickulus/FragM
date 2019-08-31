@@ -609,7 +609,7 @@ vec3 TextureIT (vec4 orbitTrap) {
 	} else  if (MapType==8) {
  		color3 = texture2DProj (tex, orbitTrap*texturespeed)*intensity;
 	} else if (MapType==9) {
-		color3 = texture2D(tex,dir.xy*texturespeed)*intensity;
+		color3 = texture2D(tex,Dir.xy*texturespeed)*intensity;
 	} else if (MapType==10) {
  		color3 = texture2D(tex, coord*texturespeed)*intensity;
 	}
@@ -685,7 +685,7 @@ vec3 trace(inout SRay Ray, inout vec3 hitNormal, inout float glow) {
 	glow=1000.0;
 	vec3 hit = SRCurrentPt(Ray); //from+dir*totalDist;
 	orbitTrap = vec4(10000.0);
-	vec3 direction = normalize(dir);
+	vec3 direction = normalize(Dir);
 	floorHit = false;
 	floorDist = 0.0;
 	vec3 direction2;
