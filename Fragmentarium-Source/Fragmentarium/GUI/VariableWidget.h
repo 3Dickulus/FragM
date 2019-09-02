@@ -176,8 +176,6 @@ public slots:
         slider->setValue((logarithmic ? std::log(std::abs(spinner->value())) : spinner->value())*scale);
         slider->setSingleStep(scale/1000);
         slider->setPageStep(scale/100);
-        slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
-
     }
 
 signals:
