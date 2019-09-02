@@ -2336,7 +2336,7 @@ void MainWindow::loadFragFile(const QString &fileName)
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
-    // frag but non-existant passing bogus name to insertTabPage() will cause it
+    // frag but non-existent passing bogus name to insertTabPage() will cause it
     // to load the minimum default GLSL source so initializeFragment() gets valid
     // code later on
     insertTabPage(fileName);
@@ -2594,10 +2594,6 @@ bool MainWindow::initializeFragment()
         variableEditor->updateCamera(engine->getCameraControl());
         engine->requireRedraw(true);
         engine->resetTime();
-
-        if (!engine->hasBufferShader()) {
-            setSubframeMax(1);
-        }
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
