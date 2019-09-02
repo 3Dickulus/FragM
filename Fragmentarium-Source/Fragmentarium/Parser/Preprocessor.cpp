@@ -146,7 +146,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
 
         // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
         if(!found) { // this file has no #include statements
-            in.insert( 1, QString("#line %1 %2").arg(2).arg(originalFileIndex) );
+            in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
         }
         else {
             // insert #line directive after last #include statement
