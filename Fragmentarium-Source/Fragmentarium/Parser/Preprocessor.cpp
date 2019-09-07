@@ -110,6 +110,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
 {
     fs->sourceFileNames.append(originalFileName);
     int sf = fs->sourceFileNames.count() - 1;
+    static bool isBufferShader = false;
 
     QRegExp includeCommand("^#include(.*)\\s\"([^\"]+)\"\\s*$");    // Look for #include "test.frag"
     QRegExp bufferShaderCommand("^#buffershader\\s\"([^\"]+)\"\\s*$");    // Look for #buffershader "test.frag"
@@ -123,34 +124,30 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
         int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
         // scan for included files
         bool found = false;
-        int lastInc = 0;
         // figure out the line number for last #include statement in this file
         for (int i = 0; i < in.count(); i++) {
             if (includeCommand.indexIn(in[i]) != -1) {
                 QString post = includeCommand.cap(1);
                 if (post == "") {
                     found = true;
-                    lastInc = i;
+                    // insert #line directive after #include statement
+                    in.insert(i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
                 } else {
                     throw Exception("'#include' expected");
                 }
             }
             // vertex code is removed compiled and linked separately so we need #line directives here
             if(in[i].startsWith("#vertex")) {
-                in.insert( i+1, QString("#line %1 %2").arg(i+2).arg(originalFileIndex) );
+                in.insert( i+1, QString("#line %1 %2").arg(i+ (isBufferShader ? 1 : 2) ).arg(originalFileIndex) );
             }
             if(in[i].startsWith("#endvertex")) {
-                in.insert( i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
+                in.insert( i+1, QString("#line %1 %2").arg(i+(isBufferShader ? 0 : 1)).arg(originalFileIndex) );
             }
         }
 
         // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
         if(!found) { // this file has no #include statements
-            in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
-        }
-        else {
-            // insert #line directive after last #include statement
-            in.insert(lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(originalFileIndex) );
+            in.insert( 1, QString("#line %1 %2").arg(2).arg(originalFileIndex) );
         }
     }
 
@@ -191,7 +188,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                 fs->source.append(in[i]);
             }
         } else if (bufferShaderCommand.indexIn(in[i]) != -1) {
-            QString fileName =  bufferShaderCommand.cap(1);
+            QString fileName = bufferShaderCommand.cap(1);
             QString fName;
             try {
                 fName = fileManager->resolveName(fileName, originalFileName);
@@ -205,7 +202,9 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
 
             INFO(QCoreApplication::translate("Preprocessor", "Including buffershader: ") + fName);
             QString a = f.readAll();
+            isBufferShader = true;
             FragmentSource bs = parse(a, fName, false);
+            isBufferShader = false;
             fs->bufferShaderSource = new FragmentSource(bs);
             dependencies.append(fName);
             if (!dontAdd && isCreatingAutoSave) {
