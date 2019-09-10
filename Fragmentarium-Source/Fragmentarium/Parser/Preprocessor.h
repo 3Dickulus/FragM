@@ -461,6 +461,7 @@ private:
     bool isCreatingAutoSave;
     QMap<QString, QString> replaceMap;
     bool inVertex;
+    QString versionLine;
 
     QString lastComment;
     QString currentGroup;
