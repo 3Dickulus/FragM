@@ -63,7 +63,7 @@ public:
             rangemax = maximum;
         }
         // 4294967295
-        scale = (1.0/(rangemax-rangemin))*(int(__INT32_MAX__*0.5)+1);
+        scale = (1.0/(rangemax-rangemin))*100000000;
 
         slider = new QSlider(Qt::Horizontal,this);
         slider->setRange(rangemin*scale,rangemax*scale+1);
@@ -170,7 +170,7 @@ public slots:
             rangemax = maximum;
         }
         // 4294967295
-        scale = (1.0/(rangemax-rangemin))*(int(__INT32_MAX__*0.5)+1);
+        scale = (1.0/(rangemax-rangemin))*100000000;
 
         slider->setRange(rangemin*scale,rangemax*scale+1);
         slider->setValue((logarithmic ? std::log(std::abs(spinner->value())) : spinner->value())*scale);
