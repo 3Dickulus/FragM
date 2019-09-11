@@ -48,15 +48,15 @@ float parseFloat(QString s)
     return to;
 }
 
-// double parseDouble ( QString s ) {
-//     bool success = false;
-//     double to = s.toDouble ( &success );
-//     if ( !success ) {
-//         WARNING ( "Could not parse double: " + s );
-//         return 0;
-//     }
-//     return to;
-// }
+double parseDouble ( QString s ) {
+    bool success = false;
+    double to = s.toDouble ( &success );
+    if ( !success ) {
+        WARNING ( "Could not parse double: " + s );
+        return 0;
+    }
+    return to;
+}
 
 void setLockType(GuiParameter *p, QString lockTypeString)
 {
@@ -116,42 +116,103 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
 
     QStringList in = input.split(QRegExp("\r\n|\r|\n"));
 
+    static bool isBufferShader = false;
+    bool hasVertexCode = false;
+    bool hasIncludes = false;
+    bool addedVersionLine = false;
+    
+    // insert #line directives so the compiler reports accurate error line numbers.
     if (!isCreatingAutoSave) {
-        // make sure we fall back to the default group after including a file.
-        in.append("#group default");
-        // insert #line directives so the compiler reports accurate error line numbers.
-        int originalFileIndex = fs->sourceFileNames.indexOf(originalFileName);
-        // scan for included files
-        bool found = false;
-        int lastInc = 0;
-        // figure out the line number for last #include statement in this file
+
+        // requested glsl version
+        int vers=0;
+        // capture #version from first (user) frag
+        if(sf == 0 && in[0].startsWith("#version")) {
+            versionLine = in[0].trimmed();
+        }
+        // record version if #version line exists
+        if(!versionLine.isEmpty()) {
+            vers= versionLine.split(" ").at(1).toInt();
+        }
+
+        // buffershader needs to be the same version as fragmentshader
+        // if user fragment has #version and buffershader does not then add the line
+        if(isBufferShader && !in[0].startsWith("#version") && !versionLine.isEmpty() && sf == 0) {
+            in.insert(0,versionLine);
+            addedVersionLine = true;
+        }
+
+        // check if includes and or vertex code need to be processed
         for (int i = 0; i < in.count(); i++) {
-            if (includeCommand.indexIn(in[i]) != -1) {
-                QString post = includeCommand.cap(1);
-                if (post == "") {
-                    found = true;
-                    lastInc = i;
-                } else {
-                    throw Exception("'#include' expected");
-                }
+            if (in[i].startsWith("#include", Qt::CaseInsensitive) ) {
+                hasIncludes = true;
             }
-            // vertex code is removed compiled and linked separately so we need #line directives here
-            if(in[i].startsWith("#vertex")) {
-                in.insert( i+1, QString("#line %1 %2").arg(i+2).arg(originalFileIndex) );
-            }
-            if(in[i].startsWith("#endvertex")) {
-                in.insert( i+1, QString("#line %1 %2").arg(i+1).arg(originalFileIndex) );
+            if(in[i].startsWith("#vertex", Qt::CaseInsensitive)) {
+                hasVertexCode = true;
             }
         }
 
-        // we don't use fs->source or fs->lines etc because the file hasn't been parsed yet and we add some lines
-        if(!found) { // this file has no #include statements
-            in.insert( 1, QString("#line %1 %2").arg(1).arg(originalFileIndex) );
+        // check the first 2 lines for #line directives
+        if(!in[0].startsWith("#line") && !in[1].startsWith("#line")) {
+            if(!hasVertexCode && !hasIncludes && sf != 0 && vers < 200) {
+                in.insert(1, QString("#line %1 %2").arg(1).arg(sf));
+            }
+            else {
+                in.insert( 1, QString("#line %1 %2").arg(2).arg(sf) );
+            }
         }
-        else {
-            // insert #line directive after last #include statement
-            in.insert(lastInc+1, QString("#line %1 %2").arg(lastInc+1).arg(originalFileIndex) );
+
+        for (int i = 0; i < in.count(); i++) {
+            if(hasIncludes) {
+                // insert #line directive after #include statement
+                if (in[i].startsWith("#include", Qt::CaseInsensitive) ) {
+                    if(!hasVertexCode) {
+                        if(vers < 200) {
+                            if(sf != 0) {
+                                in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                            }
+                            else {
+                                in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
+                            }
+                        }
+                        else {
+                            if(sf != 0) {
+                                in.insert(i+1, QString("#line %1 %2").arg(i+1).arg(sf));
+                            }
+                            else {
+                                in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                            }
+                        }
+                    }
+                    else {
+                        in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
+                    }
+                }
+            }
+            if(hasVertexCode) {
+                // vertex code is compiled and linked separately so need #line directives
+                if(in[i].startsWith("#vertex", Qt::CaseInsensitive)) {
+                    if(vers > 200 && !addedVersionLine) {
+                        in.insert(i+1, QString("#line %1 %2").arg(i+1).arg(sf));
+                    }
+                    else {
+                        in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                    }
+                }
+
+                if(in[i].startsWith("#endvertex", Qt::CaseInsensitive)) {
+                    if(vers > 200 && !addedVersionLine) {
+                        in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                    }
+                    else {
+                        in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
+                    }
+                }
+            }
         }
+        
+        // make sure we fall back to the default group after including a file.
+        in.append("#group default");
     }
 
     QList<int> lines;
@@ -191,7 +252,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                 fs->source.append(in[i]);
             }
         } else if (bufferShaderCommand.indexIn(in[i]) != -1) {
-            QString fileName =  bufferShaderCommand.cap(1);
+            QString fileName = bufferShaderCommand.cap(1);
             QString fName;
             try {
                 fName = fileManager->resolveName(fileName, originalFileName);
@@ -205,7 +266,9 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
 
             INFO(QCoreApplication::translate("Preprocessor", "Including buffershader: ") + fName);
             QString a = f.readAll();
+            isBufferShader = true;
             FragmentSource bs = parse(a, fName, false);
+            isBufferShader = false;
             fs->bufferShaderSource = new FragmentSource(bs);
             dependencies.append(fName);
             if (!dontAdd && isCreatingAutoSave) {
@@ -308,11 +371,11 @@ void Preprocessor::parseReplacement(FragmentSource *fs, QString s, int i)
 void Preprocessor::parseSpecial(FragmentSource *fs, QString s, int i, bool moveMain)
 {
     if (s.trimmed().startsWith("#camera", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#camera", Qt::CaseInsensitive);
         fs->camera = c.trimmed();
     } else if (s.trimmed().startsWith("#TexParameter", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#TexParameter", Qt::CaseInsensitive).trimmed();
         QStringList l = c.split(" ", QString::SkipEmptyParts);
         if (l.count() != 3) {
@@ -321,23 +384,23 @@ void Preprocessor::parseSpecial(FragmentSource *fs, QString s, int i, bool moveM
             fs->textureParams[l[0]][l[1]] = l[2];
         }
     } else if (s.trimmed().split(" ").at(0) == ("#buffer")) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#buffer", Qt::CaseInsensitive);
         fs->buffer = c.trimmed();
     } else if (s.trimmed().startsWith("#donotrun", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
     } else if (s.trimmed().startsWith("#group", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#group", Qt::CaseInsensitive);
         currentGroup = c.trimmed();
     } else if (s.trimmed().startsWith("#vertex", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         inVertex = true;
-    } else if (s.contains("#endvertex", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+    } else if (s.startsWith("#endvertex", Qt::CaseInsensitive)) {
+        fs->source[i] = "// " + s.trimmed();
         inVertex = false;
     } else if (s.trimmed().startsWith("#info", Qt::CaseInsensitive)) {
-        fs->source[i] = "// " + s;
+        fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#info", Qt::CaseInsensitive).trimmed();
         SCRIPTINFO(c);
     } else if (!inVertex && moveMain && main.indexIn(s) != -1) {
@@ -586,9 +649,9 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
     lastComment = "";
     currentGroup = "";
     inVertex = false;
-
     // Step one: resolve includes:
     parseSource(&fs, input, file, false);
+    versionLine = "";
 
     // Step two: resolve magic uniforms:
     if (fs.source.indexOf(pixelSizeCommand) != -1) {
@@ -611,7 +674,7 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
             s = fs.source[i];
         }
 
-        if (!s.contains("#replace", Qt::CaseInsensitive)) {
+        if (!s.startsWith("#replace", Qt::CaseInsensitive)) {
             parseReplacement(&fs, s, i);
             s = fs.source[i];
         }
@@ -653,7 +716,8 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
             lastComment = "";
         }
 
-        if (inVertex && !fs.source[i].contains("#endvertex")) {
+        // vertex code gets commented out
+        if (inVertex && !fs.source[i].startsWith("#endvertex")) {
             fs.vertexSource.append(fs.source[i]);
             fs.source[i] = "//" + fs.source[i];
         }
@@ -666,15 +730,18 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
         fs.source.append("");
     }
 
+    // check vertex and shader #version lines
     if (fs.source.count() > 1 && fs.vertexSource.count() > 1) {
         // To ensure that all parts have the same #version
         if (fs.source.at(0).startsWith("#version")) {
             if (!fs.vertexSource.at(0).startsWith("#version")) {
-                fs.vertexSource.insert(0, fs.source.at(0));
+                // copy the #version line from fragment to vertex
+                fs.vertexSource.insert(0, fs.source.at(0).trimmed());
             }
             if (!(fs.vertexSource.at(0) == fs.source.at(0))) {
                 WARNING("Fragment and Vertex do not have the same #version");
-                WARNING(QString("Vertex: %1 Fragment: %2").arg(fs.vertexSource.at(0)).arg(fs.source.at(0)));
+                WARNING(QString("Vertex: %1").arg(fs.vertexSource.at(0)));
+                WARNING(QString("Fragment: %1").arg(fs.source.at(0)));
             }
         }
     }
