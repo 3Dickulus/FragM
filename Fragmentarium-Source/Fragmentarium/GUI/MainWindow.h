@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QShortcut>
 #include <QAbstractScrollArea>
 #include <QCheckBox>
 #include <QComboBox>
@@ -593,6 +594,9 @@ private slots:
     QString makeImgFileName ( int timeStep, int timeSteps, QString fileName );
     void showHelpMessage ( QString title, QString mess );
     void hideUnusedVariableWidgets();
+    // slot for F6 hotkey handlers
+    void slotShortcutF6();
+    void slotShortcutShiftF6();
 
 private:
 
@@ -736,6 +740,9 @@ private:
     QMap<int, EasingInfo *> easingMap;
 
     QFileSystemWatcher *fragWatch;
+
+    QShortcut       *keyF6;           // Entity of F6 hotkey
+    QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
 
 };
 }

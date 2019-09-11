@@ -5,7 +5,7 @@
 var width=360;
 var height=360;
 var multiplier=2; // 10=10x10=100 tiles
-var subframes=256;
+var subframes=128;
 
 // set subfolder must end with "/"
 var subFolder = "thumbs/";
@@ -54,8 +54,10 @@ function init(){
 
 function renderPreset(value) {
 
+var fname = subFolder+value+".png";
+
   // we need to adjust the filename for each preset
-  app.setOutputBaseFileName(subFolder+value+".png");
+  app.setOutputBaseFileName(fname);
 
   // if the user wants to stop rendering break before next image
   if(app.scriptRunning()) {
@@ -65,7 +67,7 @@ function renderPreset(value) {
     // render an image
     app.tileBasedRender();
     // output stats
-    print( (width)+"\t"+(height)+"\t"+(multiplier)+"\t"+((app.getTileAVG()/1000)/subframes).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) +"\t" + subFolder + value );
+    print( (width)+"\t"+(height)+"\t"+(multiplier)+"\t"+((app.getTileAVG()/1000)/subframes).toFixed(9)+"\t"+(app.getTileAVG()/1000).toFixed(9)+"\t"+(app.getRenderAVG()/1000).toFixed(9) +"\t" + fname);
   }
 
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <QShortcut>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QClipboard>
@@ -106,6 +107,15 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
         fullScreenEnabled = false;
         toggleFullScreen();
     }
+
+    keyF6 = new QShortcut(this);   // Initialize the object
+    keyF6->setKey(Qt::Key_F6);    // Set the key code
+    // connect handler to keypress
+    connect(keyF6, SIGNAL(activated()), this, SLOT(slotShortcutF6()));
+    keyShiftF6 = new QShortcut(this);   // Initialize the object
+    keyShiftF6->setKey( QKeySequence("Shift+F6"));    // Set the key code
+    // connect handler to keypress
+    connect(keyShiftF6, SIGNAL(activated()), this, SLOT(slotShortcutShiftF6()));
 }
 
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
@@ -310,8 +320,6 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 
     if (ev->key() == Qt::Key_Escape) {
         toggleFullScreen();
-    } else if (ev->key() == Qt::Key_F6) {
-        callRedraw();
     } else if (ev->key() == Qt::Key_Space) {
         if(engine->hasFocus()) {
             pausePlay = !pausePlay;
@@ -3360,7 +3368,7 @@ QString MainWindow::getPresetNames(bool keyframesORpresets)
 
     int c = variableEditor->getPresetCount(); // total preset count including keyframes
     QStringList k, p;
-    if (c > 1) {
+    if (c > 0) {
         for(int i =0; i<c; i++) {
             QString presetname = variableEditor->getPresetName(i);
             if(!presetname.isEmpty()) {
@@ -3372,6 +3380,7 @@ QString MainWindow::getPresetNames(bool keyframesORpresets)
             }
         }
     }
+
     return keyframesORpresets ? k.join(" ") : p.join(" ");
 }
 
@@ -3709,6 +3718,69 @@ void MainWindow::loadErrorSourceFile(QString fileName, int LineNumber)
     te->setTextCursor( cursor );
     cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,11);
     te->setTextCursor( cursor );
+}
+
+/* Slot handler of F6
+ * */
+void MainWindow::slotShortcutF6()
+{
+    QSettings settings;
+    QString scriptname = settings.value("cmdscriptfilename").toString();
+
+    if(!scriptname.isEmpty()) {
+
+        bool loadingSucceded = false;
+
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
+        QFile file(scriptname);
+        if (!file.open(QFile::ReadOnly | QFile::Text)) {
+            WARNING(tr("Cannot read file %1:\n// %2\n").arg(scriptname).arg(file.errorString()));
+        } else {
+            QTextStream in(&file);
+
+            scriptText = in.readAll();
+
+            INFO(tr("Loaded file: %1").arg(scriptname));
+            loadingSucceded = true;
+        }
+    }
+
+    runningScript = true;
+
+    QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
+
+    QApplication::restoreOverrideCursor();
+
+    if (result.isError()) {
+        QString err = result.toString();
+        cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
+        WARNING(tr("Error %1 at line %2").arg(err).arg(cmdScriptLineNumber));
+        runningScript=false;
+    } else {
+        cmdScriptLineNumber = 0;
+    }
+}
+
+/* Slot handler of Shift+F6
+ * 
+ * Bind an fqScript to F6 hotkey
+ * */
+void MainWindow::slotShortcutShiftF6()
+{
+    QSettings settings;
+    static QString lastBoundCmdScript = "";
+    
+    QString filter = tr("CMD Script (*.fqs);;All Files (*.*)");
+    QString fileName =
+        QFileDialog::getOpenFileName(this, tr("Bind CMD script to F6 key"), lastBoundCmdScript, filter);
+    if (!fileName.isEmpty()) {
+        lastBoundCmdScript = fileName;
+        INFO("Bound " + fileName + " to F6");
+    } else fileName = lastBoundCmdScript;
+    
+    settings.setValue("cmdscriptfilename", fileName);
 }
 
 /// BEGIN 3DTexture
