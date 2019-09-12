@@ -556,15 +556,14 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
 
         QSettings settings; // only jump to first error as later errors may be caused by this one so fix it first
         if ( (settings.value ( "jumpToLineOnWarn", true ).toBool() || settings.value ( "jumpToLineOnError", true ).toBool())) {
-            if(errorCount == 1 && fileIndex == 0) {
+            if(errorCount == 1 && (fragmentSource.sourceFileNames[0] == fragmentSource.sourceFileNames[fileIndex]) && !bS) {
                 // jump to error line in text editor
                 TextEdit *te = mainWindow->getTextEdit();
                 QTextCursor cursor(te->textCursor());
                 cursor.setPosition(0);
-                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine+10);
+                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
                 te->setTextCursor( cursor );
-                cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,11);
-                te->setTextCursor( cursor );
+                te->centerCursor();
             }
         }
     }

@@ -3713,11 +3713,10 @@ void MainWindow::loadErrorSourceFile(QString fileName, int LineNumber)
     // jump to error line in text editor
     TextEdit *te = getTextEdit();
     QTextCursor cursor(te->textCursor());
-    cursor.setPosition(0);
-    cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,LineNumber+10);
+    cursor.setPosition(0); // line numbers are indexed from 0
+    cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,LineNumber-1);
     te->setTextCursor( cursor );
-    cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,11);
-    te->setTextCursor( cursor );
+    te->centerCursor();
 }
 
 /* Slot handler of F6

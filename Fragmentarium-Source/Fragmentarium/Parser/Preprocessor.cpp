@@ -195,7 +195,11 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                     if(vers > 200 && !addedVersionLine) {
                         in.insert(i+1, QString("#line %1 %2").arg(i+1).arg(sf));
                     }
-                    else {
+                    else
+                    if(vers < 200 && addedVersionLine && isBufferShader) {
+                        in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
+                    }
+                    else  {
                         in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
                     }
                 }
@@ -203,6 +207,10 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                 if(in[i].startsWith("#endvertex", Qt::CaseInsensitive)) {
                     if(vers > 200 && !addedVersionLine) {
                         in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                    }
+                    else 
+                    if(vers < 200 && addedVersionLine && isBufferShader) {
+                        in.insert(i+1, QString("#line %1 %2").arg(i-2).arg(sf));
                     }
                     else {
                         in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
