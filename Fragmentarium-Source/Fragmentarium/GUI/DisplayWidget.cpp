@@ -1861,7 +1861,7 @@ void DisplayWidget::setupBufferShaderVars(int w, int h)
         }
 }
 
-void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast, bool doMain)
+void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
 {
 
     if (!this->isValid() || !FBOcheck()) {
@@ -1870,7 +1870,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     QSize s = backBuffer->size();
 
-    if ( !drawLast && doMain ) {
+    if ( !drawLast ) {
         for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
@@ -2166,7 +2166,6 @@ void DisplayWidget::paintGL()
         return;
     }
 
-    bool doMain = pendingRedraws > 0;
     if (pendingRedraws > 0) {
         pendingRedraws--;
     }
@@ -2210,7 +2209,7 @@ void DisplayWidget::paintGL()
         }
     }
 
-    drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0), doMain );
+    drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0) );
 
 }
 

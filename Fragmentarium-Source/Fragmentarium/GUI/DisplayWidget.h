@@ -302,7 +302,7 @@ public slots:
 
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
-    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast, bool doMain = true );
+    void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
 /// BEGIN 3DTexture
 //       void draw3DTexture();
 /// END 3DTexture
