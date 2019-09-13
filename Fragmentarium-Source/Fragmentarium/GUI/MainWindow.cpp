@@ -3675,6 +3675,8 @@ void MainWindow::executeScript()
     if (runningScript) {
         settings.setValue("filename", name);
     }
+    // finished script so...
+    runningScript=false;
 }
 
 void MainWindow::setupScriptEngine()
