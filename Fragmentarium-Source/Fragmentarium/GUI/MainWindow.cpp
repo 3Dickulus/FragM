@@ -3762,6 +3762,7 @@ void MainWindow::slotShortcutF6()
     } else {
         cmdScriptLineNumber = 0;
     }
+    runningScript = false;
 }
 
 /* Slot handler of Shift+F6
