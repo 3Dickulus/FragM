@@ -18,6 +18,7 @@ Status
 
 # Changes since v0.9.5
 Please see https://github.com/3Dickulus/FragM/blob/master/Fragmentarium-Source/3Dickulus.changes
+and git logs for all of the changes since 2.0.
 
 ----------------------
 
@@ -69,8 +70,24 @@ The above will install in /home/username/Fragmentarium folder with includes and 
 
 To install for all users change -DCMAKE_INSTALL_PREFIX=~/ to -DCMAKE_INSTALL_PREFIX=/usr/local and use sudo make install
 
+
 # Pre-built packages
 You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.0 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
+
+
+# Guidelines for contributing
+1. any new feature must work on the widest range of hardware, ( AMD Intel and nVidia ) all if possible
+2. any changes to existing features must be compatible with the existing fragment base
+3. existing features that only work on specific hardware should be phased out or modified to work on all hardware, AMD Intel and nVidia.
+4. when adding options or settings they must be in line with the exiting structure for handling options and settings (unless you have a better idea that makes the current structure obsolete)
+5. priority should go towards handling more modern GLSL versions and practices
+6. changes and additions must be tested against all other features, animating, timeline management, easing curve controls etc...
+   and render the base frags properly before merging will be considered
+
+...of course none of this is carved in stone and I'm always open for discussing ideas.
+
+
+
 ## Notes
 The deb and rpm packages should take care of any dependencies when installing via **apt / synaptic** or **yast / zypper**.
 
