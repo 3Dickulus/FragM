@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+478"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Камера: Нажмите 2D окно для управления движением с помощью клавиатуры. Для получения более подробной информации, обратитесь к меню Справка.</translation>
     </message>
@@ -49,7 +49,7 @@
         <translation>Не удалось найти интерфейс Zoom</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+58"/>
         <location line="+6"/>
         <location line="+6"/>
         <location line="+6"/>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-457"/>
+        <location line="-486"/>
         <source>Could not find Eye interface widget</source>
         <translation>Не удалось найти интерфейс Eye</translation>
     </message>
@@ -258,7 +258,7 @@
 <context>
     <name>Fragmentarium::GUI::ComboSlider</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+93"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+104"/>
         <source>Slider Step Multiplier</source>
         <translation>Множитель шага слайдера</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+120"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+125"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Установка таймера обновления дисплея %1 мс ( макс %2 кадров в секунду).</translation>
     </message>
@@ -310,7 +310,7 @@ Initialized as GL_RGBA8</source>
         <translation>Максимальный размер текстуры: %1x%1</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+138"/>
         <source>Asked gpu for %1 mip-map levels.</source>
         <translation>На запрос для графического процессора %1 уровней mip-map.</translation>
     </message>
@@ -340,7 +340,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось разобрать значение параметра текстуры: </translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+176"/>
         <source>No vertex shader found!</source>
         <translation>Не найдены вершинные шейдеры!</translation>
     </message>
@@ -360,14 +360,13 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось создать фрагмент-шейдер: </translation>
     </message>
     <message>
-        <location line="+9"/>
-        <location line="+16"/>
-        <location line="+369"/>
+        <location line="+7"/>
+        <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="+1050"/>
+        <location line="+1464"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Кадр:%1/%2 Время:%3</translation>
     </message>
@@ -377,13 +376,13 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1444"/>
-        <location line="+367"/>
+        <location line="-1491"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
     </message>
     <message>
-        <location line="-345"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Попытка использовать backbuffer не того типа.</translation>
     </message>
@@ -403,7 +402,7 @@ Initialized as GL_RGBA8</source>
         <translation>EXR загрузчик найдено EXR изображение: %1 не является полным</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+139"/>
         <source>Not a valid texture: </source>
         <translation>Неверная текстура: </translation>
     </message>
@@ -424,11 +423,13 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+6"/>
+        <location line="+13"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Буфер фрагмента шейдера скомпилирован с предупреждениями: </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="-373"/>
+        <location line="+366"/>
         <source>Could not link buffershader: </source>
         <translation>Не удалось привязать шейдера буфер: </translation>
     </message>
@@ -438,7 +439,7 @@ Initialized as GL_RGBA8</source>
         <translation>Неполное FBO Ошибка!</translation>
     </message>
     <message>
-        <location line="+677"/>
+        <location line="+723"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Недействительное FBO - просмотр буфера</translation>
     </message>
@@ -458,7 +459,7 @@ Initialized as GL_RGBA8</source>
         <translation>Просмотр буфера не возможен!</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+61"/>
         <source>Failed to bind FBO</source>
         <translation>Не удалось привязать FBO</translation>
     </message>
@@ -473,12 +474,12 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось связать целевой буфер</translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-48"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Нет переднего буфера, образец не найден в буфере шейдера. Это не имеет смысла.</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+93"/>
         <source>Failed to release target buffer</source>
         <translation>Не удалось освободить целевой буфер</translation>
     </message>
@@ -496,12 +497,11 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-1482"/>
         <source>Could not link vertex + fragment shader: </source>
-        <translation>Не удалось связать вершинный шейдер с фрагментным шейдером: </translation>
+        <translation type="vanished">Не удалось связать вершинный шейдер с фрагментным шейдером: </translation>
     </message>
     <message>
-        <location line="+274"/>
+        <location line="-1251"/>
         <source>Unused sampler uniform: </source>
         <translation>Неиспользуемая равномерная переменная сэмплера: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialized as GL_RGBA8</source>
         <translation>Вершинный шейдер не найден!</translation>
     </message>
     <message>
-        <location line="+1011"/>
+        <location line="+1054"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Не удалось связать previewBuffer FBO</translation>
@@ -533,7 +533,7 @@ Initialized as GL_RGBA8</source>
         <translation>[%1x%2]Соотношение сторон=%3</translation>
     </message>
     <message>
-        <location line="+250"/>
+        <location line="+251"/>
         <source>Fix me</source>
         <translation>Поправте меня</translation>
     </message>
@@ -551,7 +551,7 @@ Initialized as GL_RGBA8</source>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+115"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+125"/>
         <source>Host Preprocessor Commands</source>
         <translation>Команды препроцессора</translation>
     </message>
@@ -590,12 +590,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2683"/>
+        <location line="+2700"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2619"/>
+        <location line="-2636"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -626,24 +626,24 @@ and save to file before closing.
     </message>
     <message>
         <location line="+7"/>
-        <location line="+72"/>
+        <location line="+70"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Источник фрагментов (*.frag);;Все файлы (*.*)</translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1508"/>
+        <location line="+1530"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1499"/>
+        <location line="-1521"/>
         <location line="+16"/>
-        <location line="+928"/>
-        <location line="+1086"/>
+        <location line="+930"/>
+        <location line="+1106"/>
         <location line="+49"/>
         <location line="+70"/>
-        <location line="+371"/>
+        <location line="+368"/>
         <location line="+167"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -654,22 +654,21 @@ and save to file before closing.
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-2909"/>
-        <location line="+1396"/>
-        <location line="+1734"/>
+        <location line="-2928"/>
+        <location line="+1418"/>
+        <location line="+1732"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3100"/>
+        <location line="-3120"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, IÃ±igo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</oldsource>
-        <translation>&lt;p&gt;Интегрированная среда для изучения пиксельной графики на базе GPU. &lt;/p&gt;
+        <translation type="vanished">&lt;p&gt;Интегрированная среда для изучения пиксельной графики на базе GPU. &lt;/p&gt;
 &lt;p&gt;ПО создано Михаэлем Хвидфилтом Кристенсеном (Mikael Hvidtfeldt Christensen).&lt;br /&gt;Лицензия зарегистрирована и распространяется по лицензии GPL или LGPL.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Обратите внимание&lt;/b&gt;: некоторые фрагмент (GLSL) шейдеры являются собственностью других авторов, а также могут иметь другие лицензии. Пожалуйста, проверьте заголовок файла фрагмента перед распространением.
 &lt;h1&gt;Подтверждение&lt;/h1&gt;
@@ -689,7 +688,7 @@ and save to file before closing.
 &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+22"/>
         <source>About Fragmentarium</source>
         <translation>О Фрагментариум</translation>
     </message>
@@ -771,7 +770,7 @@ and save to file before closing.
         <translation>Журнал событий</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+19"/>
         <source>Variable Editor (uniforms)</source>
         <translation>Редактор переменных (uniforms)</translation>
     </message>
@@ -812,7 +811,14 @@ This option may be re-enabled through Preferences</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
     <message>
-        <location line="+1019"/>
+        <location line="+108"/>
+        <source>Could not remove dependency:
+&apos;%1&apos;</source>
+        <translation>Не удалось удалить зависимость:
+&apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+931"/>
         <source>Reloaded file: %1</source>
         <translation>Перезагрузка файла: %1</translation>
     </message>
@@ -854,7 +860,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Доступные форматы изображений: </translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+228"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -878,7 +884,7 @@ Close this tab without saving changes?</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2319"/>
+        <location line="-2336"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -946,12 +952,12 @@ Please read this:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2626"/>
+        <location line="+2644"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2625"/>
+        <location line="-2643"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1104,7 +1110,7 @@ Continue and loose changes?</source>
 Продолжить и потерять изменения?</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+304"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1188,7 +1194,7 @@ Continue and loose changes?</source>
     &quot;&lt;/p&gt;&quot;</translation>
     </message>
     <message>
-        <location line="+234"/>
+        <location line="+236"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Инструменты</translation>
     </message>
@@ -1493,15 +1499,15 @@ Continue and loose changes?</source>
         <translation>// Создан: </translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+31"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Невозможно создать каталог %1:
 .</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <location line="+436"/>
+        <location line="+10"/>
+        <location line="+449"/>
         <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
@@ -1510,7 +1516,7 @@ Continue and loose changes?</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-1026"/>
+        <location line="-1033"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1522,9 +1528,10 @@ Continue and loose changes?</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+439"/>
+        <location line="+446"/>
         <location line="+473"/>
-        <location line="+1257"/>
+        <location line="+1255"/>
+        <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Невозможно прочитать файл %1:
@@ -1549,38 +1556,66 @@ and save before closing!</source>
 и сохраните перед закрытием!</translation>
     </message>
     <message>
-        <location line="-22"/>
+        <location line="-221"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Невозможно записать файл%1:
 %2.</translation>
     </message>
     <message>
-        <location line="-2171"/>
-        <location line="+8"/>
-        <location line="+16"/>
-        <location line="+420"/>
+        <location line="-2184"/>
+        <location line="+10"/>
+        <location line="+17"/>
+        <location line="+5"/>
+        <location line="+427"/>
         <location line="+19"/>
         <location line="+514"/>
         <location line="+72"/>
-        <location line="+1121"/>
+        <location line="+1119"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3329"/>
-        <location line="+2683"/>
+        <location line="-3347"/>
+        <location line="+2700"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-1532"/>
+        <location line="-2499"/>
+        <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Интегрированная среда для изучения пиксельной графики на базе GPU. &lt;/p&gt;
+&lt;p&gt;ПО создано Михаэлем Хвидфилтом Кристенсеном (Mikael Hvidtfeldt Christensen).&lt;br /&gt;Лицензия зарегистрирована и распространяется по лицензии GPL или LGPL.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Обратите внимание&lt;/b&gt;: некоторые фрагмент (GLSL) шейдеры являются собственностью других авторов, а также могут иметь другие лицензии. Пожалуйста, проверьте заголовок файла фрагмента перед распространением.
+&lt;h1&gt;Подтверждение&lt;/h1&gt;
+&lt;p&gt;
+Большая часть вдохновения и формул для Фрагментариум пришли из сообщества в &lt;a href=&quot;http://www.fractalforums.com&quot;&gt; Фрактальные Форумы &lt;/a&gt;, в том числе Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, и другие. Особая благодарность выходит Knighty и Каli для их больших фрагментов и Клод за всю его помощь с улучшениями. Все фрагменты должны включать информацию об их происхождении - пожалуйста, сообщите мне, если я сделал какие-либо MIS-атрибуции.
+&lt;/p&gt;
+&lt;p&gt;Значки, используемые являются частью &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt; Everaldo: Crystal &lt;/a&gt; проекта. &lt;/p&gt;
+&lt;p&gt;Фрагментариум построена с использованием &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt; Qt кросс-платформенных GUI рамочное &lt;/a&gt;. &lt;/p&gt;
+
+&lt;/p&gt;
+&lt;p&gt;
+&lt;table cellspacing=&quot;20&quot;&gt;&lt;th colspan=2 align=&quot;left&quot;&gt;Переводы Fractal Forums пользователей&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;русский&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;русский&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Немецкий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;sabine62&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+925"/>
+        <source>Do you want to use it? &lt;br&gt;&lt;br&gt;This will overwrite any existing files!</source>
+        <translation>Вы хотите использовать это? &lt;br&gt;&lt;br&gt; Это перезапишет любые существующие файлы!</translation>
+    </message>
+    <message>
+        <location line="+32"/>
         <source>Saved fragment + settings as: </source>
         <translation>Сохраненный фрагмент + настройки как: </translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+49"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>слишком большой!
@@ -1602,7 +1637,7 @@ Must be less than 32769x32769</source>
         <translation>Прекратить</translation>
     </message>
     <message>
-        <location line="+276"/>
+        <location line="+282"/>
         <location line="+41"/>
         <source>Saved file : </source>
         <translation>Сохранённый файл : </translation>
@@ -1839,7 +1874,7 @@ Would you like to reload it?</source>
         <translation>Ваш код не запускается.</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+55"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Компилировать скрипт в %1 мс.</translation>
     </message>
@@ -1865,11 +1900,12 @@ Would you like to reload it?</source>
     </message>
     <message>
         <location line="+42"/>
+        <location line="+971"/>
         <source>Loaded file: %1</source>
         <translation>Загруженный файл:%1</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="-963"/>
         <source>Unnamed</source>
         <translation>Без имени</translation>
     </message>
@@ -1884,12 +1920,30 @@ Would you like to reload it?</source>
         <translation>Если в пресете переменные заблокированы &quot;Сборка&quot; нажать ещё раз.</translation>
     </message>
     <message>
+        <source>Cannot read file %1:
+%2
+</source>
+        <translation type="obsolete">Невозможно прочитать файл %1:
+%2. {1:?} {2
+?}</translation>
+    </message>
+    <message>
+        <location line="+920"/>
+        <source>CMD Script (*.fqs);;All Files (*.*)</source>
+        <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bind CMD script to F6 key</source>
+        <translation>Привязать командный скрипт к клавише F6</translation>
+    </message>
+    <message>
         <source>OK</source>
         <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location line="-2647"/>
-        <location line="+2683"/>
+        <location line="-3586"/>
+        <location line="+2700"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -1969,7 +2023,7 @@ Would you like to reload it?</source>
         <translation>Должен быть .frag или .fragparams файл.</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+339"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset не найден!</translation>
     </message>
@@ -2011,6 +2065,7 @@ Would you like to reload it?</source>
     </message>
     <message>
         <location line="+65"/>
+        <location line="+113"/>
         <source>Error %1 at line %2</source>
         <translation>Ошибка %1 в строке %2</translation>
     </message>
@@ -2084,7 +2139,7 @@ Would you like to reload it?</source>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+781"/>
         <source>Select a Texture</source>
         <translation>Выбор текстуры</translation>
     </message>
@@ -2177,22 +2232,22 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation> настройки в буфер обмена</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+119"/>
         <source>%1 locked variables: %2</source>
         <translation>%1 Заблокированные переменные: %2</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+141"/>
         <source>Unsupported parameter</source>
         <translation>Неподдерживаемый параметр</translation>
     </message>
     <message>
-        <location line="+144"/>
+        <location line="+166"/>
         <source>Expected a key value pair, found: </source>
         <translation>Ожидаемое значение пары ключа, найдено: </translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Could not find: </source>
         <translation>Не могу найти: </translation>
     </message>
@@ -2725,7 +2780,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+156"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+253"/>
         <source>Including file: </source>
         <translation>Включить файл: </translation>
     </message>
@@ -2735,7 +2790,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation>Включить buffershader: </translation>
     </message>
     <message>
-        <location line="+374"/>
+        <location line="+380"/>
         <source>Parse: </source>
         <translation>Разбираем: </translation>
     </message>
@@ -2743,7 +2798,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-978"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1092"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>
@@ -2756,7 +2811,12 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>SyntopiaCore::Logging::ListWidget</name>
     <message>
-        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+28"/>
+        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+31"/>
+        <source>Open file</source>
+        <translation>Открыть файл</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Copy to Clipboard</source>
         <translation>Скопировать в буфер обмена</translation>
     </message>
@@ -2766,7 +2826,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation>Очистить</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+32"/>
         <source>Copied %1 lines to clipboard</source>
         <translation>Скопировано %1 строк в буфер</translation>
     </message>

@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+478"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Camera: Klik in het 2D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
@@ -49,7 +49,7 @@
         <translation>Kan het Zoom-interfacewidget niet vinden</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+58"/>
         <location line="+6"/>
         <location line="+6"/>
         <location line="+6"/>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-457"/>
+        <location line="-486"/>
         <source>Could not find Eye interface widget</source>
         <translation>Kan het Eye-interfacewidget niet vinden</translation>
     </message>
@@ -258,7 +258,7 @@
 <context>
     <name>Fragmentarium::GUI::ComboSlider</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+93"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+104"/>
         <source>Slider Step Multiplier</source>
         <translation>Schuifstapvermenigvuldiger</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+120"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+125"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Update-timer van de display ingesteld op %1 ms (max %2 FPS).</translation>
     </message>
@@ -310,7 +310,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Maximale textuurgrootte: %1x%1</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+138"/>
         <source>Asked gpu for %1 mip-map levels.</source>
         <translation>Bij GPU %1 mip-map-levels aangevraagd.</translation>
     </message>
@@ -340,7 +340,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan TexParameter-waarde niet parsen: </translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+176"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
     </message>
@@ -360,14 +360,13 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="+9"/>
-        <location line="+16"/>
-        <location line="+369"/>
+        <location line="+7"/>
+        <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="+1050"/>
+        <location line="+1464"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Omlijsting:%1/%2 Tijd:%3</translation>
     </message>
@@ -377,13 +376,13 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1444"/>
-        <location line="+367"/>
+        <location line="-1491"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-345"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
@@ -403,7 +402,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+139"/>
         <source>Not a valid texture: </source>
         <translation>Geen geldige textuur: </translation>
     </message>
@@ -424,11 +423,13 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location line="+13"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Buffer fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="-373"/>
+        <location line="+366"/>
         <source>Could not link buffershader: </source>
         <translation>Kan buffer shader niet linken: </translation>
     </message>
@@ -438,7 +439,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location line="+677"/>
+        <location line="+723"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
@@ -458,7 +459,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>PREVIEWBUFFER MISLUKT!</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+61"/>
         <source>Failed to bind FBO</source>
         <translation>Kan FBO niet verbinden</translation>
     </message>
@@ -473,12 +474,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan target buffer niet verbinden</translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-48"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Geen frontbuffer-sampler gevonden in buffershader. Dit is vreemd.</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+93"/>
         <source>Failed to release target buffer</source>
         <translation>Kon target buffer niet vrijgeven</translation>
     </message>
@@ -496,12 +497,11 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-1482"/>
         <source>Could not link vertex + fragment shader: </source>
-        <translation>Kan vertex + fragmentshader niet koppelen: </translation>
+        <translation type="vanished">Kan vertex + fragmentshader niet koppelen: </translation>
     </message>
     <message>
-        <location line="+274"/>
+        <location line="-1251"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -511,7 +511,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+1011"/>
+        <location line="+1054"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -533,7 +533,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>[%1x%2] Aspect=%3</translation>
     </message>
     <message>
-        <location line="+250"/>
+        <location line="+251"/>
         <source>Fix me</source>
         <translation>Los op</translation>
     </message>
@@ -551,7 +551,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+115"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+125"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Commandos</translation>
     </message>
@@ -590,12 +590,12 @@ en opslaan in bestand voor afsluiting.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2683"/>
+        <location line="+2700"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location line="-2619"/>
+        <location line="-2636"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
@@ -626,24 +626,24 @@ en opslaan in bestand voor afsluiting.
     </message>
     <message>
         <location line="+7"/>
-        <location line="+72"/>
+        <location line="+70"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-bron (*.frag);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1508"/>
+        <location line="+1530"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Stel de combobox in op &apos;custom-size&apos; om de grootte toe te passen.</translation>
     </message>
     <message>
-        <location line="-1499"/>
+        <location line="-1521"/>
         <location line="+16"/>
-        <location line="+928"/>
-        <location line="+1086"/>
+        <location line="+930"/>
+        <location line="+1106"/>
         <location line="+49"/>
         <location line="+70"/>
-        <location line="+371"/>
+        <location line="+368"/>
         <location line="+167"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -654,25 +654,24 @@ en opslaan in bestand voor afsluiting.
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location line="-2909"/>
-        <location line="+1396"/>
-        <location line="+1734"/>
+        <location line="-2928"/>
+        <location line="+1418"/>
+        <location line="+1732"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location line="-3100"/>
+        <location line="-3120"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, IÃ±igo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</oldsource>
-        <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+22"/>
         <source>About Fragmentarium</source>
         <translation>Over Fragmentarium</translation>
     </message>
@@ -707,7 +706,7 @@ en opslaan in bestand voor afsluiting.
         <translation>Log</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+19"/>
         <source>Variable Editor (uniforms)</source>
         <translation>Variabelen-editor (uniforms)</translation>
     </message>
@@ -743,14 +742,14 @@ Deze optie kan weer worden ingeschakeld in Voorkeuren</translation>
         <translation>Autorun inschakelen</translation>
     </message>
     <message>
-        <location line="+676"/>
+        <location line="+690"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>is te groot!
 Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
-        <location line="+887"/>
+        <location line="+893"/>
         <source>Reloaded file: %1</source>
         <translation>Reloaded-bestand: %1</translation>
     </message>
@@ -792,7 +791,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Beschikbare afbeeldingsformaten: </translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+228"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -816,7 +815,7 @@ Sluit dit tabblad zonder wijzigingen op te slaan?</translation>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2319"/>
+        <location line="-2336"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -880,12 +879,12 @@ l
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2626"/>
+        <location line="+2644"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2625"/>
+        <location line="-2643"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1038,7 +1037,7 @@ Continue and loose changes?</source>
 Doorgaan en verliezen veranderen?</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+304"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1048,7 +1047,7 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>&lt;h2&gt; Herschrijft opdrachten voor afbeeldingen en animatiedialogen &lt;/ h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/ b&gt; &lt;/ li&gt; Stelt de totale duur van de animatie in seconden in. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/ b&gt; &lt;/ li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/ b&gt; &lt;/ li&gt; stelt de tegel in breedte en hoogte. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het aantal rij- en kolomtegels in, deze waarde in het kwadraat = totale tegels. &lt;/ p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het aantal te verzamelen frames in. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/ b&gt; &lt;/ li&gt; Stelt de bestandsnaam in voor de opgeslagen afbeelding, &lt;br&gt; als het script de volledige controle heeft, moet dit door het script voor elk frame worden ingesteld, en - als animatie frag bestandinstellingen, keyframes enz. gebruikt, dan hoeft dit slechts één keer te worden ingesteld om basename te gebruiken en voegt Fragmentarium een ​​met 5 opgevulde index toe. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/ b&gt; &lt;/ li&gt; Stelt de frames per seconde voor rendering. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het startframe-nummer in voor het weergeven van een reeks frames. &lt;/ p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/ b&gt; &lt;/ li&gt; Stelt het eindraamnummer in voor het renderen van een reeks frames. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/ b&gt; &lt;/ li&gt; FALSE zet alleen de animatie van het script in. &lt;br&gt; TRUE maakt controle mogelijk vanuit hoofdframes en verlichte curven. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/ b&gt; &lt;/ li&gt; TRUE geeft een voorbeeld van frames in een venster op het bureaublad in plaats van het opslaan van afbeeldingsbestanden. &lt;br&gt; WAARSCHUWING !!! dit opent een venster VOOR ELK FRAME en sluit het wanneer het volgende klaar is voor weergave. &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/ b&gt; &lt;/ li&gt; TRUE zal opslaan bestanden in de submap. &lt;br&gt; FALSE gebruikt het pad ingesteld door setOutputBaseFileName (String) &lt;/ p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/ b&gt; &lt;/ li&gt; doet hetzelfde als &quot;Voeg een unieke ID toe aan de bestandsnaam&quot; in de HiResolution- en animatiedialoog. &lt;br&gt; &lt;/ p&gt; &lt;/ ul&gt; &lt;/ p&gt;</translation>
     </message>
     <message>
-        <location line="+234"/>
+        <location line="+236"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Tools</translation>
     </message>
@@ -1334,12 +1333,17 @@ Doorgaan en verliezen veranderen?</translation>
     </message>
     <message>
         <location line="-986"/>
-        <location line="+2683"/>
+        <location line="+2700"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
     </message>
     <message>
-        <location line="-1738"/>
+        <location line="-2499"/>
+        <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments en claude voor al zijn hulp bij verbeteringen.. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+744"/>
         <source>Windows</source>
         <translation>ramen</translation>
     </message>
@@ -1364,28 +1368,34 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>// Aangemaakt: </translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+8"/>
+        <location line="+15"/>
+        <source>Do you want to use it? &lt;br&gt;&lt;br&gt;This will overwrite any existing files!</source>
+        <translation>Wil je het gebruiken? &lt;br&gt; &lt;br&gt; Hiermee worden bestaande bestanden overschreven!</translation>
+    </message>
+    <message>
         <location line="+16"/>
-        <location line="+420"/>
+        <location line="+10"/>
+        <location line="+17"/>
+        <location line="+5"/>
+        <location line="+427"/>
         <location line="+19"/>
         <location line="+514"/>
         <location line="+72"/>
-        <location line="+1121"/>
+        <location line="+1119"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location line="-2192"/>
+        <location line="-2205"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
 .</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <location line="+436"/>
+        <location line="+10"/>
+        <location line="+449"/>
         <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
@@ -1393,12 +1403,12 @@ Doorgaan en verliezen veranderen?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1036"/>
+        <location line="-1049"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+16"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1407,7 +1417,7 @@ Doorgaan en verliezen veranderen?</translation>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+34"/>
         <source>Do you want to try again?</source>
         <translation>Wilt u het nog een keer proberen?</translation>
     </message>
@@ -1422,7 +1432,7 @@ Doorgaan en verliezen veranderen?</translation>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location line="+276"/>
+        <location line="+282"/>
         <location line="+41"/>
         <source>Saved file : </source>
         <translation>Opgeslagen bestand: </translation>
@@ -1466,14 +1476,15 @@ Doorgaan en verliezen veranderen?</translation>
     <message>
         <location line="+13"/>
         <location line="+473"/>
-        <location line="+1257"/>
+        <location line="+1255"/>
+        <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kan bestand niet lezen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1723"/>
+        <location line="-1920"/>
         <source>Settings loaded from file</source>
         <translation>Instellingen geladen uit bestand</translation>
     </message>
@@ -1668,7 +1679,7 @@ Wil je het opnieuw laden?</translation>
         <translation>Geen uitvoerbaar fragment.</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+55"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script gecompileerd in %1 ms.</translation>
     </message>
@@ -1694,11 +1705,12 @@ Wil je het opnieuw laden?</translation>
     </message>
     <message>
         <location line="+42"/>
+        <location line="+971"/>
         <source>Loaded file: %1</source>
         <translation>Bestand geladen: %1</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="-963"/>
         <source>Unnamed</source>
         <translation>Naamloos</translation>
     </message>
@@ -1713,29 +1725,54 @@ Wil je het opnieuw laden?</translation>
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <source>There are unsaved changes.%1
-Continue will discard changes.</source>
-        <translation type="vanished">Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
-Doorgaan en verliezen veranderen.</translation>
-    </message>
-    <message>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
 and save before closing!</source>
-        <translation type="vanished">
+        <translation type="obsolete">
 U moet dit doen om Verlichtingscurven te behouden
 een voorinstelling toevoegen met de naam &quot;Bereik&quot;
 en bespaar voor sluitingstijd!</translation>
     </message>
     <message>
-        <location line="-2647"/>
-        <location line="+2683"/>
+        <source>Cannot read file %1:
+%2
+</source>
+        <translation type="obsolete">Kan bestand niet lezen %1:
+%2. {1:?} {2
+?}</translation>
+    </message>
+    <message>
+        <source>There are unsaved changes.%1
+Continue will discard changes.</source>
+        <translation type="obsolete">Er zijn tabbladen met niet-opgeslagen wijzigingen.%1
+Doorgaan en verliezen veranderen.</translation>
+    </message>
+    <message>
+        <location line="+920"/>
+        <source>CMD Script (*.fqs);;All Files (*.*)</source>
+        <translation>Cmd Script (*.fqs);;Alle bestanden (*.*)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bind CMD script to F6 key</source>
+        <translation>Bindend opdrachtscript aan F6-toets</translation>
+    </message>
+    <message>
+        <location line="-3586"/>
+        <location line="+2700"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="-1531"/>
+        <source>Could not remove dependency:
+&apos;%1&apos;</source>
+        <translation>Kan afhankelijkheid niet verwijderen:
+&apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+1575"/>
         <location line="+10"/>
         <location line="+10"/>
         <source>Launching web browser...</source>
@@ -1810,7 +1847,7 @@ en bespaar voor sluitingstijd!</translation>
         <translation>Moet een .frag- of .fragparams-bestand zijn.</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+339"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset niet gevonden!</translation>
     </message>
@@ -1859,6 +1896,7 @@ en bespaar voor sluitingstijd!</translation>
     </message>
     <message>
         <location line="+65"/>
+        <location line="+113"/>
         <source>Error %1 at line %2</source>
         <translation>Fout %1 in regel %2</translation>
     </message>
@@ -1932,7 +1970,7 @@ en bespaar voor sluitingstijd!</translation>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+781"/>
         <source>Select a Texture</source>
         <translation>Kies textuur</translation>
     </message>
@@ -2025,22 +2063,22 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation> gekopiëerd naar het klembord</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+119"/>
         <source>%1 locked variables: %2</source>
         <translation>%1 vergrendelde variabelen: %2</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+141"/>
         <source>Unsupported parameter</source>
         <translation>Onondersteunde parameter</translation>
     </message>
     <message>
-        <location line="+144"/>
+        <location line="+166"/>
         <source>Expected a key value pair, found: </source>
         <translation>Verwacht keywaardenpaar, gevonden: </translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Could not find: </source>
         <translation>Kon niet vinden: </translation>
     </message>
@@ -2573,7 +2611,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+156"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+253"/>
         <source>Including file: </source>
         <translation>Toegevoegd bestand: </translation>
     </message>
@@ -2583,7 +2621,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation>Toegevoegde buffershader: </translation>
     </message>
     <message>
-        <location line="+374"/>
+        <location line="+380"/>
         <source>Parse: </source>
         <translation>Parse: </translation>
     </message>
@@ -2591,7 +2629,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-978"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1092"/>
         <source>Could not locate directory in: </source>
         <translation>Kan folder niet vinden in: </translation>
     </message>
@@ -2604,7 +2642,12 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>SyntopiaCore::Logging::ListWidget</name>
     <message>
-        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+28"/>
+        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+31"/>
+        <source>Open file</source>
+        <translation>Open bestand</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Copy to Clipboard</source>
         <translation>Kopiëren naar klembord</translation>
     </message>
@@ -2614,7 +2657,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation>Wissen</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+32"/>
         <source>Copied %1 lines to clipboard</source>
         <translation>%1 regels gekopieëerd naar het klembord</translation>
     </message>

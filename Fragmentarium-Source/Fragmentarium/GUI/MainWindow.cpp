@@ -1379,7 +1379,7 @@ retry:
                         if(QFile::exists(to) && overWrite)
                         if (!QFile::remove(to)) {
                             QMessageBox::warning(
-                                this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
+                                this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1'").arg(from).arg(to));
                         }
                             
                         if (!QFile::copy(from,to)) {
@@ -2906,7 +2906,7 @@ void MainWindow::closeTab(int index)
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
         QString mess =
-            tr("There are unsaved changes.%1\r\nContinue will discard changes.")
+            tr("There are unsaved changes.\r\n%1\r\nContinue will discard changes.")
                 .arg(variableEditor->hasEasing()
                 ? tr("\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!")
                 : "\r\n");
@@ -3757,7 +3757,7 @@ void MainWindow::slotShortcutF6()
 
         QFile file(scriptname);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            WARNING(tr("Cannot read file %1:\n// %2\n").arg(scriptname).arg(file.errorString()));
+            WARNING(tr("Cannot read file %1:\n%2.").arg(scriptname).arg(file.errorString()));
         } else {
             QTextStream in(&file);
 

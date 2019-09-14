@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+478"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Kamera: Klicken Sie auf 2D-Fenster Schwerpunkt. Siehe Hilfe-Menü für mehr.</translation>
     </message>
@@ -49,7 +49,7 @@
         <translation>Kann Zoom-Schnittstellenwidget nicht finden</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+58"/>
         <location line="+6"/>
         <location line="+6"/>
         <location line="+6"/>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-457"/>
+        <location line="-486"/>
         <source>Could not find Eye interface widget</source>
         <translation>Kann Eye-Schnittstellenwidget nicht finden</translation>
     </message>
@@ -258,7 +258,7 @@
 <context>
     <name>Fragmentarium::GUI::ComboSlider</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+93"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+104"/>
         <source>Slider Step Multiplier</source>
         <translation>Slider-Step-Multiplikator</translation>
     </message>
@@ -276,7 +276,7 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+120"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+125"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Display-Updatetimer wird eingestellt auf %1 ms (max %2 FPS).</translation>
     </message>
@@ -310,7 +310,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Maximale Texturgröße: %1x%1</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+138"/>
         <source>Asked gpu for %1 mip-map levels.</source>
         <translation>GPU gebeten um %1 mip-map levels.</translation>
     </message>
@@ -340,7 +340,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kann nicht parsen: TexParameter value: </translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+176"/>
         <source>No vertex shader found!</source>
         <translation>Kein VertexShader gefunden!</translation>
     </message>
@@ -360,14 +360,13 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte nicht erstellen: FragmentShader: </translation>
     </message>
     <message>
-        <location line="+9"/>
-        <location line="+16"/>
-        <location line="+369"/>
+        <location line="+7"/>
+        <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="+1050"/>
+        <location line="+1464"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Frame:%1/%2 Zeit:%3</translation>
     </message>
@@ -377,13 +376,13 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1444"/>
-        <location line="+367"/>
+        <location line="-1491"/>
+        <location line="+365"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
     </message>
     <message>
-        <location line="-345"/>
+        <location line="-343"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Versuche Backbuffer zu gebrauchen, aber kein BufferTyp eingestellt.</translation>
     </message>
@@ -403,7 +402,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Exrloader warnt, daß Bild: %1 nicht vollständig ist</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+139"/>
         <source>Not a valid texture: </source>
         <translation>Keine gültige Textur: </translation>
     </message>
@@ -424,11 +423,13 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location line="+13"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Buffer FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="-373"/>
+        <location line="+366"/>
         <source>Could not link buffershader: </source>
         <translation>Buffershader konnte nicht verlinkt werden: </translation>
     </message>
@@ -438,7 +439,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>FBO Incomplete Fehler!!</translation>
     </message>
     <message>
-        <location line="+677"/>
+        <location line="+723"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ungültiger FBO - previewBuffer</translation>
     </message>
@@ -458,7 +459,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>PREVIEW BUFFER GESCHEITERT!</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+61"/>
         <source>Failed to bind FBO</source>
         <translation>Konnte FBO nicht binden</translation>
     </message>
@@ -473,12 +474,12 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte TargetBuffer nicht binden</translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-48"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Kein Frontbuffersampler gefunden in BufferShader. Das ergibt keinen Sinn.</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+93"/>
         <source>Failed to release target buffer</source>
         <translation>Konnte TargetBuffer nicht freigeben</translation>
     </message>
@@ -496,12 +497,11 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-1482"/>
         <source>Could not link vertex + fragment shader: </source>
-        <translation>Vertex + Fragment-Shader konnte nicht verknüpft werden: </translation>
+        <translation type="vanished">Vertex + Fragment-Shader konnte nicht verknüpft werden: </translation>
     </message>
     <message>
-        <location line="+274"/>
+        <location line="-1251"/>
         <source>Unused sampler uniform: </source>
         <translation>Unbenutzte Probenehmeruniform: </translation>
     </message>
@@ -511,7 +511,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+1011"/>
+        <location line="+1054"/>
         <location line="+39"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -533,7 +533,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>[%1x%2] Aspekt=%3</translation>
     </message>
     <message>
-        <location line="+250"/>
+        <location line="+251"/>
         <source>Fix me</source>
         <translation>Reparier mich</translation>
     </message>
@@ -551,7 +551,7 @@ Initialisiert als GL_RGBA8</translation>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+115"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+125"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Kommandos</translation>
     </message>
@@ -590,12 +590,12 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2683"/>
+        <location line="+2700"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2619"/>
+        <location line="-2636"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -626,24 +626,24 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
     </message>
     <message>
         <location line="+7"/>
-        <location line="+72"/>
+        <location line="+70"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-Quelle (*.frag);;Alle Dateien (*.*)</translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1508"/>
+        <location line="+1530"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Bitte die Combobox auf &apos;Angepasst&apos; einstellen um die Größe zu ändern.</translation>
     </message>
     <message>
-        <location line="-1499"/>
+        <location line="-1521"/>
         <location line="+16"/>
-        <location line="+928"/>
-        <location line="+1086"/>
+        <location line="+930"/>
+        <location line="+1106"/>
         <location line="+49"/>
         <location line="+70"/>
-        <location line="+371"/>
+        <location line="+368"/>
         <location line="+167"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -654,22 +654,21 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-2909"/>
-        <location line="+1396"/>
-        <location line="+1734"/>
+        <location line="-2928"/>
+        <location line="+1418"/>
+        <location line="+1732"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3100"/>
+        <location line="-3120"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, IÃ±igo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</oldsource>
-        <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;
+        <translation type="vanished">&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;
 &lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.
 &lt;h1&gt;Anerkennung&lt;/h1&gt;
@@ -686,7 +685,7 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
 &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+22"/>
         <source>About Fragmentarium</source>
         <translation>Über Fragmentarium</translation>
     </message>
@@ -768,7 +767,7 @@ und speichern Sie es in einer Datei, bevor Sie es schließen.
         <translation></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+19"/>
         <source>Variable Editor (uniforms)</source>
         <translation>Variablen-Editor (uniforms)</translation>
     </message>
@@ -803,14 +802,14 @@ Diese Option ist wieder einzuschalten in Einstellungen</translation>
         <translation>Autorun einschalten</translation>
     </message>
     <message>
-        <location line="+676"/>
+        <location line="+690"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>Zu groß!
 Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
-        <location line="+887"/>
+        <location line="+893"/>
         <source>Reloaded file: %1</source>
         <translation>Neu geladene Datei: %1</translation>
     </message>
@@ -852,7 +851,7 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Verfügbare Bildformate: </translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+228"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -876,7 +875,7 @@ Tab schließen ohne Änderungen zu speichern?</translation>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2319"/>
+        <location line="-2336"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -940,12 +939,12 @@ Bitte, lese unterstehendes:
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2626"/>
+        <location line="+2644"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2625"/>
+        <location line="-2643"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1098,7 +1097,7 @@ Continue and loose changes?</source>
 Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+304"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Hinweis: Die 3D-Ansicht muss den Tastaturfokus haben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linke Maustaste: Mitte übersetzen. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: zoom. &lt;/li&gt; &lt;li&gt; Rad: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; B / S: hoch / runter &lt;/li&gt; &lt;li&gt; Q/E : Vergrößern/Verkleinern &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Umschalt + Rechte Maustaste: Zeigt Menüs im Vollbildmodus an. &lt;/li &gt; &lt;li&gt; Linke Maustaste: Kamerarichtung ändern. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: Kamera in Bildschirmebene bewegen. &lt;/li&gt; &lt;li&gt; Linke + rechte Maustaste: Zoomen. &lt;/li&gt; &lt;li &gt; Umschalt + linke Maustaste: Objekt drehen (um Ursprung). &lt;/Li&gt; &lt;li&gt; Umschalt + Alt + linke Maustaste: Objekt drehen (um Ziel). &lt;/Li&gt; &lt;li&gt; Umschalt + Tilde (~) wird zurückgesetzt Die Ansicht, um durch den Ursprung zu schauen (0,0,0) &lt;/li&gt; &lt;li&gt; Rad: Vorwärts/Rückwärts bewegen &lt;/li&gt; &lt;li&gt; W / S: Vorwärts / Rückwärts bewegen. &lt;/li&gt; &lt;li&gt; A/D: nach links/rechts bewegen. &lt;/Li&gt; &lt;li&gt; Q/E: rollen &lt;/li&gt; &lt;li&gt; 1/3: Schrittweite erhöhen/verringern x2 &lt;/li&gt; &lt;li&gt; 2: Schrittweite erhöhen / verringern Größe x10 &lt;/li&gt; &lt;li&gt; Umschalt + Rad: Schrittgröße ändern &lt;/li&gt; &lt;li&gt; T/G: Auf/Ab bewegen. &lt;/li&gt; &lt;li&gt; R/F: Gieren &lt;/li&gt; &lt;li &gt; Y/H: Tonhöhe &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Schieberegler &lt;/h2&gt; &lt;p&gt; Wenn ein (Gleit-) Schieberegler eine rechte Maustaste erhält, wird ein Eingabedialog zum Festlegen der Schrittgröße geöffnet. &lt;br&gt; &lt;b&gt; F7-Taste &lt;/b&gt; öffnet die Beschleunigungskurve Editor für den aktuell ausgewählten Schieberegler. &lt;/p&gt;</translation>
     </message>
@@ -1108,7 +1107,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>&lt;h2&gt; Stellt Befehle für Bild- und Animationsdialogfelder ein &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt; &lt;/li&gt; Legt die Gesamtdauer der Animation in Sekunden fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; Legt die Kachel fest width and height. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der Zeilen- und Spaltenkacheln fest. Dieser Wert ist ein Quadrat = Gesamtkacheln. &lt;/p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der zu akkumulierenden Frames fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Legt den Dateinamen für das gespeicherte Bild fest. Wenn das Skript die vollständige Kontrolle hat, muss dies für jeden Frame vom Skript festgelegt werden. Wenn die Animation Frag-Dateieinstellungen, Keyframes usw. verwendet. dann muss dies nur einmal auf basename gesetzt werden und Fragmentarium fügt einen mit 5 Ziffern aufgefüllten Index hinzu. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Setzt den Bilder pro Sekunde für das Rendern. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die Startbildnummer für das Rendern einer Reihe von Bildern fest. &lt;/p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die End-Frame-Nummer für das Rendern eines Framebereichs fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE setzt die Animation ausschließlich auf Skriptsteuerung. &lt;br&gt; TRUE aktiviert die Steuerung über Keyframes und Beschleunigungskurven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE zeigt eine Vorschau der Bilder in einem Fenster auf dem Desktop an, anstatt die Bilddateien zu speichern. &lt;br&gt; WARNUNG !!! Dies öffnet ein Fenster für jeden Frame und schließt es, wenn der nächste zur Anzeige bereit ist. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE wird gespeichert Dateien im Unterordner. &lt;br&gt; FALSE verwendet den von setOutputBaseFileName (String) festgelegten Pfad. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; Das Gleiche wie &quot;Eindeutige ID zum Dateinamen hinzufügen&quot; im HiResolution- und Animationsdialog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+234"/>
+        <location line="+236"/>
         <source>EXR &amp;Tools</source>
         <translation>EXR &amp;Werkzeuge</translation>
     </message>
@@ -1394,12 +1393,31 @@ Werden weiterhin Änderungen verlieren?</translation>
     </message>
     <message>
         <location line="-986"/>
-        <location line="+2683"/>
+        <location line="+2700"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location line="-1738"/>
+        <location line="-2499"/>
+        <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;
+&lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.
+&lt;h1&gt;Anerkennung&lt;/h1&gt;
+&lt;p&gt;Viele der Inspirationen und Formeln kamen von &lt;a href=&quot;http://www.fractalforums.com&quot;&gt;Fractal Forums&lt;/a&gt;, unter anderen von Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi und Jesse. Ein besonderer Dank gilt Knighty und Kali for ihre großartigen Fragmente und claude für all seine Hilfe bei Verbesserungen. Alle Fragmente sollten Information über ihren Ursprung enthalten - Bitte melden Sie mir, wenn ich mich in dieser Hinsicht irgenwo geirrt habe.&lt;/p&gt;
+&lt;p&gt;Die gebrauchten Icons sind Teil des &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt;-Projekts. &lt;/p&gt;
+&lt;p&gt;Fragmentarium is erstellt unter Nutzung des &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt plattformübergreifenden GUI Frameworks&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;
+&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Übersetzungen durch FractalForums.com-Benutzer&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Deutsche&lt;/td&gt;&lt;td align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+744"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1424,28 +1442,34 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>// Erstellt: </translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location line="+8"/>
+        <location line="+15"/>
+        <source>Do you want to use it? &lt;br&gt;&lt;br&gt;This will overwrite any existing files!</source>
+        <translation>Willst du es benutzen? &lt;br&gt; &lt;br&gt; Dies überschreibt alle vorhandenen Dateien!</translation>
+    </message>
+    <message>
         <location line="+16"/>
-        <location line="+420"/>
+        <location line="+10"/>
+        <location line="+17"/>
+        <location line="+5"/>
+        <location line="+427"/>
         <location line="+19"/>
         <location line="+514"/>
         <location line="+72"/>
-        <location line="+1121"/>
+        <location line="+1119"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-2192"/>
+        <location line="-2205"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Konnte Verzeichnis nicht erstellen: %1:
 .</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <location line="+436"/>
+        <location line="+10"/>
+        <location line="+449"/>
         <location line="+606"/>
         <source>Cannot write file %1:
 %2.</source>
@@ -1453,12 +1477,12 @@ Werden weiterhin Änderungen verlieren?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1036"/>
+        <location line="-1049"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment und Einstellungen gespeichert als: </translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+16"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
 &apos;%2&apos;.</source>
@@ -1470,7 +1494,7 @@ Werden weiterhin Änderungen verlieren?</translation>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+34"/>
         <source>Do you want to try again?</source>
         <translation>Nochmal versuchen?</translation>
     </message>
@@ -1485,7 +1509,7 @@ Werden weiterhin Änderungen verlieren?</translation>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location line="+276"/>
+        <location line="+282"/>
         <location line="+41"/>
         <source>Saved file : </source>
         <translation>Datei gespeichert : </translation>
@@ -1529,14 +1553,15 @@ Werden weiterhin Änderungen verlieren?</translation>
     <message>
         <location line="+13"/>
         <location line="+473"/>
-        <location line="+1257"/>
+        <location line="+1255"/>
+        <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kann Datei nicht lesen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1723"/>
+        <location line="-1920"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
@@ -1731,7 +1756,7 @@ Möchten Sie es neu laden?</translation>
         <translation>Fragment nicht lauffähig.</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+55"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script Kompiliert in %1 ms.</translation>
     </message>
@@ -1757,11 +1782,12 @@ Möchten Sie es neu laden?</translation>
     </message>
     <message>
         <location line="+42"/>
+        <location line="+971"/>
         <source>Loaded file: %1</source>
         <translation>Geladene Datei: %1</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="-963"/>
         <source>Unnamed</source>
         <translation>Unbenannt</translation>
     </message>
@@ -1776,30 +1802,55 @@ Möchten Sie es neu laden?</translation>
         <translation>Wenn das Preset gesperrte Variablen ändert, ist erneutes Wählen von &quot;Build&quot; erforderlich.</translation>
     </message>
     <message>
-        <source>There are unsaved changes.%1
-Continue will discard changes.</source>
-        <translation type="vanished">Es gibt Registerkarten mit nicht gespeicherten Änderungen.
-%1
-Werden weiterhin Änderungen verlieren?</translation>
-    </message>
-    <message>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
 and save before closing!</source>
-        <translation type="vanished">
+        <translation type="obsolete">
 Um Beschleunigungskurven zu halten, müssen Sie
 Füge ein Preset mit dem Namen &quot;Range&quot; hinzu
 und vor dem Schließen speichern!</translation>
     </message>
     <message>
-        <location line="-2647"/>
-        <location line="+2683"/>
+        <source>Cannot read file %1:
+%2
+</source>
+        <translation type="obsolete">Kann Datei nicht lesen %1:
+%2. {1:?} {2
+?}</translation>
+    </message>
+    <message>
+        <source>There are unsaved changes.%1
+Continue will discard changes.</source>
+        <translation type="obsolete">Es gibt Registerkarten mit nicht gespeicherten Änderungen.
+%1
+Werden weiterhin Änderungen verlieren?</translation>
+    </message>
+    <message>
+        <location line="+920"/>
+        <source>CMD Script (*.fqs);;All Files (*.*)</source>
+        <translation>CmdScript (*.fqs);;Alle Dateien (*.*)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bind CMD script to F6 key</source>
+        <translation>Binden Sie das Befehlsskript an die Taste F6</translation>
+    </message>
+    <message>
+        <location line="-3586"/>
+        <location line="+2700"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="-1531"/>
+        <source>Could not remove dependency:
+&apos;%1&apos;</source>
+        <translation>Abhängigkeit konnte nicht entfernt werden:
+&apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+1575"/>
         <location line="+10"/>
         <location line="+10"/>
         <source>Launching web browser...</source>
@@ -1874,7 +1925,7 @@ und vor dem Schließen speichern!</translation>
         <translation>Muß eine .frag- oder .fragparams-Datei sein.</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+339"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset nicht gefunden!</translation>
     </message>
@@ -1923,6 +1974,7 @@ und vor dem Schließen speichern!</translation>
     </message>
     <message>
         <location line="+65"/>
+        <location line="+113"/>
         <source>Error %1 at line %2</source>
         <translation>Fehler %1 in Zeile %2</translation>
     </message>
@@ -1996,7 +2048,7 @@ und vor dem Schließen speichern!</translation>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+765"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+781"/>
         <source>Select a Texture</source>
         <translation>Wähle Textur</translation>
     </message>
@@ -2089,22 +2141,22 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <translation> Einstellungen aufs Clipboard</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+119"/>
         <source>%1 locked variables: %2</source>
         <translation>%1 gesperrte Variablen: %2</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+141"/>
         <source>Unsupported parameter</source>
         <translation>Ununterstützter Parameter</translation>
     </message>
     <message>
-        <location line="+144"/>
+        <location line="+166"/>
         <source>Expected a key value pair, found: </source>
         <translation>Erwartete key value pair, fand: </translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Could not find: </source>
         <translation>Konnte nicht finden: </translation>
     </message>
@@ -2637,7 +2689,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+156"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+253"/>
         <source>Including file: </source>
         <translation>Schließt Datei ein: </translation>
     </message>
@@ -2647,7 +2699,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <translation>Schließt BufferShader  ein: </translation>
     </message>
     <message>
-        <location line="+374"/>
+        <location line="+380"/>
         <source>Parse: </source>
         <translation></translation>
     </message>
@@ -2655,7 +2707,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-978"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1092"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>
@@ -2668,7 +2720,12 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>SyntopiaCore::Logging::ListWidget</name>
     <message>
-        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+28"/>
+        <location filename="../SyntopiaCore/Logging/ListWidgetLogger.h" line="+31"/>
+        <source>Open file</source>
+        <translation>Datei öffnen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Copy to Clipboard</source>
         <translation>Kopieren aufs Clipboard</translation>
     </message>
@@ -2678,7 +2735,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <translation>Löschen</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+32"/>
         <source>Copied %1 lines to clipboard</source>
         <translation>%1 Zeilen aufs Clipboard kopiert</translation>
     </message>
