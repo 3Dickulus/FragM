@@ -20,6 +20,7 @@
 
 #include <qfilesystemwatcher.h>
 
+#include "OutputDialog.h"
 #include "DisplayWidget.h"
 #include "Highlighter.h"
 #include "VariableEditor.h"

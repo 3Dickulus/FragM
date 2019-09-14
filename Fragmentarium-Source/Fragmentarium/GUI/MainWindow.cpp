@@ -51,7 +51,7 @@
 #include "Preprocessor.h"
 #include "VariableEditor.h"
 
-// #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 namespace Fragmentarium
 {
@@ -1278,9 +1278,9 @@ void MainWindow::tileBasedRender()
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
-
+    
     bool runFromScript = runningScript;
-    QString subdirName;
+    QString subdirName = od.getFolderName();
 
     if(!runFromScript) {
         if (od.exec() != QDialog::Accepted) {
@@ -1296,7 +1296,7 @@ retry:
     bufferYSpinBox->setValue(tileHeight);
     int maxTiles = od.getTiles();
 
-    if (od.doSaveFragment()) {
+    if (od.doSaveFragment() || od.doAnimation()) {
         QString fileName = od.getFragmentFileName();
         logger->getListWidget()->clear();
         if (tabBar->currentIndex() == -1) {
@@ -1328,50 +1328,64 @@ retry:
 
             QString final = prepend + fs.getText() + append;
 
-//             QString f = od.getFileName();
-//             QDir oDir(QFileInfo(f).absolutePath());
-//
-//             subdirName = f.left(f.indexOf(".")) + tr("_Files");
-//
-//             if (!oDir.mkdir(subdirName)) {
-//
-//                 QMessageBox::warning(this, tr("Fragmentarium"),
-//                                      tr("Could not create directory %1:\n.")
-//                                      .arg(oDir.filePath(subdirName)));
-//                 return;
-//             }
-//             subdirName = oDir.filePath(subdirName); // full name
-
             QString f = od.getFileName();
             QDir oDir(QFileInfo(f).absolutePath());
             QString subdirName = od.getFolderName();
+            bool overWrite = false;
+            if (oDir.exists(subdirName)){
+                QMessageBox msgBox(this);
+                msgBox.setIcon(QMessageBox::Warning);
+                msgBox.setText( QString("%1<br>Already exists!").arg(subdirName) );
+                msgBox.setInformativeText(tr("Do you want to use it? <br><br>This will overwrite any existing files!"));
+                msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                int ret = msgBox.exec();
+                switch (ret) {
+                case QMessageBox::Ok:
+                    overWrite = true;
+                    break;
+                case QMessageBox::Cancel:
+                    goto retry;
+                    break;
+                default:
+                    return;
+                }
+            } else            
             if (!oDir.mkdir(subdirName)) {
-
-              QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
-              return;
+                QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+                goto retry;
             }
+            
             subdirName = oDir.filePath(subdirName); // full name
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
-            QFile fileStream(subdirName + QDir::separator() + fileName);
-            if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
-                return;
-            }
+            if(od.doSaveFragment()) {
+                QFile fileStream(subdirName + QDir::separator() + fileName);
 
-            QTextStream out(&fileStream);
-            out << final;
-            INFO(tr("Saved fragment + settings as: ") + subdirName +
-                 QDir::separator() + fileName);
+                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
+                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
+                    return;
+                }
 
-            if(includeWithAutoSave) {
-                // Copy files.
-                QStringList ll = p.getDependencies();
-                foreach (QString from, ll) {
-                    QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
-                    if (!QFile::copy(from,to)) {
-                        QMessageBox::warning(
-                            this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
+                QTextStream out(&fileStream);
+                out << final;
+                INFO(tr("Saved fragment + settings as: ") + subdirName +
+                    QDir::separator() + fileName);
+
+                if(includeWithAutoSave) {
+                    // Copy files.
+                    QStringList ll = p.getDependencies();
+                    foreach (QString from, ll) {
+                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
+                        if(QFile::exists(to) && overWrite)
+                        if (!QFile::remove(to)) {
+                            QMessageBox::warning(
+                                this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1'").arg(from).arg(to));
+                        }
+                            
+                        if (!QFile::copy(from,to)) {
+                            QMessageBox::warning(
+                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
+                        }
                     }
                 }
             }
@@ -1425,7 +1439,7 @@ retry:
         startTime = getFrame();
         timeSteps = startTime+1;
     } else if (endTime > startTime) {
-        timeSteps = endTime;
+        timeSteps = endTime+1;
     }
 
     int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
@@ -1484,16 +1498,22 @@ retry:
             name=makeImgFileName(timeStep, timeSteps, fileName);
         }
 
-        if (od.doSaveFragment() || od.doAnimation()) {
-          subdirName = od.getFolderName();
-            // save the image(s) in the frags folder unless the image name indicates it's own folder
-          if(!name.contains(QDir::separator())) {
-              name = (QFileInfo(name).absolutePath() + QDir::separator() + subdirName + QDir::separator() + QFileInfo(name).fileName());
-              QDir dir(QFileInfo(name).absolutePath());
-              if (!dir.exists()) {
-                  dir.mkdir(QFileInfo(name).absolutePath());
-              }
-          }
+        if ( od.doSaveFragment() || od.doAnimation() ) {
+            subdirName = od.getFolderName();
+            QDir filedir ( QFileInfo ( subdirName ).absolutePath() );
+
+            if ( !filedir.exists() ) {
+                filedir.mkdir ( QFileInfo ( subdirName ).absolutePath() );
+            }
+
+            name = ( QFileInfo ( name ).absolutePath() + QDir::separator() +
+                     subdirName + QDir::separator() + ( od.doAnimation() ?"Images/": "" ) +
+                     QFileInfo ( name ).fileName() );
+
+            QDir imgdir ( QFileInfo ( name ).absolutePath() );
+            if ( !imgdir.exists() ) {
+                imgdir.mkdir ( QFileInfo ( name ).absolutePath() );
+            }
         }
 
         QTime frametime;
@@ -2886,7 +2906,7 @@ void MainWindow::closeTab(int index)
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
         QString mess =
-            tr("There are unsaved changes.%1\r\nContinue will discard changes.")
+            tr("There are unsaved changes.\r\n%1\r\nContinue will discard changes.")
                 .arg(variableEditor->hasEasing()
                 ? tr("\r\nTo keep Easing curves you must\r\nadd a preset named \"Range\"\r\nand save before closing!")
                 : "\r\n");
@@ -3737,7 +3757,7 @@ void MainWindow::slotShortcutF6()
 
         QFile file(scriptname);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            WARNING(tr("Cannot read file %1:\n// %2\n").arg(scriptname).arg(file.errorString()));
+            WARNING(tr("Cannot read file %1:\n%2.").arg(scriptname).arg(file.errorString()));
         } else {
             QTextStream in(&file);
 
