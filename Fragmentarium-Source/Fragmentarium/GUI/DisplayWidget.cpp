@@ -1755,8 +1755,8 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // Setup User Uniforms
 
     // this should speed things up a little because we are only setting uniforms on
-    // the first subframe of the first tile
-    if (subframeCounter <= 1 && tilesCount <= 1) {
+    // the first tile
+    if (tilesCount == 0) {
         setShaderUniforms(shaderProgram);
     }
 
