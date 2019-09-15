@@ -61,7 +61,7 @@ void OutputDialog::readOutputSettings()
     m_ui.autoSaveCheckBox->setChecked(settings.value("autosave", true).toBool());
     m_ui.filenameEdit->setText(settings.value("filename", "out.png").toString());
     m_ui.fpsSpinBox->setValue(settings.value("fps", 25).toInt());
-    m_ui.startFrameSpinBox->setValue(settings.value("startframe", 0).toInt());
+    m_ui.startFrameSpinBox->setValue(settings.value("startframe", 1).toInt());
     m_ui.endFrameSpinBox->setValue(settings.value("endframe", 100000).toInt());
     m_ui.subFrameSpinBox->setValue(settings.value("subframes", 1).toInt());
     m_ui.tilesSlider->setValue(settings.value("tiles", 3).toInt());
@@ -95,8 +95,8 @@ void OutputDialog::setMaxTime(double f)
 {
     m_ui.endTimeSpinBox->setValue(f);
     m_ui.endFrameSpinBox->setMaximum(f*m_ui.fpsSpinBox->value());
-    m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>( 0, m_ui.endTimeSpinBox->value() * m_ui.fpsSpinBox->value()));
-    m_ui.frameRangeSlider->setRange(QPair<int, int>( m_ui.startFrameSpinBox->value(), m_ui.endFrameSpinBox->value()));
+    m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>( 0, (f * m_ui.fpsSpinBox->value())-1));
+    m_ui.frameRangeSlider->setRange(QPair<int, int>( m_ui.startFrameSpinBox->value()-1, m_ui.endFrameSpinBox->value()-1));
 }
 
 void OutputDialog::animationChanged()
@@ -111,8 +111,8 @@ void OutputDialog::animationChanged()
 
 void OutputDialog::frameRangeSliderChanged(QPair<int, int> fR)
 {
-    m_ui.startFrameSpinBox->setValue(fR.first);
-    m_ui.endFrameSpinBox->setValue(fR.second);
+    m_ui.startFrameSpinBox->setValue(fR.first+1);
+    m_ui.endFrameSpinBox->setValue(fR.second+1);
 }
 
 void OutputDialog::chooseFile()
@@ -269,8 +269,8 @@ void OutputDialog::updateTotalTiles(int value)
                                   .arg(length)
                                   .arg(fps * length * s * t));
 
-        m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>(0, m_ui.endTimeSpinBox->value() * fps));
-        m_ui.frameRangeSlider->setRange(QPair<int, int>(m_ui.startFrameSpinBox->value(), m_ui.endFrameSpinBox->value()));
+        m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>(0, (m_ui.endTimeSpinBox->value() * fps)-1));
+        m_ui.frameRangeSlider->setRange(QPair<int, int>(m_ui.startFrameSpinBox->value()-1, m_ui.endFrameSpinBox->value()-1));
 
     } else {
         m_ui.totalFrames->setText(tr("Total tiles: %1x%2 = %3").arg(t).arg(s).arg(t * s));

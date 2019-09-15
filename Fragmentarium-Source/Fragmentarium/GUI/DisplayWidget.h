@@ -239,7 +239,7 @@ public:
 
     QString renderETA;
     int renderAVG;
-    int framesToRender;
+    int renderToFrame;
     int tileAVG;
 
     int subframeCounter;

@@ -1280,7 +1280,6 @@ retry:
     od.setMaxTime(timeMax);
     
     bool runFromScript = runningScript;
-    QString subdirName = od.getFolderName();
 
     if(!runFromScript) {
         if (od.exec() != QDialog::Accepted) {
@@ -1294,7 +1293,6 @@ retry:
     bufferXSpinBox->setValue(tileWidth);
     int tileHeight = od.getTileHeight();
     bufferYSpinBox->setValue(tileHeight);
-    int maxTiles = od.getTiles();
 
     if (od.doSaveFragment() || od.doAnimation()) {
         QString fileName = od.getFragmentFileName();
@@ -1403,11 +1401,13 @@ retry:
     QString fileName = od.getFileName();
     int fps = od.getFPS();
     int maxTime = od.getMaxTime();
-    int timeSteps = fps*maxTime;
     bool preview = od.preview();
-    int startTime = od.startAtFrame();
-    int endTime = od.endAtFrame();
+    int startTime = od.doAnimation() ? od.startAtFrame() : 0;
+    int endTime = od.doAnimation() ? od.endAtFrame() : 0;
+    int maxTiles = od.getTiles();
 
+    int timeSteps = fps*maxTime;
+    
     bool imageSaved = false;
 #ifdef USE_OPEN_EXR
     exrMode = fileName.endsWith(".exr", Qt::CaseInsensitive);
@@ -1435,11 +1435,13 @@ retry:
         }
     }
 
+    if(startTime == endTime) {timeSteps = 1; } endTime += 1;
+
     if (timeSteps==0) {
         startTime = getFrame();
         timeSteps = startTime+1;
     } else if (endTime > startTime) {
-        timeSteps = endTime+1;
+        timeSteps = endTime;
     }
 
     int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
@@ -1448,7 +1450,7 @@ retry:
     engine->tileAVG = 0;
     engine->renderAVG = 0;
     engine->renderETA =  "";
-    engine->framesToRender = endTime - startTime;
+    engine->renderToFrame = endTime-1;
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
     progress.setValue ( 0 );
@@ -1466,7 +1468,7 @@ retry:
     QTime totalTime;
     totalTime.start();
 
-    for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
+   for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
 
         if (progress.wasCanceled() || (runFromScript != runningScript)) {
@@ -1499,7 +1501,7 @@ retry:
         }
 
         if ( od.doSaveFragment() || od.doAnimation() ) {
-            subdirName = od.getFolderName();
+            QString subdirName = od.getFolderName();
             QDir filedir ( QFileInfo ( subdirName ).absolutePath() );
 
             if ( !filedir.exists() ) {
@@ -1975,8 +1977,8 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeLabel);
 
     timeSlider = new QSlider(Qt::Horizontal, this);
-    timeSlider->setMinimum(0);
-    timeSlider->setValue(0);
+    timeSlider->setMinimum(1);
+    timeSlider->setValue(1);
 
     timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
@@ -2134,7 +2136,7 @@ double MainWindow::getTime()
 
     DisplayWidget::DrawingState state = engine->getState();
 
-    int time = 0;
+    int time = 1;
     if (!engine->isContinuous() || state == DisplayWidget::Tiled) {
         // The engine is not in 'running' mode. Return last stored paused time.
         time = lastStoredTime;

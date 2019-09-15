@@ -2094,7 +2094,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
     progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
                              .arg((int)(time * renderFPS))
-                             .arg(framesToRender)
+                             .arg(renderToFrame)
                              .arg(time, 8, 'g', 3, QChar(' ')));
 
     for ( int i = 0; i< subframes; i++ ) {
