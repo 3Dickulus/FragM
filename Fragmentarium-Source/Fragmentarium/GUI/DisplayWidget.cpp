@@ -244,16 +244,16 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
 
 void DisplayWidget::uniformsHasChanged(Provenance provenance)
 {
-  if(fragmentSource.depthToAlpha) {
+    if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
         if (btest != nullptr) {
-      // widget detected
-      depthToAlpha = btest->isChecked();
+            // widget detected
+            depthToAlpha = btest->isChecked();
+        }
     }
-  }
-  bufferUniformsHaveChanged |= !!(provenance & FromBufferShader);
-  bool bufferShaderOnly = provenance == FromBufferShader;
-  requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
+    bufferUniformsHaveChanged |= !!(provenance & FromBufferShader);
+    bool bufferShaderOnly = provenance == FromBufferShader;
+    requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
 }
 
 /// /* Texture mapping */
@@ -1370,20 +1370,12 @@ void DisplayWidget::setViewPort(int w, int h)
 
 bool DisplayWidget::checkShaderProg(GLuint programID)
 {
-    if(programID == shaderProgram->programId()) {
-        if(verbose) {
-            qDebug() << "\nshaderProgram";
-        }
+    if(hasShader() && programID == shaderProgram->programId()) {
         return true;
     } else if (hasBufferShader() && programID == bufferShaderProgram->programId()) {
-        if(verbose) {
-            qDebug() << "\nbufferShaderProgram";
-        }
         return true;
     } else {
-        if(verbose) {
-            qDebug() << "\nNO ShaderProgram!!!";
-        }
+            WARNING("NO ShaderProgram!!!");
     }
     return false;
 }
@@ -1635,29 +1627,39 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
     }
     if (subframeCounter == 1 && verbose) {
         qDebug() << count << " active uniforms initialized\n";
+        if (shaderProg == shaderProgram) {
+            if ( mainWindow->getVariableEditor()->hasEasing() ) {
+                QStringList cs = curveSettings;
+                while(!cs.isEmpty()) {
+                    qDebug() << cs.at(0);
+                    cs.removeFirst();
+                }
+                    qDebug() << curveSettings.count() << " active easingcurve settings." << endl;
+            }
+        }
     }
 }
 
-void DisplayWidget::setupShaderVars(int w, int h) {
+void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h) {
 
     cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
-    int l = shaderProgram->uniformLocation ( "pixelSize" );
+    int l = shaderProg->uniformLocation ( "pixelSize" );
 
     if ( l != -1 ) {
-        shaderProgram->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
+        shaderProg->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
     }
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
-    l = shaderProgram->uniformLocation ( "globalPixelSize" );
+    l = shaderProg->uniformLocation ( "globalPixelSize" );
 
     if ( l != -1 ) {
-        shaderProgram->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
+        shaderProg->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
     }
 
-    l = shaderProgram->uniformLocation ( "time" );
+    l = shaderProg->uniformLocation ( "time" );
 
     if ( l != -1 ) {
         double t = mainWindow->getTime() / ( double ) renderFPS;
-        shaderProgram->setUniformValue ( l, ( float ) t );
+        shaderProg->setUniformValue ( l, ( float ) t );
     } else {
         mainWindow->getTime();
     }
@@ -1667,7 +1669,7 @@ void DisplayWidget::setupShaderVars(int w, int h) {
         GLuint i = backBuffer->texture();
         glBindTexture ( GL_TEXTURE_2D,i );
 
-        l = shaderProgram->uniformLocation ( "backbuffer" );
+        l = shaderProg->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
             if (verbose && subframeCounter == 1) {
                 qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
@@ -1675,17 +1677,26 @@ void DisplayWidget::setupShaderVars(int w, int h) {
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
             }
-            shaderProgram->setUniformValue ( l, 0 );
+            shaderProg->setUniformValue ( l, 0 );
         }
 
-        l = shaderProgram->uniformLocation ( "subframe" );
+        l = shaderProg->uniformLocation ( "subframe" );
 
         if ( l != -1 ) {
-            shaderProgram->setUniformValue ( l, subframeCounter );
+            shaderProg->setUniformValue ( l, subframeCounter );
             // if(verbose) qDebug() << QString("Setting subframe: %1").arg(subframeCounter);
         }
     }
+    
+        l = shaderProg->uniformLocation ( "frontbuffer" );
 
+        if ( l != -1 ) {
+            shaderProg->setUniformValue ( l, 0 );
+        } else {
+            if(shaderProg == bufferShaderProgram) {
+                WARNING(tr("No front buffer sampler found in buffer shader. This doesn't make sense."));
+            }
+        }
 }
 
 void DisplayWidget::draw3DHints()
@@ -1750,12 +1761,13 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
     }
 
-    setupShaderVars(w, h);
+    // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
+    // these are constantly changing so need to be set every subframe
+    setupShaderVars(shaderProgram, w, h);
 
-    // Setup User Uniforms
-
-    // this should speed things up a little because we are only setting uniforms on
-    // the first tile
+    // Setup User Uniforms, this should speed things up a little
+    // we are only setting uniforms on the first tile
+    // this scheme doesn't seem to work testing subframeCounter == 1
     if (tilesCount == 0) {
         setShaderUniforms(shaderProgram);
     }
@@ -1832,34 +1844,6 @@ bool DisplayWidget::FBOcheck()
     return true;
 }
 
-void DisplayWidget::setupBufferShaderVars(int w, int h)
-{
-        int l = bufferShaderProgram->uniformLocation ( "pixelSize" );
-
-        if ( l != -1 ) {
-            shaderProgram->setUniformValue(l, (float)(1.0 / w), (float)(1.0 / h));
-        }
-        // for DepthBufferShader.frag & NODE-Raytracer.frag
-        l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
-
-        if ( l != -1 ) {
-            shaderProgram->setUniformValue(l, (1.0 / w), (1.0 / h));
-        }
-
-        l = bufferShaderProgram->uniformLocation ( "frontbuffer" );
-
-        if ( l != -1 ) {
-            bufferShaderProgram->setUniformValue ( l, 0 );
-        } else {
-            WARNING(tr("No front buffer sampler found in buffer shader. This doesn't make sense."));
-        }
-        // Setup User Uniforms
-        if (bufferUniformsHaveChanged) {
-            setShaderUniforms ( bufferShaderProgram );
-            bufferUniformsHaveChanged = false;
-        }
-}
-
 void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
 {
 
@@ -1906,7 +1890,12 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     // Draw a textured quad using the preview texture.
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->bind();
-        setupBufferShaderVars( s.width(),s.height());
+        setupShaderVars(bufferShaderProgram, s.width(),s.height());
+        // Setup User Uniforms
+        if (bufferUniformsHaveChanged) {
+                setShaderUniforms ( bufferShaderProgram );
+                bufferUniformsHaveChanged = false;
+        }
     }
 
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -2576,9 +2565,6 @@ void DisplayWidget::setCurveSettings(const QStringList cset)
 {
     mainWindow->getVariableEditor()->setEasingEnabled ( !cset.isEmpty() );
     curveSettings = cset;
-    if (verbose) {
-        qDebug() << cset;
-    }
 }
 
 void DisplayWidget::drawSplines()

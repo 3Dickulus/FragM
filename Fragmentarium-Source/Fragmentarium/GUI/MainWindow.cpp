@@ -2069,7 +2069,10 @@ void MainWindow::timeChanged(int value)
 
 void MainWindow::timeMaxChanged(int value)
 {
-
+    // so the render output dialog picks up the change immediately
+    QSettings settings;
+    settings.setValue("timeMax", value);
+    
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
@@ -2378,10 +2381,6 @@ void MainWindow::loadFragFile(const QString &fileName)
         bool pp = pausePlay;
         stop();
 
-//         QString inputText = getTextEdit()->toPlainText();
-//         if (inputText.startsWith("#donotrun")) {
-//             variableEditor->resetUniforms(false);
-//         }
         if (QSettings().value("autorun", true).toBool()) {
             rebuildRequired = initializeFragment();// once to initialize presets
             bool requiresRecompile = variableEditor->setDefault();
@@ -2393,8 +2392,8 @@ void MainWindow::loadFragFile(const QString &fileName)
             rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
-update();
-//         highlightBuildButton(!rebuildRequired);
+        
+        update();
 
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);

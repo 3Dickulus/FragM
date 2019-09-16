@@ -734,7 +734,9 @@ bool VariableEditor::setSettings(QString text)
         QString v = variables[i]->getName();
         if (maps.contains(v)) {
             requiresRecompile |= variables[i]->fromSettingsString(maps[v]);
+            
             provenance = Provenance(provenance | variables[i]->getProvenance());
+            
 //             if(verbose) qDebug() << "Found: "+variables[i]->getName();
             maps.remove(v);
         }
@@ -796,6 +798,10 @@ bool VariableEditor::eventFilter(QObject *obj, QEvent *ev)
 
 int VariableEditor::addEasingCurve(QString c)
 {
+    if (verbose) {
+        qDebug() << "Adding easingcurve: " << c;
+    }
+
     QStringList curveSettings = mainWindow->getEngine()->getCurveSettings();
     int count = curveSettings.count();
     int found = -1;

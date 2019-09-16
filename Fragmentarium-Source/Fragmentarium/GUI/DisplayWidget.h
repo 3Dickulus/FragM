@@ -366,10 +366,9 @@ private:
 #endif
 
     void resetUniformProvenance();
-    void setupShaderVars(int w, int h);
+    void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
     void draw3DHints();
     bool FBOcheck();
-    void setupBufferShaderVars(int w, int h);
 
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
