@@ -169,7 +169,6 @@ void OutputDialog::updateFileName(const QString &fn)
         error = true;
     }
 
-
     if (error) {
         QPalette p = m_ui.filenameEdit->palette();
         p.setColor(QPalette::Base, QColor(255,70,70));

@@ -19,6 +19,8 @@
 #include "SyntopiaCore/Logging/Logging.h"
 #include <QOpenGLShaderProgram>
 
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+
 /// Classes for the GUI Editor for the preprocessor constant variables.
 /// E.g. the line: uniform float Angle; slider[45.00,0,360]
 ///	will make a simple editor widget appear.
@@ -479,7 +481,7 @@ class SamplerWidget : public VariableWidget
     Q_OBJECT
 public:
     SamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue );
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
@@ -488,6 +490,7 @@ public:
     {
         lockType = AlwaysLocked;
     } // cannot change this
+    
     QString getValue() ;
     virtual QString getUniqueName()
     {
@@ -496,6 +499,25 @@ public:
     void reset()
     {
         comboBox->setEditText ( defaultValue );
+        if(!defaultChannelValue.isEmpty()) {
+            channelComboBox->show();
+            int i = channelComboBox->findText(defaultChannelValue);
+            if(i != -1) {
+                channelComboBox->setCurrentIndex(i);
+            }
+        } else channelComboBox->hide();
+    }
+    QString getChannelValue()
+    {
+        if(!channelComboBox->isHidden())
+        return channelComboBox->currentText();
+        else return "";
+    }
+    int hasChannel(QString chan)
+    {
+        if(!channelComboBox->isHidden())
+        return channelComboBox->findText(chan);
+        else return -1;
     }
     QString getLockedSubstitution()
     {
@@ -517,15 +539,18 @@ signals:
 protected slots:
 
     void textChanged(const QString& text);
+    void channelChanged(const QString& text);
 
     void buttonClicked();
 
 private:
 
     QComboBox* comboBox;
+    QComboBox* channelComboBox;
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
+    QString defaultChannelValue;
 };
 
 

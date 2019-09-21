@@ -126,7 +126,6 @@ QString VariableWidget::toSettingsString()
 
 bool VariableWidget::fromSettingsString(QString string)
 {
-
     bool requiresRecompile = false;
 
     const QRegExp lockTypeString("(AlwaysLocked|Locked|NotLocked|NotLockable)\\s*.?$");
@@ -715,8 +714,8 @@ void IntWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 // SamplerWidget
 // ------------------------------------------------------------------
 
-SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue)
-    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue)
+SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue), defaultChannelValue(defaultChannelValue)
 {
 
     auto *l = new QHBoxLayout(widget);
@@ -734,6 +733,23 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
     comboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
     comboBox->view()->setCornerWidget(new QSizeGrip(comboBox));
+    
+        channelComboBox = new QComboBox(parent);
+        channelComboBox->setEditable(true);
+        channelComboBox->setEditText(defaultChannelValue);
+        channelComboBox->setObjectName(name+"Channel");
+
+        l->addWidget(channelComboBox);
+        channelComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+        channelComboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
+        channelComboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
+        channelComboBox->view()->setCornerWidget(new QSizeGrip(channelComboBox));
+        
+        connect(channelComboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
+
+        if(defaultChannelValue.isEmpty()){
+            channelComboBox->hide();
+        }
 
     pushButton = new QPushButton("...", parent);
     l->addWidget(pushButton);
@@ -745,18 +761,71 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     texID=0;
 }
 
+void SamplerWidget::channelChanged(const QString &text)
+{
+    Q_UNUSED(text)
+    if (!fileManager->fileExists(comboBox->currentText())) {
+        QPalette pal = comboBox->palette();
+        pal.setColor(comboBox->backgroundRole(), Qt::red);
+        comboBox->setPalette(pal);
+        comboBox->setAutoFillBackground(true);
+    } else {
+        comboBox->setPalette(QApplication::palette(comboBox));
+        comboBox->setAutoFillBackground(false);
+    }
+    
+    if(channelComboBox->findText(text) == -1 && text != tr("All")) {
+        QPalette pal = channelComboBox->palette();
+        pal.setColor(channelComboBox->backgroundRole(), Qt::red);
+        channelComboBox->setPalette(pal);
+        channelComboBox->setAutoFillBackground(true);
+    } else {
+        channelComboBox->setPalette(QApplication::palette(channelComboBox));
+        channelComboBox->setAutoFillBackground(false);
+    }
+
+    
+    //emit changed();
+    valueChanged();
+}
+
 void SamplerWidget::textChanged(const QString &text)
 {
     Q_UNUSED(text)
     if (!fileManager->fileExists(comboBox->currentText())) {
-        QPalette pal = this->palette();
-        pal.setColor(this->backgroundRole(), Qt::red);
-        this->setPalette(pal);
-        this->setAutoFillBackground(true);
+        QPalette pal = comboBox->palette();
+        pal.setColor(comboBox->backgroundRole(), Qt::red);
+        comboBox->setPalette(pal);
+        comboBox->setAutoFillBackground(true);
     } else {
-        this->setPalette(QApplication::palette(this));
-        this->setAutoFillBackground(false);
+        comboBox->setPalette(QApplication::palette(comboBox));
+        comboBox->setAutoFillBackground(false);
     }
+
+    QString fileName="";
+    if(QFileInfo(text).exists())
+        fileName=text;
+    else if(QFileInfo("Examples/"+text).exists())
+        fileName="Examples/"+text;
+    else  if(QFileInfo("Examples/Include/"+text).exists())
+        fileName="Examples/Include/"+text;
+    
+    if(!fileName.isEmpty() && fileName.endsWith(".exr") ) {
+        InputFile file ( fileName.toLatin1().data() );
+
+        // setup channelComboBox
+        if ( file.isComplete() ) {
+            QStringList items{tr("All")};
+            channelComboBox->clear();
+            const ChannelList &channels = file.header().channels();
+            for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
+            {
+                items += i.name();
+            }
+            channelComboBox->addItems(items);
+            channelComboBox->setHidden(false);
+        }    
+    } else channelComboBox->setHidden(true);
     //emit changed();
     valueChanged();
 }
@@ -786,7 +855,9 @@ void SamplerWidget::buttonClicked()
 
 QString SamplerWidget::toString()
 {
-    return comboBox->currentText();
+    QString returnValue = comboBox->currentText();
+    returnValue += (channelComboBox->isHidden()) ? "" : " " + channelComboBox->currentText();
+    return returnValue;
 }
 
 QString SamplerWidget::getValue()
@@ -800,7 +871,16 @@ bool SamplerWidget::fromString(QString string)
     if (toString() == string) {
         return false;
     }
-    comboBox->setEditText(string.trimmed());
+    QStringList test = string.split(" ");
+    QString value = test.at(0);
+    if(value != string) {
+        QString channel = string.split(" ").at(1);
+        if(!channel.isEmpty()) {
+            channelComboBox->setHidden(false);
+            channelComboBox->setEditText(channel.trimmed());
+        }
+    } else channelComboBox->setHidden(true);
+    comboBox->setEditText(value.trimmed());
     return isLocked();
 }
 

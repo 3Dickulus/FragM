@@ -721,6 +721,20 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
+        
+        if(type == GL_SAMPLER_2D) {
+            foreach (GuiParameter *p, fragmentSource.params) {
+                SamplerParameter *sp = dynamic_cast<SamplerParameter *>(p);
+                if (sp != nullptr && !sp->getName().isNull()) DBOUT << "Default: " << sp->getName() << sp->getDefaultValue() << sp->getDefaultChannelValue();
+            }
+            QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
+            foreach (VariableWidget *w, vw) {
+                SamplerWidget *sw = dynamic_cast<SamplerWidget *>(w);
+                if(sw != nullptr && !sw->getName().isNull()) {
+                    DBOUT << "Requested: " << sw->getName() << sw->getValue() << sw->getChannelValue();
+                }
+            }
+        }
 
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
 
@@ -800,7 +814,8 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         return true;
 
-    } else if (fragmentSource.textureParams.contains(textureUniformName)) { // set texparms
+    } else if (fragmentSource.textureParams.contains(textureUniformName)) {
+        // set texparms
         setGlTexParameter ( fragmentSource.textureParams[textureUniformName] );
         return true;
     } else { // User did not set texparms Disable mip-mapping per default.
@@ -1624,6 +1639,12 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         if (subframeCounter == 1 && verbose) {
             qDebug() << tp << "\t" << uniformName << uniformValue;
         }
+
+    if (subframeCounter == 1) {
+        auto *sw = dynamic_cast<SamplerWidget *>(vw[i]);
+        if (sw != nullptr) DBOUT << "Setting:" << sw->getName() << sw->getValue() << sw->getChannelValue();
+    }
+
     }
     if (subframeCounter == 1 && verbose) {
         qDebug() << count << " active uniforms initialized\n";

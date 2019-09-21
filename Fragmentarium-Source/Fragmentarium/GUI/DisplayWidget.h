@@ -73,7 +73,7 @@
 #include <ImfTiledRgbaFile.h>
 #include <half.h>
 
-#include <ImfMultiPartInputFile.h>
+#include <ImfInputFile.h>
 #include <ImfPartHelper.h>
 #include <ImfPartType.h>
 #include <ImfTiledInputPart.h>
