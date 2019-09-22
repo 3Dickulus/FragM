@@ -763,17 +763,6 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
 
 void SamplerWidget::channelChanged(const QString &text)
 {
-    Q_UNUSED(text)
-    if (!fileManager->fileExists(comboBox->currentText())) {
-        QPalette pal = comboBox->palette();
-        pal.setColor(comboBox->backgroundRole(), Qt::red);
-        comboBox->setPalette(pal);
-        comboBox->setAutoFillBackground(true);
-    } else {
-        comboBox->setPalette(QApplication::palette(comboBox));
-        comboBox->setAutoFillBackground(false);
-    }
-    
     if(channelComboBox->findText(text) == -1 && text != tr("All")) {
         QPalette pal = channelComboBox->palette();
         pal.setColor(channelComboBox->backgroundRole(), Qt::red);
@@ -783,8 +772,13 @@ void SamplerWidget::channelChanged(const QString &text)
         channelComboBox->setPalette(QApplication::palette(channelComboBox));
         channelComboBox->setAutoFillBackground(false);
     }
-
-    
+if(getValue().endsWith(".exr")) {
+    int check = hasChannel(text);
+    if(check == -1 && text != tr("All")) { 
+        DBOUT << endl << "Channel" << text << "not found!";
+    }
+    else DBOUT << "Changed:" << getName() << getValue() << text << check;
+}
     //emit changed();
     valueChanged();
 }
@@ -875,7 +869,7 @@ bool SamplerWidget::fromString(QString string)
     QString value = test.at(0);
     if(value != string) {
         QString channel = string.split(" ").at(1);
-        if(!channel.isEmpty()) {
+        if(!channel.isEmpty() && value.endsWith(".exr")) {
             channelComboBox->setHidden(false);
             channelComboBox->setEditText(channel.trimmed());
         }

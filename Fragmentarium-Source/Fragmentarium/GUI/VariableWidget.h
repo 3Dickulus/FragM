@@ -515,9 +515,21 @@ public:
     }
     int hasChannel(QString chan)
     {
+        int ci=-1;
         if(!channelComboBox->isHidden())
-        return channelComboBox->findText(chan);
-        else return -1;
+            ci=channelComboBox->findText(chan);
+        
+        if(ci == -1 && chan != tr("All")) {
+            QPalette pal = channelComboBox->palette();
+            pal.setColor(channelComboBox->backgroundRole(), Qt::red);
+            channelComboBox->setPalette(pal);
+            channelComboBox->setAutoFillBackground(true);
+        } else {
+            channelComboBox->setPalette(QApplication::palette(channelComboBox));
+            channelComboBox->setAutoFillBackground(false);
+        }
+
+        return ci;
     }
     QString getLockedSubstitution()
     {

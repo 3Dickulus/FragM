@@ -731,7 +731,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             foreach (VariableWidget *w, vw) {
                 SamplerWidget *sw = dynamic_cast<SamplerWidget *>(w);
                 if(sw != nullptr && !sw->getName().isNull()) {
-                    DBOUT << "Requested: " << sw->getName() << sw->getValue() << sw->getChannelValue();
+                    DBOUT << "Requested: " << sw->getName() << sw->getValue() << sw->getChannelValue() << sw->hasChannel(sw->getChannelValue());
                 }
             }
         }
@@ -1642,7 +1642,13 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 
     if (subframeCounter == 1) {
         auto *sw = dynamic_cast<SamplerWidget *>(vw[i]);
-        if (sw != nullptr) DBOUT << "Setting:" << sw->getName() << sw->getValue() << sw->getChannelValue();
+        if (sw != nullptr && sw->getValue().endsWith(".exr")) {
+            int check = sw->hasChannel(sw->getChannelValue());
+            if(check == -1 && sw->getChannelValue() != tr("All")) { 
+                DBOUT << endl << "Channel" << sw->getChannelValue() << "not found! Need fall back or fail here.";
+            }
+            else DBOUT << "Setting:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
+        }
     }
 
     }
@@ -1655,7 +1661,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                     qDebug() << cs.at(0);
                     cs.removeFirst();
                 }
-                    qDebug() << curveSettings.count() << " active easingcurve settings." << endl;
+                qDebug() << curveSettings.count() << " active easingcurve settings." << endl;
             }
         }
     }
