@@ -110,7 +110,7 @@ public:
         }
     }
 
-    QPropertyAnimation *m_anim;
+    QPropertyAnimation* m_anim;
     int m_framestart, m_framefin; // firstframe lastframe
     int m_loops;
     int m_pong;
@@ -565,6 +565,35 @@ private:
     QString defaultChannelValue;
 };
 
+class iSamplerWidget : public SamplerWidget
+{
+    Q_OBJECT
+public:
+    iSamplerWidget ( FileManager *fileManager, QWidget *parent,
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+
+signals:
+
+protected slots:
+
+private:
+
+};
+
+class uSamplerWidget : public SamplerWidget
+{
+    Q_OBJECT
+public:
+    uSamplerWidget ( FileManager *fileManager, QWidget *parent,
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+
+signals:
+
+protected slots:
+
+private:
+
+};
 
 /// A widget editor for a float variable.
 class FloatWidget : public VariableWidget

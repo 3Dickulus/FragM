@@ -772,13 +772,22 @@ void SamplerWidget::channelChanged(const QString &text)
         channelComboBox->setPalette(QApplication::palette(channelComboBox));
         channelComboBox->setAutoFillBackground(false);
     }
-if(getValue().endsWith(".exr")) {
-    int check = hasChannel(text);
-    if(check == -1 && text != tr("All")) { 
-        DBOUT << endl << "Channel" << text << "not found!";
+    
+    if(getValue().endsWith(".exr")) {
+        
+        bool check = true;
+        
+        QStringList l = text.split(";");
+        int i = l.count();
+        while(i--) {
+            if(hasChannel(l.at(i)) == -1) check=false;
+        }
+        
+        if(!check && text != tr("All")) { 
+            DBOUT << endl << "Channel" << text << "not found!";
+        }
+        else DBOUT << "Changed:" << getName() << getValue() << text << check;
     }
-    else DBOUT << "Changed:" << getName() << getValue() << text << check;
-}
     //emit changed();
     valueChanged();
 }
@@ -832,11 +841,11 @@ void SamplerWidget::buttonClicked()
     a << "";
     a << "hdr";
 
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
 #ifdef Q_OS_WIN
     a << "exr";
 #endif
-#endif
+// #endif
     a << QImageReader::supportedImageFormats();
     foreach(QByteArray s, a) {
         extensions.append(QString(s));
@@ -904,6 +913,16 @@ void SamplerWidget::updateTextures(Parser::FragmentSource *fs,
     } else {
         WARNING(tr("Weird, texture not found in fragment source: ") + name);
     }
+}
+
+iSamplerWidget::iSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
+{
+}
+
+uSamplerWidget::uSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
+{
 }
 
 // BoolWidget -------------------------------------------------

@@ -696,7 +696,6 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     return loaded;
 }
 
-#ifdef USE_OPEN_EXR
 //
 // Read an RGBA image using class RgbaInputFile:
 //
@@ -707,8 +706,16 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 //
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID)
 {
-    RgbaInputFile file ( texturePath.toLatin1().data() );
-    Box2i dw = file.dataWindow();
+#ifndef USE_OPEN_EXR
+    // Qt loads EXR files
+    return loadQtTexture(texturePath, type, textureID);
+#else
+    InputFile file ( texturePath.toLatin1().data() );
+    Box2i dw = file.header().dataWindow();
+
+    int chn = -1;
+    QString chv = "";
+    bool hasZ = false;
 
     if ( file.isComplete() ) {
 
@@ -721,40 +728,65 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
-        
+
+        Array2D<RGBAFLOAT>pixels ( w, 1 );
+
         if(type == GL_SAMPLER_2D) {
-            foreach (GuiParameter *p, fragmentSource.params) {
-                SamplerParameter *sp = dynamic_cast<SamplerParameter *>(p);
-                if (sp != nullptr && !sp->getName().isNull()) DBOUT << "Default: " << sp->getName() << sp->getDefaultValue() << sp->getDefaultChannelValue();
-            }
             QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
             foreach (VariableWidget *w, vw) {
                 SamplerWidget *sw = dynamic_cast<SamplerWidget *>(w);
                 if(sw != nullptr && !sw->getName().isNull()) {
-                    DBOUT << "Requested: " << sw->getName() << sw->getValue() << sw->getChannelValue() << sw->hasChannel(sw->getChannelValue());
+                    // TODO: test for multi channel value R;G;B
+                    chv = sw->getChannelValue(); // channel name
+                    if(chv == "Z" || chv == "DEPTH") hasZ = true;
+                    chn = sw->hasChannel(chv); // channel index
                 }
             }
         }
-
-        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
-
-        Array2D<Rgba>pixels ( w, 1 );
-
+  
+        pixels.resizeErase (w, h);
+        
+        size_t xs = 1 * sizeof (RGBAFLOAT);
+        size_t ys = w * sizeof (RGBAFLOAT);
+        
         auto *cols = new float[w * h * 4];
+        
         while ( dw.min.y <= dw.max.y ) {
-            file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * w, 1, w);
-            file.readPixels ( dw.min.y, dw.min.y );
+
+            RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+
+            FrameBuffer fb;
+
+            fb.insert ("R", Slice (FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ("G", Slice (FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ("B", Slice (FLOAT, (char *) &base[0].b, xs, ys));
+            if(!hasZ)
+                fb.insert ("A", Slice (FLOAT, (char *) &base[0].a, xs, ys));
+            else
+                fb.insert ("Z", Slice (FLOAT, (char *) &base[0].a, xs, ys));
+
+            file.setFrameBuffer (fb);
+            file.readPixels ( dw.min.y );
+
             // process scanline (pixels)
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx]=pixels[0][i].r;
-                cols[indx+1]=pixels[0][i].g;
-                cols[indx+2]=pixels[0][i].b;
-                cols[indx+3]=pixels[0][i].a;
+                if(hasZ) { // makes greyscale for testing
+                    cols[indx] = pixels[0][i].a;
+                    cols[indx+1]=pixels[0][i].a;
+                    cols[indx+2]=pixels[0][i].a;
+                    cols[indx+3]=pixels[0][i].a;
+                } else {
+                    cols[indx] = (chv=="R" || chv=="All") ? pixels[0][i].r : 0.0;
+                    cols[indx+1]=(chv=="G" || chv=="All") ? pixels[0][i].g : 0.0;
+                    cols[indx+2]=(chv=="B" || chv=="All") ? pixels[0][i].b : 0.0;
+                    cols[indx+3]=pixels[0][i].a; // put 4th channel in alpha position
+                }
             }
             dw.min.y ++;
         }
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
         if(type == GL_SAMPLER_CUBE) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
@@ -771,9 +803,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
     }
+#endif
     return true;
 }
-#endif
 
 // Qt format image, Qt 5+ loads EXR format on linux
 bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
@@ -881,11 +913,11 @@ void DisplayWidget::initFragmentTextures()
                     if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
                         loaded = loadHDRTexture(texturePath, type, textureID);
                     }
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
                     else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
                         loaded = loadEXRTexture(texturePath, type, textureID);
                     }
-#endif
+// #endif
                     else {
                         loaded = loadQtTexture(texturePath, type, textureID);
                     }
@@ -1611,7 +1643,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
             }
         }
 
-        // this sets User (32 bit) uniforms not handled above
+        // this sets User (32 bit) uniforms not handled above, checks sampler channels
         if(!foundDouble) {
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName()) {
@@ -1622,7 +1654,24 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                             it.next();
                             if(it.value().contains(sw->getValue())) {
                                 sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
-//                                 DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
+                                // DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
+                                if (subframeCounter == 1) {
+                                    if (sw->getValue().endsWith(".exr")) {
+                                        // check for multichannel string R;G;B
+                                        QStringList l = sw->getChannelValue().split(";");
+                                        bool check = l.count() >= 1;
+                                        if(check) {
+                                            int _i = 0;
+                                            while(_i<l.count()) {
+                                                if(sw->hasChannel(l.at(_i)) == -1) check = false;
+                                                if(!check) DBOUT << "Need to process channel:" << l.at(_i);
+                                                _i++;
+                                            }
+                                        } else check = sw->hasChannel(l.at(0)) != -1; // single channel specified
+                                        
+                                        DBOUT << "Using:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1639,18 +1688,6 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         if (subframeCounter == 1 && verbose) {
             qDebug() << tp << "\t" << uniformName << uniformValue;
         }
-
-    if (subframeCounter == 1) {
-        auto *sw = dynamic_cast<SamplerWidget *>(vw[i]);
-        if (sw != nullptr && sw->getValue().endsWith(".exr")) {
-            int check = sw->hasChannel(sw->getChannelValue());
-            if(check == -1 && sw->getChannelValue() != tr("All")) { 
-                DBOUT << endl << "Channel" << sw->getChannelValue() << "not found! Need fall back or fail here.";
-            }
-            else DBOUT << "Setting:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
-        }
-    }
-
     }
     if (subframeCounter == 1 && verbose) {
         qDebug() << count << " active uniforms initialized\n";
@@ -1997,7 +2034,7 @@ void DisplayWidget::clearGL()
 }
 
 #ifdef USE_OPEN_EXR
-bool DisplayWidget::getRGBAFtile(Array2D<Rgba> &array, int w, int h)
+bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
 {
 
     auto *myImgdata = (GLfloat *)malloc((h * w * 4 * sizeof(GLfloat)));
@@ -2040,10 +2077,11 @@ bool DisplayWidget::getRGBAFtile(Array2D<Rgba> &array, int w, int h)
     if(retOK) {
         for ( int i = 0; i < h; i++ ) {
             for ( int j = 0; j < w; j++ ) {
-                array[(h - 1) - i][j] = Rgba(
-                                            myImgdata[((i * w) + j) * 4 + 0], myImgdata[((i * w) + j) * 4 + 1],
-                                            myImgdata[((i * w) + j) * 4 + 2],
-                                            depthToAlpha ? myDepths[((i * w) + j) * 1 + 0] : myImgdata[((i * w) + j) * 4 + 3]);
+                array[(h - 1) - i][j] = RGBAFLOAT(
+                                            myImgdata[((i * w) + j) * sizeof(float) + 0],
+                                            myImgdata[((i * w) + j) * sizeof(float) + 1],
+                                            myImgdata[((i * w) + j) * sizeof(float) + 2],
+                                            depthToAlpha ? myDepths[((i * w) + j)] : myImgdata[((i * w) + j) * sizeof(float) + 3]);
             }
         }
     }

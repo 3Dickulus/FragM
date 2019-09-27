@@ -82,6 +82,8 @@
 
 #endif
 
+#include "FileManager.h"
+
 namespace Fragmentarium
 {
 namespace GUI
@@ -244,13 +246,13 @@ public:
 
     int subframeCounter;
     int tilesCount;
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
     void setEXRmode ( bool m )
     {
         exrMode = m;
     }
-
-    bool getRGBAFtile ( Imf::Array2D< Imf::Rgba >& array, int w, int h );
+#ifdef USE_OPEN_EXR
+    bool getRGBAFtile ( Imf::Array2D<RGBAFLOAT>& pixels, int w, int h );
 #endif
 
     void setVerbose ( bool v )
@@ -352,9 +354,9 @@ private:
     bool initPreviewBuffer();
 
     bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
     bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID);
-#endif
+// #endif
     bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
 
     bool setTextureParms(QString textureUniformName, GLenum type);

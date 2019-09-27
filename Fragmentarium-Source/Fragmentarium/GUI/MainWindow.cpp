@@ -1531,20 +1531,33 @@ retry:
             //
             // Write a tiled image with one level using a tile-sized framebuffer.
             //
-            TiledRgbaOutputFile out (name.toLatin1(),
-                                     tileWidth*maxTiles, tileHeight*maxTiles,            // image size
-                                     tileWidth, tileHeight,                              // tile size
-                                     ONE_LEVEL);                        // level mode
-            //                           ROUND_DOWN,                        // rounding mode
-            //                           WRITE_RGBA,                        // channels in file
-            //                           1,                                 // float pixelAspectRatio
-            //                           IMATH_NAMESPACE::V2f (0, 0),       // const IMATH_NAMESPACE::V2f screenWindowCenter
-            //                           1,                                 // float screenWindowWidth
-            //                           INCREASING_Y,                      // LineOrder
-            //                           ZIP_COMPRESSION,                   // Compression
-            //                           globalThreadCount() );             // int numThreads
 
-            Array2D<Rgba> pixels (tileHeight, tileWidth);
+            bool d2a = engine->wantsDepthToAlpha();
+            
+            Header header (maxTiles*tileWidth, maxTiles*tileHeight);
+            header.channels().insert ("R", Channel (FLOAT));
+            header.channels().insert ("G", Channel (FLOAT));
+            header.channels().insert ("B", Channel (FLOAT));
+            if(d2a)
+                header.channels().insert ("Z", Channel (FLOAT));
+            else
+                header.channels().insert ("A", Channel (FLOAT));
+            
+            header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
+            
+            TiledOutputFile out(name.toLatin1(), header);
+            
+            Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
+
+            FrameBuffer frameBuffer;
+            frameBuffer.insert ("R", Slice (FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("G", Slice (FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("B", Slice (FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            if(d2a)
+                frameBuffer.insert ("Z", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            else
+                frameBuffer.insert ("A", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            
 
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
@@ -1577,11 +1590,8 @@ retry:
                     int yoff = dy*tileHeight;
 
                     if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
-                    Box2i range = out.dataWindowForTile (dx, dy);
-                    out.setFrameBuffer (&pixels[-range.min.y][-range.min.x],
-                                        1,  // xStride
-                                        tileWidth); // yStride
 
+                    out.setFrameBuffer (frameBuffer);
                     out.writeTile (dx, dy);
 
                     // display tiles while rendering if the tiles fit the window
