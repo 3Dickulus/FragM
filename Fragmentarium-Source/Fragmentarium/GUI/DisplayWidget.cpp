@@ -697,7 +697,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 }
 
 //
-// Read an RGBA image using class RgbaInputFile:
+// Read an RGBA image using class InputFile:
 //
 //    - open the file
 //    - allocate memory for the pixels
@@ -742,7 +742,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                     chn = sw->hasChannel(chv); // channel index
                 }
             }
-        }
+        } else chv = "All";
   
         pixels.resizeErase (w, h);
         
