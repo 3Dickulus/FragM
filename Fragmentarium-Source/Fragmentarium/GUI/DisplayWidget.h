@@ -353,11 +353,11 @@ private:
 
     bool initPreviewBuffer();
 
-    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 // #ifdef USE_OPEN_EXR
-    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 // #endif
-    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 
     bool setTextureParms(QString textureUniformName, GLenum type);
     void checkForSpecialCase(QString uniformName, QString &uniformValue);

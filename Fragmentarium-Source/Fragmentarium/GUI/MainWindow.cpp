@@ -2606,6 +2606,8 @@ bool MainWindow::initializeFragment()
 
     // BUG Up vector gets trashed on Build or Save
     variableEditor->updateFromFragmentSource(&fs);
+    // before updating textures clear the cache, file may have changed on disk or channel selection changed
+    clearTextures();
     variableEditor->updateTextures(&fs, &fileManager);
     variableEditor->substituteLockedVariables(&fs);
 

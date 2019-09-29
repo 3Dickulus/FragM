@@ -670,7 +670,7 @@ vec3  backgroundColor(vec3 dir) {
 }
 */
 
-bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
+bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID, QString textureUniformName )
 {
     HDRLoaderResult result;
     bool loaded = HDRLoader::load ( texturePath.toStdString().c_str(), result );
@@ -702,13 +702,19 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 //    - open the file
 //    - allocate memory for the pixels
 //    - describe the memory layout of the pixels
+//    - determine the channel(s)
 //    - read the pixels from the file
 //
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID)
+
+//------------------------------------------------------------------------------------------------------------//
+// the channel code is still a mess but it works in that FragM can load and use the RGBZ images that it saves //
+//------------------------------------------------------------------------------------------------------------//
+
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
 #ifndef USE_OPEN_EXR
     // Qt loads EXR files
-    return loadQtTexture(texturePath, type, textureID);
+    return loadQtTexture(texturePath, type, textureID, textureUniformName);
 #else
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
@@ -722,7 +728,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
-        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+        context()->functions()->glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
         s /= 4;
         if ( w>s || h>(s*6) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
@@ -730,20 +736,19 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         }
 
         Array2D<RGBAFLOAT>pixels ( w, 1 );
-
+        
         if(type == GL_SAMPLER_2D) {
-            QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
-            foreach (VariableWidget *w, vw) {
-                SamplerWidget *sw = dynamic_cast<SamplerWidget *>(w);
-                if(sw != nullptr && !sw->getName().isNull()) {
-                    // TODO: test for multi channel value R;G;B
-                    chv = sw->getChannelValue(); // channel name
-                    if(chv == "Z" || chv == "DEPTH") hasZ = true;
-                    chn = sw->hasChannel(chv); // channel index
-                }
+            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
+            if(sw != nullptr && !sw->getName().isNull()) {
+                // TODO: test for multi channel value R;G;B
+                chv = sw->getChannelValue(); // channel name(s)
+                hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH"));
+                if(chv != "Z" && chv != "All") hasZ = false;
+                chn = sw->hasChannel(chv); // channel index
+//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
             }
         } else chv = "All";
-  
+
         pixels.resizeErase (w, h);
         
         size_t xs = 1 * sizeof (RGBAFLOAT);
@@ -760,9 +765,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             fb.insert ("R", Slice (FLOAT, (char *) &base[0].r, xs, ys));
             fb.insert ("G", Slice (FLOAT, (char *) &base[0].g, xs, ys));
             fb.insert ("B", Slice (FLOAT, (char *) &base[0].b, xs, ys));
-            if(!hasZ)
+            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
                 fb.insert ("A", Slice (FLOAT, (char *) &base[0].a, xs, ys));
-            else
+            else // this should allow arbitrary naming of the 4th channel
                 fb.insert ("Z", Slice (FLOAT, (char *) &base[0].a, xs, ys));
 
             file.setFrameBuffer (fb);
@@ -772,17 +777,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                if(hasZ) { // makes greyscale for testing
-                    cols[indx] = pixels[0][i].a;
-                    cols[indx+1]=pixels[0][i].a;
-                    cols[indx+2]=pixels[0][i].a;
-                    cols[indx+3]=pixels[0][i].a;
-                } else {
-                    cols[indx] = (chv=="R" || chv=="All") ? pixels[0][i].r : 0.0;
-                    cols[indx+1]=(chv=="G" || chv=="All") ? pixels[0][i].g : 0.0;
-                    cols[indx+2]=(chv=="B" || chv=="All") ? pixels[0][i].b : 0.0;
-                    cols[indx+3]=pixels[0][i].a; // put 4th channel in alpha position
-                }
+                cols[indx] = (chv=="R" || chv=="All") ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(chv=="G" || chv=="All") ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(chv=="B" || chv=="All") ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(chv=="A" || chv=="All" || chv=="Z" || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
             }
             dw.min.y ++;
         }
@@ -808,7 +806,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 }
 
 // Qt format image, Qt 5+ loads EXR format on linux
-bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
+bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
     QImage im;
     bool loaded = im.load(texturePath);
@@ -886,7 +884,7 @@ void DisplayWidget::initFragmentTextures()
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
             if ( l != -1 ) { // found named texture in shader program
-
+                
                 // 2D or Cube ?
                 GLsizei bufSize = 256;
                 GLsizei length;
@@ -915,7 +913,7 @@ void DisplayWidget::initFragmentTextures()
                     }
 // #ifdef USE_OPEN_EXR
                     else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type, textureID);
+                        loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
                     }
 // #endif
                     else {
@@ -1655,23 +1653,24 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                             if(it.value().contains(sw->getValue())) {
                                 sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
                                 // DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
-                                if (subframeCounter == 1) {
-                                    if (sw->getValue().endsWith(".exr")) {
-                                        // check for multichannel string R;G;B
-                                        QStringList l = sw->getChannelValue().split(";");
-                                        bool check = l.count() >= 1;
-                                        if(check) {
-                                            int _i = 0;
-                                            while(_i<l.count()) {
-                                                if(sw->hasChannel(l.at(_i)) == -1) check = false;
-                                                if(!check) DBOUT << "Need to process channel:" << l.at(_i);
-                                                _i++;
-                                            }
-                                        } else check = sw->hasChannel(l.at(0)) != -1; // single channel specified
-                                        
-                                        DBOUT << "Using:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
-                                    }
-                                }
+// testing channels                                
+//                                 if (subframeCounter == 1) {
+//                                     if (sw->getValue().endsWith(".exr")) {
+//                                         // check for multichannel string R;G;B
+//                                         QStringList l = sw->getChannelValue().split(";");
+//                                         bool check = l.count() >= 1;
+//                                         if(check) {
+//                                             int _i = 0;
+//                                             while(_i<l.count()) {
+//                                                 if(sw->hasChannel(l.at(_i)) == -1) check = false;
+//                                                 if(!check) DBOUT << "Need to process channel:" << l.at(_i);
+//                                                 _i++;
+//                                             }
+//                                         } else check = sw->hasChannel(l.at(0)) != -1; // single channel specified
+//                                         
+//                                         DBOUT << "Using:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
+//                                     }
+//                                 }
                             }
                         }
                     }

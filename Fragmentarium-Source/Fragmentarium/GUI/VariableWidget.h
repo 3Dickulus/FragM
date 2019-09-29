@@ -513,24 +513,9 @@ public:
         return channelComboBox->currentText();
         else return "";
     }
-    int hasChannel(QString chan)
-    {
-        int ci=-1;
-        if(!channelComboBox->isHidden())
-            ci=channelComboBox->findText(chan);
-        
-        if(ci == -1 && chan != tr("All")) {
-            QPalette pal = channelComboBox->palette();
-            pal.setColor(channelComboBox->backgroundRole(), Qt::red);
-            channelComboBox->setPalette(pal);
-            channelComboBox->setAutoFillBackground(true);
-        } else {
-            channelComboBox->setPalette(QApplication::palette(channelComboBox));
-            channelComboBox->setAutoFillBackground(false);
-        }
-
-        return ci;
-    }
+    
+    int hasChannel(QString chan);
+    
     QString getLockedSubstitution()
     {
         return QString();
@@ -544,6 +529,7 @@ public:
         wantDouble = wd;
     };
     int texID;
+    QStringList channelList;
 
 signals:
     void changed();

@@ -756,14 +756,19 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     connect(comboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(textChanged(const QString &)));
     connect(pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
-    textChanged("");
+    textChanged(defaultValue);
 
     texID=0;
 }
 
-void SamplerWidget::channelChanged(const QString &text)
+int SamplerWidget::hasChannel(QString chan)
 {
-    if(channelComboBox->findText(text) == -1 && text != tr("All")) {
+    int ci=-1;
+    if(!channelComboBox->isHidden()) {
+        ci=channelComboBox->findText(chan);
+    }
+    
+    if(ci == -1 && chan != tr("All")) {
         QPalette pal = channelComboBox->palette();
         pal.setColor(channelComboBox->backgroundRole(), Qt::red);
         channelComboBox->setPalette(pal);
@@ -772,6 +777,12 @@ void SamplerWidget::channelChanged(const QString &text)
         channelComboBox->setPalette(QApplication::palette(channelComboBox));
         channelComboBox->setAutoFillBackground(false);
     }
+
+    return ci;
+}
+    
+void SamplerWidget::channelChanged(const QString &text)
+{
     
     if(getValue().endsWith(".exr")) {
         
@@ -780,13 +791,12 @@ void SamplerWidget::channelChanged(const QString &text)
         QStringList l = text.split(";");
         int i = l.count();
         while(i--) {
-            if(hasChannel(l.at(i)) == -1) check=false;
+            if(!channelList.contains(l.at(i))) check=false;
         }
         
-        if(!check && text != tr("All")) { 
+        if(!check && text != "All") { 
             DBOUT << endl << "Channel" << text << "not found!";
         }
-        else DBOUT << "Changed:" << getName() << getValue() << text << check;
     }
     //emit changed();
     valueChanged();
@@ -818,14 +828,20 @@ void SamplerWidget::textChanged(const QString &text)
 
         // setup channelComboBox
         if ( file.isComplete() ) {
-            QStringList items{tr("All")};
+            channelList = QStringList("All");
             channelComboBox->clear();
+            channelComboBox->addItem("All");
             const ChannelList &channels = file.header().channels();
             for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
             {
-                items += i.name();
+                channelList += i.name();
+        QStandardItem* item = new QStandardItem(QString(i.name()));
+        item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        item->setData(Qt::Unchecked, Qt::CheckStateRole);
+
+                channelComboBox->addItem(i.name(), item->data());
+                
             }
-            channelComboBox->addItems(items);
             channelComboBox->setHidden(false);
         }    
     } else channelComboBox->setHidden(true);
