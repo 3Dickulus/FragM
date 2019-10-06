@@ -1395,6 +1395,7 @@ retry:
     DisplayWidget::DrawingState oldState = engine->getState();
     engine->setState(DisplayWidget::Tiled);
     engine->clearTileBuffer();
+    engine->tilesCount = 0;
 
     double padding = od.getPadding();
     int maxSubframes = od.getSubFrames();
@@ -3414,7 +3415,7 @@ QString MainWindow::getPresetNames(bool keyframesORpresets)
         }
     }
 
-    return keyframesORpresets ? k.join(" ") : p.join(" ");
+    return keyframesORpresets ? k.join(";") : p.join(";");
 }
 
 void MainWindow::initKeyFrameControl()

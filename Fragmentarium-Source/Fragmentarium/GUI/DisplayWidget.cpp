@@ -1829,9 +1829,8 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     setupShaderVars(shaderProgram, w, h);
 
     // Setup User Uniforms, this should speed things up a little
-    // we are only setting uniforms on the first tile
-    // this scheme doesn't seem to work testing subframeCounter == 1
-    if (tilesCount == 0) {
+    // we are only setting uniforms on the first tile and first subframe
+    if (tilesCount == 0 && subframeCounter == 1) {
         setShaderUniforms(shaderProgram);
     }
 
@@ -2016,6 +2015,7 @@ void DisplayWidget::clearTileBuffer()
             WARNING(tr("Failed to release hiresBuffer FBO"));
     }
     }
+    subframeCounter=0;
     mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
     makeBuffers();
 }
