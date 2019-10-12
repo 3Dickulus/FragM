@@ -62,6 +62,7 @@ bool VariableWidget::isLocked()
 
 void VariableWidget::valueChanged()
 {
+    DBOUT << (lockType == Locked) << (lockType == AlwaysLocked) << (oldLockType != lockType);
     if (lockType == Locked || lockType == AlwaysLocked || oldLockType != lockType) {
         QPalette pal = palette();
         pal.setColor(backgroundRole(), Qt::yellow);
@@ -109,6 +110,8 @@ void VariableWidget::setLockType(LockType lt)
     } else {
         locked(false);
     }
+    
+    oldLockType = lt;
 }
 
 QString VariableWidget::toSettingsString()
@@ -735,7 +738,7 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     comboBox->view()->setCornerWidget(new QSizeGrip(comboBox));
     
         channelComboBox = new QComboBox(parent);
-        channelComboBox->setEditable(true);
+        channelComboBox->setEditable(false);
         channelComboBox->setEditText(defaultChannelValue);
         channelComboBox->setObjectName(name+"Channel");
 
