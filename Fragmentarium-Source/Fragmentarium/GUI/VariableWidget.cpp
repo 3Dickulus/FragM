@@ -62,7 +62,6 @@ bool VariableWidget::isLocked()
 
 void VariableWidget::valueChanged()
 {
-    DBOUT << (lockType == Locked) << (lockType == AlwaysLocked) << (oldLockType != lockType);
     if (lockType == Locked || lockType == AlwaysLocked || oldLockType != lockType) {
         QPalette pal = palette();
         pal.setColor(backgroundRole(), Qt::yellow);
