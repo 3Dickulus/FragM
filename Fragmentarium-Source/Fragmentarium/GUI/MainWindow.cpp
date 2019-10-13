@@ -1454,6 +1454,7 @@ retry:
     engine->renderToFrame = endTime-1;
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
+    progress.setMinimumDuration(1000);
     progress.setValue ( 0 );
     progress.move((width() - progress.width()) / 2, (height() - progress.height()) / 2);
     progress.setWindowModality(Qt::WindowModal);
@@ -1463,7 +1464,7 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-    progress.show();
+//     progress.show();
     progress.resize(300, 120);
 
     QTime totalTime;
@@ -3517,6 +3518,8 @@ void MainWindow::selectPreset()
 void MainWindow::processGuiEvents()
 {
 
+//     if(scriptRunning()) engine->update();
+        
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
