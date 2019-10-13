@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
                     file.close();
                     // The sync function will first empty Qts events by calling QCoreApplication::processEvents(),
                     // then the platform plugin will sync up with the windowsystem,
-                    // and finally Qts events will be delived by another call to QCoreApplication::processEvents();
+                    // and finally Qts events will be delivered by another call to QCoreApplication::processEvents();
                     app->sync();
                     // everything is now in place and ready for script control
                     mainWin->runScript( text );
