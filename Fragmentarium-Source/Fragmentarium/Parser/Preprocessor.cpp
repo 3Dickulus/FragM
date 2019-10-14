@@ -750,7 +750,7 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
         // vertex code gets commented out
         if (inVertex && !fs.source[i].startsWith("#endvertex")) {
             fs.vertexSource.append(fs.source[i]);
-            fs.source[i] = "//" + fs.source[i];
+            fs.source[i] = "// " + fs.source[i];
         }
     }
 

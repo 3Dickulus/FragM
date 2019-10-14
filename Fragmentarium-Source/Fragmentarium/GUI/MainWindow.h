@@ -253,10 +253,6 @@ public:
     {
         return rebuildRequired;
     };
-    void setDefault()
-    {
-        variableEditor->setDefault();
-    };
     bool wantSplineOcc()
     {
         return wantSplineOcclusion;
@@ -296,6 +292,10 @@ protected:
 
     // all public slots are available as script commands
 public slots:
+    void setDefault()
+    {
+        variableEditor->setDefault();
+    };
     void processGuiEvents();
     void loadFragFile ( const QString &fileName );
 
@@ -598,6 +598,9 @@ private slots:
     // slot for F6 hotkey handlers
     void slotShortcutF6();
     void slotShortcutShiftF6();
+
+    bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
+    void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
 
 private:
 

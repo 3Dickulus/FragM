@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
     /// load a single frag from comandline or load the default bulb
     if( !fragFile.isEmpty() ) {
         mainWin->loadFragFile( app->arguments().last() );
-    } else if (openFiles.count() > 0) {
+    } else if (openFiles.count() > 0 && !parser.isSet("script")) {
 
         splash.finish(mainWin);
         while(openFiles.count() > 0) {

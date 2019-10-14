@@ -1267,6 +1267,159 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
     return name;
 }
 
+void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+{
+            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+                QTime tiletime;
+                tiletime.start();
+
+                if (!progress.wasCanceled()) {
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+
+                    if (padding>0.0)  {
+                        auto nw = (int)(tileWidth / (1.0 + padding));
+                        auto nh = (int)(tileHeight / (1.0 + padding));
+                        int ox = (tileWidth-nw)/2;
+                        int oy = (tileHeight-nh)/2;
+                        im = im.copy(ox,oy,nw,nh);
+                    }
+
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                        cachedTileImages.append(im);
+                    }
+
+                    // display tiles while rendering if the tiles fit the window
+                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
+                        int dx = (tile / maxTiles);
+                        int dy = (maxTiles-1)-(tile % maxTiles);
+                        int xoff = dx*tileWidth;
+                        int yoff = dy*tileHeight;
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
+                        QPainter painter(engine);
+                        painter.drawImage(target, im, source);
+                    } else // display scaled tiles if tile is same size or smaller than the window
+                        if (engine->width() >= tileWidth &&
+                                engine->height() >= tileHeight) {
+                            float wScaleFactor = engine->width() / maxTiles;
+                            float hScaleFactor = engine->height() / maxTiles;
+                            int dx = (tile / maxTiles);
+                            int dy = (maxTiles-1)-(tile % maxTiles);
+                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
+                            QPainter painter ( engine );
+                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                            painter.drawImage ( target, im, source );
+                        }
+                } else {
+                    stopScript();
+                    tile = maxTiles*maxTiles;
+                }
+
+                if ((maxTiles * maxTiles) == 1) {
+                    engine->tileAVG = tiletime.elapsed();
+                } else {
+                    engine->tileAVG += tiletime.elapsed();
+                }
+                engine->update();
+            }
+}
+
+bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+{
+            //
+            // Write a tiled image with one level using a tile-sized framebuffer.
+            //
+
+            bool d2a = engine->wantsDepthToAlpha();
+            
+            Header header (maxTiles*tileWidth, maxTiles*tileHeight);
+            header.channels().insert ("R", Channel (FLOAT));
+            header.channels().insert ("G", Channel (FLOAT));
+            header.channels().insert ("B", Channel (FLOAT));
+            if(d2a)
+                header.channels().insert ("Z", Channel (FLOAT));
+            else
+                header.channels().insert ("A", Channel (FLOAT));
+            
+            header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
+            
+            TiledOutputFile out(name.toLatin1(), header);
+            
+            Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
+
+            FrameBuffer frameBuffer;
+            frameBuffer.insert ("R", Slice (FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("G", Slice (FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("B", Slice (FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            if(d2a)
+                frameBuffer.insert ("Z", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            else
+                frameBuffer.insert ("A", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            
+
+            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+
+              QTime tiletime;
+              tiletime.start();
+
+              if (!progress.wasCanceled()) {
+
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+
+                    if (padding>0.0)  {
+                        int w = im.width();
+                        int h = im.height();
+                        auto nw = (int)(w / (1.0 + padding));
+                        auto nh = (int)(h / (1.0 + padding));
+                        int ox = (w-nw)/2;
+                        int oy = (h-nh)/2;
+                        im = im.copy(ox,oy,nw,nh);
+                    }
+
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                        cachedTileImages.append(im);
+                    }
+
+                    int dx = (tile / maxTiles);
+                    int dy = (maxTiles-1)-(tile % maxTiles);
+                    int xoff = dx*tileWidth;
+                    int yoff = dy*tileHeight;
+
+                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
+
+                    out.setFrameBuffer (frameBuffer);
+                    out.writeTile (dx, dy);
+
+                    // display tiles while rendering if the tiles fit the window
+                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
+                        QPainter painter(engine);
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
+                        painter.drawImage(target, im, source);
+                    }
+                    }
+                } else {
+                  stopScript();
+                  tile = maxTiles*maxTiles;
+                }
+                if ((maxTiles * maxTiles) == 1) {
+                    engine->tileAVG = tiletime.elapsed();
+                } else {
+                    engine->tileAVG += tiletime.elapsed();
+                }
+            }
+
+            engine->update();
+            
+            return out.isValidLevel(0,0);
+
+}
+
 void MainWindow::tileBasedRender()
 {
 
@@ -1464,7 +1617,6 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-//     progress.show();
     progress.resize(300, 120);
 
     QTime totalTime;
@@ -1530,155 +1682,10 @@ retry:
 
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
-            //
-            // Write a tiled image with one level using a tile-sized framebuffer.
-            //
-
-            bool d2a = engine->wantsDepthToAlpha();
-            
-            Header header (maxTiles*tileWidth, maxTiles*tileHeight);
-            header.channels().insert ("R", Channel (FLOAT));
-            header.channels().insert ("G", Channel (FLOAT));
-            header.channels().insert ("B", Channel (FLOAT));
-            if(d2a)
-                header.channels().insert ("Z", Channel (FLOAT));
-            else
-                header.channels().insert ("A", Channel (FLOAT));
-            
-            header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
-            
-            TiledOutputFile out(name.toLatin1(), header);
-            
-            Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
-
-            FrameBuffer frameBuffer;
-            frameBuffer.insert ("R", Slice (FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("G", Slice (FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("B", Slice (FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            if(d2a)
-                frameBuffer.insert ("Z", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            else
-                frameBuffer.insert ("A", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            
-
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-
-              QTime tiletime;
-              tiletime.start();
-
-              if (!progress.wasCanceled()) {
-
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        int w = im.width();
-                        int h = im.height();
-                        auto nw = (int)(w / (1.0 + padding));
-                        auto nh = (int)(h / (1.0 + padding));
-                        int ox = (w-nw)/2;
-                        int oy = (h-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
-                    }
-
-                    int dx = (tile / maxTiles);
-                    int dy = (maxTiles-1)-(tile % maxTiles);
-                    int xoff = dx*tileWidth;
-                    int yoff = dy*tileHeight;
-
-                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
-
-                    out.setFrameBuffer (frameBuffer);
-                    out.writeTile (dx, dy);
-
-                    // display tiles while rendering if the tiles fit the window
-                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
-                        QPainter painter(engine);
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        painter.drawImage(target, im, source);
-                    }
-                    }
-                } else {
-                  stopScript();
-                  tile = maxTiles*maxTiles;
-                }
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
-            }
-
-            imageSaved = out.isValidLevel(0,0);
-            engine->update();
-
+            imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
         } else
 #endif
-        {
-
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-                QTime tiletime;
-                tiletime.start();
-
-                if (!progress.wasCanceled()) {
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        auto nw = (int)(tileWidth / (1.0 + padding));
-                        auto nh = (int)(tileHeight / (1.0 + padding));
-                        int ox = (tileWidth-nw)/2;
-                        int oy = (tileHeight-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
-                    }
-
-                    // display tiles while rendering if the tiles fit the window
-                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
-                        int dx = (tile / maxTiles);
-                        int dy = (maxTiles-1)-(tile % maxTiles);
-                        int xoff = dx*tileWidth;
-                        int yoff = dy*tileHeight;
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        QPainter painter(engine);
-                        painter.drawImage(target, im, source);
-                    } else // display scaled tiles if tile is same size or smaller than the window
-                        if (engine->width() >= tileWidth &&
-                                engine->height() >= tileHeight) {
-                            float wScaleFactor = engine->width() / maxTiles;
-                            float hScaleFactor = engine->height() / maxTiles;
-                            int dx = (tile / maxTiles);
-                            int dy = (maxTiles-1)-(tile % maxTiles);
-                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
-                            QPainter painter ( engine );
-                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                            painter.drawImage ( target, im, source );
-                        }
-                } else {
-                    stopScript();
-                    tile = maxTiles*maxTiles;
-                }
-
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
-                engine->update();
-            }
-        }
+        renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
 
         pause ? stop() : play();
 
@@ -2392,10 +2399,11 @@ void MainWindow::loadFragFile(const QString &fileName)
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
-
+        
         if (QSettings().value("autorun", true).toBool()) {
-            rebuildRequired = initializeFragment();// once to initialize presets
-            bool requiresRecompile = variableEditor->setDefault();
+            variableEditor->resetUniforms(false); // set all values but do not initialize fragment
+            rebuildRequired = initializeFragment();// once to initialize presets and check locked vars
+            bool requiresRecompile = variableEditor->setDefault(); // set vars with default preset and check locked vars
             if (requiresRecompile || rebuildRequired) {
                 INFO(tr("Rebuilding to update locked uniforms..."));
                 rebuildRequired = initializeFragment();
@@ -3518,8 +3526,6 @@ void MainWindow::selectPreset()
 void MainWindow::processGuiEvents()
 {
 
-//     if(scriptRunning()) engine->update();
-        
   // Immediately dispatches all queued events
   qApp->sendPostedEvents();
   // Processes all pending events until there are no more events to process
