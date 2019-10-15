@@ -1,7 +1,7 @@
 #info Mandelbox Distance Estimator (Rrrola's version).
 #define providesInit
 #include "MathUtils.frag"
-#include "DE-Raytracer-v0.9.10.frag"
+#include "DE-Raytracer.frag"
 #group Mandelbox
 
 uniform int Iterations;  slider[0,17,300]

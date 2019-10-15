@@ -2,7 +2,7 @@
 #info LivingKIFS 1.0 by Kali
 
 #include "MathUtils.frag"
-#include "DE-Raytracer-v0.9.10.frag"
+#include "DE-Raytracer.frag"
 
 #camera 3D
 
@@ -156,27 +156,47 @@ FOV = 0.54
 Eye = 12.9304,14.1353,-21.2115
 Target = 7.45355,8.3979,-15.1215
 Up = -0.593847,0.779296,0.200109
-AntiAlias = 1 NotLocked
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+AvgLumin = 0.5,0.5,0.5
+Saturation = 1
+LumCoeff = 0.212500006,0.715399981,0.0720999986
+Hue = 0
+GaussianWeight = 1
+AntiAliasScale = 2
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
 Detail = -2.66371
 DetailAO = -1.00002
 FudgeFactor = 0.3494
+MaxDistance = 1000
 MaxRaySteps = 308
-BoundingSphere = 24.528
 Dither = 0
 NormalBackStep = 0 NotLocked
 AO = 0,0,0,1
 Specular = 0.5063
 SpecularExp = 1.818
+SpecularMax = 10
 SpotLight = 0.862745,0.898039,1,0.13725
 SpotLightDir = 0.375,-1
 CamLight = 1,1,1,0.1923
 CamLightMin = 0.4697
 Glow = 1,1,1,0
 GlowMax = 0
-Fog = 0.22222
+Fog = 0
 HardShadow = 1 NotLocked
 ShadowSoft = 19.6774
+QualityShadows = false
 Reflection = 0 NotLocked
+DebugSun = false
 BaseColor = 1,1,1
 OrbitStrength = 0.44156
 X = 0.4,0.427451,0.498039,0.2233
@@ -194,7 +214,7 @@ FloorColor = 1,1,1
 Iterations = 30
 ColorIterations = 10
 ColoringType = 1
-ColorScale = 2
+ColorScale = 1
 ColorOffset = 0
 Scale = 1.9505
 FoldingMode = 3
@@ -227,6 +247,7 @@ TransVector = 0,0,-1
 TransSpeed = 0
 ImpulseStrength = 0
 ImpulseRate = 3.2468
+ImpulseOffset = 0
 TRotVector = -1,0,0
 TRotSpeed = 0
 #endpreset

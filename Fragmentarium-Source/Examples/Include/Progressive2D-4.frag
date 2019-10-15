@@ -7,15 +7,16 @@
 
 #vertex
 
-#group Camera
-
 out vec2 coord;
 out vec2 aaScale;
 out vec2 viewCoord;
+
+#group Camera
+
 // Use this to adjust clipping planes
 
-uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
 uniform double Zoom; slider[0.5,1,1e16] NotLockable
+uniform dvec2 Center; slider[(-100,-100),(0,0),(100,100)] NotLockable
 
 uniform bool EnableTransform; checkbox[true]
 uniform float RotateAngle; slider[-360,0,360]

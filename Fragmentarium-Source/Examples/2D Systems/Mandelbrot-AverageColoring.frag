@@ -132,14 +132,18 @@ StripeDensity = 2.5
 #endpreset
 
 #preset nice
+Center = -0.1049693,0.9272831
+EnableTransform = true
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Zoom = 4900
 Gamma = 2
+ToneMapping = 3
+Exposure = 1
 Brightness = 1
 Contrast = 1
 Saturation = 1
-Center = -0.1049693,0.9272831
-Zoom = 4900
-ToneMapping = 3
-Exposure = 1
 AARange = 1.5
 AAExp = 6
 GaussianAA = true
@@ -153,8 +157,8 @@ JuliaY = 1.3
 ShowMap = false
 MapZoom = 2.1
 Skip = 19
-Multiplier = 0.9004909
-StripeDensity = 1.699857
+Multiplier = 0.8966668
+StripeDensity = -2
 Test = 1
 EscapeRadius2 = 100000
 #endpreset

@@ -1,7 +1,7 @@
 #group Ducks
+#include "Complex.frag"
 #include "MathUtils.frag"
 #include "Progressive2DJulia.frag"
-#include "Complex.frag"
 #info Ducks (Samuel Monnier)
 
 // 'Ducks' fractal by Samuel Monnier
@@ -12,8 +12,23 @@ vec2 formula(vec2 z, vec2 c) {
 }
 
 #preset Principal Ducks Structure
-Center = -0.103356,4.76826
+Center = 0.076956017,-1.45492256
 Zoom = 0.502601
+EnableTransform = true
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 69
 PreIterations = 0
 R = 0.50625
@@ -23,11 +38,31 @@ C = 0.2
 Julia = false
 JuliaX = 0
 JuliaY = 5
+ShowMap = false
+MapZoom = 2.1
+EscapeSize = 5
+ColoringType = 0
+ColorFactor = 0.5
 #endpreset
 
 #preset Bone Structure
-Center = 0.0108,5.099
-Zoom = 27.643
+Center = 0.554196199,-0.1696945
+Zoom = 73.5309296
+EnableTransform = false
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 54
 PreIterations = 1
 R = 0.54374
@@ -37,11 +72,31 @@ C = 0.7875
 Julia = false
 JuliaX = 0
 JuliaY = 5
+ShowMap = false
+MapZoom = 2.1
+EscapeSize = 5
+ColoringType = 0
+ColorFactor = 0.5
 #endpreset
 
-#preset Pattern 1
+#preset Pattern1
 Center = -1.5922,0.0692
 Zoom = 0.166
+EnableTransform = false
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 91
 PreIterations = 12
 R = 0.6625
@@ -50,7 +105,12 @@ B = 0.52174
 C = 0.7875
 Julia = true
 JuliaX = 0.23528
-JuliaY = 5.5384
+JuliaY = -0.4616
+ShowMap = false
+MapZoom = 2.1
+EscapeSize = 5
+ColoringType = 0
+ColorFactor = 0.5
 #endpreset
 
 #preset Default
@@ -85,18 +145,33 @@ TrigLimit = 1.1
 
 
 #preset Cell
-Center = -490.172,-11.2585
-Zoom = -0.000334263
+Center = 0,0
+Zoom = 2
+EnableTransform = false
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 184
 PreIterations = 4
 R = 0.61875
 G = 0.6125
 B = 0.47205
 C = 1.02522
-Julia = true
+Julia = false
 JuliaX = 0.36469
 JuliaY = 5.89285
-ShowMap = true
+ShowMap = false
 MapZoom = 2.1
 EscapeSize = 5
 ColoringType = 0
@@ -106,6 +181,21 @@ ColorFactor = 0.5
 #preset Spooky
 Center = 0.288639,-0.855656
 Zoom = 206.094
+EnableTransform = true
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 261
 PreIterations = 6
 R = 0.69375
@@ -114,8 +204,8 @@ B = 0.5031
 C = 0.9625
 Julia = true
 JuliaX = 0.38824
-JuliaY = 5.89285
-ShowMap = true
+JuliaY = -1.10715
+ShowMap = false
 MapZoom = 2.1
 EscapeSize = 5
 ColoringType = 0
@@ -126,6 +216,21 @@ ColorFactor = 0.5
 #preset todo
 Center = 0.0983951,0.314843
 Zoom = 0.198006
+EnableTransform = true
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.08335
+ToneMapping = 3
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+TrigIter = 5
+TrigLimit = 1.10000000000000009
 Iterations = 54
 PreIterations = 9
 R = 0.44375
@@ -134,5 +239,10 @@ B = 0.62112
 C = 0.775
 Julia = true
 JuliaX = -0.48238
-JuliaY = 5
+JuliaY = -2
+ShowMap = false
+MapZoom = 2.1
+EscapeSize = 5
+ColoringType = 0
+ColorFactor = 0.5
 #endpreset
