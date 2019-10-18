@@ -55,7 +55,7 @@ OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
 OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
-IF ( MINGW )
+IF ( WIN32 )
   set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
@@ -76,7 +76,7 @@ set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
 
-    IF ( MINGW )
+    IF ( WIN32 )
         set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
     ENDIF ()
 
@@ -103,17 +103,17 @@ IF ( USE_OPEN_EXR )
 
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
-    IF ( MINGW )
+    IF ( WIN32 )
         set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
 
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
         set( OpenEXR_LIBS
-            IlmImf-2_1
-            Half Imath-2_1
-            Iex-2_1
-            IexMath-2_1
-            IlmThread-2_1
+            IlmImf-2_2
+            Half Imath-2_2
+            Iex-2_2
+            IexMath-2_2
+            IlmThread-2_2
         )
 
         MESSAGE("Using MinGW threads")

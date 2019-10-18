@@ -599,7 +599,9 @@ private slots:
     void slotShortcutF6();
     void slotShortcutShiftF6();
 
+#ifdef USE_OPEN_EXR
     bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
+#endif
     void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
 
 private:

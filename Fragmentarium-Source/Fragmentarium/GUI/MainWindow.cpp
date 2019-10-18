@@ -1327,6 +1327,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             }
 }
 
+#ifdef USE_OPEN_EXR
 bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
             //
@@ -1419,6 +1420,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             return out.isValidLevel(0,0);
 
 }
+#endif
 
 void MainWindow::tileBasedRender()
 {

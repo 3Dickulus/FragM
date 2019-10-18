@@ -34,6 +34,7 @@
 
 #include "SyntopiaCore/Logging/Logging.h"
 
+#ifdef USE_OPEN_EXR
     struct RGBAHALF
     {
         half r;
@@ -55,7 +56,7 @@
         }
     };
     
-    struct RGBAFLOAT
+struct RGBAFLOAT
     {
         float r;
         float g;
@@ -75,7 +76,6 @@
             return *this;
         }
     };
-    
 
     struct RGBAUINT
     {
@@ -97,6 +97,7 @@
             return *this;
         }
     };
+#endif
     
 /// Small class for handling include paths
 namespace Fragmentarium

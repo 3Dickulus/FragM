@@ -825,6 +825,7 @@ void SamplerWidget::textChanged(const QString &text)
     else  if(QFileInfo("Examples/Include/"+text).exists())
         fileName="Examples/Include/"+text;
     
+#ifdef USE_OPEN_EXR
     if(!fileName.isEmpty() && fileName.endsWith(".exr") ) {
         InputFile file ( fileName.toLatin1().data() );
 
@@ -846,7 +847,9 @@ void SamplerWidget::textChanged(const QString &text)
             }
             channelComboBox->setHidden(false);
         }    
-    } else channelComboBox->setHidden(true);
+    } else
+        channelComboBox->setHidden(true);
+#endif
     //emit changed();
     valueChanged();
 }
