@@ -1337,13 +1337,13 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             bool d2a = engine->wantsDepthToAlpha();
             
             Header header (maxTiles*tileWidth, maxTiles*tileHeight);
-            header.channels().insert ("R", Channel (FLOAT));
-            header.channels().insert ("G", Channel (FLOAT));
-            header.channels().insert ("B", Channel (FLOAT));
+            header.channels().insert ("R", Channel (Imf::FLOAT));
+            header.channels().insert ("G", Channel (Imf::FLOAT));
+            header.channels().insert ("B", Channel (Imf::FLOAT));
             if(d2a)
-                header.channels().insert ("Z", Channel (FLOAT));
+                header.channels().insert ("Z", Channel (Imf::FLOAT));
             else
-                header.channels().insert ("A", Channel (FLOAT));
+                header.channels().insert ("A", Channel (Imf::FLOAT));
             
             header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
             
@@ -1352,13 +1352,13 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
 
             FrameBuffer frameBuffer;
-            frameBuffer.insert ("R", Slice (FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("G", Slice (FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("B", Slice (FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("R", Slice (Imf::FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("G", Slice (Imf::FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("B", Slice (Imf::FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
             if(d2a)
-                frameBuffer.insert ("Z", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+                frameBuffer.insert ("Z", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
             else
-                frameBuffer.insert ("A", Slice (FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+                frameBuffer.insert ("A", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
             
 
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {

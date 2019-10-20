@@ -762,13 +762,13 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
             FrameBuffer fb;
 
-            fb.insert ("R", Slice (FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ("G", Slice (FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ("B", Slice (FLOAT, (char *) &base[0].b, xs, ys));
+            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
             if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
-                fb.insert ("A", Slice (FLOAT, (char *) &base[0].a, xs, ys));
+                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
             else // this should allow arbitrary naming of the 4th channel
-                fb.insert ("Z", Slice (FLOAT, (char *) &base[0].a, xs, ys));
+                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
 
             file.setFrameBuffer (fb);
             file.readPixels ( dw.min.y );
