@@ -729,7 +729,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         int h = dw.max.y - dw.min.y + 1;
         int s;
         context()->functions()->glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
-        s /= 4;
         if ( w>s || h>(s*6) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
