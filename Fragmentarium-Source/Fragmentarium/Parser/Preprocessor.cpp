@@ -438,7 +438,7 @@ void Preprocessor::parseSampler2D(FragmentSource *fs, int i, QString file)
     if (QFileInfo(fileName).isFile()) {
         INFO("Added texture: " + name + " -> " + fileName);
     }
-    fs->textures[name] = fileName;
+    fs->textures[name] = QPair<QString,QStringList>(fileName, QStringList());
     SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName);
     setLockType(sp, "alwayslocked");
     fs->params.append(sp);
@@ -449,7 +449,7 @@ void Preprocessor::parseSampler2DChannel(FragmentSource *fs, int i, QString file
     QString name = sampler2DChannel.cap(1);
     fs->source[i] = "uniform sampler2D " + name + ";";
     QString fileName;
-    QString channelName = sampler2DChannel.cap(3);
+    QStringList channelNames = sampler2DChannel.cap(3).split(" ");
     
     try {
         fileName = fileManager->resolveName(sampler2DChannel.cap(2), file);
@@ -457,10 +457,10 @@ void Preprocessor::parseSampler2DChannel(FragmentSource *fs, int i, QString file
         CRITICAL(e.getMessage());
     }
     if (QFileInfo(fileName).isFile()) {
-        INFO("Added texture: " + name + " -> " + fileName + " using channel:" + channelName);
+        INFO("Added texture: " + name + " -> " + fileName + " using channels:" + channelNames.join(" "));
     }
-    fs->textures[name] = fileName;
-    SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName, channelName);
+    fs->textures[name] = QPair<QString,QStringList>(fileName, channelNames);
+    SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName, channelNames);
     setLockType(sp, "alwayslocked");
     fs->params.append(sp);
 }
@@ -478,7 +478,7 @@ void Preprocessor::parseSamplerCube(FragmentSource *fs, int i, QString file)
     if (QFileInfo(fileName).isFile()) {
         INFO("Added Cube texture: " + name + " -> " + fileName);
     }
-    fs->textures[name] = fileName;
+    fs->textures[name] = QPair<QString,QStringList>(fileName, QStringList());
     SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName);
     setLockType(sp, "alwayslocked");
     fs->params.append(sp);

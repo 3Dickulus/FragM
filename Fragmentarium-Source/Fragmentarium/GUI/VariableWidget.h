@@ -481,7 +481,7 @@ class SamplerWidget : public VariableWidget
     Q_OBJECT
 public:
     SamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+                    QWidget *variableEditor, QString name, QString defaultValue, QStringList defaultChannelValue = QString("R G B A").split(" ") );
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
@@ -492,6 +492,7 @@ public:
     } // cannot change this
     
     QString getValue() ;
+    QStringList getChannels();
     virtual QString getUniqueName()
     {
         return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() );
@@ -499,22 +500,25 @@ public:
     void reset()
     {
         comboBox->setEditText ( defaultValue );
-        if(!defaultChannelValue.isEmpty()) {
-            channelComboBox->show();
-            int i = channelComboBox->findText(defaultChannelValue);
+        for (int channel = 0; channel < 4; ++channel)
+        {
+          if(!defaultChannelValue[channel].isEmpty()) {
+            channelComboBox[channel]->show();
+            int i = channelComboBox[channel]->findText(defaultChannelValue[channel]);
             if(i != -1) {
-                channelComboBox->setCurrentIndex(i);
+                channelComboBox[channel]->setCurrentIndex(i);
             }
-        } else channelComboBox->hide();
+          } else channelComboBox[channel]->hide();
+        }
     }
-    QString getChannelValue()
+    QString getChannelValue(int channel)
     {
-        if(!channelComboBox->isHidden())
-        return channelComboBox->currentText();
+        if(!channelComboBox[channel]->isHidden())
+        return channelComboBox[channel]->currentText();
         else return "";
     }
     
-    int hasChannel(QString chan);
+    int hasChannel(int channel, QString chan);
     
     QString getLockedSubstitution()
     {
@@ -544,11 +548,11 @@ protected slots:
 private:
 
     QComboBox* comboBox;
-    QComboBox* channelComboBox;
+    QComboBox* channelComboBox[4];
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
-    QString defaultChannelValue;
+    QStringList defaultChannelValue;
 };
 
 class iSamplerWidget : public SamplerWidget
@@ -556,7 +560,7 @@ class iSamplerWidget : public SamplerWidget
     Q_OBJECT
 public:
     iSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+                    QWidget *variableEditor, QString name, QString defaultValue, QStringList defaultChannelValue = QString("R G B A").split(" ") );
 
 signals:
 
@@ -571,7 +575,7 @@ class uSamplerWidget : public SamplerWidget
     Q_OBJECT
 public:
     uSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+                    QWidget *variableEditor, QString name, QString defaultValue, QStringList defaultChannelValue = QString("R G B A").split(" ") );
 
 signals:
 

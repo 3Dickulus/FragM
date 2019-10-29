@@ -212,7 +212,7 @@ public:
 
     bool buttonDown;
 
-    void clearTextureCache ( QMap<QString, bool>* textureCacheUsed );
+    void clearTextureCache ( QMap<QPair<QString, QStringList>, bool>* textureCacheUsed );
 
     QStringList getCurveSettings();
     void setCurveSettings ( const QStringList cset );
@@ -355,7 +355,7 @@ private:
 
     bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 // #ifdef USE_OPEN_EXR
-    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="", QStringList channels=QStringList());
 // #endif
     bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 
@@ -394,7 +394,7 @@ private:
     GLenum bufferType;
 
     QDateTime tileRenderStart;
-    QMap<QString, int> TextureCache;
+    QMap<QPair<QString, QStringList>, int> TextureCache;
 
     bool doClearBackBuffer;
     QTimer* timer;

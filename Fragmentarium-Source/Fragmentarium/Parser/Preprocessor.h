@@ -180,7 +180,7 @@ protected:
 
 class SamplerParameter : public GuiParameter {
 public:
-    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue, QString defaultChannel="") :
+    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue, QStringList defaultChannel=QStringList()) :
         GuiParameter(group, name, tooltip), defaultValue(defaultValue), defaultChannel(defaultChannel) {}
 
     virtual QString getUniqueName() {
@@ -189,12 +189,12 @@ public:
     QString getDefaultValue() {
         return defaultValue;
     }
-    QString getDefaultChannelValue() {
+    QStringList getDefaultChannelValue() {
         return defaultChannel;
     }
 private:
     QString defaultValue;
-    QString defaultChannel;
+    QStringList defaultChannel;
 };
 
 class FloatParameter : public GuiParameter {
@@ -395,7 +395,7 @@ public:
     QString camera;
     QString buffer;
     QVector<GuiParameter*> params;
-    QMap<QString, QString> textures; // "Uniform name" -> "File"
+    QMap<QString, QPair<QString, QStringList>> textures; // "Uniform name" -> ("File", "Channels")
     QMap<QString, QString> presets;
     QMap<QString, QMap<QString, QString> > textureParams; // foreach texturename, store parameters
 
@@ -426,11 +426,11 @@ public:
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
     
     static QRegExp sampler2D (        "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp sampler2DChannel ( "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+    static QRegExp sampler2DChannel ( "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+([^]]+)\\].*$" );
     static QRegExp isampler2D (        "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp isampler2DChannel ( "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+    static QRegExp isampler2DChannel ( "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+([^]]+)\\].*$" );
     static QRegExp usampler2D (        "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp usampler2DChannel ( "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+    static QRegExp usampler2DChannel ( "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+([^]]+)\\].*$" );
 
     static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );

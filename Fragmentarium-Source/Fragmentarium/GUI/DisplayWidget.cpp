@@ -710,7 +710,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 // the channel code is still a mess but it works in that FragM can load and use the RGBZ images that it saves //
 //------------------------------------------------------------------------------------------------------------//
 
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName, QStringList loadChannels)
 {
 #ifndef USE_OPEN_EXR
     // Qt loads EXR files
@@ -719,83 +719,57 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    int chn = -1;
-    QString chv = "";
-    bool hasZ = false;
-
     if ( file.isComplete() ) {
 
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
-        int s;
+        int s = -1;
         context()->functions()->glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
         if ( w>s || h>(s*6) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
 
-        Array2D<RGBAFLOAT>pixels ( w, 1 );
-        
-        if(type == GL_SAMPLER_2D) {
-            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
-            if(sw != nullptr && !sw->getName().isNull()) {
-                // TODO: test for multi channel value R;G;B
-                chv = sw->getChannelValue(); // channel name(s)
-                hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH"));
-                if(chv != "Z" && chv != "All") hasZ = false;
-                chn = sw->hasChannel(chv); // channel index
-//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
-            }
-        } else chv = "All";
-
+        Array2D<RGBAFLOAT>pixels;
         pixels.resizeErase (w, h);
-        
+
+        QString channels[4] = { "R", "G", "B", "A" };
+
+        if(type == GL_SAMPLER_2D) {
+                for (int channel = 0; channel < 4; ++channel)
+                {
+                    if (loadChannels.size() > channel)
+                    {
+                        channels[channel] = loadChannels.at(channel);
+                    }
+                }
+//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
+        }
+
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
         
-        auto *cols = new float[w * h * 4];
-        
-        while ( dw.min.y <= dw.max.y ) {
+        RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+        FrameBuffer fb;
+        fb.insert (channels[0].toStdString(), Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys, 1, 1, 0.0f));
+        fb.insert (channels[1].toStdString(), Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys, 1, 1, 0.0f));
+        fb.insert (channels[2].toStdString(), Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys, 1, 1, 0.0f));
+        fb.insert (channels[3].toStdString(), Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys, 1, 1, 1.0f));
 
-            RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+        file.setFrameBuffer (fb);
+        file.readPixels(dw.min.y, dw.max.y);
 
-            FrameBuffer fb;
-
-            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
-                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-            else // this should allow arbitrary naming of the 4th channel
-                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-
-            file.setFrameBuffer (fb);
-            file.readPixels ( dw.min.y );
-
-            // process scanline (pixels)
-            for ( int i = 0; i<w; i++ ) {
-                // convert 3D array to 1D
-                int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (chv=="R" || chv=="All") ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(chv=="G" || chv=="All") ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(chv=="B" || chv=="All") ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv=="A" || chv=="All" || chv=="Z" || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
-            }
-            dw.min.y ++;
-        }
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
         if(type == GL_SAMPLER_CUBE) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 2));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 3));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 4));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 5));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 0));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 1));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 2));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5));
         } else {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, cols);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, base);
         }
-        delete [] cols;
-        cols = nullptr;
     } else {
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
@@ -867,18 +841,18 @@ void DisplayWidget::initFragmentTextures()
     }
 
     int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
-    QMap<QString, bool> textureCacheUsed;
+    QMap<QPair<QString, QStringList>, bool> textureCacheUsed;
 
-    QMapIterator<QString, QString> it( fragmentSource.textures );
+    QMapIterator<QString, QPair<QString, QStringList>> it( fragmentSource.textures );
     while( it.hasNext() ) {
         it.next();
 
         GLuint textureID;
 
         QString textureUniformName = it.key();
-        QString texturePath = it.value();
+        QPair<QString, QStringList> texturePath = it.value();
         bool loaded = false;
-        if(!texturePath.isEmpty()) {
+        if(!texturePath.first.isEmpty()) {
 
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
@@ -904,19 +878,19 @@ void DisplayWidget::initFragmentTextures()
                     glGenTextures ( 1, &textureID );
 
                     if (verbose) {
-                        qDebug() << QString("Allocating texture ID: %1 %2").arg(textureID).arg(texturePath);
+                        qDebug() << QString("Allocating texture ID: %1 %2 %3").arg(textureID).arg(texturePath.first).arg(texturePath.second.join(" "));
                     }
 
-                    if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
-                        loaded = loadHDRTexture(texturePath, type, textureID);
+                    if (texturePath.first.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
+                        loaded = loadHDRTexture(texturePath.first, type, textureID);
                     }
 // #ifdef USE_OPEN_EXR
-                    else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                    else if (texturePath.first.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
+                        loaded = loadEXRTexture(texturePath.first, type, textureID, textureUniformName, texturePath.second);
                     }
 // #endif
                     else {
-                        loaded = loadQtTexture(texturePath, type, textureID);
+                        loaded = loadQtTexture(texturePath.first, type, textureID);
                     }
                     if ( loaded ) {
                         // add to cache
@@ -937,7 +911,7 @@ void DisplayWidget::initFragmentTextures()
                     }
                     u++;
                 } else {
-                    WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
+                    WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath.first).absoluteFilePath());
                 }
             } else {
                 WARNING(tr("Unused sampler uniform: ") + textureUniformName);
@@ -950,16 +924,16 @@ void DisplayWidget::initFragmentTextures()
 
 }
 
-void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
+void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *textureCacheUsed)
 {
 
     // Check for unused textures
     if (textureCacheUsed != nullptr) {
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while ( i.hasNext() ) {
             i.next();
             if (!textureCacheUsed->contains(i.key())) {
-                INFO("Removing texture from cache: " +i.key());
+                INFO("Removing texture from cache: " +i.key().first + " " + i.key().second.join(" "));
                 GLuint id = i.value();
                 glDeleteTextures(1, &id);
                 i.remove();
@@ -967,10 +941,10 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
 
         }
     } else { // clear cache and textures
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
-            INFO("Removing texture from cache: " +i.key());
+            INFO("Removing texture from cache: " +i.key().first + " " + i.key().second.join(" "));
             GLuint id = i.value();
             glDeleteTextures(1, &id);
         }
@@ -1646,10 +1620,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                 if(uniformName == vw[n]->getName()) {
                     auto *sw = dynamic_cast<SamplerWidget *>(vw[n]);
                     if (sw != nullptr) {
-                        QMapIterator<QString, QString> it( fragmentSource.textures );
+                        QMapIterator<QString, QPair<QString, QStringList>> it( fragmentSource.textures );
                         while( it.hasNext() ) {
                             it.next();
-                            if(it.value().contains(sw->getValue())) {
+                            if(it.value().first.contains(sw->getValue()) && it.value().second == sw->getChannels()) {
                                 sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
                                 // DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
 // testing channels                                
