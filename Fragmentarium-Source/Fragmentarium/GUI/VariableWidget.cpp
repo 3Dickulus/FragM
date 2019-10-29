@@ -740,7 +740,10 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     {
         channelComboBox[channel] = new QComboBox(parent);
         channelComboBox[channel]->setEditable(false);
-        channelComboBox[channel]->setCurrentText(defaultChannelValue.at(channel));
+        if (defaultChannelValue.size() > channel)
+        {
+            channelComboBox[channel]->setCurrentText(defaultChannelValue.at(channel));
+        }
         channelComboBox[channel]->setObjectName(name+"Channel"+QString(channel));
 
         l->addWidget(channelComboBox[channel]);
@@ -748,7 +751,7 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
         channelComboBox[channel]->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
         channelComboBox[channel]->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
         channelComboBox[channel]->view()->setCornerWidget(new QSizeGrip(channelComboBox[channel]));
-        if(defaultChannelValue.at(channel).isEmpty()){
+        if(defaultChannelValue.size() <= channel || defaultChannelValue.at(channel).isEmpty()){
             channelComboBox[channel]->hide();
         }
         connect(channelComboBox[channel], SIGNAL(editTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
