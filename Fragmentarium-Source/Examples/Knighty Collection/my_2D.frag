@@ -9,8 +9,8 @@
 
 // Use this to adjust clipping planes
 
-uniform vec2 Center; slider[(-10,-10),(0,0),(10,10)];
-uniform float Zoom; slider[0,1,100];
+uniform vec2 Center; slider[(-10,-10),(0,0),(10,10)]; NotLockable
+uniform float Zoom; slider[1e-3,1,1e7]; Logarithmic NotLockable
 uniform float AntiAliasScale;slider[0.0,1,5];
 
 uniform vec2 pixelSize;
