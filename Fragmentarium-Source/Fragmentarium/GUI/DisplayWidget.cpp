@@ -728,13 +728,19 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
+        
         context()->functions()->glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
-        s /= 4;
-        if ( w>s || h>(s*6) ) {
+
+        if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
 
+        if(type == GL_SAMPLER_CUBE && (w>s || h != 6*w)){
+            WARNING(tr("Exrloader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
+            return false;
+        }
+        
         Array2D<RGBAFLOAT>pixels ( w, 1 );
         
         if(type == GL_SAMPLER_2D) {
@@ -742,8 +748,11 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             if(sw != nullptr && !sw->getName().isNull()) {
                 // TODO: test for multi channel value R;G;B
                 chv = sw->getChannelValue(); // channel name(s)
-                hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH"));
-                if(chv != "Z" && chv != "All") hasZ = false;
+                if(chv != "Z" && chv != "D" && chv != "All")
+                    hasZ = false;
+                else
+                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("D"));
+                
                 chn = sw->hasChannel(chv); // channel index
 //                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
             }
@@ -784,7 +793,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             }
             dw.min.y ++;
         }
+        
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+        
         if(type == GL_SAMPLER_CUBE) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));

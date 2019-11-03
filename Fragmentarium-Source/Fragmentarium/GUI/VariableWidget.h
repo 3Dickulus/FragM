@@ -13,11 +13,13 @@
 #include <QTabWidget>
 #include <QVector>
 #include <QWidget>
+#include <QHeaderView>
+#include <QStandardItemModel>
+#include <QOpenGLShaderProgram>
 
 #include "../Parser/Preprocessor.h"
 #include "DisplayWidget.h"
 #include "SyntopiaCore/Logging/Logging.h"
-#include <QOpenGLShaderProgram>
 
 #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
@@ -35,6 +37,18 @@ namespace GUI
 
 using namespace SyntopiaCore::Logging;
 using namespace Fragmentarium::Parser;
+
+class SubclassOfQStyledItemDelegate : public QStyledItemDelegate {
+
+    virtual void paint(QPainter * painter_, const QStyleOptionViewItem & option_, const QModelIndex & index_) const
+    {
+        QStyleOptionViewItem & refToNonConstOption = const_cast<QStyleOptionViewItem &>(option_);
+        refToNonConstOption.showDecorationSelected = false;
+        //refToNonConstOption.state &= ~QStyle::State_HasFocus & ~QStyle::State_MouseOver;
+
+        QStyledItemDelegate::paint(painter_, refToNonConstOption, index_);
+    }
+};
 
 // A helper class (combined float slider+spinner)
 class ComboSlider : public QWidget
