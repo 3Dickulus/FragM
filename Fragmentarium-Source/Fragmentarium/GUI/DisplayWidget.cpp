@@ -748,16 +748,15 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             if(sw != nullptr && !sw->getName().isNull()) {
                 // TODO: test for multi channel value R;G;B
                 chv = sw->getChannelValue(); // channel name(s)
-                hasZ |= chv.contains("Z") & sw->channelList.contains("Z");
-                hasZ |= chv.contains("DEPTH") & sw->channelList.contains("DEPTH");
-                hasZ |= chv.contains("D") & sw->channelList.contains("D");
-//                 if(!chv.contains("Z") && chv != "DEPTH" && chv != "D")
-//                     hasZ = false;
-//                 else
-//                     hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
+                if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
+                    hasZ = false;
+                else
+                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
                 
-                chn = sw->hasChannel(chv); // channel index
-                DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
+                if(chv.contains("All") && sw->channelList.contains("Z")) hasZ = true;
+                
+//                 chn = sw->hasChannel(chv); // channel index
+//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
             }
         } else chv = "All";
 
@@ -792,7 +791,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                 cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
                 cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
                 cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv.contains("All") || chv.contains("A") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
+                cols[indx+3]=(chv.contains("A") || chv.contains("All") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
             }
             dw.min.y ++;
         }

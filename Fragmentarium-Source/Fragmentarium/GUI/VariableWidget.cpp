@@ -848,8 +848,9 @@ void SamplerWidget::textChanged(const QString &text)
                 item->setTextAlignment(Qt::AlignHCenter);
                 item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
                 
-                item->setData(defaultChannelValue == channelList.at(r) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
+                item->setData(defaultChannelValue.contains(channelList.at(r)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
                 channelsUsed[item->text()] = item->checkState();
+                //item->setCheckState(channelsUsed[item->text()]);
                 model->setItem(r, 0, item);
                 
             }
@@ -897,7 +898,7 @@ void SamplerWidget::buttonClicked()
 QString SamplerWidget::toString()
 {
     QString returnValue = comboBox->currentText();
-    returnValue += (channelComboBox->isHidden()) ? "" : " " + channelComboBox->currentText();
+    returnValue += (channelComboBox->isHidden()) ? "" : " " + getChannelValue();
     return returnValue;
 }
 
@@ -915,10 +916,26 @@ bool SamplerWidget::fromString(QString string)
     QStringList test = string.split(" ");
     QString value = test.at(0);
     if(value != string) {
-        QString channel = string.split(" ").at(1);
-        if(!channel.isEmpty() && value.endsWith(".exr")) {
-            channelComboBox->setHidden(false);
-            channelComboBox->setCurrentIndex(channelList.indexOf(channel.trimmed()));
+        if(value.endsWith(".exr")) {
+            
+            for(int i=0; i < channelComboBox->count(); i++) {
+                channelComboBox->setHidden(false);
+                channelComboBox->setCurrentIndex(i);
+                channelsUsed[channelComboBox->itemText(i)] = Qt::Unchecked;
+            }
+            
+            QStringList channel = string.split(" ").at(1).split(";");
+            DBOUT << channel;
+            while(channel.count() !=0) {
+                channelComboBox->setHidden(false);
+                channelsUsed[channel.last()] = Qt::Checked;
+                channel.removeLast();
+            }
+            for(int i=0; i < channelComboBox->count(); i++) {
+                channelComboBox->model()->setData( channelComboBox->model()->index(i,0) , channelsUsed[channelComboBox->itemText(i)], Qt::CheckStateRole );
+            }
+            
+            channelComboBox->setCurrentIndex(channelList.indexOf(string.split(" ").at(1).split(";").at(0)));
         }
     } else channelComboBox->setHidden(true);
     comboBox->setEditText(value.trimmed());
