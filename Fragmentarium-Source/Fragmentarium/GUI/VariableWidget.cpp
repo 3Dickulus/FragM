@@ -925,7 +925,6 @@ bool SamplerWidget::fromString(QString string)
             }
             
             QStringList channel = string.split(" ").at(1).split(";");
-            DBOUT << channel;
             while(channel.count() !=0) {
                 channelComboBox->setHidden(false);
                 channelsUsed[channel.last()] = Qt::Checked;
