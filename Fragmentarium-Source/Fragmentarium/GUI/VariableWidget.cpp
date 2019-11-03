@@ -740,9 +740,8 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
         channelComboBox->setEditable(false);
         channelComboBox->setEditText(defaultChannelValue);
         channelComboBox->setObjectName(name+"Channel");
-
+        channelComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
         l->addWidget(channelComboBox);
-        channelComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
         channelComboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
         channelComboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
         channelComboBox->view()->setCornerWidget(new QSizeGrip(channelComboBox));
@@ -795,7 +794,7 @@ void SamplerWidget::channelChanged(const QString &text)
                 check=false;
                 DBOUT << endl << "Channel" << text << "not found!";
             }
-            else DBOUT << channelComboBox->currentIndex();
+//             else DBOUT << channelComboBox->currentIndex();
         }
 
         if(check) {
@@ -846,17 +845,24 @@ void SamplerWidget::textChanged(const QString &text)
             {
                 QStandardItem* item = new QStandardItem();
                 item->setText(channelList.at(r));
+                item->setTextAlignment(Qt::AlignHCenter);
                 item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-                item->setData(Qt::Unchecked, Qt::CheckStateRole);
+                
+                item->setData(defaultChannelValue == channelList.at(r) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
+                channelsUsed[item->text()] = item->checkState();
                 model->setItem(r, 0, item);
+                
             }
 
             channelComboBox->setModel(model);
+            
+            connect(model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slot_changed(QStandardItem *)));
 
             SubclassOfQStyledItemDelegate *delegate = new SubclassOfQStyledItemDelegate();
             channelComboBox->setItemDelegate(delegate);
-            
+
             channelComboBox->setHidden(false);
+            
         }    
     } else
         channelComboBox->setHidden(true);
@@ -947,7 +953,7 @@ void SamplerWidget::updateTextures(Parser::FragmentSource *fs,
     }
 }
 
-iSamplerWidget::iSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+hSamplerWidget::hSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
     : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
 {
 }

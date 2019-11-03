@@ -523,8 +523,17 @@ public:
     }
     QString getChannelValue()
     {
-        if(!channelComboBox->isHidden())
-        return channelComboBox->currentText();
+        if(!channelComboBox->isHidden()) {
+            QString chv = "";
+            QMapIterator<QString, Qt::CheckState> it(channelsUsed);
+            while (it.hasNext()) {
+                it.next();
+                if(it.value() == Qt::Checked) chv += it.key() + ";";
+            }
+            chv.remove(chv.length()-1,1);
+            return chv;
+        }
+
         else return "";
     }
     
@@ -545,6 +554,18 @@ public:
     int texID;
     QStringList channelList;
 
+public slots:
+    void slot_changed(QStandardItem *item)
+    {
+        channelsUsed[item->text()] = item->checkState();
+//         if(item->checkState() == Qt::Unchecked) {
+//             DBOUT << item->text() << "Unchecked!";
+//         } else if(item->checkState() == Qt::Checked) {
+//             DBOUT << item->text() << "Checked!";
+//         }
+//         channelChanged(item->text());
+    }
+
 signals:
     void changed();
 
@@ -563,13 +584,14 @@ private:
     FileManager* fileManager;
     QString defaultValue;
     QString defaultChannelValue;
+    QMap<QString, Qt::CheckState> channelsUsed;
 };
 
-class iSamplerWidget : public SamplerWidget
+class hSamplerWidget : public SamplerWidget
 {
     Q_OBJECT
 public:
-    iSamplerWidget ( FileManager *fileManager, QWidget *parent,
+    hSamplerWidget ( FileManager *fileManager, QWidget *parent,
                     QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
 
 signals:

@@ -748,13 +748,16 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             if(sw != nullptr && !sw->getName().isNull()) {
                 // TODO: test for multi channel value R;G;B
                 chv = sw->getChannelValue(); // channel name(s)
-                if(chv != "Z" && chv != "D" && chv != "All")
-                    hasZ = false;
-                else
-                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("D"));
+                hasZ |= chv.contains("Z") & sw->channelList.contains("Z");
+                hasZ |= chv.contains("DEPTH") & sw->channelList.contains("DEPTH");
+                hasZ |= chv.contains("D") & sw->channelList.contains("D");
+//                 if(!chv.contains("Z") && chv != "DEPTH" && chv != "D")
+//                     hasZ = false;
+//                 else
+//                     hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
                 
                 chn = sw->hasChannel(chv); // channel index
-//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
+                DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
             }
         } else chv = "All";
 
@@ -786,10 +789,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (chv=="R" || chv=="All") ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(chv=="G" || chv=="All") ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(chv=="B" || chv=="All") ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv=="A" || chv=="All" || chv=="Z" || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
+                cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(chv.contains("All") || chv.contains("A") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
             }
             dw.min.y ++;
         }
