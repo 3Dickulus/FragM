@@ -1585,14 +1585,6 @@ void DisplayWidget::resetUniformProvenance()
             }
         }
     }
-    foreach (VariableWidget *w, vw) {
-        if (w->getProvenance() == FromBufferShader) {
-            QColor c = qApp->palette().color(QPalette::Inactive, QPalette::Mid);
-            w->setStyleSheet("QLabel { border-style: outset; border-width: 1px; border-color: " + c.name() + "; }");
-        } else {
-            w->setStyleSheet("QLabel { border: none; }");
-        }
-    }
 }
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
@@ -2156,7 +2148,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     }
 
     QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
-    QString framesize = QString("%1x%2").arg ( tileMax*w ).arg ( tileMax*h );
+    QString framesize = QString("%1x%2").arg ( (tileMax*w)/(1.0 + padding) ).arg ( (tileMax*h)/(1.0 + padding) );
 
     progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
                              .arg((int)(time * renderFPS))

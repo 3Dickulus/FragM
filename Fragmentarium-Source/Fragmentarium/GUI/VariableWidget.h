@@ -42,11 +42,11 @@ class SubclassOfQStyledItemDelegate : public QStyledItemDelegate {
 
     virtual void paint(QPainter * painter_, const QStyleOptionViewItem & option_, const QModelIndex & index_) const
     {
-        QStyleOptionViewItem & refToNonConstOption = const_cast<QStyleOptionViewItem &>(option_);
-        refToNonConstOption.showDecorationSelected = false;
-        //refToNonConstOption.state &= ~QStyle::State_HasFocus & ~QStyle::State_MouseOver;
+//         QStyleOptionViewItem & refToNonConstOption = const_cast<QStyleOptionViewItem &>(option_);
+//         refToNonConstOption.showDecorationSelected = false;
+//         refToNonConstOption.state &= ~QStyle::State_Selected;
 
-        QStyledItemDelegate::paint(painter_, refToNonConstOption, index_);
+        QStyledItemDelegate::paint(painter_, option_, index_);
     }
 };
 
@@ -400,13 +400,24 @@ public:
     {
         return group;
     }
+    void setLabelStyle()
+    {
+       if (provenance == FromBufferShader) {
+            QColor c = label->palette().color(QPalette::Inactive, QPalette::Mid);
+            label->setStyleSheet("border-style: outset; border-width: 1px; border-color: " + c.name() + ";");
+        } else {
+            label->setStyleSheet("border: none;");
+        }
+    }
     void setProvenance(Provenance p)
     {
         provenance = p;
+        setLabelStyle();
     }
     void addProvenance(Provenance p)
     {
         provenance = Provenance(provenance | p);
+        setLabelStyle();
     }
     Provenance getProvenance() const
     {
@@ -479,6 +490,7 @@ protected:
     SliderType defaultSliderType;
     SliderType sliderType;
 
+    QLabel* label;
     QPushButton* lockButton;
     QString name;
     QString group;

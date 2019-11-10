@@ -46,7 +46,7 @@ VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString
     vl->addWidget(lockButton,0,Qt::AlignLeft | Qt::AlignVCenter);
     connect(lockButton, SIGNAL(toggled(bool)), this, SLOT(locked(bool)));
 
-    QLabel* label = new QLabel(name,this);
+    label = new QLabel(name,this);
     label->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum));
     vl->addWidget(label,0,Qt::AlignRight | Qt::AlignVCenter);
 
@@ -67,10 +67,11 @@ void VariableWidget::valueChanged()
         pal.setColor(backgroundRole(), Qt::yellow);
         setPalette(pal);
         setAutoFillBackground(true);
-        emit(changed(true, getProvenance()));
+        emit(changed(true, provenance));
     } else {
-        emit(changed(false, getProvenance()));
+        emit(changed(false, provenance));
     }
+        
     oldLockType = lockType;
 }
 
@@ -565,6 +566,7 @@ ColorWidget::ColorWidget(QWidget *parent, QWidget *variableEditor, QString name,
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
     QApplication::postEvent(widget, new QEvent(QEvent::LayoutRequest));
+    
 }
 
 QString ColorWidget::toString()
@@ -805,7 +807,6 @@ void SamplerWidget::channelChanged(const QString &text)
 
 void SamplerWidget::textChanged(const QString &text)
 {
-    Q_UNUSED(text)
     if (!fileManager->fileExists(comboBox->currentText())) {
         QPalette pal = comboBox->palette();
         pal.setColor(comboBox->backgroundRole(), Qt::red);
@@ -841,17 +842,15 @@ void SamplerWidget::textChanged(const QString &text)
 
             QStandardItemModel *model = new QStandardItemModel(channelList.count(),1); // n rows, 1 col
 
-            for (int r = 0; r < channelList.count(); ++r)
+            for (int ch = 0; ch < channelList.count(); ++ch)
             {
                 QStandardItem* item = new QStandardItem();
-                item->setText(channelList.at(r));
+                item->setText(channelList.at(ch));
                 item->setTextAlignment(Qt::AlignHCenter);
                 item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-                
-                item->setData(defaultChannelValue.contains(channelList.at(r)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
+                item->setData(defaultChannelValue.contains(channelList.at(ch)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
                 channelsUsed[item->text()] = item->checkState();
-                //item->setCheckState(channelsUsed[item->text()]);
-                model->setItem(r, 0, item);
+                model->setItem(ch, 0, item);
                 
             }
 

@@ -81,7 +81,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 191014, "");
+    version = Version(2, 5, 0, 191104, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
