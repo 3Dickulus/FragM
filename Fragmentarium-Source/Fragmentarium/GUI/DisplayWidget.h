@@ -295,19 +295,9 @@ public slots:
         return cameraControl->getID();
     }
 
-/// BEGIN 3DTexture
-//       void init3DTexture();
-//       void set3DTextureFileName( QString vfn ){ voxelFileName = vfn; };
-//       void setObjFileName( QString ofn ){ objFileName = ofn; };
-//       void saveObjFile(float *vxls );
-/// END 3DTexture
-
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
-/// BEGIN 3DTexture
-//       void draw3DTexture();
-/// END 3DTexture
     void mouseMoveEvent ( QMouseEvent* ev ) Q_DECL_OVERRIDE;
     void contextMenuEvent ( QContextMenuEvent* ev ) Q_DECL_OVERRIDE;
     void mouseReleaseEvent ( QMouseEvent * ev ) Q_DECL_OVERRIDE;
@@ -416,13 +406,6 @@ private:
     QPoint mouseXY;
     bool depthToAlpha;
     bool verbose;
-
-    /// BEGIN 3DTexture
-//       QMatrix4x4 texMatrix;
-//       GLuint m3DTexId;
-//       QString voxelFileName;
-//       QString objFileName;
-    /// END 3DTexture
 
 };
 }

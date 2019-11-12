@@ -248,27 +248,6 @@ int main(int argc, char *argv[])
         mainWin->setSplashWidgetTimeout(&splash);
     }
 
-/// BEGIN 3DTexture
-//     if(app.arguments().contains("-voxel")) {
-//       int argIndex = app.arguments().indexOf("-voxel");
-//       QString filename = app.arguments().at(argIndex+1);
-//       if(filename.endsWith(".exr")) {
-//           mainWin->setVoxelFile(filename);
-//           qDebug() << "EXR Voxel file name set.";
-//       } else qDebug() << "Wrong file type, should be an EXR file that
-//       contains sub-images.";
-//     }
-//
-//     if(app.arguments().contains("-obj")) {
-//       int argIndex = app.arguments().indexOf("-obj");
-//       QString filename = app.arguments().at(argIndex+1);
-//       if(filename.endsWith(".obj")) {
-//         mainWin->setObjFile(filename);
-//         qDebug() << "OBJ file name set.";
-//       } else qDebug() << "Wrong file type, should be an OBJ file.";
-//     }
-/// END 3DTexture
-
     return app->exec();
 }
 

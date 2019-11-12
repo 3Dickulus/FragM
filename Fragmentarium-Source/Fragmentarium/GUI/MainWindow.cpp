@@ -3830,12 +3830,5 @@ void MainWindow::slotShortcutShiftF6()
     settings.setValue("cmdscriptfilename", fileName);
 }
 
-/// BEGIN 3DTexture
-// void MainWindow::setObjFile( QString ofn )
-// {
-//    engine->setObjFileName( ofn );
-// }
-/// END 3DTexture
-
 } // namespace GUI
 } // namespace Fragmentarium

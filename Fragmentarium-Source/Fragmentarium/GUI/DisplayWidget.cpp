@@ -88,9 +88,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     exrMode = false;
     depthToAlpha = false;
     ZAtMXY=0.0;
-    /// BEGIN 3DTexture
-    //     m3DTexId = 0;
-    /// END 3DTexture
     buttonDown = false;
     updateRefreshRate();
 
@@ -255,53 +252,6 @@ void DisplayWidget::uniformsHasChanged(Provenance provenance)
     bool bufferShaderOnly = provenance == FromBufferShader;
     requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
 }
-
-/// /* Texture mapping */
-/// at some point I would like to make these selectable in the gui
-/// http://www.informit.com/articles/article.aspx?p=770639&seqNum=4 may help
-// GL_TEXTURE_ENV
-// GL_TEXTURE_ENV_MODE
-// GL_TEXTURE_1D
-// GL_TEXTURE_2D
-// GL_TEXTURE_WRAP_S
-// GL_TEXTURE_WRAP_T
-// GL_TEXTURE_MAG_FILTER
-// GL_TEXTURE_MIN_FILTER
-// GL_TEXTURE_ENV_COLOR
-// GL_TEXTURE_GEN_S
-// GL_TEXTURE_GEN_T
-// GL_TEXTURE_GEN_R
-// GL_TEXTURE_GEN_Q
-// GL_TEXTURE_GEN_MODE
-// GL_TEXTURE_BORDER_COLOR
-// GL_TEXTURE_WIDTH
-// GL_TEXTURE_HEIGHT
-// GL_TEXTURE_BORDER
-// GL_TEXTURE_COMPONENTS
-// GL_TEXTURE_RED_SIZE
-// GL_TEXTURE_GREEN_SIZE
-// GL_TEXTURE_BLUE_SIZE
-// GL_TEXTURE_ALPHA_SIZE
-// GL_TEXTURE_LUMINANCE_SIZE
-// GL_TEXTURE_INTENSITY_SIZE
-// GL_NEAREST_MIPMAP_NEAREST
-// GL_NEAREST_MIPMAP_LINEAR
-// GL_LINEAR_MIPMAP_NEAREST
-// GL_LINEAR_MIPMAP_LINEAR
-// GL_OBJECT_LINEAR
-// GL_OBJECT_PLANE
-// GL_EYE_LINEAR
-// GL_EYE_PLANE
-// GL_SPHERE_MAP
-// GL_DECAL
-// GL_MODULATE
-// GL_NEAREST
-// GL_REPEAT
-// GL_CLAMP
-// GL_S
-// GL_T
-// GL_R
-// GL_Q
 
 /*
 /// in a frag this should create a mipmapped texture
@@ -1161,271 +1111,6 @@ void DisplayWidget::setViewPort(int w, int h)
     }
 }
 
-/// BEGIN 3DTexture
-// void DisplayWidget::init3DTexture() {
-//
-//   if(voxelFileName.isEmpty()) return;
-//   qDebug() << "Loading :" << voxelFileName << "...";
-//   //
-//   // parse the multipart input
-//   //
-//   string filename ( voxelFileName.toStdString() );
-//
-//   // add check for existance of the file
-//   try
-//   {
-//     MultiPartInputFile temp (filename.c_str());
-//   }
-//   catch (IEX_NAMESPACE::BaseExc &e)
-//   {
-//     std::cerr << std::endl << "ERROR: " << e.what() << std::endl;
-//     return;
-//   }
-//
-//   MultiPartInputFile *inputimage = new MultiPartInputFile (filename.c_str());
-//   int numOutputs = inputimage->parts();
-//
-//   int d;
-//   glGetIntegerv ( GL_MAX_3D_TEXTURE_SIZE, &d );
-//   d /= 4;
-//
-//   //
-//   // separate outputs
-//   //
-//   int p = 0;
-//   Box2i dw = inputimage->header(p).dataWindow();
-//   int w  = dw.max.x - dw.min.x + 1;
-//   int h = dw.max.y - dw.min.y + 1;
-//
-//   std::cout << "numOutputs: " << numOutputs << " W:" << w << " H:" << h << std::endl;
-//
-//   if ( w>d || h>d ) {
-//     WARNING ( QString ( "EXR voxel loader found X:%1 Y:%2 too large! max %3x%3" ).arg ( w ).arg ( h ).arg ( d ) );
-//     return;
-//   }
-//   else
-//     if ( w != numOutputs || h != numOutputs ) {
-//       WARNING ( QString ( "EXR voxel loader found X:%1 Y:%2 Z:%3" ).arg ( w ).arg ( h ).arg ( numOutputs ) );
-//       return;
-//     }
-//
-//     float *voxels = new float[w*h*d*4];
-//
-//   while (p < numOutputs)
-//   {
-//     Header header = inputimage->header(p);
-//
-//     std::string type = header.type();
-//
-//     std::cout << "image:" << p << "\r";
-//
-//     if ( inputimage->partComplete(p) ) {
-//
-//       Array2D<Rgba>pixels ( w, h );
-//       TiledInputPart tip( *inputimage, p );
-//
-//       FrameBuffer frameBuffer;
-//
-//       frameBuffer.insert ("R",                                     // name
-//                           Slice (HALF,                        // type
-//                                  (char *) &pixels[0][0].r,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       frameBuffer.insert ("G",                                     // name
-//                           Slice (HALF,                       // type
-//                                  (char *) &pixels[0][0].g,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       frameBuffer.insert ("B",                                     // name
-//                           Slice (HALF,                        // type
-//                                  (char *) &pixels[0][0].b,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-// //       frameBuffer.insert ("A",                                     // name
-// //                           Slice (HALF,                       // type
-// //                                  (char *) &pixels[0][0].a,     // base
-// //                                  sizeof (pixels[0][0]) * 1,       // xStride
-// //                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       tip.setFrameBuffer ( frameBuffer );
-//       tip.readTile( 0, 0 );
-//
-//       // convert to GL pixels
-//       for ( int j = 0; j<h; j++ ) {
-//         for ( int i = 0; i<w; i++ ) {
-//           // convert 3D array to 1D
-//           int indx = ( (w*h*p) + (j*w+i) ) *4;
-//           voxels[indx]=pixels[j][i].r;
-//           voxels[indx+1]=pixels[j][i].g;
-//           voxels[indx+2]=pixels[j][i].b;
-//           // in this case we use r+g+b / 3 as alpha value to conserve some ram space
-//           voxels[indx+3] = (pixels[j][i].r+pixels[j][i].g+pixels[j][i].b) * 0.33333; // setting alpha
-//         }
-//       }
-//
-//     } else
-//       WARNING ( QString ( "Exrloader found EXR image: %1 part %2 is not complete" ).arg ( voxelFileName ).arg ( p ) );
-//
-//     p++;
-//   }
-//
-//   std::cout << "\nSending data to GPU...\n";
-//
-//   if( 0 != m3DTexId )
-//   {
-//     glDeleteTextures( 1, (GLuint*)&m3DTexId );
-//   }
-//   glGenTextures(1,(GLuint*)&m3DTexId );
-//   glBindTexture( GL_TEXTURE_3D, m3DTexId );
-//   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//   glTexImage3D ( GL_TEXTURE_3D, 0, GL_RGBA , w, h, numOutputs, 0, GL_RGBA, GL_FLOAT, voxels );
-//   glBindTexture( GL_TEXTURE_3D, 0 );
-//
-//   std::cout << "\nDone.\n";
-//
-//   if(!objFileName.isEmpty()) saveObjFile( voxels );
-//
-//   delete inputimage;
-//   delete [] voxels;
-//   voxels = 0;
-// }
-//
-// void DisplayWidget::draw3DTexture() {
-//
-//   if( m3DTexId==0 && !voxelFileName.isEmpty() ) init3DTexture();
-//   if( m3DTexId==0) return;
-//
-//   glEnable( GL_ALPHA_TEST );
-//   glAlphaFunc( GL_GREATER, 0.05f );
-//   glDisable(GL_CULL_FACE);
-//   glEnable(GL_BLEND);
-//   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-//
-//   glPushAttrib ( GL_ALL_ATTRIB_BITS );
-// //   glMatrixMode ( GL_PROJECTION );
-// //   glLoadIdentity();
-// //   glMatrixMode ( GL_MODELVIEW );
-// //   glLoadIdentity();
-//
-//
-//   QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
-//   float fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
-//   QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 eye = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//   cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 target = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//   cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 up = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//
-//   float aspectRatio = float( ( float ) width() / ( float ) height() );
-//   float zNear = 0.00001;
-//   float zFar = 1000.0;
-//   float vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
-//
-//   QMatrix4x4 matrix;
-//   matrix.setToIdentity();
-//   matrix.perspective ( vertAngle, aspectRatio, zNear, zFar );
-//   matrix.lookAt ( eye,target,up );
-//
-//   texMatrix = matrix;
-//
-//   glMatrixMode( GL_TEXTURE );
-//   glLoadIdentity();
-//
-// //   if(texMatrix != QMatrix() ) {
-// //     texMatrix.scale( (float)width()/(float)height(), -1.0f, 1.0f);
-// //     glLoadMatrixf(texMatrix.constData());
-// //   }
-// //   else{
-// //   // Translate and make 0.5f as the center
-// //   // (texture co ordinate is from 0 to 1.
-// //   // so center of rotation has to be 0.5f)
-//   glTranslatef( 0.5f, 0.5f, 0.5f );
-//   // A scaling applied to normalize the axis
-//   // (Usually the number of slices will be less so if this is not -
-//   // normalized then the z axis will look bulky)
-//   // Flipping of the y axis is done by giving a negative value in y axis.
-//   // This can be achieved either by changing the y co ordinates in -
-//   // texture mapping or by negative scaling of y axis
-//   glScalef( (float)width()/(float)height(),
-//             -1.0f,
-//             1.0f);
-//
-// // //   glRotatef(rotangle, vX,vY,vZ);
-// //
-//   glTranslatef( -0.5f,-0.5f, -0.5f );
-// //   }
-//
-//
-//   glEnable(GL_TEXTURE_3D);
-//   glBindTexture( GL_TEXTURE_3D, m3DTexId );
-//
-//     for ( float fIndx = -1.0f; fIndx <= 1.0f; fIndx+=0.0195f )
-//     {
-//         glBegin(GL_QUADS);
-//
-//         glTexCoord3f(0.0f, 0.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f(-1.0f,-1.0f,fIndx);
-//         glTexCoord3f(1.0f, 0.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f( 1.0f,-1.0f,fIndx);
-//         glTexCoord3f(1.0f, 1.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f( 1.0f, 1.0f,fIndx);
-//         glTexCoord3f(0.0f, 1.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f(-1.0f, 1.0f,fIndx);
-//
-// //         glTexCoord3f(0.0f, ((float)fIndx+1.0f)/2.0f, 0.0f); glVertex3f(-1.0f,fIndx,-1.0f);
-// //         glTexCoord3f(1.0f, ((float)fIndx+1.0f)/2.0f, 0.0f); glVertex3f( 1.0f,fIndx,-1.0f);
-// //         glTexCoord3f(1.0f, ((float)fIndx+1.0f)/2.0f, 1.0f); glVertex3f( 1.0f,fIndx, 1.0f);
-// //         glTexCoord3f(0.0f, ((float)fIndx+1.0f)/2.0f, 1.0f); glVertex3f(-1.0f,fIndx, 1.0f);
-// //
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,0.0f, 0.0f); glVertex3f(fIndx,-1.0f,-1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,1.0f, 0.0f); glVertex3f(fIndx, 1.0f,-1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,1.0f, 1.0f); glVertex3f(fIndx, 1.0f, 1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,0.0f, 1.0f); glVertex3f(fIndx,-1.0f, 1.0f);
-//         glEnd();
-//     }
-//
-//   glBindTexture( GL_TEXTURE_3D, 0 );
-//   glPopAttrib();
-//   glEnable(GL_CULL_FACE);
-//
-// }
-//
-// void DisplayWidget::saveObjFile(float *vxls ){
-//
-//   std::cout << "Saving .obj point cloud..." << std::endl;
-//
-//   QFile fileStream( objFileName );
-//   if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-//     QMessageBox::warning(this, tr("Fragmentarium"),
-//                          tr("Cannot write file %1:\n%2.")
-//                          .arg(objFileName)
-//                          .arg(fileStream.errorString()));
-//     return;
-//   }
-//
-//   QTextStream out(&fileStream);
-//   int pcnt = 0;
-//
-//   out << "# Fragmentarium v1.0.25 point cloud\n";
-//   for(int z=0;z<512;z++) {
-//     for(int y=0;y<512;y++) {
-//       for(int x=0;x<512;x++) {
-//         int indx = ((512*512*z) + (y*512+x))*4;
-//         float scale = (1.0/512.0);
-//         if( vxls[indx+3] != 0.0 ) {
-//           out << "v " << (0.5-(scale*x))*16.0 << " " << (0.5-(scale*y))*16.0 << " " << (0.5-(scale*z))*14.0 << "\n";
-//           pcnt++;
-//         }
-//         std::cout << "Point:" << pcnt << '\r';
-//       } } } std::cout << "Done " << pcnt << " points out of " << 512*512*512 << std::endl;
-// }
-/// END 3DTexture
-
 bool DisplayWidget::checkShaderProg(GLuint programID)
 {
     if(hasShader() && programID == shaderProgram->programId()) {
@@ -1615,17 +1300,17 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         checkForSpecialCase(uniformName, uniformValue);
 
         // find a value to go with the name index in the program, may not be the same as index in our list
-        for( int n=0; n < vw.count(); n++) {
-            if(uniformName == vw[n]->getName()) {
-                // get slider values
-                uniformValue = vw[n]->getValueAsText();
-                // test and get filename
-                if (uniformValue.isEmpty()) {
-                    uniformValue = vw[n]->toString();
+            for( int n=0; n < vw.count(); n++) {
+                if(uniformName == vw[n]->getName()) {
+                    // get slider values
+                    uniformValue = vw[n]->getValueAsText();
+                    // test and get filename
+                    if (uniformValue.isEmpty()) {
+                        uniformValue = vw[n]->toString();
+                    }
+                    break;
                 }
-                break;
             }
-        }
 
         if (uniformValue.isEmpty()) {
             uniformValue = "Unused variable widget";
@@ -1658,24 +1343,6 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                             if(it.value().contains(sw->getValue())) {
                                 sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
                                 // DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
-// testing channels                                
-//                                 if (subframeCounter == 1) {
-//                                     if (sw->getValue().endsWith(".exr")) {
-//                                         // check for multichannel string R;G;B
-//                                         QStringList l = sw->getChannelValue().split(";");
-//                                         bool check = l.count() >= 1;
-//                                         if(check) {
-//                                             int _i = 0;
-//                                             while(_i<l.count()) {
-//                                                 if(sw->hasChannel(l.at(_i)) == -1) check = false;
-//                                                 if(!check) DBOUT << "Need to process channel:" << l.at(_i);
-//                                                 _i++;
-//                                             }
-//                                         } else check = sw->hasChannel(l.at(0)) != -1; // single channel specified
-//                                         
-//                                         DBOUT << "Using:" << sw->getName() << sw->getValue() << sw->getChannelValue() << check;
-//                                     }
-//                                 }
                             }
                         }
                     }
@@ -1794,9 +1461,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         static int c = 0;
         qDebug() << QString("Draw fragment program: %1").arg(c++);
     }
-    /// BEGIN 3DTexture
-    //     if( m3DTexId==0 )
-    /// END 3DTexture
+
     shaderProgram->bind();
 
     // -- Viewport
@@ -1805,12 +1470,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     } else {
         setViewPort ( w,h );
     }
-
-    /// BEGIN 3DTexture
-    //     if( m3DTexId!=0 ) {
-    //     draw3DTexture();
-    //     return; }
-    /// END 3DTexture
 
     // -- Projection
     // The projection mode as used here
@@ -1913,7 +1572,6 @@ bool DisplayWidget::FBOcheck()
 
 void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
 {
-
     if (!this->isValid() || !FBOcheck()) {
         return;
     }
@@ -2617,10 +2275,6 @@ void DisplayWidget::setPerspective()
     glm::dmat4 matrix;
     matrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
     matrix = matrix * glm::lookAt ( eye,target,up );
-
-    /// BEGIN 3DTexture
-    //     texMatrix = matrix;
-    /// END 3DTexture
 
     glLoadMatrixd ( &matrix[0][0] );
 }

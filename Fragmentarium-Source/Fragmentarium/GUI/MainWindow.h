@@ -169,12 +169,6 @@ public:
     {
         lastStoredTime = time;
     }
-/// BEGIN 3DTexture
-// #ifdef USE_OPEN_EXR
-//       void setVoxelFile( QString vfn ){ engine->set3DTextureFileName( vfn ); };
-//       void setObjFile( QString ofn );
-// #endif // USE_OPEN_EXR
-/// END 3DTexture
 
     QVector<VariableWidget *> getUserUniforms()
     {
@@ -732,10 +726,6 @@ private:
     bool verbose;
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
-
-/// BEGIN 3DTexture
-//       QString voxelFileName;
-/// END 3DTexture
 
 #ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;
