@@ -1299,7 +1299,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         QString uniformValue;
         checkForSpecialCase(uniformName, uniformValue);
 
-        // find a value to go with the name index in the program, may not be the same as index in our list
+        if (!uniformValue.isEmpty() && !uniformValue.contains("variable")) {
+            // find a value to go with the name, index in the program, may not be the same as index in our list
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName()) {
                     // get slider values
@@ -1311,9 +1312,9 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                     break;
                 }
             }
-
-        if (uniformValue.isEmpty()) {
-            uniformValue = "Unused variable widget";
+        }
+        else {
+            uniformValue = "Unused variable";
         }
 
         QString tp = "";
