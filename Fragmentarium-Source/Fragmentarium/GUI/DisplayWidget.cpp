@@ -219,10 +219,9 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     initBufferShader();
 
-    resetUniformProvenance();
 }
 
-void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
+void DisplayWidget::requireRedraw(bool clear )
 {
     if (disableRedraw) {
         return;
@@ -239,7 +238,7 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
     }
 }
 
-void DisplayWidget::uniformsHasChanged(Provenance provenance)
+void DisplayWidget::uniformsHaveChanged(bool bshaderonly)
 {
     if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
@@ -248,9 +247,9 @@ void DisplayWidget::uniformsHasChanged(Provenance provenance)
             depthToAlpha = btest->isChecked();
         }
     }
-    bufferUniformsHaveChanged |= !!(provenance & FromBufferShader);
-    bool bufferShaderOnly = provenance == FromBufferShader;
-    requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
+    bufferShaderOnly = bshaderonly;
+    bufferUniformsHaveChanged |= bufferShaderOnly;
+    requireRedraw ( bufferShaderOnly ? false : clearOnChange );
 }
 
 /*
@@ -947,6 +946,7 @@ void DisplayWidget::initBufferShader()
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
+        bufferShaderProgram->removeAllShaders();
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
     }
@@ -1011,6 +1011,8 @@ void DisplayWidget::initBufferShader()
         bufferShaderProgram = nullptr;
         return;
     }
+
+    bufferUniformsHaveChanged = false;
 }
 
 void DisplayWidget::resetCamera(bool fullReset)
@@ -1235,43 +1237,6 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
 }
 #endif
 
-void DisplayWidget::resetUniformProvenance()
-{
-    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
-    foreach (VariableWidget *w, vw) {
-        w->setProvenance(FromUnknown);
-    }
-    QOpenGLShaderProgram *programs[2] = { shaderProgram, bufferShaderProgram };
-    Provenance provenances[2] = { FromMainShader, FromBufferShader };
-    for (int k = 0; k < 2; ++k) {
-        QOpenGLShaderProgram *shaderProg = programs[k];
-        Provenance provenance = provenances[k];
-        if (shaderProg == nullptr) continue;
-        GLuint programID = shaderProg->programId();
-        if (programID == 0) continue;
-        GLint count = 0;
-        // this only returns uniforms that have not been optimized out
-        glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
-        for (int i = 0; i < count; i++) {
-            GLsizei bufSize = 256;
-            GLsizei length;
-            GLint size;
-            GLenum type;
-            GLchar name[bufSize];
-            glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
-            QString uniformName = (char *)name;
-            // FIXME this is quadratic: O(number of active uniforms * number of widgets declared)
-            // FIXME could go to n log n by sorting each by name and zip ascending?
-            foreach (VariableWidget *w, vw) {
-                if (uniformName == w->getName()) {
-                    w->addProvenance(provenance);
-                    break; // can't have more than one uniform with the same name
-                }
-            }
-        }
-    }
-}
-
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
 
@@ -1296,10 +1261,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 
         glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
         QString uniformName = (char *)name;
-        QString uniformValue;
-        checkForSpecialCase(uniformName, uniformValue);
+        QString uniformValue = "";
+        checkForSpecialCase(name, uniformValue);
+        if(uniformValue.contains("variable")) continue;
 
-        if (!uniformValue.isEmpty() && !uniformValue.contains("variable")) {
             // find a value to go with the name, index in the program, may not be the same as index in our list
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName()) {
@@ -1312,25 +1277,24 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                     break;
                 }
             }
-        }
-        else {
+
+        if(uniformValue.isEmpty()) {
             uniformValue = "Unused variable";
+            continue;
         }
 
         QString tp = "";
         setFloatType(type, tp);
         bool foundDouble = false;
 
+#ifdef USE_OPENGL_4
         if (format().majorVersion() > 3 && format().minorVersion() >= 0) {
             // do not try to set special, gl_ or unused uniform even if it is double type
             if (!uniformValue.contains("variable")) {
-#ifdef USE_OPENGL_4
                 setDoubleType(programID, type, uniformName, uniformValue, foundDouble, tp);
-#else
-                setFloatType(type, tp);
-#endif
             }
         }
+#endif
 
         // this sets User (32 bit) uniforms not handled above, checks sampler channels
         if(!foundDouble) {
@@ -1373,6 +1337,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                 qDebug() << curveSettings.count() << " active easingcurve settings." << endl;
             }
         }
+    }
+
+    if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
+        bufferUniformsHaveChanged = false;
+        bufferShaderOnly = false;
     }
 }
 
@@ -1579,7 +1548,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     QSize s = backBuffer->size();
 
-    if ( !drawLast ) {
+    if ( !drawLast && !bufferShaderOnly ) {
         for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
@@ -1620,7 +1589,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         // Setup User Uniforms
         if (bufferUniformsHaveChanged) {
                 setShaderUniforms ( bufferShaderProgram );
-                bufferUniformsHaveChanged = false;
         }
     }
 
@@ -1977,6 +1945,7 @@ void DisplayWidget::timerSignal()
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
             // we're done rendering
+            pendingRedraws = 0;
         } else {
             if (buttonDown) {
                 return;

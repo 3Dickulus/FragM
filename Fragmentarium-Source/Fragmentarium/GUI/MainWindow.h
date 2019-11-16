@@ -272,6 +272,8 @@ public:
         getVariableEditor()->setVerbose ( v );
     };
 
+    bool isChangedUniformInBuffershaderOnly();
+    
     QString langID;
 
 protected:
@@ -542,7 +544,7 @@ private slots:
     void indent();
     void preferences();
     void insertText();
-    void variablesChanged ( bool lockedChanged, Provenance provenance );
+    void variablesChanged ( bool lockedChanged );
     void cut();
     void copy();
     void paste();

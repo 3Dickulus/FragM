@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QMap>
 #include <QOpenGLShaderProgram>
+
 #include <QSlider>
 #include <QString>
 #include <QTabWidget>
@@ -123,7 +124,7 @@ public:
     }
 
 signals:
-    void changed(bool lockedChanged, Provenance provenance);
+    void changed(bool lockedChanged);
 
 public slots:
     void sliderDestroyed ( QObject *obj );
@@ -136,7 +137,7 @@ public slots:
     void copy();
     void copyGroup();
     void paste();
-    void childChanged(bool lockedChanged, Provenance provenance);
+    void childChanged(bool lockedChanged);
     void presetSelected(QString presetName);
     void dockChanged ( bool t )
     {
