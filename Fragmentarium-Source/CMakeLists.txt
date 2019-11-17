@@ -110,7 +110,8 @@ IF ( USE_OPEN_EXR )
 
         set( OpenEXR_LIBS
             IlmImf-2_4
-            Half Imath-2_4
+            Half-2_4
+            Imath-2_4
             Iex-2_4
             IexMath-2_4
             IlmThread-2_4
@@ -350,7 +351,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
 
     SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-    SET(PACKAGE_RELEASE "191104")
+    SET(PACKAGE_RELEASE "191116")
 
     IF(UNIX AND NOT APPLE)
 
