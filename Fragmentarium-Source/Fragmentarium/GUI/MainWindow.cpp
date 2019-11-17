@@ -232,15 +232,6 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         easingMap.clear();
     }
 
-    QStringList openFiles;
-    if (!tabInfo.isEmpty()) {
-        for (auto &i : tabInfo) {
-            openFiles << i.filename;
-        }
-    }
-
-    QSettings().setValue("openFiles", openFiles);
-    QSettings().sync();
 }
 
 void MainWindow::newFile()
@@ -2320,6 +2311,15 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
+
+    QStringList openFiles;
+    if (!tabInfo.isEmpty()) {
+        for (auto &i : tabInfo) {
+            openFiles << i.filename;
+        }
+    }
+
+    settings.setValue("openFiles", openFiles);
     settings.sync();
 
 }
