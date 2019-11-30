@@ -81,7 +81,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 191104, "");
+    version = Version(2, 5, 0, 191116, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -232,15 +232,6 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         easingMap.clear();
     }
 
-    QStringList openFiles;
-    if (!tabInfo.isEmpty()) {
-        for (auto &i : tabInfo) {
-            openFiles << i.filename;
-        }
-    }
-
-    QSettings().setValue("openFiles", openFiles);
-    QSettings().sync();
 }
 
 void MainWindow::newFile()
@@ -636,6 +627,7 @@ void MainWindow::init()
 
     engine = new DisplayWidget(this, splitter);
     engine->setObjectName("DisplayWidget");
+
     engine->show();
 
     tabBar = new QTabBar(this);
@@ -696,7 +688,7 @@ void MainWindow::init()
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
-    connect(variableEditor, SIGNAL(changed(bool,Provenance)), this, SLOT(variablesChanged(bool,Provenance)));
+    connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
     connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
 
     editorDockWidget->setHidden(true);
@@ -880,13 +872,34 @@ void MainWindow::showWelcomeNote()
 
 }
 
-void MainWindow::variablesChanged(bool lockedChanged, Provenance provenance)
+bool MainWindow::isChangedUniformInBuffershaderOnly()
 {
+    if(!engine->hasShader() || !engine->hasBufferShader()) return false;
+    QStringList lastSet = getTextEdit()->testParms().split("\n");
+    QStringList thisSet = variableEditor->getSettings().split("\n");
+    bool inBufferShaderOnly = false;
+    if (!lastSet.isEmpty() && !thisSet.isEmpty()) { // test last setting against new settings to determine changed uniform name and provenance
+        if (lastSet.count() == thisSet.count()) {
+            foreach(QString t, thisSet) {
+                int index = thisSet.indexOf(t);
+                if(t != lastSet[index]) {
+                    QString changedUniformName = t.split(" ").at(0); // determine if uniform lives in buffershader only
+                    inBufferShaderOnly = ( engine->getBufferShader()->uniformLocation(changedUniformName ) != -1 && engine->getShader()->uniformLocation(changedUniformName ) == -1 );
+                }
+            }
+        } // else DBOUT << "Index mismatch.";
+    } // else DBOUT << "Empty settings.";
+    getTextEdit()->parmsToTest( thisSet.join("\n") );    // track the most recent set
+    return inBufferShaderOnly;
+}
 
+void MainWindow::variablesChanged(bool lockedChanged)
+{
     if (lockedChanged) {
         highlightBuildButton(true);
     }
-    engine->uniformsHasChanged(provenance);
+    bool bso = isChangedUniformInBuffershaderOnly();
+    engine->uniformsHaveChanged(bso);
 }
 
 void MainWindow::createOpenGLContextMenu()
@@ -1433,7 +1446,7 @@ void MainWindow::tileBasedRender()
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
-    
+
     bool runFromScript = runningScript;
 
     if(!runFromScript) {
@@ -1505,42 +1518,41 @@ retry:
                 }
             } else            
             if (!oDir.mkdir(subdirName)) {
-                QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+
+              QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
                 goto retry;
             }
-            
             subdirName = oDir.filePath(subdirName); // full name
 
             if(od.doSaveFragment()) {
-                QFile fileStream(subdirName + QDir::separator() + fileName);
+            QFile fileStream(subdirName + QDir::separator() + fileName);
+            if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
+                QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
+                return;
+            }
 
-                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
-                    return;
-                }
+            QTextStream out(&fileStream);
+            out << final;
+            INFO(tr("Saved fragment + settings as: ") + subdirName +
+                 QDir::separator() + fileName);
 
-                QTextStream out(&fileStream);
-                out << final;
-                INFO(tr("Saved fragment + settings as: ") + subdirName +
-                    QDir::separator() + fileName);
-
-                if(includeWithAutoSave) {
-                    // Copy files.
-                    QStringList ll = p.getDependencies();
-                    foreach (QString from, ll) {
-                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
+            if(includeWithAutoSave) {
+                // Copy files.
+                QStringList ll = p.getDependencies();
+                foreach (QString from, ll) {
+                    QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
                         if(QFile::exists(to) && overWrite)
                         if (!QFile::remove(to)) {
                             QMessageBox::warning(
                                 this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1'").arg(from).arg(to));
                         }
                             
-                        if (!QFile::copy(from,to)) {
-                            QMessageBox::warning(
-                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
-                        }
+                    if (!QFile::copy(from,to)) {
+                        QMessageBox::warning(
+                            this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
                     }
                 }
+            }
             }
         } catch (Exception& e) {
             WARNING(e.getMessage());
@@ -1563,7 +1575,7 @@ retry:
     int maxTiles = od.getTiles();
 
     int timeSteps = fps*maxTime;
-    
+
     bool imageSaved = false;
 #ifdef USE_OPEN_EXR
     exrMode = fileName.endsWith(".exr", Qt::CaseInsensitive);
@@ -1624,7 +1636,7 @@ retry:
     QTime totalTime;
     totalTime.start();
 
-   for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
+    for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
 
         if (progress.wasCanceled() || (runFromScript != runningScript)) {
@@ -1656,13 +1668,13 @@ retry:
             name=makeImgFileName(timeStep, timeSteps, fileName);
         }
 
-        if ( od.doSaveFragment() || od.doAnimation() ) {
+        if (od.doSaveFragment() || od.doAnimation()) {
             QString subdirName = od.getFolderName();
             QDir filedir ( QFileInfo ( subdirName ).absolutePath() );
 
             if ( !filedir.exists() ) {
                 filedir.mkdir ( QFileInfo ( subdirName ).absolutePath() );
-            }
+              }
 
             name = ( QFileInfo ( name ).absolutePath() + QDir::separator() +
                      subdirName + QDir::separator() + ( od.doAnimation() ?"Images/": "" ) +
@@ -1671,7 +1683,7 @@ retry:
             QDir imgdir ( QFileInfo ( name ).absolutePath() );
             if ( !imgdir.exists() ) {
                 imgdir.mkdir ( QFileInfo ( name ).absolutePath() );
-            }
+          }
         }
 
         QTime frametime;
@@ -2093,7 +2105,7 @@ void MainWindow::timeMaxChanged(int value)
     // so the render output dialog picks up the change immediately
     QSettings settings;
     settings.setValue("timeMax", value);
-    
+
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
     getTime();
@@ -2299,6 +2311,15 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
+
+    QStringList openFiles;
+    if (!tabInfo.isEmpty()) {
+        for (auto &i : tabInfo) {
+            openFiles << i.filename;
+        }
+    }
+
+    settings.setValue("openFiles", openFiles);
     settings.sync();
 
 }
@@ -2386,7 +2407,6 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
-
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
@@ -2401,7 +2421,7 @@ void MainWindow::loadFragFile(const QString &fileName)
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
-        
+
         if (QSettings().value("autorun", true).toBool()) {
             variableEditor->resetUniforms(false); // set all values but do not initialize fragment
             rebuildRequired = initializeFragment();// once to initialize presets and check locked vars
@@ -2414,8 +2434,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
-        
-        update();
+update();
 
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
@@ -2631,7 +2650,7 @@ bool MainWindow::initializeFragment()
         QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
         if(engine->hasShader() && (fs.textures.count() > 0) )
-            engine->initFragmentTextures();
+        engine->initFragmentTextures();
         ms = start.msecsTo(QTime::currentTime());
     } catch (Exception& e) {
         WARNING(e.getMessage());
@@ -2667,25 +2686,26 @@ bool MainWindow::initializeFragment()
 
 void MainWindow::hideUnusedVariableWidgets()
 {
-
     /// hide unused widgets unless the default state is locked
     QStringList wnames = variableEditor->getWidgetNames();
     for (int i = 0; i < wnames.count(); i++) {
         // find a widget in the variable editor
         auto *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
         if (vw != nullptr) {
-                /// get the uniform location from the shader
-                int uloc = vw->uniformLocation(engine->getShader());
+            /// get the uniform location from the shader
+            int uloc = vw->uniformLocation(engine->getShader());
+            vw->setLabelStyle( false ); // no buffershader indicator in gui
             if (uloc == -1 && engine->hasBufferShader()) {
-                    /// get the uniform location from the buffershader
-                    uloc = vw->uniformLocation(engine->getBufferShader());
+                /// get the uniform location from the buffershader
+                uloc = vw->uniformLocation(engine->getBufferShader());
+                vw->setLabelStyle( uloc != -1 ); // indicator in gui if exists in buffershader only
             }
             /// locked widgets are transformed into const or #define so don't show up as uniforms
             /// AutoFocus is a dummy so does not exist inside shader program
             if(uloc == -1 &&
                     !(vw->getLockType() == Parser::Locked ||
-                    vw->getDefaultLockType() == Parser::AlwaysLocked ||
-                    vw->getDefaultLockType() == Parser::NotLockable) &&
+                      vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                      vw->getDefaultLockType() == Parser::NotLockable) &&
                     !wnames.at(i).contains("AutoFocus")  )  {
                 vw->hide();
             } else {
@@ -2885,7 +2905,6 @@ void MainWindow::tabChanged(int index)
     }
 
     TextEdit *te = getTextEdit();
-
     te->saveSettings( variableEditor->getSettings() );
 
     TabInfo ti = tabInfo[index];

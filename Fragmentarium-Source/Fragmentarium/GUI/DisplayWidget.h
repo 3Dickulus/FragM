@@ -128,7 +128,7 @@ public:
 
     /// Use this whenever a redraw is required.
     /// Calling this function multiple times will still only result in one redraw
-    void requireRedraw ( bool clear, bool bufferShaderOnly = false );
+    void requireRedraw ( bool clear );
     void updateRefreshRate();
     void setState ( DrawingState state );
     DrawingState getState()
@@ -200,7 +200,7 @@ public:
         maxSubFrames = i;
     }
 
-    void uniformsHasChanged(Provenance provenance);
+    void uniformsHaveChanged( bool bshaderonly = false );
     void setClearOnChange ( bool v )
     {
         clearOnChange = v;
@@ -272,10 +272,7 @@ public slots:
     {
         return renderFPS;
     }
-    bool isPending()
-    {
-        return pendingRedraws || bufferUniformsHaveChanged;
-    }
+
     void setHasKeyFrames ( bool yn )
     {
         hasKeyFrames = yn;
@@ -357,13 +354,13 @@ private:
     void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 #endif
 
-    void resetUniformProvenance();
     void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
     void draw3DHints();
     bool FBOcheck();
 
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
+    
     QColor backgroundColor;
 
     QMenu* contextMenu;
@@ -406,6 +403,7 @@ private:
     QPoint mouseXY;
     bool depthToAlpha;
     bool verbose;
+    bool bufferShaderOnly;
 
 };
 }

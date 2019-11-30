@@ -400,28 +400,14 @@ public:
     {
         return group;
     }
-    void setLabelStyle()
+    void setLabelStyle(bool prov=false)
     {
-       if (provenance == FromBufferShader) {
+       if (prov) {
             QColor c = label->palette().color(QPalette::Inactive, QPalette::Mid);
             label->setStyleSheet("border-style: outset; border-width: 1px; border-color: " + c.name() + ";");
         } else {
             label->setStyleSheet("border: none;");
         }
-    }
-    void setProvenance(Provenance p)
-    {
-        provenance = p;
-        setLabelStyle();
-    }
-    void addProvenance(Provenance p)
-    {
-        provenance = Provenance(provenance | p);
-        setLabelStyle();
-    }
-    Provenance getProvenance() const
-    {
-        return provenance;
     }
     bool isUpdated() const
     {
@@ -471,7 +457,7 @@ public slots:
     void valueChanged();
 
 signals:
-    void changed(bool lockedChanged, Provenance provenance);
+    void changed(bool lockedChanged);
 
 protected:
     QString toGLSL ( double d )
@@ -499,7 +485,6 @@ protected:
     bool wantDouble=false;
     QWidget* widget;
     QWidget* variableEditor;
-    Provenance provenance;
 };
 
 class SamplerWidget : public VariableWidget

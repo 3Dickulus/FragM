@@ -48,6 +48,14 @@ public:
     {
         return savedSettings;
     }
+    void parmsToTest ( QString ss )
+    {
+        testSettings = ss;
+    }
+    QString testParms()
+    {
+        return testSettings;
+    }
     FragmentHighlighter *fh;
     QWidget *lineNumberArea;
 public slots:
@@ -65,6 +73,7 @@ private slots:
 private:
     MainWindow* mainWindow;
     QString savedSettings;
+    QString testSettings;
     bool matchLeftParenthesis ( QTextBlock currentBlock, int i, int numLeftParentheses );
     bool matchRightParenthesis ( QTextBlock currentBlock, int i, int numRightParentheses );
     void createParenthesisSelection(int pos);

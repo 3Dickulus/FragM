@@ -29,7 +29,7 @@ using namespace SyntopiaCore::Misc;
 using namespace Fragmentarium::Parser;
 
 VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString name)
-    : QWidget(parent), name(name), updated(false), systemVariable(false), variableEditor(variableEditor), provenance(FromUnknown)
+    : QWidget(parent), name(name), updated(false), systemVariable(false), variableEditor(variableEditor)
 {
 
     auto *vl = new QHBoxLayout(this);
@@ -52,7 +52,7 @@ VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString
 
     widget = new QWidget(this);
     vl->addWidget(widget);
-    connect(this, SIGNAL(changed(bool,Provenance)), variableEditor, SLOT(childChanged(bool,Provenance)));
+    connect(this, SIGNAL(changed(bool)), variableEditor, SLOT(childChanged(bool)));
 }
 
 bool VariableWidget::isLocked()
@@ -67,9 +67,9 @@ void VariableWidget::valueChanged()
         pal.setColor(backgroundRole(), Qt::yellow);
         setPalette(pal);
         setAutoFillBackground(true);
-        emit(changed(true, provenance));
+        emit(changed(true));
     } else {
-        emit(changed(false, provenance));
+        emit(changed(false));
     }
         
     oldLockType = lockType;

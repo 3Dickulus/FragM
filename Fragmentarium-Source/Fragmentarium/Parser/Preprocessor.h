@@ -127,7 +127,7 @@ private:
 
 class GuiParameter {
 public:
-    GuiParameter(QString group, QString name, QString tooltip) : lockType(Unknown), sliderType(UnknownSliderType), provenance(FromUnknown), group(group), name(name), tooltip(tooltip) {
+    GuiParameter(QString group, QString name, QString tooltip) : lockType(Unknown), sliderType(UnknownSliderType), group(group), name(name), tooltip(tooltip) {
     };
 
     QString getName() {
@@ -151,15 +151,6 @@ public:
     }
     void setSliderType(SliderType l) {
         sliderType = l;
-    }
-    Provenance getProvenance() {
-        return provenance;
-    }
-    void setProvenance(Provenance l) {
-        provenance = l;
-    }
-    void addProvenance(Provenance l) {
-        provenance = Provenance(provenance | l);
     }
     void setIsDouble(bool v) {
         wantDouble = v;
