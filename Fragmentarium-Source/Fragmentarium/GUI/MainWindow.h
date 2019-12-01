@@ -530,6 +530,10 @@ private slots:
     void bufferSpinBoxChanged ( int value );
     void timeChanged ( int value );
     void timeLineRequest ( QPoint p );
+    void timeLineRequest ()
+    {
+        timeLineRequest ( QPoint(0,0) );
+    }; // 11/22/19 ClaudeHA
     void videoEncoderRequest();
     void bufferActionChanged ( QAction *action );
     void showWelcomeNote();

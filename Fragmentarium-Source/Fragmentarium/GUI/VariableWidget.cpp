@@ -794,7 +794,7 @@ void SamplerWidget::channelChanged(const QString &text)
         if(text != "All") {
             if(!channelList.contains(text)) {
                 check=false;
-                DBOUT << endl << "Channel" << text << "not found!";
+                WARNING("Channel " + text + " not found!");
             }
 //             else DBOUT << channelComboBox->currentIndex();
         }
@@ -944,7 +944,7 @@ void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram)
 {
     if (texID != 0) {
         int l = uniformLocation(shaderProgram);
-        if(l != -1) {
+        if( !(l < 0) ) {
             shaderProgram->setUniformValue(l, texID);
 //  DBOUT << shaderProg->programId() << " TextureCache[" << texID << "] " << name;
         }

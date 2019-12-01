@@ -19,6 +19,7 @@
 #include "EasingWindow.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
+#include "TextEdit.h"
 
 
 namespace Fragmentarium
@@ -250,6 +251,33 @@ void VariableEditor::unlockGroup()
     }
 }
 
+void VariableEditor::groupToPreset() {
+    QWidget* t = tabWidget->widget(tabWidget->currentIndex());
+
+    QMap<QString, QWidget*>::const_iterator it;
+    QString g;
+    for (it = tabs.constBegin(); it!=tabs.constEnd(); it++ ) {
+        if (it.value()->parent() == t) {
+            g = it.key();
+        }
+    }
+
+    QString gs;
+    foreach (VariableWidget* variable, variables) {
+        if (variable->getGroup() == g) {
+            gs += variable->getName() + " = " + variable->toSettingsString() + "\n";
+        }
+    }
+
+    INFO(tr("Created ") + g + tr(" Preset."));
+    
+    QTextCursor tc = mainWindow->getTextEdit()->textCursor();
+    tc.movePosition(QTextCursor::End);
+    mainWindow->getTextEdit()->setTextCursor(tc);
+
+    mainWindow->getTextEdit()->insertPlainText("\n#preset " + g + "\n" + gs + "#endpreset\n");
+}
+
 void VariableEditor::resetGroup()
 {
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
@@ -364,10 +392,12 @@ void VariableEditor::createGroup(QString g)
     pb->setText("Copy group");
     b->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(copyGroup()));
+
     pb = new QPushButton(b);
     pb->setText("Lock group");
     b->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(lockGroup()));
+
     pb = new QPushButton(b);
     pb->setText("Unlock group");
     b->layout()->addWidget(pb);
@@ -379,11 +409,19 @@ void VariableEditor::createGroup(QString g)
     c->setLayout(new QHBoxLayout(c));
     c->layout()->setSpacing(0);
     c->layout()->setContentsMargins (0,0,0,0);
+    
     pb = new QPushButton(c);
     pb->setText("Reset group");
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(resetGroup()));
+    
+    pb = new QPushButton(c);
+    pb->setText("Group to Preset");
+    c->layout()->addWidget(pb);
+    connect(pb, SIGNAL(clicked()), this, SLOT(groupToPreset()));
+    
     a->layout()->addWidget(c);
+    
     auto *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
     a->layout()->addItem(verticalSpacer);
     w->layout()->addWidget(a);
@@ -1043,9 +1081,21 @@ int VariableEditor::getKeyFrameCount()
 {
     int cnt = 0;
     QRegExp rx = QRegExp("(KeyFrame\\.[0-9]+)");
-    foreach (QString preset, presets.keys()) {
-        if (rx.indexIn(preset) != -1) {
-            cnt++;
+     foreach (QString preset, presets.keys()) {
+         if (rx.indexIn(preset) != -1) {
+            QString p = presets[preset];
+            int pc = p.split("\n").count();
+            if(p.contains("FOV") && p.contains("Eye") && p.contains("Target") && p.contains("Up") && pc == 4) {
+                cnt++;
+            }
+            else {
+                CRITICAL("");
+                WARNING(QString("%1 incomplete!").arg(preset));
+                WARNING(p);
+                WARNING("Must be FOV + Eye + Target + Up settings only.");
+                CRITICAL("");
+                return 0;
+            }
         }
     }
     return cnt;

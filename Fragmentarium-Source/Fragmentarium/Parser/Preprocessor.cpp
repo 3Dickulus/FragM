@@ -92,17 +92,17 @@ void setSliderType(GuiParameter *p, QString sliderTypeString)
 
 glm::dvec4 parseQVector4D(QString s1, QString s2, QString s3, QString s4)
 {
-    return { parseFloat(s1), parseFloat(s2), parseFloat(s3), parseFloat(s4) };
+    return { parseDouble(s1), parseDouble(s2), parseDouble(s3), parseDouble(s4) };
 }
 
 glm::dvec3 parseQVector3D(QString s1, QString s2, QString s3)
 {
-    return { parseFloat(s1), parseFloat(s2), parseFloat(s3) };
+    return { parseDouble(s1), parseDouble(s2), parseDouble(s3) };
 }
 
 glm::dvec2 parseQVector2D(QString s1, QString s2)
 {
-    return { parseFloat(s1), parseFloat(s2) };
+    return { parseDouble(s1), parseDouble(s2) };
 }
 }
 

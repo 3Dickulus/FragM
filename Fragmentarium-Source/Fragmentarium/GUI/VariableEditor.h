@@ -131,6 +131,7 @@ public slots:
     void focusChanged(QWidget* oldWidget,QWidget* newWidget);
     bool applyPreset();
     void resetUniforms(bool clear = true);
+    void groupToPreset();
     void resetGroup();
     void lockGroup();
     void unlockGroup();

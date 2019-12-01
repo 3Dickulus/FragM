@@ -456,6 +456,7 @@ public:
     void parseMaxSubFrames( FragmentSource* fs);
 
     QStringList getDependencies() {
+        dependencies.removeDuplicates();
         return dependencies;
     }
 

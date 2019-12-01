@@ -81,7 +81,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 191116, "");
+    version = Version(2, 5, 0, 191122, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -1018,8 +1018,6 @@ void MainWindow::createActions()
     renderAction->setShortcut(tr("F5"));
     renderAction->setStatusTip(tr("Render the current ruleset"));
     connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
-    // not sure why but connecting twice makes textures persitent ???
-    connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
 
     videoEncoderAction = new QAction(QIcon(":/Icons/render.png"), tr("&Video Encoding"), this);
     videoEncoderAction->setStatusTip(tr("Encode rendered frames to video"));
@@ -1133,8 +1131,9 @@ void MainWindow::createMenus()
     createCommandHelpMenu(m, this, this);
     editMenu->addAction(tr("Add Easing Curve"), this, SLOT(setEasing()), QKeySequence("F7"));
     editMenu->addAction(tr("Add Key Frame"), this, SLOT(insertPreset()), QKeySequence("F8"));
-    editMenu->addAction(tr("Select Key Frame"), this, SLOT(selectPreset()), QKeySequence("F9"));
+    editMenu->addAction(tr("Select Preset"), this, SLOT(selectPreset()), QKeySequence("F9"));
     editMenu->addSeparator();
+    editMenu->addAction(tr("Timeline Editor"), this, SLOT(timeLineRequest()));
     editMenu->addAction(tr("Preferences..."), this, SLOT(preferences()));
 
     // -- Render Menu --
@@ -1156,7 +1155,8 @@ void MainWindow::createMenus()
     parametersMenu->addAction(tr("Copy Settings"), variableEditor, SLOT(copy()), QKeySequence("F2"));
     parametersMenu->addAction(tr("Copy Group"), variableEditor, SLOT(copyGroup()), QKeySequence("Shift+F2"));
     parametersMenu->addAction(tr("Paste from Clipboard"), variableEditor, SLOT(paste()), QKeySequence("F3"));
-    parametersMenu->addAction(tr("Paste from Selected Text"), this, SLOT(pasteSelected()), QKeySequence("F4"));
+    parametersMenu->addAction(tr("Paste from Selected Text"), this, SLOT(pasteSelected()), QKeySequence("Shift+F3"));
+    parametersMenu->addAction(tr("Group to preset"), variableEditor, SLOT(groupToPreset()), QKeySequence("F4"));
     parametersMenu->addSeparator();
     parametersMenu->addAction(tr("Save to File"), this, SLOT(saveParameters()));
     parametersMenu->addAction(tr("Load from File"), this, SLOT(loadParameters()));
@@ -1694,6 +1694,9 @@ retry:
 
         statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
 
+//         QSettings settings;
+//         if( settings.value("enableGLDebug").toBool() ) std::cout << name.toStdString() << std::endl << std::endl;
+        
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
@@ -2431,7 +2434,6 @@ void MainWindow::loadFragFile(const QString &fileName)
                 rebuildRequired = initializeFragment();
                 variableEditor->setDefault();
             }
-            rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
 update();
@@ -2649,8 +2651,6 @@ bool MainWindow::initializeFragment()
     try {
         QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
-        if(engine->hasShader() && (fs.textures.count() > 0) )
-        engine->initFragmentTextures();
         ms = start.msecsTo(QTime::currentTime());
     } catch (Exception& e) {
         WARNING(e.getMessage());
@@ -2926,11 +2926,11 @@ void MainWindow::tabChanged(int index)
     initializeFragment(); // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if (!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings())) {
-            initializeFragment();
+        if (!te->lastSettings().isEmpty()) {
+            variableEditor->setSettings(te->lastSettings());
         }
+        initializeFragment();
     }
-    initializeFragment(); // makes textures persist
 }
 
 void MainWindow::closeTab()

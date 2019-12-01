@@ -104,7 +104,7 @@ class CameraControl;
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
 #ifdef USE_OPENGL_4
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
+class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility
 #else
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
 #endif
@@ -357,7 +357,9 @@ private:
     void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
     void draw3DHints();
     bool FBOcheck();
-
+    
+    GLenum glCheckError_(const char *file, int line, const char *func);
+    
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
     
@@ -404,6 +406,7 @@ private:
     bool depthToAlpha;
     bool verbose;
     bool bufferShaderOnly;
+    bool glDebugEnabled;
 
 };
 }

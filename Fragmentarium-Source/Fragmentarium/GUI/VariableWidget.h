@@ -450,7 +450,7 @@ public:
     virtual void setLockType(LockType lt) ;
     virtual QString getLockedSubstitution() = 0;
     virtual QString getLockedSubstitution2() = 0;
-    virtual void setSliderType(SliderType ){};
+    virtual void setSliderType(SliderType ) = 0;
 
 public slots:
     void locked(bool l);
@@ -548,6 +548,8 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+    
     int texID;
     QStringList channelList;
 
@@ -660,7 +662,7 @@ public:
         comboSlider1->setDecimals(wd ? DDEC : FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         sliderType = st;
     };
@@ -728,7 +730,7 @@ public:
         comboSlider2->setDecimals(wd ? DDEC : FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         sliderType = st;
@@ -797,7 +799,7 @@ public:
         comboSlider3->setDecimals(wd?DDEC:FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         comboSlider3->setSliderType(st);
@@ -876,7 +878,7 @@ public:
         comboSlider4->setDecimals(wd?DDEC:FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         comboSlider3->setSliderType(st);
@@ -927,6 +929,7 @@ public:
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
+
     void reset()
     {
         colorChooser->setColor ( defaultValue );
@@ -950,6 +953,8 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+
 private:
     ColorChooser* colorChooser;
     glm::dvec3 defaultValue;
@@ -1013,6 +1018,8 @@ public:
         wantDouble = wd;
         comboSlider->setDecimals(wd ? DDEC : FDEC);
     };
+    void setSliderType(SliderType ){};
+
 private:
     ComboSlider* comboSlider;
     ColorChooser* colorChooser;
@@ -1065,6 +1072,8 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+
 private:
     IntComboSlider* comboSlider;
     int defaultValue;
@@ -1111,6 +1120,7 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
 
 private:
     QCheckBox* checkBox;

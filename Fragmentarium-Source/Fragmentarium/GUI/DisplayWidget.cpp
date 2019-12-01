@@ -9,7 +9,6 @@
 #include <QStatusBar>
 #include <QWheelEvent>
 
-
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -27,6 +26,73 @@ namespace Fragmentarium
 namespace GUI
 {
 
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+    // ignore non-significant error/warning codes
+    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+
+    std::cout << "GL Debug message (" << id << "): " <<  message << " ";
+
+    switch (source)
+    {
+        case GL_DEBUG_SOURCE_API:             std::cout << "API "; break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Window System "; break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Shader Compiler "; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Third Party "; break;
+        case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Application "; break;
+        case GL_DEBUG_SOURCE_OTHER:           std::cout << "Other"; break;
+        default:           std::cout << "Source:" << source << " unknown"; break;
+    }
+
+    switch (type)
+    {
+        case GL_DEBUG_TYPE_ERROR:               std::cout << "Error "; break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Deprecated Behaviour "; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Undefined Behaviour "; break; 
+        case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Portability "; break;
+        case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Performance "; break;
+        case GL_DEBUG_TYPE_MARKER:              std::cout << "Marker "; break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Push Group "; break;
+        case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Pop Group "; break;
+        case GL_DEBUG_TYPE_OTHER:               std::cout << "Other "; break;
+        default:           std::cout << "Type:" << type << " unknown"; break;
+    }
+    
+    switch (severity)
+    {
+        case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high "; break;
+        case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium "; break;
+        case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low "; break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification "; break;
+        default:           std::cout << "Severity:" << severity << " unknown"; break;
+    }
+
+    std::cout << std::endl;
+}
+
+GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
+{
+    GLenum errorCode = GL_NO_ERROR;
+    
+    if( glDebugEnabled ) {
+        while ((errorCode = glGetError()) != GL_NO_ERROR)
+        {
+            std::cout << "-> " << func << "() @ line " << line << std::endl;
+        }
+    }
+    return errorCode;
+}
+
+// used immediately after glFunctions() to get line numbers with gl debug output
+#define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
+
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget(parent), mainWindow(mainWin)
 {
@@ -37,7 +103,8 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
 #ifdef USE_OPENGL_4
-    fmt.setVersion(4,1);
+    fmt.setVersion(4,5);
+    fmt.setDepthBufferSize(32);
 #else
     fmt.setVersion(3,3);
 #endif
@@ -90,8 +157,8 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     ZAtMXY=0.0;
     buttonDown = false;
     updateRefreshRate();
-
-    }
+    glDebugEnabled = false;
+}
 
 void DisplayWidget::initializeGL()
 {
@@ -104,10 +171,21 @@ void DisplayWidget::initializeGL()
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
+    // Enable debug output
+    QSettings settings;
+    if( settings.value("enableGLDebug").toBool() ) {
+        glDebugEnabled = true;
+        glEnable ( GL_DEBUG_OUTPUT );
+        glEnable ( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        glDebugMessageCallback( MessageCallback, nullptr );
+    }
+
 }
 
 void DisplayWidget::updateRefreshRate()
 {
+
     QSettings settings;
     int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if (timer == nullptr) {
@@ -144,11 +222,10 @@ DisplayWidget::~DisplayWidget() = default;
 
 void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 {
+
     if (ev->modifiers() == Qt::ShiftModifier) {
         if( mainWindow->isFullScreen()) {
             contextMenu->show();
-            //            QPoint
-            //            myPos((width()-contextMenu->width())/2,(height()-contextMenu->height())/2);
             contextMenu->move( mapToGlobal( ev->pos() ));
         }
     }
@@ -157,6 +234,10 @@ void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 void DisplayWidget::setFragmentShader(FragmentSource fs)
 {
 
+    GLint s;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
+    INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
+    
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
     iterationsBetweenRedraws = fs.iterationsBetweenRedraws;
@@ -201,9 +282,6 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     makeBuffers();
     INFO ( tr("Created front and back buffers as ") + b );
-    int s;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
-    INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
 
     requireRedraw ( true );
 
@@ -213,16 +291,13 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         return;
     }
 
-    if (fs.textures.count() != 0) {
-        initFragmentTextures();
-    }
-
     initBufferShader();
 
 }
 
 void DisplayWidget::requireRedraw(bool clear )
 {
+
     if (disableRedraw) {
         return;
     }
@@ -240,6 +315,7 @@ void DisplayWidget::requireRedraw(bool clear )
 
 void DisplayWidget::uniformsHaveChanged(bool bshaderonly)
 {
+
     if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
         if (btest != nullptr) {
@@ -369,15 +445,14 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
 // this function parses the assembler text and returns a string list containing the lines
 QStringList DisplayWidget::shaderAsm(bool w)
 {
+
 #ifndef USE_OPENGL_4
                 return QStringList("This build is compiled without support for OpenGL 4!");
 #else
 
     QStringList asmList;
-    if (!foundnV) {
-        if( format().majorVersion() < 4 ) {
+    if (!foundnV || format().majorVersion() < 4 ) {
                 asmList = QStringList("nVidia GL > 4.0 required for this feature!");
-        }
     }
 
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
@@ -474,6 +549,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
 void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel priority, bool bS )
 {
+
     QStringList logList = log.split ( "\n" );
     QRegExp num ( "([0-9]+)" );
 
@@ -520,6 +596,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
 
 void DisplayWidget::initFragmentShader()
 {
+
     if (shaderProgram != nullptr) {
         shaderProgram->release();
         shaderProgram->removeAllShaders();
@@ -597,7 +674,7 @@ void DisplayWidget::initFragmentShader()
         int l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
               GLuint i = backBuffer->texture();
-              glBindTexture ( GL_TEXTURE_2D,i );
+              glBindTexture ( GL_TEXTURE_2D, i );
               if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
@@ -608,6 +685,9 @@ void DisplayWidget::initFragmentShader()
         WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
     }
 
+    if (fragmentSource.textures.count() != 0) {
+        initFragmentTextures();
+    }
 }
 
 /*
@@ -621,6 +701,7 @@ vec3  backgroundColor(vec3 dir) {
 
 bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID, QString textureUniformName )
 {
+
     HDRLoaderResult result;
     bool loaded = HDRLoader::load ( texturePath.toStdString().c_str(), result );
 
@@ -661,6 +742,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
+
 #ifndef USE_OPEN_EXR
     // Qt loads EXR files
     return loadQtTexture(texturePath, type, textureID, textureUniformName);
@@ -744,9 +826,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             }
             dw.min.y ++;
         }
-        
+
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
-        
+
         if(type == GL_SAMPLER_CUBE) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
@@ -757,6 +839,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         } else {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, cols);
         }
+
         delete [] cols;
         cols = nullptr;
     } else {
@@ -770,6 +853,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 // Qt format image, Qt 5+ loads EXR format on linux
 bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
+
     QImage im;
     bool loaded = im.load(texturePath);
 
@@ -798,6 +882,7 @@ bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textu
 
 bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 {
+
     if(type == GL_SAMPLER_CUBE) {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -825,11 +910,11 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 
 void DisplayWidget::initFragmentTextures()
 {
-    if (shaderProgram == nullptr || fragmentSource.textures.count() < 1) {
+    if (shaderProgram == nullptr || fragmentSource.textures.count() < 1 || !checkShaderProg(shaderProgram->programId()) ) {
         return; // something went wrong so do not try to setup textures
     }
 
-    int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
+    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
     QMap<QString, bool> textureCacheUsed;
 
     QMapIterator<QString, QString> it( fragmentSource.textures );
@@ -845,7 +930,7 @@ void DisplayWidget::initFragmentTextures()
 
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
-            if ( l != -1 ) { // found named texture in shader program
+            if ( !(l < 0) ) { // found named texture in shader program
                 
                 // 2D or Cube ?
                 GLsizei bufSize = 256;
@@ -855,12 +940,11 @@ void DisplayWidget::initFragmentTextures()
                 GLchar name[bufSize];
 
                 glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
-
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
                 // check cache first
-                if ( !TextureCache.contains ( texturePath ) ) {
+                if ( !TextureCache.contains ( texturePath ) && textureUniformName == QString(name).trimmed() ) {
                     // if not in cache then create one and try to load and add to cache
                     glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
                     // allocate a texture id
@@ -896,12 +980,15 @@ void DisplayWidget::initFragmentTextures()
                 if ( loaded ) {
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
-                        shaderProgram->setUniformValue ( l, ( GLuint ) u );
+                        // Texture is loaded and bound successfully
+                        if(verbose && subframeCounter == 1) {
+                            qDebug() <<  "Texture index:" << u << " ID:" << textureID << " Name:" << textureUniformName << " Location:" << l;
+                        }
                     }
-                    u++;
                 } else {
                     WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
                 }
+                u++;
             } else {
                 WARNING(tr("Unused sampler uniform: ") + textureUniformName);
             }
@@ -933,7 +1020,6 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
         QMutableMapIterator<QString, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
-            INFO("Removing texture from cache: " +i.key());
             GLuint id = i.value();
             glDeleteTextures(1, &id);
         }
@@ -1017,6 +1103,7 @@ void DisplayWidget::initBufferShader()
 
 void DisplayWidget::resetCamera(bool fullReset)
 {
+
     if (cameraControl == nullptr) {
         return;
     }
@@ -1025,6 +1112,7 @@ void DisplayWidget::resetCamera(bool fullReset)
 
 void DisplayWidget::makeBuffers()
 {
+
     int w = pixelWidth();
     int h = pixelHeight();
 
@@ -1104,6 +1192,7 @@ void DisplayWidget::clearBackBuffer()
 
 void DisplayWidget::setViewPort(int w, int h)
 {
+
     if ( drawingState == Tiled ) {
         glViewport ( 0, 0,bufferSizeX, bufferSizeY );
     } else if ( fitWindow ) {
@@ -1115,10 +1204,11 @@ void DisplayWidget::setViewPort(int w, int h)
 
 bool DisplayWidget::checkShaderProg(GLuint programID)
 {
+
     if(hasShader() && programID == shaderProgram->programId()) {
-        return true;
+        return shaderProgram->isLinked();
     } else if (hasBufferShader() && programID == bufferShaderProgram->programId()) {
-        return true;
+        return bufferShaderProgram->isLinked();
     } else {
             WARNING("NO ShaderProgram!!!");
     }
@@ -1127,6 +1217,7 @@ bool DisplayWidget::checkShaderProg(GLuint programID)
 
 void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformValue)
 {
+
         if (uniformName.startsWith("gl_")) { uniformValue = "OpenGL variable"; }
         if (uniformName == "pixelSize") { uniformValue = "Special variable"; }
         if (uniformName == "globalPixelSize") { uniformValue = "Special variable"; }
@@ -1138,6 +1229,7 @@ void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformVal
 
 void DisplayWidget::setFloatType(GLenum type, QString &tp)
 {
+
         switch(type) {
             case GL_BYTE:           tp = "BYTE  "; break;
             case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; break;
@@ -1169,6 +1261,7 @@ void DisplayWidget::setFloatType(GLenum type, QString &tp)
 #ifdef USE_OPENGL_4
 void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
 {
+
     double x,y,z,w;
 
     GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str());
@@ -1296,23 +1389,27 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         }
 #endif
 
-        // this sets User (32 bit) uniforms not handled above, checks sampler channels
+        // this sets User uniforms not handled above, sets sampler uniform texture ID
         if(!foundDouble) {
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName()) {
                     auto *sw = dynamic_cast<SamplerWidget *>(vw[n]);
                     if (sw != nullptr) {
                         QMapIterator<QString, QString> it( fragmentSource.textures );
+                        int u=1; // sampler textures start at 1
                         while( it.hasNext() ) {
                             it.next();
-                            if(it.value().contains(sw->getValue())) {
-                                sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
-                                // DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
+                            if(it.value().contains(sw->getValue())) { // the cached value is GLAPI texID, glsl wants indexOf!
+                                sw->texID = u;//TextureCache[it.value()];
+                                sw->setUserUniform(shaderProg);
+//                                 DBOUT << "Sampler:" << uniformName << " FragMtexID:" << sw->texID << " CacheID:" << TextureCache[it.value()];
                             }
+                            u++;
                         }
+                    } else { 
+                        vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
+                        vw[n]->setUserUniform(shaderProg);
                     }
-                    vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
-                    vw[n]->setUserUniform(shaderProg);
                     break;
                 }
             }
@@ -1345,7 +1442,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
     }
 }
 
-void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h) {
+void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
+{
 
     cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
     int l = shaderProg->uniformLocation ( "pixelSize" );
@@ -1372,7 +1470,7 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
     if ( bufferType!=0 ) {
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
         GLuint i = backBuffer->texture();
-        glBindTexture ( GL_TEXTURE_2D,i );
+        glBindTexture ( GL_TEXTURE_2D, i );
 
         l = shaderProg->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
@@ -1406,6 +1504,7 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 
 void DisplayWidget::draw3DHints()
 {
+
     if ( mainWindow->wantPaths()  && !isContinuous()) {
         if (eyeSpline != nullptr && drawingState != Animation && drawingState != Tiled) {
             if ( mainWindow->wantSplineOcc() ) {
@@ -1486,7 +1585,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    glFinish(); // wait for GPU to return control
+    glFinish();  // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1542,6 +1641,7 @@ bool DisplayWidget::FBOcheck()
 
 void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
 {
+
     if (!this->isValid() || !FBOcheck()) {
         return;
     }
@@ -1618,7 +1718,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glVertex3f ( 3.0f, -1.0f,  0.0f );
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
-    glEnd();
+    glEnd(); 
     glPopAttrib();
     glFinish(); // wait for GPU to return control
 
@@ -1638,6 +1738,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
  */
 void DisplayWidget::clearTileBuffer()
 {
+
     if (hiresBuffer != nullptr) {
         bool relcheck = hiresBuffer->release();
         if(relcheck) {
@@ -1728,6 +1829,7 @@ bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
 #endif
 
 bool DisplayWidget::initPreviewBuffer() {
+
     bool ret = true;
     if ( !previewBuffer->bind() ) {
       WARNING ( tr("Failed to bind previewBuffer FBO") );
@@ -1750,6 +1852,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                                QProgressDialog *progress, int *steps,
                                QImage *im, const QTime &totalTime)
 {
+
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -1838,11 +1941,13 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
 void DisplayWidget::setState(DrawingState state)
 {
+
     drawingState = state;
 }
 
 void DisplayWidget::paintGL()
 {
+
     if ( drawingState == Tiled ) {
         return;
     }
@@ -1899,11 +2004,13 @@ void DisplayWidget::paintGL()
 
 void DisplayWidget::updateBuffers()
 {
+
     resizeGL ( 0,0 );
 }
 
 void DisplayWidget::resizeGL(int /* width */, int /* height */)
 {
+
     // When resizing the perspective must be recalculated
     updatePerspective();
     makeBuffers();
@@ -1912,6 +2019,7 @@ void DisplayWidget::resizeGL(int /* width */, int /* height */)
 
 void DisplayWidget::updatePerspective()
 {
+
     if (pixelHeight() == 0 || pixelWidth() == 0) {
         return;
     }
@@ -1925,7 +2033,6 @@ void DisplayWidget::updatePerspective()
 
 void DisplayWidget::timerSignal()
 {
-
     static QWidget* lastFocusedWidget = QApplication::focusWidget();
     if (QApplication::focusWidget() != lastFocusedWidget && cameraControl != nullptr) {
         cameraControl->releaseControl();
@@ -2135,6 +2242,7 @@ void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
 
 void DisplayWidget::updateEasingCurves(int currentframe)
 {
+
     static int cf = 0; // prevent getting called more than once per frame ?
     if (cf == currentframe) {
         return;
@@ -2216,6 +2324,7 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
 void DisplayWidget::drawLookatVector()
 {
+
     glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glColor4f ( 1.0,1.0,0.0,1.0 );
@@ -2240,13 +2349,14 @@ void DisplayWidget::setPerspective()
     auto aspectRatio = double((double)width() / (double)height());
     double zNear = 0.00001;
     double zFar = 1000.0;
-    double vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
+    double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
     glm::dmat4 matrix;
     matrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
     matrix = matrix * glm::lookAt ( eye,target,up );
 
     glLoadMatrixd ( &matrix[0][0] );
+
 }
 
 QStringList DisplayWidget::getCurveSettings()
@@ -2256,18 +2366,20 @@ QStringList DisplayWidget::getCurveSettings()
 
 void DisplayWidget::setCurveSettings(const QStringList cset)
 {
+
     mainWindow->getVariableEditor()->setEasingEnabled ( !cset.isEmpty() );
     curveSettings = cset;
 }
 
 void DisplayWidget::drawSplines()
 {
+
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if (depthToAlpha) {
         glDepthFunc ( GL_ALWAYS );
     } else {
-        glDepthFunc ( GL_LESS );    // closer to eye passes test
-        glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
+        glDepthFunc ( GL_LESS );  // closer to eye passes test
+        glDepthMask ( GL_FALSE ); // no Writing to depth buffer for splines
     }
 
     // control point to highlight = currently selected preset keyframe
@@ -2285,6 +2397,7 @@ void DisplayWidget::drawSplines()
 
 void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
 {
+
     if( cameraID() == "3D" ) {
         auto *eyeCp = (glm::dvec3 *)eyeControlPoints.constData();
         auto *tarCp = (glm::dvec3 *)targetControlPoints.constData();
@@ -2306,6 +2419,7 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
 
 void DisplayWidget::addControlPoint(glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP)
 {
+
     eyeControlPoints.append ( eP );
     targetControlPoints.append ( tP );
     upControlPoints.append ( uP );
@@ -2313,6 +2427,7 @@ void DisplayWidget::addControlPoint(glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP)
 
 void DisplayWidget::clearControlPoints()
 {
+
     eyeControlPoints.clear();
     targetControlPoints.clear();
     upControlPoints.clear();
