@@ -85,12 +85,14 @@ install:
     then
       #brew install qt5
 
-      brew install ilmbase openexr
+      brew install ilmbase openexr glm
 
       brew unlink openexr
       brew link --overwrite openexr
       brew unlink ilmbase
       brew link --overwrite ilmbase
+      brew unlink glm
+      brew link --overwrite glm
 
       #brew unlink cmake
       #brew install cmake
