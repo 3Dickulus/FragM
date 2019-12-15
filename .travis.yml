@@ -111,7 +111,7 @@ before_script:
       export QTDIR="/usr/local/opt/qt"
       export PATH="/usr/local/opt/qt/bin:$PATH"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
-      export CPPFLAGS="-I/usr/local/opt/qt/include"
+      export CPPFLAGS="-I/usr/local/opt/qt/include -I/usr/local/Cellar/glm/0.9.9.5"
       export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
     fi
 
