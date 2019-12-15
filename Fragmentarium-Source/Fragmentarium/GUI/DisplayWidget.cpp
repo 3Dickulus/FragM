@@ -26,6 +26,10 @@ namespace Fragmentarium
 namespace GUI
 {
 
+#ifdef __APPLE__
+#define GLAPIENTRY
+#endif
+
 void GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
