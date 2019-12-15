@@ -26,10 +26,7 @@ namespace Fragmentarium
 namespace GUI
 {
 
-#ifdef __APPLE__
-#define GLAPIENTRY
-#endif
-
+#ifndef __APPLE__
 void GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
@@ -80,6 +77,7 @@ MessageCallback( GLenum source,
 
     std::cout << std::endl;
 }
+#endif
 
 GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
 {
@@ -175,6 +173,7 @@ void DisplayWidget::initializeGL()
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
+#ifndef __APPLE__
     // Enable debug output
     QSettings settings;
     if( settings.value("enableGLDebug").toBool() ) {
@@ -184,6 +183,7 @@ void DisplayWidget::initializeGL()
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         glDebugMessageCallback( MessageCallback, nullptr );
     }
+#endif
 
 }
 
