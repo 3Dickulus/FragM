@@ -68,13 +68,12 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-set (GLM_INCLUDE_DIRS ${glm_DIR})
 set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
 
-    IF ( WIN32 )
-        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
+    IF ( APPLE OR WIN32  )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
     ENDIF ()
 
 MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
