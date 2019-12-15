@@ -110,9 +110,7 @@ before_script:
       export QTDIR="/usr/local/opt/qt"
       export PATH="/usr/local/opt/qt/bin:$PATH"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
-      PWD = `pwd`
-      export CPPFLAGS="-I/usr/local/opt/qt/include -I$PWD/glm"
-      ls $PWD/glm
+      export CPPFLAGS="-I/usr/local/opt/qt/include"
       export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
     fi
 
@@ -175,7 +173,6 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       pwd
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        cd ../../Fragmentarium-2.5.0
