@@ -29,7 +29,7 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-find_package ( glm REQUIRED )
+# find_package ( glm REQUIRED )
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
