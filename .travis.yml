@@ -94,7 +94,7 @@ install:
 
       brew unlink cmake
       brew install cmake
-      #brew install extra-cmake-modules
+      brew install extra-cmake-modules
     fi
 
 before_script:
@@ -115,6 +115,7 @@ before_script:
 
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
+  - pwd
 
 script:
   - |
@@ -171,6 +172,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+       pwd
        cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        cd ../../Fragmentarium-2.5.0
