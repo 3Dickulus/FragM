@@ -1,10 +1,10 @@
 
 language: cpp
 
-#os: osx
-#osx_image: xcode10.2
-os: linux
-dist: xenial
+os: osx
+osx_image: xcode10.2
+#os: linux
+#dist: xenial
 
 #matrix:
     #include:
@@ -183,11 +183,6 @@ script:
        wget https://raw.githubusercontent.com/arl/macdeployqtfix/master/macdeployqtfix.py
        python ./macdeployqtfix.py `pwd`/Fragmentarium-2.5.0/Fragmentarium-2.5.0.app/Contents/MacOS/Fragmentarium-2.5.0.app $QTDIR
     fi
-
-#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/.......$//g"
-#2.5.0
-#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/$*[0-9]\.//g"
-#190614
 
 before_deploy:
   - |
