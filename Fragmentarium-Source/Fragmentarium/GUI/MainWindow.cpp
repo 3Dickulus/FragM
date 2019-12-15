@@ -286,9 +286,8 @@ void MainWindow::insertPreset()
         }
 
         needRebuild(ok);
-        initializeFragment(); // once to add the new preset to the list
-        variableEditor->setPreset(newPresetName); // apply the settings
         initializeFragment(); // once to initialize any textures
+        variableEditor->setPreset(newPresetName); // apply the settings
 
         INFO(tr("Added %1").arg(newPresetName));
     }
@@ -2639,8 +2638,6 @@ bool MainWindow::initializeFragment()
 
     // BUG Up vector gets trashed on Build or Save
     variableEditor->updateFromFragmentSource(&fs);
-    // before updating textures clear the cache, file may have changed on disk or channel selection changed
-    clearTextures();
     variableEditor->updateTextures(&fs, &fileManager);
     variableEditor->substituteLockedVariables(&fs);
 

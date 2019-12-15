@@ -439,9 +439,7 @@ public slots:
     bool applyPresetByName ( QString n )
     {
         rebuildRequired = variableEditor->setPreset ( n );
-        rebuildRequired |= initializeFragment();
-        rebuildRequired |= initializeFragment();
-        processGuiEvents();
+        if(rebuildRequired) rebuildRequired = initializeFragment();
         processGuiEvents();
         return !rebuildRequired; // if rebuild is required applying the preset failed
     };

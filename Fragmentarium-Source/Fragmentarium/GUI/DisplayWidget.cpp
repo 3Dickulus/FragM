@@ -286,13 +286,16 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     requireRedraw ( true );
 
     initFragmentShader();
-
-    if (shaderProgram == nullptr) { // something went wrong so do not try to setup textures or buffer shader
+    
+    if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong so do not try to setup textures or buffer shader
         return;
     }
 
     initBufferShader();
 
+    if(bufferShaderProgram != nullptr && bufferShaderProgram->isLinked()) {
+        // alas goot
+    }
 }
 
 void DisplayWidget::requireRedraw(bool clear )
@@ -736,10 +739,6 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 //    - read the pixels from the file
 //
 
-//------------------------------------------------------------------------------------------------------------//
-// the channel code is still a mess but it works in that FragM can load and use the RGBZ images that it saves //
-//------------------------------------------------------------------------------------------------------------//
-
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
 
@@ -756,11 +755,20 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
     if ( file.isComplete() ) {
 
+        int channelCount=0;
+        const ChannelList &channels = file.header().channels();
+        for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i) {
+            if(verbose && subframeCounter==1) {
+                std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
+            }
+            channelCount++;
+        }
+        
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
         
-        context()->functions()->glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
 
         if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
@@ -777,7 +785,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         if(type == GL_SAMPLER_2D) {
             SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
             if(sw != nullptr && !sw->getName().isNull()) {
-                // TODO: test for multi channel value R;G;B
                 chv = sw->getChannelValue(); // channel name(s)
                 if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
                     hasZ = false;
@@ -981,9 +988,10 @@ void DisplayWidget::initFragmentTextures()
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
-                        if(verbose && subframeCounter == 1) {
-                            qDebug() <<  "Texture index:" << u << " ID:" << textureID << " Name:" << textureUniformName << " Location:" << l;
-                        }
+//                         if(verbose && subframeCounter == 1) {
+//                             qDebug() <<  "Texture index:" << u << " ID:" << textureID << " Name:" << textureUniformName << " Location:" << l;
+//                             break;
+//                         }
                     }
                 } else {
                     WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
