@@ -108,10 +108,11 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+      git clone https://github.com/g-truc/glm.git
       export QTDIR="/usr/local/opt/qt"
       export PATH="/usr/local/opt/qt/bin:$PATH"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
-      export CPPFLAGS="-I/usr/local/opt/qt/include -I/usr/local/Cellar/glm/0.9.9.5"
+      export CPPFLAGS="-I/usr/local/opt/qt/include -I`pwd`/glm"
       export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
     fi
 
