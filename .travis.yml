@@ -92,9 +92,9 @@ install:
       brew unlink ilmbase
       brew link --overwrite ilmbase
 
-      brew unlink cmake
-      brew install cmake
-      brew install extra-cmake-modules
+      #brew unlink cmake
+      #brew install cmake
+      #brew install extra-cmake-modules
     fi
 
 before_script:
