@@ -29,10 +29,7 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-IF ( NOT WIN32 )
-    find_package ( glm REQUIRED )
-ENDIF ()
-
+find_package ( glm REQUIRED )
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
@@ -51,7 +48,7 @@ ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
-OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
+OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
 OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
