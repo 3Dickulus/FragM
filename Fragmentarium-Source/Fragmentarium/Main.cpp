@@ -63,6 +63,17 @@ int main(int argc, char *argv[])
     signal(SIGSEGV, segv_handler);
 #endif
 
+#ifdef Q_OS_MAC
+    qApp->addLibraryPath("../Frameworks");
+    qApp->addLibraryPath("../PlugIns");
+    qApp->addLibraryPath("../PlugIns/iconengines");
+    qApp->addLibraryPath("../PlugIns/imageformats");
+    qApp->addLibraryPath("../PlugIns/platforms");
+    qApp->addLibraryPath("../PlugIns/printsupprort");
+    qApp->addLibraryPath("../PlugIns/platforminputcontexts");
+    qApp->addLibraryPath("../PlugIns/styles");
+    qApp->addLibraryPath("../PlugIns/virtualkeyboard");
+#endif
 
     Q_INIT_RESOURCE(Fragmentarium);
 
