@@ -156,11 +156,9 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
         if(!in[0].startsWith("#line") && !in[1].startsWith("#line")) {
             if(!hasVertexCode && !hasIncludes && sf != 0 && vers < 200) {
                 in.insert(1, QString("#line %1 %2").arg(1).arg(sf));
-                DBOUT << 1 << sf;
             }
             else {
                 in.insert( 1, QString("#line %1 %2").arg(2).arg(sf) );
-                DBOUT << 2 << sf;
             }
         }
 
