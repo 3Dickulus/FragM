@@ -476,8 +476,6 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
     QString asmTxt = "";
 
-    // contains ALL uniforms in buffershader and shader program
-    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     bool foundFirstUniform=false;
     bool foundLastUniform=false;
 
@@ -497,7 +495,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
             asmTxt="";
         }
 
-        // this locates all of the uniform names not optimized out by the compiler
+        // this locates all of the uniform names
         if ( !asmTxt.isEmpty() && binary[x] == 0  ) { // end of string literal
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
@@ -521,13 +519,15 @@ QStringList DisplayWidget::shaderAsm(bool w)
         }
     }
 
+    // contains ALL uniforms in buffershader and shader program not optimized out by the compiler
+    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     // find a value to go with the name, index in the program may not be the same as index in our list
     for( int n=0; n < vw.count(); n++) {
         asmTxt = vw[n]->getName();
         if( asmList.indexOf( asmTxt ) != -1 ){
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
-                QString newLine = QString("%1").arg(vw[n]->getLockedSubstitution());
+                QString newLine = vw[n]->isLocked() ? vw[n]->getLockedSubstitution() : QString("%1 = %2;").arg(asmTxt).arg(vw[n]->getValueAsText());
                 asmList[ asmList.indexOf(vw[n]->getName()) ] = newLine;
             }
         }
