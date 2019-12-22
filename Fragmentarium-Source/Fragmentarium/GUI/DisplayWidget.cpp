@@ -942,15 +942,31 @@ void DisplayWidget::initFragmentTextures()
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
             if ( !(l < 0) ) { // found named texture in shader program
-                
-                // 2D or Cube ?
-                GLsizei bufSize = 256;
-                GLsizei length;
-                GLint size;
-                GLenum type;
-                GLchar name[bufSize];
 
-                glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
+                // 2D or Cube ?
+                /*
+                    glGetActiveUniform expects indices, which are not necessarily
+                    the same as uniform locations.  Iterate over the indices to find
+                    the specific uniform we are after.  If the uniform is not found
+                    it the type is set to the last uniform, but as we only test it
+                    against GL_SAMPLER_CUBE this shouldn't be too disasterous, and if
+                    the correct uniform is not found then something has gone wrong
+                    anyway.
+                */
+                GLint bufSize = 0;
+                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+                GLint count = 0;
+                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORMS, &count);
+                GLenum type = GL_SAMPLER_2D;
+                for (GLint ix = 0; ix < count; ++ix) {
+                    GLsizei length;
+                    GLint size;
+                    GLchar name[bufSize];
+                    glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
+                    if (textureUniformName == QString(name))
+                        break;
+                }
+
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
