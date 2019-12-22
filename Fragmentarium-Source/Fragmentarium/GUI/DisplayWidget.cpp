@@ -955,7 +955,7 @@ void DisplayWidget::initFragmentTextures()
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
                 // check cache first
-                if ( !TextureCache.contains ( texturePath ) && textureUniformName == QString(name).trimmed() ) {
+                if ( !TextureCache.contains ( texturePath ) ) {
                     // if not in cache then create one and try to load and add to cache
                     glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
                     // allocate a texture id
