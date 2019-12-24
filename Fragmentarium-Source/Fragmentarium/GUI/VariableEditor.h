@@ -147,6 +147,7 @@ public slots:
         }
         tabWidget->setTabPosition ( t ? ( QTabWidget::North ) : ( QTabWidget::East ) ); // 05/22/17 Sabine ;)
     }
+    void hideUnusedTabs();
 
 private slots:
     void createWidgetFromGuiParameter(Parser::GuiParameter* p);

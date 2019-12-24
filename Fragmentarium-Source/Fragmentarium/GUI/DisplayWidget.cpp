@@ -27,6 +27,7 @@ namespace GUI
 {
 
 #ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
 void GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
@@ -77,6 +78,7 @@ MessageCallback( GLenum source,
 
     std::cout << std::endl;
 }
+#endif
 #endif
 
 GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
@@ -174,6 +176,7 @@ void DisplayWidget::initializeGL()
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
 #ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
     // Enable debug output
     QSettings settings;
     if( settings.value("enableGLDebug").toBool() ) {
@@ -183,6 +186,7 @@ void DisplayWidget::initializeGL()
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         glDebugMessageCallback( MessageCallback, nullptr );
     }
+#endif
 #endif
 
 }
@@ -527,6 +531,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
         if( asmList.indexOf( asmTxt ) != -1 ){
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
+                // TODO: add types float vec3 etc.
                 QString newLine = vw[n]->isLocked() ? vw[n]->getLockedSubstitution() : QString("%1 = %2;").arg(asmTxt).arg(vw[n]->getValueAsText());
                 asmList[ asmList.indexOf(vw[n]->getName()) ] = newLine;
             }
@@ -942,15 +947,18 @@ void DisplayWidget::initFragmentTextures()
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
             if ( !(l < 0) ) { // found named texture in shader program
-                
+
                 // 2D or Cube ?
                 GLsizei bufSize = 256;
                 GLsizei length;
                 GLint size;
                 GLenum type;
                 GLchar name[bufSize];
-
-                glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
+                
+                // bugfix textures claude #104
+                GLuint idx = glGetProgramResourceIndex(shaderProgram->programId(), GL_UNIFORM, textureUniformName.toLatin1().data());
+                
+                glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
@@ -968,11 +976,9 @@ void DisplayWidget::initFragmentTextures()
                     if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
                         loaded = loadHDRTexture(texturePath, type, textureID);
                     }
-// #ifdef USE_OPEN_EXR
                     else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
                         loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
                     }
-// #endif
                     else {
                         loaded = loadQtTexture(texturePath, type, textureID);
                     }
@@ -985,6 +991,9 @@ void DisplayWidget::initFragmentTextures()
                     textureID = TextureCache[texturePath];
                     textureCacheUsed[texturePath] = true;
                     loaded = true;
+                    if (verbose) {
+                        qDebug() << QString("Using cached texture ID: %1 %2").arg(textureID).arg(texturePath);
+                    }
                 }
 
 
