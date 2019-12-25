@@ -956,8 +956,12 @@ void DisplayWidget::initFragmentTextures()
                 GLchar name[bufSize];
                 
                 // bugfix textures claude #104
-                GLuint idx = glGetProgramResourceIndex(shaderProgram->programId(), GL_UNIFORM, textureUniformName.toLatin1().data());
-                
+                GLuint idx;
+                // get a pointer to the char array in QString
+                GLchar *oneName = textureUniformName.toLatin1().data();
+                // returns index of "oneName" in idx;
+                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx);
+                // use idx to acquire more info about this uniform
                 glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
