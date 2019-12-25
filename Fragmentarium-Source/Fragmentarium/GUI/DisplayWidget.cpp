@@ -949,13 +949,15 @@ void DisplayWidget::initFragmentTextures()
             if ( !(l < 0) ) { // found named texture in shader program
 
                 // 2D or Cube ?
-                GLsizei bufSize = 256;
-                GLsizei length;
-                GLint size;
-                GLenum type;
+                GLsizei bufSize = 0;
+                GLsizei length = 0;
+                GLint size = 0;
+                GLenum type = 0;
+                
+                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
                 GLchar name[bufSize];
                 
-                // bugfix textures claude #104
+                // bugfix for textures by claude #104 index vs location
                 GLuint idx;
                 // get a pointer to the char array in QString
                 GLchar *oneName = textureUniformName.toLatin1().data();
@@ -966,40 +968,41 @@ void DisplayWidget::initFragmentTextures()
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
-                // check cache first
-                if ( !TextureCache.contains ( texturePath ) && textureUniformName == QString(name).trimmed() ) {
-                    // if not in cache then create one and try to load and add to cache
-                    glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
-                    // allocate a texture id
-                    glGenTextures ( 1, &textureID );
+                if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
+                    // check cache first
+                    if ( !TextureCache.contains ( texturePath ) ) {
+                        // if not in cache then create one and try to load and add to cache
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
+                        // allocate a texture id
+                        glGenTextures ( 1, &textureID );
 
-                    if (verbose) {
-                        qDebug() << QString("Allocating texture ID: %1 %2").arg(textureID).arg(texturePath);
-                    }
+                        if (verbose) {
+                            qDebug() << QString("Allocating texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
 
-                    if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
-                        loaded = loadHDRTexture(texturePath, type, textureID);
-                    }
-                    else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
-                    }
-                    else {
-                        loaded = loadQtTexture(texturePath, type, textureID);
-                    }
-                    if ( loaded ) {
-                        // add to cache
-                        TextureCache[texturePath] = textureID;
+                        if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
+                            loaded = loadHDRTexture(texturePath, type, textureID);
+                        }
+                        else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
+                            loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                        }
+                        else {
+                            loaded = loadQtTexture(texturePath, type, textureID);
+                        }
+                        if ( loaded ) {
+                            // add to cache
+                            TextureCache[texturePath] = textureID;
+                            textureCacheUsed[texturePath] = true;
+                        }
+                    } else { // use cache
+                        textureID = TextureCache[texturePath];
                         textureCacheUsed[texturePath] = true;
-                    }
-                } else { // use cache
-                    textureID = TextureCache[texturePath];
-                    textureCacheUsed[texturePath] = true;
-                    loaded = true;
-                    if (verbose) {
-                        qDebug() << QString("Using cached texture ID: %1 %2").arg(textureID).arg(texturePath);
+                        loaded = true;
+                        if (verbose) {
+                            qDebug() << QString("Using cached texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
                     }
                 }
-
 
                 if ( loaded ) {
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
