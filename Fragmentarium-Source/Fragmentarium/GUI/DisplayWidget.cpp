@@ -27,6 +27,7 @@ namespace GUI
 {
 
 #ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
 void GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
@@ -77,6 +78,7 @@ MessageCallback( GLenum source,
 
     std::cout << std::endl;
 }
+#endif
 #endif
 
 GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
@@ -174,6 +176,7 @@ void DisplayWidget::initializeGL()
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
 #ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
     // Enable debug output
     QSettings settings;
     if( settings.value("enableGLDebug").toBool() ) {
@@ -183,6 +186,7 @@ void DisplayWidget::initializeGL()
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         glDebugMessageCallback( MessageCallback, nullptr );
     }
+#endif
 #endif
 
 }
@@ -476,8 +480,6 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
     QString asmTxt = "";
 
-    // contains ALL uniforms in buffershader and shader program
-    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     bool foundFirstUniform=false;
     bool foundLastUniform=false;
 
@@ -497,7 +499,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
             asmTxt="";
         }
 
-        // this locates all of the uniform names not optimized out by the compiler
+        // this locates all of the uniform names
         if ( !asmTxt.isEmpty() && binary[x] == 0  ) { // end of string literal
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
@@ -521,13 +523,16 @@ QStringList DisplayWidget::shaderAsm(bool w)
         }
     }
 
+    // contains ALL uniforms in buffershader and shader program not optimized out by the compiler
+    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     // find a value to go with the name, index in the program may not be the same as index in our list
     for( int n=0; n < vw.count(); n++) {
         asmTxt = vw[n]->getName();
         if( asmList.indexOf( asmTxt ) != -1 ){
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
-                QString newLine = QString("%1").arg(vw[n]->getLockedSubstitution());
+                // TODO: add types float vec3 etc.
+                QString newLine = vw[n]->isLocked() ? vw[n]->getLockedSubstitution() : QString("%1 = %2;").arg(asmTxt).arg(vw[n]->getValueAsText());
                 asmList[ asmList.indexOf(vw[n]->getName()) ] = newLine;
             }
         }
@@ -944,65 +949,60 @@ void DisplayWidget::initFragmentTextures()
             if ( !(l < 0) ) { // found named texture in shader program
 
                 // 2D or Cube ?
-                /*
-                    glGetActiveUniform expects indices, which are not necessarily
-                    the same as uniform locations.  Iterate over the indices to find
-                    the specific uniform we are after.  If the uniform is not found
-                    it the type is set to the last uniform, but as we only test it
-                    against GL_SAMPLER_CUBE this shouldn't be too disasterous, and if
-                    the correct uniform is not found then something has gone wrong
-                    anyway.
-                */
-                GLint bufSize = 0;
+                GLsizei bufSize = 0;
+                GLsizei length = 0;
+                GLint size = 0;
+                GLenum type = 0;
+                
                 glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
-                GLint count = 0;
-                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORMS, &count);
-                GLenum type = GL_SAMPLER_2D;
-                for (GLint ix = 0; ix < count; ++ix) {
-                    GLsizei length;
-                    GLint size;
-                    GLchar name[bufSize];
-                    glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
-                    if (textureUniformName == QString(name))
-                        break;
-                }
-
+                GLchar name[bufSize];
+                
+                // bugfix for textures by claude #104 index vs location
+                GLuint idx;
+                // get a pointer to the char array in QString
+                GLchar *oneName = textureUniformName.toLatin1().data();
+                // returns index of "oneName" in idx;
+                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx);
+                // use idx to acquire more info about this uniform
+                glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
-                // check cache first
-                if ( !TextureCache.contains ( texturePath ) ) {
-                    // if not in cache then create one and try to load and add to cache
-                    glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
-                    // allocate a texture id
-                    glGenTextures ( 1, &textureID );
+                if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
+                    // check cache first
+                    if ( !TextureCache.contains ( texturePath ) ) {
+                        // if not in cache then create one and try to load and add to cache
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
+                        // allocate a texture id
+                        glGenTextures ( 1, &textureID );
 
-                    if (verbose) {
-                        qDebug() << QString("Allocating texture ID: %1 %2").arg(textureID).arg(texturePath);
-                    }
+                        if (verbose) {
+                            qDebug() << QString("Allocating texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
 
-                    if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
-                        loaded = loadHDRTexture(texturePath, type, textureID);
-                    }
-// #ifdef USE_OPEN_EXR
-                    else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
-                    }
-// #endif
-                    else {
-                        loaded = loadQtTexture(texturePath, type, textureID);
-                    }
-                    if ( loaded ) {
-                        // add to cache
-                        TextureCache[texturePath] = textureID;
+                        if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
+                            loaded = loadHDRTexture(texturePath, type, textureID);
+                        }
+                        else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
+                            loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                        }
+                        else {
+                            loaded = loadQtTexture(texturePath, type, textureID);
+                        }
+                        if ( loaded ) {
+                            // add to cache
+                            TextureCache[texturePath] = textureID;
+                            textureCacheUsed[texturePath] = true;
+                        }
+                    } else { // use cache
+                        textureID = TextureCache[texturePath];
                         textureCacheUsed[texturePath] = true;
+                        loaded = true;
+                        if (verbose) {
+                            qDebug() << QString("Using cached texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
                     }
-                } else { // use cache
-                    textureID = TextureCache[texturePath];
-                    textureCacheUsed[texturePath] = true;
-                    loaded = true;
                 }
-
 
                 if ( loaded ) {
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);

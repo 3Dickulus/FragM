@@ -2710,6 +2710,8 @@ void MainWindow::hideUnusedVariableWidgets()
             }
         }
     }
+    
+    variableEditor->hideUnusedTabs();
 }
 
 namespace

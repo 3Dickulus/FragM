@@ -213,6 +213,29 @@ void VariableEditor::paste()
     setSettings(text);
 }
 
+void VariableEditor::hideUnusedTabs()
+{
+    for(int i=0; i< tabWidget->count(); i++) {
+        QString g;
+        bool hideMe = false;
+        QWidget* t = tabWidget->widget(i);
+        QMap<QString, QWidget*>::const_iterator it;
+        for (it = tabs.constBegin(); it!=tabs.constEnd(); it++ ) {
+            if (it.value()->parent() == t) {
+                g = it.key();
+            }
+        }
+
+        foreach (VariableWidget* variable, variables) {
+            if (variable->getGroup() == g) {
+                hideMe |= !variable->isHidden();
+            }
+        }
+        
+        tabWidget->widget(i)->setEnabled(hideMe);
+    }
+}
+
 void VariableEditor::lockGroup()
 {
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
