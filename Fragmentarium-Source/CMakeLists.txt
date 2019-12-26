@@ -72,8 +72,11 @@ set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
 
-    IF ( APPLE OR WIN32  )
+    IF ( APPLE  )
         set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
+    ENDIF ()
+    IF ( WIN32  )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
     ENDIF ()
 
 MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
