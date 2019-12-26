@@ -191,9 +191,6 @@ before_deploy:
     then
       export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
       export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-      export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
-      git tag $GIT_TAG -a -m "TravisCI build "$TRAVIS_BUILD_NUMBER
-      git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
@@ -203,6 +200,10 @@ before_deploy:
       ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
+
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "TravisCI build "$TRAVIS_BUILD_NUMBER
+  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
   - provider: releases
@@ -215,7 +216,7 @@ deploy:
     on:
         repo: 3Dickulus/FragM
         branch: Development
-        tags: false
+        tags: true
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   # macOS Development release
   - provider: releases
@@ -227,6 +228,6 @@ deploy:
     on:
         repo: 3Dickulus/FragM
         branch: Development
-        tags: false
+        tags: true
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 
