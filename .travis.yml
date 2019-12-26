@@ -1,10 +1,10 @@
 
 language: cpp
 
-#os: osx
-#osx_image: xcode10.2
-os: linux
-dist: xenial
+os: osx
+osx_image: xcode10.2
+#os: linux
+#dist: xenial
 
 #matrix:
     #include:
