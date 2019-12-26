@@ -1255,7 +1255,8 @@ void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformVal
         if (uniformName == "time") { uniformValue = "Special variable"; }
 }
 
-void DisplayWidget::setFloatType(GLenum type, QString &tp)
+// returns text name of type -> tp
+void DisplayWidget::get32Type(GLenum type, QString &tp)
 {
 
         switch(type) {
@@ -1287,7 +1288,8 @@ void DisplayWidget::setFloatType(GLenum type, QString &tp)
 }
 
 #ifdef USE_OPENGL_4
-void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
+// returns text name of type -> tp and verified foundDouble flag
+void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
 {
 
     double x,y,z,w;
@@ -1360,7 +1362,6 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
 
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
-
     GLuint programID = shaderProg->programId();
 
     if(!checkShaderProg(programID)) return;
@@ -1381,10 +1382,20 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         GLchar name[bufSize];
 
         glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
+        QString tp = "";
+        get32Type(type, tp);
+        bool foundDouble = false;
+
         QString uniformName = (char *)name;
         QString uniformValue = "";
         checkForSpecialCase(name, uniformValue);
-        if(uniformValue.contains("variable")) continue;
+        if(uniformValue.contains("variable")) {
+            // type name and value to console
+            if (subframeCounter == 1 && verbose) {
+                qDebug() << tp << "\t" << uniformName << uniformValue;
+            }
+            continue;
+        }
 
             // find a value to go with the name, index in the program, may not be the same as index in our list
             for( int n=0; n < vw.count(); n++) {
@@ -1404,15 +1415,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
             continue;
         }
 
-        QString tp = "";
-        setFloatType(type, tp);
-        bool foundDouble = false;
-
 #ifdef USE_OPENGL_4
         if (format().majorVersion() > 3 && format().minorVersion() >= 0) {
             // do not try to set special, gl_ or unused uniform even if it is double type
             if (!uniformValue.contains("variable")) {
-                setDoubleType(programID, type, uniformName, uniformValue, foundDouble, tp);
+                get64Type(programID, type, uniformName, uniformValue, foundDouble, tp);
             }
         }
 #endif
@@ -1613,7 +1620,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    glFinish();  // wait for GPU to return control
+    // glFinish();  // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1748,7 +1755,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd(); 
     glPopAttrib();
-    glFinish(); // wait for GPU to return control
+    //glFinish(); // wait for GPU to return control
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();

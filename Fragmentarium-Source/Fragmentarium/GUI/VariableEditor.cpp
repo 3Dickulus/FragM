@@ -456,7 +456,7 @@ void VariableEditor::createGroup(QString g)
 void VariableEditor::updateTextures(Parser::FragmentSource *fs, FileManager *fileManager)
 {
     for (int i = 0; i < variables.count(); i++) {
-        variables[i]->updateTextures(fs, fileManager);
+        variables[i]->updateTexture(fs, fileManager);
     }
 }
 

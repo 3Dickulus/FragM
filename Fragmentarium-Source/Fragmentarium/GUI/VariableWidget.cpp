@@ -951,7 +951,7 @@ void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram)
     }
 }
 
-void SamplerWidget::updateTextures(Parser::FragmentSource *fs,
+void SamplerWidget::updateTexture(Parser::FragmentSource *fs,
                                    FileManager *fileManager)
 {
     if (fs->textures.contains(name)) {

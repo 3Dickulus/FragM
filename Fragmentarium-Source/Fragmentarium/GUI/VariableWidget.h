@@ -382,7 +382,7 @@ class VariableWidget : public QWidget
     Q_OBJECT
 public:
     VariableWidget(QWidget* parent, QWidget* variableEditor, QString name);
-    virtual void updateTextures ( FragmentSource * /*fs*/, FileManager * /*fileManager*/ ) {}
+    virtual void updateTexture ( FragmentSource * /*fs*/, FileManager * /*fileManager*/ ) {}
     virtual QString getValueAsText()
     {
         return "";
@@ -496,7 +496,7 @@ public:
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
-    virtual void updateTextures(FragmentSource* fs, FileManager* fileManager);
+    virtual void updateTexture(FragmentSource* fs, FileManager* fileManager);
     virtual void setLockType ( LockType /*lt*/ )
     {
         lockType = AlwaysLocked;

@@ -348,10 +348,10 @@ private:
 
     bool setTextureParms(QString textureUniformName, GLenum type);
     void checkForSpecialCase(QString uniformName, QString &uniformValue);
-    void setFloatType(GLenum type, QString &tp);
+    void get32Type(GLenum type, QString &tp);
     bool checkShaderProg(GLuint programID);
 #ifdef USE_OPENGL_4
-    void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
+    void get64Type(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 #endif
 
     void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
