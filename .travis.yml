@@ -3,16 +3,16 @@ language: cpp
 
 #os: osx
 #osx_image: xcode10.2
-#os: linux
-#dist: xenial
+os: linux
+dist: xenial
 
-matrix:
-    include:
-        - os: linux
-          dist: xenial
-        - os: osx
-          osx_image: xcode10.2
-        #- os: windows
+#matrix:
+    #include:
+        #- os: linux
+          #dist: xenial
+        #- os: osx
+          #osx_image: xcode10.2
+        ##- os: windows
 
 sudo: false
 
@@ -201,8 +201,8 @@ before_deploy:
       cd ./Fragmentarium-Source/build
     fi
   - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="TravisCI_build_"$TRAVIS_BUILD_NUMBER
-  - git tag $GIT_TAG -a -m "Fragmentarium-"$VERSION_NUMBER_$BUILD_NUMBER
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
+  - git tag $GIT_TAG -f -a -m "TravisCI build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
