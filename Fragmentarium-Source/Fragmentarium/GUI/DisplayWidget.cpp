@@ -1620,7 +1620,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    // glFinish();  // wait for GPU to return control
+    glFinish();  // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1755,7 +1755,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd(); 
     glPopAttrib();
-    //glFinish(); // wait for GPU to return control
+    glFinish(); // wait for GPU to return control
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
