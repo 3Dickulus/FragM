@@ -1391,7 +1391,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         checkForSpecialCase(name, uniformValue);
         if(uniformValue.contains("variable")) {
             // type name and value to console
-            if (subframeCounter == 1 && verbose) {
+            if (verbose && subframeCounter == 1) {
                 qDebug() << tp << "\t" << uniformName << uniformValue;
             }
             continue;
@@ -1453,11 +1453,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         } // this takes care of buffershader (Post) sliders :D
 
         // type name and value to console
-        if (subframeCounter == 1 && verbose) {
+        if (verbose && subframeCounter == 1) {
             qDebug() << tp << "\t" << uniformName << uniformValue;
         }
     }
-    if (subframeCounter == 1 && verbose) {
+    if (verbose && subframeCounter == 1) {
         qDebug() << count << " active uniforms initialized\n";
         if (shaderProg == shaderProgram) {
             if ( mainWindow->getVariableEditor()->hasEasing() ) {

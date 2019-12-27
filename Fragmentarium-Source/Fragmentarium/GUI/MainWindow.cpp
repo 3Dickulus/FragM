@@ -81,7 +81,16 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 191225, "");
+    // make today's build number
+    struct tm *tm;
+    time_t t;
+    char str_date[100];
+    t = time(nullptr);
+    tm = localtime(&t);
+    strftime(str_date, sizeof(str_date), "%y%m%d", tm);
+    int buildNumber = QString(str_date).toInt();
+
+    version = Version(2, 5, 0, buildNumber, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
