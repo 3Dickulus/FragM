@@ -618,6 +618,8 @@ void DisplayWidget::initFragmentShader()
 
     QSettings settings;
 
+    makeCurrent();
+
     shaderProgram = new QOpenGLShaderProgram ( context() );
 
     // Vertex shader
@@ -679,7 +681,6 @@ void DisplayWidget::initFragmentShader()
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
-        makeCurrent();
         // Bind first texture to backbuffer
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
 
