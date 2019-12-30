@@ -195,7 +195,7 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
+      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.\.$//g" | sed "s/.......$//g"`
       export BUILD_NUMBER=`date "+%y%m%d"`
       ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
