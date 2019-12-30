@@ -200,9 +200,9 @@ before_deploy:
       ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
-  - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
-  #- git tag $GIT_TAG -a -m "Travis_build"
+
+  - export GIT_TAG=`date +%y%m%d%H`
+  - git tag $GIT_TAG -a -m "Fragmentarium-"$VERSION_NUMBER-$GIT_TAG" Travis build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
