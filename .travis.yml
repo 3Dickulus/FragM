@@ -202,8 +202,8 @@ before_deploy:
     fi
 
   - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER"-"$BUILD_NUMBER"-"$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$BUILD_NUMBER"-"$TIME_STRING
+  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER"-"$BUILD_NUMBER"-"$TRAVIS_BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
