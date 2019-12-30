@@ -8,11 +8,13 @@ cmake_policy(SET CMP0048 NEW)
 ENDIF ()
 
 set(FRAGM_VERSION "2.5.0")
+
 IF(NOT WIN32)
 execute_process(COMMAND "date" "+%y%m%d" OUTPUT_VARIABLE PACKAGE_RELEASE)
 string(STRIP ${PACKAGE_RELEASE} PACKAGE_RELEASE)
 ELSE()
-set( PACKAGE_RELEASE 191229 )
+message( STATUS "Manually setting PACKAGE_RELEASE" )
+set( PACKAGE_RELEASE 191230 )
 ENDIF()
 
 message( STATUS "Fragmentarium-${FRAGM_VERSION}-${PACKAGE_RELEASE}" )
@@ -56,7 +58,7 @@ ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
-OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
+OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
 OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
