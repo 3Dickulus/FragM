@@ -201,8 +201,8 @@ before_deploy:
       cd ./Fragmentarium-Source/build
     fi
 
-  - export GIT_TAG=`date +%y%m%d%H`
-  - git tag $GIT_TAG -a -m "Fragmentarium-"$VERSION_NUMBER-$GIT_TAG" Travis build "$TRAVIS_BUILD_NUMBER
+  - export GIT_TAG=$BUILD_NUMBER
+  - git tag $GIT_TAG -a -m $GIT_TAG" Travis build "$TRAVIS_BUILD_NUMBER
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
