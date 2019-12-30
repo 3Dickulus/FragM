@@ -611,7 +611,6 @@ void DisplayWidget::initFragmentShader()
 
     if (shaderProgram != nullptr) {
         shaderProgram->release();
-        shaderProgram->removeAllShaders();
         delete ( shaderProgram );
         shaderProgram = nullptr;
     }
@@ -1061,7 +1060,6 @@ void DisplayWidget::initBufferShader()
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
-        bufferShaderProgram->removeAllShaders();
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
     }
