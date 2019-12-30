@@ -86,7 +86,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
     time_t t;
     char str_date[100];
     t = time(nullptr);
-    tm = localtime(&t);
+    tm = gmtime(&t);
     strftime(str_date, sizeof(str_date), "%y%m%d", tm);
     int buildNumber = QString(str_date).toInt();
 
