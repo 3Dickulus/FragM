@@ -190,20 +190,20 @@ before_deploy:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
       export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+      export BUILD_NUMBER=`date +%y%m%d`
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
       export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
+      export BUILD_NUMBER=`date +%y%m%d`
       ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
 
   - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER"
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+  - export GIT_TAG=$VERSION_NUMBER"-"$BUILD_NUMBER"-"$TIME_STRING
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
