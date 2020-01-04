@@ -7,8 +7,8 @@
 // Based on Tim Hutton's example from Ready: http://code.google.com/p/reaction-diffusion/source/browse/trunk/GrayScott/gray_scott.cpp
 
 // These are Fragmentarium host defines.
-#define DontClearOnChange
-#define IterationsBetweenRedraws 30
+//#define DontClearOnChange
+#define IterationsBetweenRedraws 31
 #define SubframeMax 0
 
 #group Post

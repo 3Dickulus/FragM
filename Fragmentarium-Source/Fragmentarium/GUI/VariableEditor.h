@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QMap>
 #include <QOpenGLShaderProgram>
+
 #include <QSlider>
 #include <QString>
 #include <QTabWidget>
@@ -123,20 +124,21 @@ public:
     }
 
 signals:
-    void changed(bool lockedChanged, Provenance provenance);
+    void changed(bool lockedChanged);
 
 public slots:
     void sliderDestroyed ( QObject *obj );
     void focusChanged(QWidget* oldWidget,QWidget* newWidget);
     bool applyPreset();
     void resetUniforms(bool clear = true);
+    void groupToPreset();
     void resetGroup();
     void lockGroup();
     void unlockGroup();
     void copy();
     void copyGroup();
     void paste();
-    void childChanged(bool lockedChanged, Provenance provenance);
+    void childChanged(bool lockedChanged);
     void presetSelected(QString presetName);
     void dockChanged ( bool t )
     {
@@ -145,6 +147,7 @@ public slots:
         }
         tabWidget->setTabPosition ( t ? ( QTabWidget::North ) : ( QTabWidget::East ) ); // 05/22/17 Sabine ;)
     }
+    void hideUnusedTabs();
 
 private slots:
     void createWidgetFromGuiParameter(Parser::GuiParameter* p);

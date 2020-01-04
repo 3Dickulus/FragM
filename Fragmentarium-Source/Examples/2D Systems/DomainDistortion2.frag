@@ -3,6 +3,8 @@
 // 
 // Not as good as his, but still interesting.
 // 
+uniform float time;
+
 #include "2D.frag"
 
 uniform float Mul; slider[0,2,10]
@@ -42,8 +44,6 @@ float fbm(vec2 c) {
 	}
 	return f;
 }
-
-uniform float time;
 
 vec2 cMul(vec2 a, vec2 b) {
 	return vec2( a.x*b.x -  a.y*b.y,a.x*b.y + a.y * b.x);

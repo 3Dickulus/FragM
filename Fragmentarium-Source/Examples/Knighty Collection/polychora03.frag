@@ -107,6 +107,77 @@ float DE(vec3 pos) {
 	return min(dist2Vertex(z4,r),dist2Segments(z4, r));
 }
 
+#preset Default
+FOV = 0.4
+Eye = 0,0,-10
+Target = 0,0,0
+Up = 0,1,0
+EquiRectangular = false
+AutoFocus = false
+FocalPlane = 1
+Aperture = 0
+Gamma = 2
+ToneMapping = 4
+Exposure = 1
+Brightness = 1
+Contrast = 1
+AvgLumin = 0.5,0.5,0.5
+Saturation = 1
+LumCoeff = 0.212500006,0.715399981,0.0720999986
+Hue = 0
+GaussianWeight = 1
+AntiAliasScale = 2
+DepthToAlpha = false
+ShowDepth = false
+DepthMagnitude = 1
+Detail = -2.3
+DetailAO = -0.5
+FudgeFactor = 1
+MaxDistance = 1000
+MaxRaySteps = 56
+Dither = 0.5
+NormalBackStep = 1
+AO = 0,0,0,0.699999988
+Specular = 0.4
+SpecularExp = 16
+SpecularMax = 10
+SpotLight = 1,1,1,0.400000006
+SpotLightDir = 0.100000001,0.100000001
+CamLight = 1,1,1,1
+CamLightMin = 0
+Glow = 1,1,1,0
+GlowMax = 20
+Fog = 0
+HardShadow = 0
+ShadowSoft = 2
+QualityShadows = false
+Reflection = 0
+DebugSun = false
+BaseColor = 1,1,1
+OrbitStrength = 0
+X = 0.5,0.600000024,0.600000024,0.699999988
+Y = 1,0.600000024,0,0.400000006
+Z = 0.800000012,0.779999971,1,0.5
+R = 0.400000006,0.699999988,1,0.119999997
+BackgroundColor = 0.600000024,0.600000024,0.449999988
+GradientBackground = 0.3
+CycleColors = false
+Cycles = 1.1
+EnableFloor = false
+FloorNormal = 0,0,1
+FloorHeight = 0
+FloorColor = 1,1,1
+Type = 5
+U = 1
+V = 0
+W = 0
+T = 0
+VRadius = 0.05
+SRadius = 0.01
+RotVector = 1,1,1
+RotAngle = 0
+#endpreset
+
 #preset hypercube
 FOV = 0.62536
 Eye = -5.86672,-5.4972,3.05247

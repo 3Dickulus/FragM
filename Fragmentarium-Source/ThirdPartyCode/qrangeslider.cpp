@@ -673,7 +673,7 @@ void qRangeSlider::mousePressEvent(QMouseEvent *ev)
         abort();
     }
 
-    showValueTooltip();
+//     showValueTooltip();
 }
 
 /*!
@@ -718,7 +718,7 @@ void qRangeSlider::mouseMoveEvent(QMouseEvent *ev)
             }
         }
         setRange(newRange);
-        showValueTooltip();
+//         showValueTooltip();
     }
 }
 

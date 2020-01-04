@@ -169,12 +169,6 @@ public:
     {
         lastStoredTime = time;
     }
-/// BEGIN 3DTexture
-// #ifdef USE_OPEN_EXR
-//       void setVoxelFile( QString vfn ){ engine->set3DTextureFileName( vfn ); };
-//       void setObjFile( QString ofn );
-// #endif // USE_OPEN_EXR
-/// END 3DTexture
 
     QVector<VariableWidget *> getUserUniforms()
     {
@@ -253,10 +247,6 @@ public:
     {
         return rebuildRequired;
     };
-    void setDefault()
-    {
-        variableEditor->setDefault();
-    };
     bool wantSplineOcc()
     {
         return wantSplineOcclusion;
@@ -282,6 +272,8 @@ public:
         getVariableEditor()->setVerbose ( v );
     };
 
+    bool isChangedUniformInBuffershaderOnly();
+    
     QString langID;
 
 protected:
@@ -296,6 +288,10 @@ protected:
 
     // all public slots are available as script commands
 public slots:
+    void setDefault()
+    {
+        variableEditor->setDefault();
+    };
     void processGuiEvents();
     void loadFragFile ( const QString &fileName );
 
@@ -443,9 +439,7 @@ public slots:
     bool applyPresetByName ( QString n )
     {
         rebuildRequired = variableEditor->setPreset ( n );
-        rebuildRequired |= initializeFragment();
-        rebuildRequired |= initializeFragment();
-        processGuiEvents();
+        if(rebuildRequired) rebuildRequired = initializeFragment();
         processGuiEvents();
         return !rebuildRequired; // if rebuild is required applying the preset failed
     };
@@ -534,6 +528,10 @@ private slots:
     void bufferSpinBoxChanged ( int value );
     void timeChanged ( int value );
     void timeLineRequest ( QPoint p );
+    void timeLineRequest ()
+    {
+        timeLineRequest ( QPoint(0,0) );
+    }; // 11/22/19 ClaudeHA
     void videoEncoderRequest();
     void bufferActionChanged ( QAction *action );
     void showWelcomeNote();
@@ -548,7 +546,7 @@ private slots:
     void indent();
     void preferences();
     void insertText();
-    void variablesChanged ( bool lockedChanged, Provenance provenance );
+    void variablesChanged ( bool lockedChanged );
     void cut();
     void copy();
     void paste();
@@ -598,6 +596,11 @@ private slots:
     // slot for F6 hotkey handlers
     void slotShortcutF6();
     void slotShortcutShiftF6();
+
+#ifdef USE_OPEN_EXR
+    bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
+#endif
+    void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
 
 private:
 
@@ -727,10 +730,6 @@ private:
     bool verbose;
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
-
-/// BEGIN 3DTexture
-//       QString voxelFileName;
-/// END 3DTexture
 
 #ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;

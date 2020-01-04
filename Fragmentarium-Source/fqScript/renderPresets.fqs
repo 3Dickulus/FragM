@@ -80,7 +80,7 @@ init();
 var names = app.getPresetNames(false);
 
 // make list of preset names
-var list = names.split(" ");
+var list = names.split(";");
 
 list.forEach(renderPreset);
 

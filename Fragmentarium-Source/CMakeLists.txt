@@ -9,6 +9,9 @@ ENDIF ()
 
 set(FRAGM_VERSION "2.5.0")
 
+string( TIMESTAMP PACKAGE_RELEASE "%y%m%d" UTC )
+message( STATUS "Fragmentarium-${FRAGM_VERSION}-${PACKAGE_RELEASE}" )
+
 project(Fragmentarium-${FRAGM_VERSION} VERSION ${FRAGM_VERSION} LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 11)
@@ -29,10 +32,7 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-# IF ( NOT WIN32 )
-#     find_package ( glm REQUIRED )
-# ENDIF ()
-
+# find_package ( glm REQUIRED )
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
@@ -55,7 +55,7 @@ OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
 OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
-IF ( MINGW )
+IF ( WIN32 )
   set ( MINGW_LIB_PATH "C:\\Qt/Tools/mingw492_32/i686-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
@@ -71,12 +71,14 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-set (GLM_INCLUDE_DIRS ${glm_DIR})
 set (OpenEXR_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 set (Ilmbase_INCLUDE_DIRS "")
 
-    IF ( MINGW )
+    IF ( APPLE  )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
+    ENDIF ()
+    IF ( WIN32  )
         set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
     ENDIF ()
 
@@ -103,17 +105,18 @@ IF ( USE_OPEN_EXR )
 
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
-    IF ( MINGW )
+    IF ( WIN32 )
         set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
 
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
         set( OpenEXR_LIBS
-            IlmImf-2_1
-            Half Imath-2_1
-            Iex-2_1
-            IexMath-2_1
-            IlmThread-2_1
+            IlmImf-2_4
+            Half-2_4
+            Imath-2_4
+            Iex-2_4
+            IexMath-2_4
+            IlmThread-2_4
         )
 
         MESSAGE("Using MinGW threads")
@@ -350,21 +353,20 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
 
     SET(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_BINARY_DIR}/../Notes.txt)
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An integrated environment for exploring GPU pixel graphics.")
-    SET(PACKAGE_RELEASE "190913")
 
     IF(UNIX AND NOT APPLE)
 
         IF(BUILD_LINUX_RPM)
             SET(CMAKE_INSTALL_PREFIX "/usr/local")
             SET(CPACK_RPM_PACKAGE_NAME "Fragmentarium")
-            SET(CPACK_RPM_PACKAGE_VERSION "2.5.0")
+            SET(CPACK_RPM_PACKAGE_VERSION ${FRAGM_VERSION})
             SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
             SET(CPACK_RPM_PACKAGE_RELEASE ${PACKAGE_RELEASE})
             SET(CPACK_RPM_PACKAGE_LICENSE "LPGL,GPL")
             SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
             SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
             SET(CPACK_RPM_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
-            SET(CPACK_RPM_PACKAGE_PREDEPENDS "libilmbase12,libopenexr22")
+            SET(CPACK_RPM_PACKAGE_PREDEPENDS "libopenexr24")
             SET(CPACK_RPM_PACKAGE_DEPENDS "libQt5Core5, libQt5Gui5, libQt5OpenGL5, libQt5Script5, libQt5Widgets5, libQt5Xml5")
             SET(CPACK_RPM_PACKAGE_PROVIDES "FragM")
             SET(CPACK_GENERATOR "RPM")
@@ -374,14 +376,14 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
         IF(BUILD_LINUX_DEB)
             SET(CMAKE_INSTALL_PREFIX "/usr/local")
             SET(CPACK_DEBIAN_PACKAGE_NAME "Fragmentarium")
-            SET(CPACK_DEBIAN_PACKAGE_VERSION "2.5.0")
+            SET(CPACK_DEBIAN_PACKAGE_VERSION ${FRAGM_VERSION})
             SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
             SET(CPACK_DEBIAN_PACKAGE_RELEASE ${PACKAGE_RELEASE})
             SET(CPACK_DEBIAN_PACKAGE_LICENSE "lgpl,gpl")
             SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
             SET(CPACK_DEBIAN_PACKAGE_VENDOR "digilantism")
             SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
-            SET(CPACK_DEBIAN_PACKAGE_PREDEPENDS "libilmbase12, libopenexr22")
+            SET(CPACK_DEBIAN_PACKAGE_PREDEPENDS "libopenexr22")
             SET(CPACK_DEBIAN_PACKAGE_DEPENDS "qtbase5, qtscript5, qtxml5")
             SET(CPACK_DEBIAN_PACKAGE_PROVIDES "FragM")
             SET(CPACK_GENERATOR "DEB")
@@ -398,10 +400,6 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
     IF(WIN32)
             set(CPACK_GENERATOR "ZIP")
     ENDIF()
-
-
-#     SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
-#     SET(CPACK_SOURCE_GENERATOR "TBZ2")
 
     INCLUDE(CPack)
 ENDIF()

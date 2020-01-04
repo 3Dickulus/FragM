@@ -63,6 +63,17 @@ int main(int argc, char *argv[])
     signal(SIGSEGV, segv_handler);
 #endif
 
+#ifdef Q_OS_MAC
+    qApp->addLibraryPath("../Frameworks");
+    qApp->addLibraryPath("../PlugIns");
+    qApp->addLibraryPath("../PlugIns/iconengines");
+    qApp->addLibraryPath("../PlugIns/imageformats");
+    qApp->addLibraryPath("../PlugIns/platforms");
+    qApp->addLibraryPath("../PlugIns/printsupprort");
+    qApp->addLibraryPath("../PlugIns/platforminputcontexts");
+    qApp->addLibraryPath("../PlugIns/styles");
+    qApp->addLibraryPath("../PlugIns/virtualkeyboard");
+#endif
 
     Q_INIT_RESOURCE(Fragmentarium);
 
@@ -202,7 +213,7 @@ int main(int argc, char *argv[])
     /// load a single frag from comandline or load the default bulb
     if( !fragFile.isEmpty() ) {
         mainWin->loadFragFile( app->arguments().last() );
-    } else if (openFiles.count() > 0) {
+    } else if (openFiles.count() > 0 && !parser.isSet("script")) {
 
         splash.finish(mainWin);
         while(openFiles.count() > 0) {
@@ -231,7 +242,7 @@ int main(int argc, char *argv[])
                     file.close();
                     // The sync function will first empty Qts events by calling QCoreApplication::processEvents(),
                     // then the platform plugin will sync up with the windowsystem,
-                    // and finally Qts events will be delived by another call to QCoreApplication::processEvents();
+                    // and finally Qts events will be delivered by another call to QCoreApplication::processEvents();
                     app->sync();
                     // everything is now in place and ready for script control
                     mainWin->runScript( text );
@@ -247,27 +258,6 @@ int main(int argc, char *argv[])
     } else {
         mainWin->setSplashWidgetTimeout(&splash);
     }
-
-/// BEGIN 3DTexture
-//     if(app.arguments().contains("-voxel")) {
-//       int argIndex = app.arguments().indexOf("-voxel");
-//       QString filename = app.arguments().at(argIndex+1);
-//       if(filename.endsWith(".exr")) {
-//           mainWin->setVoxelFile(filename);
-//           qDebug() << "EXR Voxel file name set.";
-//       } else qDebug() << "Wrong file type, should be an EXR file that
-//       contains sub-images.";
-//     }
-//
-//     if(app.arguments().contains("-obj")) {
-//       int argIndex = app.arguments().indexOf("-obj");
-//       QString filename = app.arguments().at(argIndex+1);
-//       if(filename.endsWith(".obj")) {
-//         mainWin->setObjFile(filename);
-//         qDebug() << "OBJ file name set.";
-//       } else qDebug() << "Wrong file type, should be an OBJ file.";
-//     }
-/// END 3DTexture
 
     return app->exec();
 }

@@ -13,11 +13,15 @@
 #include <QTabWidget>
 #include <QVector>
 #include <QWidget>
+#include <QHeaderView>
+#include <QStandardItemModel>
+#include <QOpenGLShaderProgram>
 
 #include "../Parser/Preprocessor.h"
 #include "DisplayWidget.h"
 #include "SyntopiaCore/Logging/Logging.h"
-#include <QOpenGLShaderProgram>
+
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 /// Classes for the GUI Editor for the preprocessor constant variables.
 /// E.g. the line: uniform float Angle; slider[45.00,0,360]
@@ -33,6 +37,18 @@ namespace GUI
 
 using namespace SyntopiaCore::Logging;
 using namespace Fragmentarium::Parser;
+
+class SubclassOfQStyledItemDelegate : public QStyledItemDelegate {
+
+    virtual void paint(QPainter * painter_, const QStyleOptionViewItem & option_, const QModelIndex & index_) const
+    {
+//         QStyleOptionViewItem & refToNonConstOption = const_cast<QStyleOptionViewItem &>(option_);
+//         refToNonConstOption.showDecorationSelected = false;
+//         refToNonConstOption.state &= ~QStyle::State_Selected;
+
+        QStyledItemDelegate::paint(painter_, option_, index_);
+    }
+};
 
 // A helper class (combined float slider+spinner)
 class ComboSlider : public QWidget
@@ -108,7 +124,7 @@ public:
         }
     }
 
-    QPropertyAnimation *m_anim;
+    QPropertyAnimation* m_anim;
     int m_framestart, m_framefin; // firstframe lastframe
     int m_loops;
     int m_pong;
@@ -366,7 +382,7 @@ class VariableWidget : public QWidget
     Q_OBJECT
 public:
     VariableWidget(QWidget* parent, QWidget* variableEditor, QString name);
-    virtual void updateTextures ( FragmentSource * /*fs*/, FileManager * /*fileManager*/ ) {}
+    virtual void updateTexture ( FragmentSource * /*fs*/, FileManager * /*fileManager*/ ) {}
     virtual QString getValueAsText()
     {
         return "";
@@ -384,17 +400,14 @@ public:
     {
         return group;
     }
-    void setProvenance(Provenance p)
+    void setLabelStyle(bool prov=false)
     {
-        provenance = p;
-    }
-    void addProvenance(Provenance p)
-    {
-        provenance = Provenance(provenance | p);
-    }
-    Provenance getProvenance() const
-    {
-        return provenance;
+       if (prov) {
+            QColor c = label->palette().color(QPalette::Inactive, QPalette::Mid);
+            label->setStyleSheet("border-style: outset; border-width: 1px; border-color: " + c.name() + ";");
+        } else {
+            label->setStyleSheet("border: none;");
+        }
     }
     bool isUpdated() const
     {
@@ -437,14 +450,14 @@ public:
     virtual void setLockType(LockType lt) ;
     virtual QString getLockedSubstitution() = 0;
     virtual QString getLockedSubstitution2() = 0;
-    virtual void setSliderType(SliderType ){};
+    virtual void setSliderType(SliderType ) = 0;
 
 public slots:
     void locked(bool l);
     void valueChanged();
 
 signals:
-    void changed(bool lockedChanged, Provenance provenance);
+    void changed(bool lockedChanged);
 
 protected:
     QString toGLSL ( double d )
@@ -463,6 +476,7 @@ protected:
     SliderType defaultSliderType;
     SliderType sliderType;
 
+    QLabel* label;
     QPushButton* lockButton;
     QString name;
     QString group;
@@ -471,7 +485,6 @@ protected:
     bool wantDouble=false;
     QWidget* widget;
     QWidget* variableEditor;
-    Provenance provenance;
 };
 
 class SamplerWidget : public VariableWidget
@@ -479,15 +492,16 @@ class SamplerWidget : public VariableWidget
     Q_OBJECT
 public:
     SamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue );
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
-    virtual void updateTextures(FragmentSource* fs, FileManager* fileManager);
+    virtual void updateTexture(FragmentSource* fs, FileManager* fileManager);
     virtual void setLockType ( LockType /*lt*/ )
     {
         lockType = AlwaysLocked;
     } // cannot change this
+    
     QString getValue() ;
     virtual QString getUniqueName()
     {
@@ -496,7 +510,32 @@ public:
     void reset()
     {
         comboBox->setEditText ( defaultValue );
+        if(!defaultChannelValue.isEmpty()) {
+            channelComboBox->show();
+            int i = channelComboBox->findText(defaultChannelValue);
+            if(i != -1) {
+                channelComboBox->setCurrentIndex(i);
+            }
+        } else channelComboBox->hide();
     }
+    QString getChannelValue()
+    {
+        if(!channelComboBox->isHidden()) {
+            QString chv = "";
+            QMapIterator<QString, Qt::CheckState> it(channelsUsed);
+            while (it.hasNext()) {
+                it.next();
+                if(it.value() == Qt::Checked) chv += it.key() + ";";
+            }
+            chv.remove(chv.length()-1,1);
+            return chv;
+        }
+
+        else return "";
+    }
+    
+    int hasChannel(QString chan);
+    
     QString getLockedSubstitution()
     {
         return QString();
@@ -509,7 +548,22 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+    
     int texID;
+    QStringList channelList;
+
+public slots:
+    void slot_changed(QStandardItem *item)
+    {
+        channelsUsed[item->text()] = item->checkState();
+//         if(item->checkState() == Qt::Unchecked) {
+//             DBOUT << item->text() << "Unchecked!";
+//         } else if(item->checkState() == Qt::Checked) {
+//             DBOUT << item->text() << "Checked!";
+//         }
+//         channelChanged(item->text());
+    }
 
 signals:
     void changed();
@@ -517,17 +571,50 @@ signals:
 protected slots:
 
     void textChanged(const QString& text);
+    void channelChanged(const QString& text);
 
     void buttonClicked();
 
 private:
 
     QComboBox* comboBox;
+    QComboBox* channelComboBox;
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
+    QString defaultChannelValue;
+    QMap<QString, Qt::CheckState> channelsUsed;
 };
 
+class hSamplerWidget : public SamplerWidget
+{
+    Q_OBJECT
+public:
+    hSamplerWidget ( FileManager *fileManager, QWidget *parent,
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+
+signals:
+
+protected slots:
+
+private:
+
+};
+
+class uSamplerWidget : public SamplerWidget
+{
+    Q_OBJECT
+public:
+    uSamplerWidget ( FileManager *fileManager, QWidget *parent,
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+
+signals:
+
+protected slots:
+
+private:
+
+};
 
 /// A widget editor for a float variable.
 class FloatWidget : public VariableWidget
@@ -575,7 +662,7 @@ public:
         comboSlider1->setDecimals(wd ? DDEC : FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         sliderType = st;
     };
@@ -643,7 +730,7 @@ public:
         comboSlider2->setDecimals(wd ? DDEC : FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         sliderType = st;
@@ -712,7 +799,7 @@ public:
         comboSlider3->setDecimals(wd?DDEC:FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         comboSlider3->setSliderType(st);
@@ -791,7 +878,7 @@ public:
         comboSlider4->setDecimals(wd?DDEC:FDEC);
     };
 
-    virtual void setSliderType ( SliderType st ){
+    void setSliderType ( SliderType st ){
         comboSlider1->setSliderType(st);
         comboSlider2->setSliderType(st);
         comboSlider3->setSliderType(st);
@@ -842,6 +929,7 @@ public:
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
+
     void reset()
     {
         colorChooser->setColor ( defaultValue );
@@ -865,6 +953,8 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+
 private:
     ColorChooser* colorChooser;
     glm::dvec3 defaultValue;
@@ -928,6 +1018,8 @@ public:
         wantDouble = wd;
         comboSlider->setDecimals(wd ? DDEC : FDEC);
     };
+    void setSliderType(SliderType ){};
+
 private:
     ComboSlider* comboSlider;
     ColorChooser* colorChooser;
@@ -980,6 +1072,8 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
+
 private:
     IntComboSlider* comboSlider;
     int defaultValue;
@@ -1026,6 +1120,7 @@ public:
     {
         wantDouble = wd;
     };
+    void setSliderType(SliderType ){};
 
 private:
     QCheckBox* checkBox;

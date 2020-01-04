@@ -73,7 +73,7 @@
 #include <ImfTiledRgbaFile.h>
 #include <half.h>
 
-#include <ImfMultiPartInputFile.h>
+#include <ImfInputFile.h>
 #include <ImfPartHelper.h>
 #include <ImfPartType.h>
 #include <ImfTiledInputPart.h>
@@ -81,6 +81,8 @@
 #include <Iex.h>
 
 #endif
+
+#include "FileManager.h"
 
 namespace Fragmentarium
 {
@@ -102,7 +104,7 @@ class CameraControl;
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
 #ifdef USE_OPENGL_4
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
+class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility
 #else
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
 #endif
@@ -126,7 +128,7 @@ public:
 
     /// Use this whenever a redraw is required.
     /// Calling this function multiple times will still only result in one redraw
-    void requireRedraw ( bool clear, bool bufferShaderOnly = false );
+    void requireRedraw ( bool clear );
     void updateRefreshRate();
     void setState ( DrawingState state );
     DrawingState getState()
@@ -198,7 +200,7 @@ public:
         maxSubFrames = i;
     }
 
-    void uniformsHasChanged(Provenance provenance);
+    void uniformsHaveChanged( bool bshaderonly = false );
     void setClearOnChange ( bool v )
     {
         clearOnChange = v;
@@ -239,18 +241,18 @@ public:
 
     QString renderETA;
     int renderAVG;
-    int framesToRender;
+    int renderToFrame;
     int tileAVG;
 
     int subframeCounter;
     int tilesCount;
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
     void setEXRmode ( bool m )
     {
         exrMode = m;
     }
-
-    bool getRGBAFtile ( Imf::Array2D< Imf::Rgba >& array, int w, int h );
+#ifdef USE_OPEN_EXR
+    bool getRGBAFtile ( Imf::Array2D<RGBAFLOAT>& pixels, int w, int h );
 #endif
 
     void setVerbose ( bool v )
@@ -270,10 +272,7 @@ public slots:
     {
         return renderFPS;
     }
-    bool isPending()
-    {
-        return pendingRedraws || bufferUniformsHaveChanged;
-    }
+
     void setHasKeyFrames ( bool yn )
     {
         hasKeyFrames = yn;
@@ -293,19 +292,9 @@ public slots:
         return cameraControl->getID();
     }
 
-/// BEGIN 3DTexture
-//       void init3DTexture();
-//       void set3DTextureFileName( QString vfn ){ voxelFileName = vfn; };
-//       void setObjFileName( QString ofn ){ objFileName = ofn; };
-//       void saveObjFile(float *vxls );
-/// END 3DTexture
-
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
-/// BEGIN 3DTexture
-//       void draw3DTexture();
-/// END 3DTexture
     void mouseMoveEvent ( QMouseEvent* ev ) Q_DECL_OVERRIDE;
     void contextMenuEvent ( QContextMenuEvent* ev ) Q_DECL_OVERRIDE;
     void mouseReleaseEvent ( QMouseEvent * ev ) Q_DECL_OVERRIDE;
@@ -351,28 +340,29 @@ private:
 
     bool initPreviewBuffer();
 
-    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
-#ifdef USE_OPEN_EXR
-    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID);
-#endif
-    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
+    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+// #ifdef USE_OPEN_EXR
+    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+// #endif
+    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
 
     bool setTextureParms(QString textureUniformName, GLenum type);
     void checkForSpecialCase(QString uniformName, QString &uniformValue);
-    void setFloatType(GLenum type, QString &tp);
+    void get32Type(GLenum type, QString &tp);
     bool checkShaderProg(GLuint programID);
 #ifdef USE_OPENGL_4
-    void setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
+    void get64Type(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp);
 #endif
 
-    void resetUniformProvenance();
-    void setupShaderVars(int w, int h);
+    void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
     void draw3DHints();
     bool FBOcheck();
-    void setupBufferShaderVars(int w, int h);
-
+    
+    GLenum glCheckError_(const char *file, int line, const char *func);
+    
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
+    
     QColor backgroundColor;
 
     QMenu* contextMenu;
@@ -415,13 +405,8 @@ private:
     QPoint mouseXY;
     bool depthToAlpha;
     bool verbose;
-
-    /// BEGIN 3DTexture
-//       QMatrix4x4 texMatrix;
-//       GLuint m3DTexId;
-//       QString voxelFileName;
-//       QString objFileName;
-    /// END 3DTexture
+    bool bufferShaderOnly;
+    bool glDebugEnabled;
 
 };
 }

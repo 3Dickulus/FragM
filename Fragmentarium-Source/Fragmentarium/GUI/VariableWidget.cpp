@@ -29,7 +29,7 @@ using namespace SyntopiaCore::Misc;
 using namespace Fragmentarium::Parser;
 
 VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString name)
-    : QWidget(parent), name(name), updated(false), systemVariable(false), variableEditor(variableEditor), provenance(FromUnknown)
+    : QWidget(parent), name(name), updated(false), systemVariable(false), variableEditor(variableEditor)
 {
 
     auto *vl = new QHBoxLayout(this);
@@ -46,13 +46,13 @@ VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString
     vl->addWidget(lockButton,0,Qt::AlignLeft | Qt::AlignVCenter);
     connect(lockButton, SIGNAL(toggled(bool)), this, SLOT(locked(bool)));
 
-    QLabel* label = new QLabel(name,this);
+    label = new QLabel(name,this);
     label->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum));
     vl->addWidget(label,0,Qt::AlignRight | Qt::AlignVCenter);
 
     widget = new QWidget(this);
     vl->addWidget(widget);
-    connect(this, SIGNAL(changed(bool,Provenance)), variableEditor, SLOT(childChanged(bool,Provenance)));
+    connect(this, SIGNAL(changed(bool)), variableEditor, SLOT(childChanged(bool)));
 }
 
 bool VariableWidget::isLocked()
@@ -67,10 +67,11 @@ void VariableWidget::valueChanged()
         pal.setColor(backgroundRole(), Qt::yellow);
         setPalette(pal);
         setAutoFillBackground(true);
-        emit(changed(true, getProvenance()));
+        emit(changed(true));
     } else {
-        emit(changed(false, getProvenance()));
+        emit(changed(false));
     }
+        
     oldLockType = lockType;
 }
 
@@ -109,6 +110,8 @@ void VariableWidget::setLockType(LockType lt)
     } else {
         locked(false);
     }
+    
+    oldLockType = lt;
 }
 
 QString VariableWidget::toSettingsString()
@@ -126,7 +129,6 @@ QString VariableWidget::toSettingsString()
 
 bool VariableWidget::fromSettingsString(QString string)
 {
-
     bool requiresRecompile = false;
 
     const QRegExp lockTypeString("(AlwaysLocked|Locked|NotLocked|NotLockable)\\s*.?$");
@@ -564,6 +566,7 @@ ColorWidget::ColorWidget(QWidget *parent, QWidget *variableEditor, QString name,
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
     QApplication::postEvent(widget, new QEvent(QEvent::LayoutRequest));
+    
 }
 
 QString ColorWidget::toString()
@@ -715,8 +718,8 @@ void IntWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 // SamplerWidget
 // ------------------------------------------------------------------
 
-SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue)
-    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue)
+SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue), defaultChannelValue(defaultChannelValue)
 {
 
     auto *l = new QHBoxLayout(widget);
@@ -734,29 +737,136 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
     comboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
     comboBox->view()->setCornerWidget(new QSizeGrip(comboBox));
+    
+        channelComboBox = new QComboBox(parent);
+        channelComboBox->setEditable(false);
+        channelComboBox->setEditText(defaultChannelValue);
+        channelComboBox->setObjectName(name+"Channel");
+        channelComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+        l->addWidget(channelComboBox);
+        channelComboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
+        channelComboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
+        channelComboBox->view()->setCornerWidget(new QSizeGrip(channelComboBox));
+        
+        connect(channelComboBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
+
+        if(defaultChannelValue.isEmpty()){
+            channelComboBox->hide();
+        }
 
     pushButton = new QPushButton("...", parent);
     l->addWidget(pushButton);
     pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     connect(comboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(textChanged(const QString &)));
     connect(pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
-    textChanged("");
+    textChanged(defaultValue);
 
     texID=0;
 }
 
+int SamplerWidget::hasChannel(QString chan)
+{
+    int ci=-1;
+    if(!channelComboBox->isHidden()) {
+        ci=channelComboBox->findText(chan);
+    }
+    
+    if(ci == -1 && chan != tr("All")) {
+        QPalette pal = channelComboBox->palette();
+        pal.setColor(channelComboBox->backgroundRole(), Qt::red);
+        channelComboBox->setPalette(pal);
+        channelComboBox->setAutoFillBackground(true);
+    } else {
+        channelComboBox->setPalette(QApplication::palette(channelComboBox));
+        channelComboBox->setAutoFillBackground(false);
+    }
+
+    return ci;
+}
+    
+void SamplerWidget::channelChanged(const QString &text)
+{
+    
+    if(getValue().endsWith(".exr") && !text.isEmpty()) {
+        
+        bool check = true;
+        
+        if(text != "All") {
+            if(!channelList.contains(text)) {
+                check=false;
+                WARNING("Channel " + text + " not found!");
+            }
+//             else DBOUT << channelComboBox->currentIndex();
+        }
+
+        if(check) {
+            valueChanged();
+        }
+    }
+}
+
 void SamplerWidget::textChanged(const QString &text)
 {
-    Q_UNUSED(text)
     if (!fileManager->fileExists(comboBox->currentText())) {
-        QPalette pal = this->palette();
-        pal.setColor(this->backgroundRole(), Qt::red);
-        this->setPalette(pal);
-        this->setAutoFillBackground(true);
+        QPalette pal = comboBox->palette();
+        pal.setColor(comboBox->backgroundRole(), Qt::red);
+        comboBox->setPalette(pal);
+        comboBox->setAutoFillBackground(true);
     } else {
-        this->setPalette(QApplication::palette(this));
-        this->setAutoFillBackground(false);
+        comboBox->setPalette(QApplication::palette(comboBox));
+        comboBox->setAutoFillBackground(false);
     }
+
+    QString fileName="";
+    if(QFileInfo(text).exists())
+        fileName=text;
+    else if(QFileInfo("Examples/"+text).exists())
+        fileName="Examples/"+text;
+    else  if(QFileInfo("Examples/Include/"+text).exists())
+        fileName="Examples/Include/"+text;
+    
+#ifdef USE_OPEN_EXR
+    if(!fileName.isEmpty() && fileName.endsWith(".exr") ) {
+        InputFile file ( fileName.toLatin1().data() );
+
+        // setup channelComboBox
+        if ( file.isComplete() ) {
+            channelList = QStringList("All");
+            channelComboBox->clear();
+                 
+            const ChannelList &channels = file.header().channels();
+            for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
+            {
+                channelList += i.name();
+            }
+
+            QStandardItemModel *model = new QStandardItemModel(channelList.count(),1); // n rows, 1 col
+
+            for (int ch = 0; ch < channelList.count(); ++ch)
+            {
+                QStandardItem* item = new QStandardItem();
+                item->setText(channelList.at(ch));
+                item->setTextAlignment(Qt::AlignHCenter);
+                item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+                item->setData(defaultChannelValue.contains(channelList.at(ch)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
+                channelsUsed[item->text()] = item->checkState();
+                model->setItem(ch, 0, item);
+                
+            }
+
+            channelComboBox->setModel(model);
+            
+            connect(model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slot_changed(QStandardItem *)));
+
+            SubclassOfQStyledItemDelegate *delegate = new SubclassOfQStyledItemDelegate();
+            channelComboBox->setItemDelegate(delegate);
+
+            channelComboBox->setHidden(false);
+            
+        }    
+    } else
+        channelComboBox->setHidden(true);
+#endif
     //emit changed();
     valueChanged();
 }
@@ -769,11 +879,11 @@ void SamplerWidget::buttonClicked()
     a << "";
     a << "hdr";
 
-#ifdef USE_OPEN_EXR
+// #ifdef USE_OPEN_EXR
 #ifdef Q_OS_WIN
     a << "exr";
 #endif
-#endif
+// #endif
     a << QImageReader::supportedImageFormats();
     foreach(QByteArray s, a) {
         extensions.append(QString(s));
@@ -786,7 +896,9 @@ void SamplerWidget::buttonClicked()
 
 QString SamplerWidget::toString()
 {
-    return comboBox->currentText();
+    QString returnValue = comboBox->currentText();
+    returnValue += (channelComboBox->isHidden()) ? "" : " " + getChannelValue();
+    return returnValue;
 }
 
 QString SamplerWidget::getValue()
@@ -800,7 +912,31 @@ bool SamplerWidget::fromString(QString string)
     if (toString() == string) {
         return false;
     }
-    comboBox->setEditText(string.trimmed());
+    QStringList test = string.split(" ");
+    QString value = test.at(0);
+    if(value != string) {
+        if(value.endsWith(".exr")) {
+            
+            for(int i=0; i < channelComboBox->count(); i++) {
+                channelComboBox->setHidden(false);
+                channelComboBox->setCurrentIndex(i);
+                channelsUsed[channelComboBox->itemText(i)] = Qt::Unchecked;
+            }
+            
+            QStringList channel = string.split(" ").at(1).split(";");
+            while(channel.count() !=0) {
+                channelComboBox->setHidden(false);
+                channelsUsed[channel.last()] = Qt::Checked;
+                channel.removeLast();
+            }
+            for(int i=0; i < channelComboBox->count(); i++) {
+                channelComboBox->model()->setData( channelComboBox->model()->index(i,0) , channelsUsed[channelComboBox->itemText(i)], Qt::CheckStateRole );
+            }
+            
+            channelComboBox->setCurrentIndex(channelList.indexOf(string.split(" ").at(1).split(";").at(0)));
+        }
+    } else channelComboBox->setHidden(true);
+    comboBox->setEditText(value.trimmed());
     return isLocked();
 }
 
@@ -808,14 +944,14 @@ void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram)
 {
     if (texID != 0) {
         int l = uniformLocation(shaderProgram);
-        if(l != -1) {
+        if( !(l < 0) ) {
             shaderProgram->setUniformValue(l, texID);
 //  DBOUT << shaderProg->programId() << " TextureCache[" << texID << "] " << name;
         }
     }
 }
 
-void SamplerWidget::updateTextures(Parser::FragmentSource *fs,
+void SamplerWidget::updateTexture(Parser::FragmentSource *fs,
                                    FileManager *fileManager)
 {
     if (fs->textures.contains(name)) {
@@ -830,6 +966,16 @@ void SamplerWidget::updateTextures(Parser::FragmentSource *fs,
     } else {
         WARNING(tr("Weird, texture not found in fragment source: ") + name);
     }
+}
+
+hSamplerWidget::hSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
+{
+}
+
+uSamplerWidget::uSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+    : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
+{
 }
 
 // BoolWidget -------------------------------------------------

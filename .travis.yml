@@ -3,22 +3,22 @@ language: cpp
 
 #os: osx
 #osx_image: xcode10.2
-os: linux
-dist: xenial
+#os: linux
+#dist: xenial
 
-#matrix:
-    #include:
-        #- os: linux
-          #dist: xenial
-        #- os: osx
-          #osx_image: xcode10.2
+matrix:
+    include:
+        - os: linux
+          dist: xenial
+        - os: osx
+          osx_image: xcode10.2
         #- os: windows
 
 sudo: false
 
 branches:
   only:
-  - master
+  - Development
 
 env:
   global:
@@ -83,7 +83,7 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      brew install qt5
+      #brew install qt5
 
       brew install ilmbase openexr
 
@@ -91,9 +91,9 @@ install:
       brew link --overwrite openexr
       brew unlink ilmbase
       brew link --overwrite ilmbase
-
-      brew unlink cmake
-      brew install cmake
+      
+      #brew unlink cmake
+      #brew install cmake
       #brew install extra-cmake-modules
     fi
 
@@ -106,6 +106,7 @@ before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
+      git clone https://github.com/g-truc/glm.git
       export QTDIR="/usr/local/opt/qt"
       export PATH="/usr/local/opt/qt/bin:$PATH"
       export LDFLAGS="-L/usr/local/opt/qt/lib"
@@ -171,7 +172,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-       cmake -DUSE_OPEN_EXR=ON -DCMAKE_INSTALL_PREFIX=../../ ..
+       cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
        cd ../../Fragmentarium-2.5.0
        mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
@@ -184,31 +185,25 @@ script:
        python ./macdeployqtfix.py `pwd`/Fragmentarium-2.5.0/Fragmentarium-2.5.0.app/Contents/MacOS/Fragmentarium-2.5.0.app $QTDIR
     fi
 
-#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/.......$//g"
-#2.5.0
-#Fragmentarium-2.5.0 --version | sed "s/[^0-9\.]//g" | sed "s/\./\./g" | sed "s/\.$//g" | sed "s/$*[0-9]\.//g"
-#190614
-
 before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
-      export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-      #mv Fragmentarium-2.5.0-0.1.1-x86_64.AppImage Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
+      export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.\.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`date -u "+%y%m%d"`
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.$//g" | sed "s/$*[0-9]\.//g"`
-      ditto -c -k ./Fragmentarium-2.5.0 ./Fragmentarium-2.5.0.zip
-      mv ./Fragmentarium-2.5.0.zip ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
+      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.\.$//g" | sed "s/.......$//g"`
+      export BUILD_NUMBER=`date -u "+%y%m%d"`
+      ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
-  - TIME_STRING=`date +%H%M%S`
-  - export GIT_TAG="Fragmentarium-"$VERSION_NUMBER-$BUILD_NUMBER
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER
+
+  - TIME_STRING=`date -u "+%H%M%S"`
+  - export GIT_TAG=$BUILD_NUMBER"-"$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
   - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
@@ -221,10 +216,10 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: Development
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
-  # macOS master release
+  # macOS Development release
   - provider: releases
     api_key:
       secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
@@ -233,7 +228,7 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: Development
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 

@@ -145,15 +145,29 @@ vec3 color(vec2 pos) {
 
 
 #preset Default
-Center = -554.488,65.9944
+Center = -10,10
 Zoom = 0.0092811
-AntiAliasScale = 1
-AntiAlias = 1
-Mul = 2
-Decay = 0.5
-Iterations = 13
-color1 = 0.101961,0.619608,0.666667
-color2 = 0.666667,0.666667,0.498039
-color3 = 0,0,0.164706
-color4 = 0.666667,1,1
+EnableTransform = true
+RotateAngle = 0
+StretchAngle = 0
+StretchAmount = 0
+Gamma = 2.2
+ToneMapping = 1
+Exposure = 1
+Brightness = 1
+Contrast = 1
+Saturation = 1
+AARange = 2
+AAExp = 1
+GaussianAA = true
+mytexture = /home/toonfish/Fragmentarium/Examples/Include/Ditch-River_2k.hdr
+Cursor = 0.230000004,0.810000002
+CursorCos = 0
+Power = 1
+PreviewImage = false
+PreviewExposure = 5
+Stratify = true
+Bias = false
+Rotate = 0,0
+Multi = 1
 #endpreset

@@ -127,7 +127,7 @@ private:
 
 class GuiParameter {
 public:
-    GuiParameter(QString group, QString name, QString tooltip) : lockType(Unknown), sliderType(UnknownSliderType), provenance(FromUnknown), group(group), name(name), tooltip(tooltip) {
+    GuiParameter(QString group, QString name, QString tooltip) : lockType(Unknown), sliderType(UnknownSliderType), group(group), name(name), tooltip(tooltip) {
     };
 
     QString getName() {
@@ -152,21 +152,13 @@ public:
     void setSliderType(SliderType l) {
         sliderType = l;
     }
-    Provenance getProvenance() {
-        return provenance;
-    }
-    void setProvenance(Provenance l) {
-        provenance = l;
-    }
-    void addProvenance(Provenance l) {
-        provenance = Provenance(provenance | l);
-    }
     void setIsDouble(bool v) {
         wantDouble = v;
     }
     bool isDouble() {
         return wantDouble;
     }
+
 protected:
     LockType lockType;
     SliderType sliderType;
@@ -175,6 +167,25 @@ protected:
     QString name;
     QString tooltip;
     bool wantDouble=false;
+};
+
+class SamplerParameter : public GuiParameter {
+public:
+    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue, QString defaultChannel="") :
+        GuiParameter(group, name, tooltip), defaultValue(defaultValue), defaultChannel(defaultChannel) {}
+
+    virtual QString getUniqueName() {
+        return QString("%1:%2:%3:%4").arg(group).arg(getName());
+    }
+    QString getDefaultValue() {
+        return defaultValue;
+    }
+    QString getDefaultChannelValue() {
+        return defaultChannel;
+    }
+private:
+    QString defaultValue;
+    QString defaultChannel;
 };
 
 class FloatParameter : public GuiParameter {
@@ -198,21 +209,6 @@ private:
     double from;
     double to;
     double defaultValue;
-};
-
-class SamplerParameter : public GuiParameter {
-public:
-    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue) :
-        GuiParameter(group, name, tooltip), defaultValue(defaultValue) {}
-
-    virtual QString getUniqueName() {
-        return QString("%1:%2:%3:%4").arg(group).arg(getName());
-    }
-    QString getDefaultValue() {
-        return defaultValue;
-    }
-private:
-    QString defaultValue;
 };
 
 class Float2Parameter : public GuiParameter {
@@ -419,7 +415,14 @@ public:
     static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"+lockTypeString );
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
-    static QRegExp sampler2D ( "^\\s*uniform\\s+sampler2D\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    
+    static QRegExp sampler2D (        "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
+    static QRegExp sampler2DChannel ( "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+    static QRegExp isampler2D (        "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
+    static QRegExp isampler2DChannel ( "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+    static QRegExp usampler2D (        "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
+    static QRegExp usampler2DChannel ( "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
+
     static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
     static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
@@ -439,6 +442,7 @@ public:
     void parseSpecial(FragmentSource *fs, QString s, int i, bool moveMain );
     void parseReplacement(FragmentSource *fs, QString s, int i);
     void parseSampler2D( FragmentSource* fs, int i, QString file);
+    void parseSampler2DChannel( FragmentSource* fs, int i, QString file);
     void parseSamplerCube( FragmentSource* fs, int i, QString file );
     void parseFloatColorChooser( FragmentSource* fs, int i);
     void parseFloat1Slider( FragmentSource* fs, int i);
@@ -452,6 +456,7 @@ public:
     void parseMaxSubFrames( FragmentSource* fs);
 
     QStringList getDependencies() {
+        dependencies.removeDuplicates();
         return dependencies;
     }
 

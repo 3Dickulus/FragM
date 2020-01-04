@@ -251,7 +251,7 @@ float DE(vec3 pos) {
 
 
 
-#preset lolcolors
+#preset Default
 FOV = 0.4
 Eye = 2.562139,-0.0670966,0.4123994
 Target = -4.418752,0.34414,0.0992925

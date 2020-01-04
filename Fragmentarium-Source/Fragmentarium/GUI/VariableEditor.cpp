@@ -19,6 +19,7 @@
 #include "EasingWindow.h"
 #include "MainWindow.h"
 #include "VariableWidget.h"
+#include "TextEdit.h"
 
 
 namespace Fragmentarium
@@ -212,6 +213,29 @@ void VariableEditor::paste()
     setSettings(text);
 }
 
+void VariableEditor::hideUnusedTabs()
+{
+    for(int i=0; i< tabWidget->count(); i++) {
+        QString g;
+        bool hideMe = false;
+        QWidget* t = tabWidget->widget(i);
+        QMap<QString, QWidget*>::const_iterator it;
+        for (it = tabs.constBegin(); it!=tabs.constEnd(); it++ ) {
+            if (it.value()->parent() == t) {
+                g = it.key();
+            }
+        }
+
+        foreach (VariableWidget* variable, variables) {
+            if (variable->getGroup() == g) {
+                hideMe |= !variable->isHidden();
+            }
+        }
+        
+        tabWidget->widget(i)->setEnabled(hideMe);
+    }
+}
+
 void VariableEditor::lockGroup()
 {
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
@@ -248,6 +272,33 @@ void VariableEditor::unlockGroup()
             variable->locked(false);
         }
     }
+}
+
+void VariableEditor::groupToPreset() {
+    QWidget* t = tabWidget->widget(tabWidget->currentIndex());
+
+    QMap<QString, QWidget*>::const_iterator it;
+    QString g;
+    for (it = tabs.constBegin(); it!=tabs.constEnd(); it++ ) {
+        if (it.value()->parent() == t) {
+            g = it.key();
+        }
+    }
+
+    QString gs;
+    foreach (VariableWidget* variable, variables) {
+        if (variable->getGroup() == g) {
+            gs += variable->getName() + " = " + variable->toSettingsString() + "\n";
+        }
+    }
+
+    INFO(tr("Created ") + g + tr(" Preset."));
+    
+    QTextCursor tc = mainWindow->getTextEdit()->textCursor();
+    tc.movePosition(QTextCursor::End);
+    mainWindow->getTextEdit()->setTextCursor(tc);
+
+    mainWindow->getTextEdit()->insertPlainText("\n#preset " + g + "\n" + gs + "#endpreset\n");
 }
 
 void VariableEditor::resetGroup()
@@ -319,9 +370,9 @@ public:
 };
 } // namespace
 
-void VariableEditor::childChanged(bool lockedChanged, Provenance provenance)
+void VariableEditor::childChanged(bool lockedChanged)
 {
-    emit changed(lockedChanged, provenance);
+    emit changed(lockedChanged);
 }
 
 void VariableEditor::createGroup(QString g)
@@ -364,10 +415,12 @@ void VariableEditor::createGroup(QString g)
     pb->setText("Copy group");
     b->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(copyGroup()));
+
     pb = new QPushButton(b);
     pb->setText("Lock group");
     b->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(lockGroup()));
+
     pb = new QPushButton(b);
     pb->setText("Unlock group");
     b->layout()->addWidget(pb);
@@ -379,11 +432,19 @@ void VariableEditor::createGroup(QString g)
     c->setLayout(new QHBoxLayout(c));
     c->layout()->setSpacing(0);
     c->layout()->setContentsMargins (0,0,0,0);
+    
     pb = new QPushButton(c);
     pb->setText("Reset group");
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(resetGroup()));
+    
+    pb = new QPushButton(c);
+    pb->setText("Group to Preset");
+    c->layout()->addWidget(pb);
+    connect(pb, SIGNAL(clicked()), this, SLOT(groupToPreset()));
+    
     a->layout()->addWidget(c);
+    
     auto *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
     a->layout()->addItem(verticalSpacer);
     w->layout()->addWidget(a);
@@ -395,7 +456,7 @@ void VariableEditor::createGroup(QString g)
 void VariableEditor::updateTextures(Parser::FragmentSource *fs, FileManager *fileManager)
 {
     for (int i = 0; i < variables.count(); i++) {
-        variables[i]->updateTextures(fs, fileManager);
+        variables[i]->updateTexture(fs, fileManager);
     }
 }
 
@@ -447,7 +508,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         fw->setGroup(fp->getGroup());
         fw->setDefaultLockType(fp->getLockType());
         fw->setIsDouble(p->isDouble());
-        fw->setProvenance(p->getProvenance());
         fw->setUpdated(true);
         variables.append(fw);
         currentWidget->layout()->addWidget(fw);
@@ -460,7 +520,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         f2w->setGroup(f2p->getGroup());
         f2w->setDefaultLockType(f2p->getLockType());
         f2w->setIsDouble(p->isDouble());
-        f2w->setProvenance(p->getProvenance());
         f2w->setUpdated(true);
         variables.append(f2w);
         currentWidget->layout()->addWidget(f2w);
@@ -473,7 +532,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         f3w->setGroup(f3p->getGroup());
         f3w->setDefaultLockType(f3p->getLockType());
         f3w->setIsDouble(p->isDouble());
-        f3w->setProvenance(p->getProvenance());
         f3w->setUpdated(true);
         variables.append(f3w);
         currentWidget->layout()->addWidget(f3w);
@@ -486,7 +544,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         f4w->setGroup(f4p->getGroup());
         f4w->setDefaultLockType(f4p->getLockType());
         f4w->setIsDouble(p->isDouble());
-        f4w->setProvenance(p->getProvenance());
         f4w->setUpdated(true);
         variables.append(f4w);
         currentWidget->layout()->addWidget(f4w);
@@ -498,7 +555,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         iw->setToolTip(ip->getTooltip());
 //                 iw->setStatusTip(ip->getTooltip());
         iw->setDefaultLockType(ip->getLockType());
-        iw->setProvenance(p->getProvenance());
         iw->setUpdated(true);
         variables.append(iw);
         currentWidget->layout()->addWidget(iw);
@@ -511,7 +567,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
 //                 cw->setStatusTip(cp->getTooltip());
         cw->setDefaultLockType(cp->getLockType());
         cw->setIsDouble(p->isDouble());
-        cw->setProvenance(p->getProvenance());
         cw->setUpdated(true);
         variables.append(cw);
         currentWidget->layout()->addWidget(cw);
@@ -524,7 +579,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
 //                 cw->setStatusTip(cp->getTooltip());
         cw->setDefaultLockType(cp->getLockType());
         cw->setIsDouble(p->isDouble());
-        cw->setProvenance(p->getProvenance());
         cw->setUpdated(true);
         variables.append(cw);
         currentWidget->layout()->addWidget(cw);
@@ -536,19 +590,17 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
 //                 bw->setStatusTip(bp->getTooltip());
         bw->setGroup(bp->getGroup());
         bw->setDefaultLockType(bp->getLockType());
-        bw->setProvenance(p->getProvenance());
         bw->setUpdated(true);
         variables.append(bw);
         currentWidget->layout()->addWidget(bw);
     } else if (dynamic_cast<Parser::SamplerParameter *>(p) != nullptr) {
         auto *sp = dynamic_cast<Parser::SamplerParameter *>(p);
         QString name = sp->getName();
-        SamplerWidget *sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue());
+        SamplerWidget *sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue(), sp->getDefaultChannelValue());
         sw->setToolTip(sp->getTooltip());
 //                 sw->setStatusTip(sp->getTooltip());
         sw->setGroup(sp->getGroup());
         sw->setDefaultLockType(Parser::AlwaysLocked);
-        sw->setProvenance(p->getProvenance());
         sw->setUpdated(true);
         variables.append(sw);
         currentWidget->layout()->addWidget(sw);
@@ -568,21 +620,15 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
     // add variables from BufferShader
     QVector<Parser::GuiParameter*> bps;
     if (fs->bufferShaderSource != nullptr) bps = fs->bufferShaderSource->params;
-    foreach (Parser::GuiParameter *fp, ps) {
-        fp->addProvenance(FromMainShader);
-    }
     foreach (Parser::GuiParameter *bp, bps) {
         bool foundInMain = false;
         foreach (Parser::GuiParameter *fp, ps) {
             if (fp->getName() == bp->getName()) {
-                // FIXME warn on type mismatch
-                fp->addProvenance(FromBufferShader);
                 foundInMain = true;
                 break;
             }
         }
         if (! foundInMain) {
-            bp->addProvenance(FromBufferShader);
             ps.append(bp);
         }
     }
@@ -650,6 +696,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
     }
 
     for (int i = 0; i < variables.count(); ) {
+        
         if (variables[i]->isSystemVariable()) {
             variables.remove(i);
             i = 0;
@@ -729,18 +776,17 @@ bool VariableEditor::setSettings(QString text)
     }
 
     bool requiresRecompile = false;
-    Provenance provenance = FromUnknown;
+
     for (int i = 0; i < variables.count(); i++) {
         QString v = variables[i]->getName();
         if (maps.contains(v)) {
             requiresRecompile |= variables[i]->fromSettingsString(maps[v]);
-            provenance = Provenance(provenance | variables[i]->getProvenance());
 //             if(verbose) qDebug() << "Found: "+variables[i]->getName();
             maps.remove(v);
         }
     }
 
-    childChanged(requiresRecompile, provenance);
+    childChanged(requiresRecompile);
 
     foreach (QString s, maps.keys()) {
         WARNING(tr("Could not find: ") + s);
@@ -761,6 +807,7 @@ VariableWidget *VariableEditor::getWidgetFromName(QString name)
 void VariableEditor::updateCamera(CameraControl *c)
 {
 
+    if(c==nullptr) return;
     QString g = "Camera";
     if (!tabs.contains(g)) {
         createGroup(g);
@@ -796,6 +843,10 @@ bool VariableEditor::eventFilter(QObject *obj, QEvent *ev)
 
 int VariableEditor::addEasingCurve(QString c)
 {
+    if (verbose) {
+        qDebug() << "Adding easingcurve: " << c;
+    }
+
     QStringList curveSettings = mainWindow->getEngine()->getCurveSettings();
     int count = curveSettings.count();
     int found = -1;
@@ -1053,9 +1104,21 @@ int VariableEditor::getKeyFrameCount()
 {
     int cnt = 0;
     QRegExp rx = QRegExp("(KeyFrame\\.[0-9]+)");
-    foreach (QString preset, presets.keys()) {
-        if (rx.indexIn(preset) != -1) {
-            cnt++;
+     foreach (QString preset, presets.keys()) {
+         if (rx.indexIn(preset) != -1) {
+            QString p = presets[preset];
+            int pc = p.split("\n").count();
+            if(p.contains("FOV") && p.contains("Eye") && p.contains("Target") && p.contains("Up") && pc == 4) {
+                cnt++;
+            }
+            else {
+                CRITICAL("");
+                WARNING(QString("%1 incomplete!").arg(preset));
+                WARNING(p);
+                WARNING("Must be FOV + Eye + Target + Up settings only.");
+                CRITICAL("");
+                return 0;
+            }
         }
     }
     return cnt;

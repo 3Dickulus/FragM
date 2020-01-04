@@ -81,7 +81,16 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 
     setFocusPolicy(Qt::WheelFocus);
 
-    version = Version(2, 5, 0, 190913, "");
+    // make today's build number
+    struct tm *tm;
+    time_t t;
+    char str_date[100];
+    t = time(nullptr);
+    tm = gmtime(&t);
+    strftime(str_date, sizeof(str_date), "%y%m%d", tm);
+    int buildNumber = QString(str_date).toInt();
+
+    version = Version(2, 5, 0, buildNumber, "");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fullScreenEnabled = false;
@@ -232,15 +241,6 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         easingMap.clear();
     }
 
-    QStringList openFiles;
-    if (!tabInfo.isEmpty()) {
-        for (auto &i : tabInfo) {
-            openFiles << i.filename;
-        }
-    }
-
-    QSettings().setValue("openFiles", openFiles);
-    QSettings().sync();
 }
 
 void MainWindow::newFile()
@@ -295,9 +295,8 @@ void MainWindow::insertPreset()
         }
 
         needRebuild(ok);
-        initializeFragment(); // once to add the new preset to the list
-        variableEditor->setPreset(newPresetName); // apply the settings
         initializeFragment(); // once to initialize any textures
+        variableEditor->setPreset(newPresetName); // apply the settings
 
         INFO(tr("Added %1").arg(newPresetName));
     }
@@ -636,6 +635,7 @@ void MainWindow::init()
 
     engine = new DisplayWidget(this, splitter);
     engine->setObjectName("DisplayWidget");
+
     engine->show();
 
     tabBar = new QTabBar(this);
@@ -696,7 +696,7 @@ void MainWindow::init()
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
     addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
-    connect(variableEditor, SIGNAL(changed(bool,Provenance)), this, SLOT(variablesChanged(bool,Provenance)));
+    connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
     connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
 
     editorDockWidget->setHidden(true);
@@ -880,13 +880,34 @@ void MainWindow::showWelcomeNote()
 
 }
 
-void MainWindow::variablesChanged(bool lockedChanged, Provenance provenance)
+bool MainWindow::isChangedUniformInBuffershaderOnly()
 {
+    if(!engine->hasShader() || !engine->hasBufferShader()) return false;
+    QStringList lastSet = getTextEdit()->testParms().split("\n");
+    QStringList thisSet = variableEditor->getSettings().split("\n");
+    bool inBufferShaderOnly = false;
+    if (!lastSet.isEmpty() && !thisSet.isEmpty()) { // test last setting against new settings to determine changed uniform name and provenance
+        if (lastSet.count() == thisSet.count()) {
+            foreach(QString t, thisSet) {
+                int index = thisSet.indexOf(t);
+                if(t != lastSet[index]) {
+                    QString changedUniformName = t.split(" ").at(0); // determine if uniform lives in buffershader only
+                    inBufferShaderOnly = ( engine->getBufferShader()->uniformLocation(changedUniformName ) != -1 && engine->getShader()->uniformLocation(changedUniformName ) == -1 );
+                }
+            }
+        } // else DBOUT << "Index mismatch.";
+    } // else DBOUT << "Empty settings.";
+    getTextEdit()->parmsToTest( thisSet.join("\n") );    // track the most recent set
+    return inBufferShaderOnly;
+}
 
+void MainWindow::variablesChanged(bool lockedChanged)
+{
     if (lockedChanged) {
         highlightBuildButton(true);
     }
-    engine->uniformsHasChanged(provenance);
+    bool bso = isChangedUniformInBuffershaderOnly();
+    engine->uniformsHaveChanged(bso);
 }
 
 void MainWindow::createOpenGLContextMenu()
@@ -1005,8 +1026,6 @@ void MainWindow::createActions()
     renderAction->setShortcut(tr("F5"));
     renderAction->setStatusTip(tr("Render the current ruleset"));
     connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
-    // not sure why but connecting twice makes textures persitent ???
-    connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
 
     videoEncoderAction = new QAction(QIcon(":/Icons/render.png"), tr("&Video Encoding"), this);
     videoEncoderAction->setStatusTip(tr("Encode rendered frames to video"));
@@ -1120,8 +1139,9 @@ void MainWindow::createMenus()
     createCommandHelpMenu(m, this, this);
     editMenu->addAction(tr("Add Easing Curve"), this, SLOT(setEasing()), QKeySequence("F7"));
     editMenu->addAction(tr("Add Key Frame"), this, SLOT(insertPreset()), QKeySequence("F8"));
-    editMenu->addAction(tr("Select Key Frame"), this, SLOT(selectPreset()), QKeySequence("F9"));
+    editMenu->addAction(tr("Select Preset"), this, SLOT(selectPreset()), QKeySequence("F9"));
     editMenu->addSeparator();
+    editMenu->addAction(tr("Timeline Editor"), this, SLOT(timeLineRequest()));
     editMenu->addAction(tr("Preferences..."), this, SLOT(preferences()));
 
     // -- Render Menu --
@@ -1143,7 +1163,8 @@ void MainWindow::createMenus()
     parametersMenu->addAction(tr("Copy Settings"), variableEditor, SLOT(copy()), QKeySequence("F2"));
     parametersMenu->addAction(tr("Copy Group"), variableEditor, SLOT(copyGroup()), QKeySequence("Shift+F2"));
     parametersMenu->addAction(tr("Paste from Clipboard"), variableEditor, SLOT(paste()), QKeySequence("F3"));
-    parametersMenu->addAction(tr("Paste from Selected Text"), this, SLOT(pasteSelected()), QKeySequence("F4"));
+    parametersMenu->addAction(tr("Paste from Selected Text"), this, SLOT(pasteSelected()), QKeySequence("Shift+F3"));
+    parametersMenu->addAction(tr("Group to preset"), variableEditor, SLOT(groupToPreset()), QKeySequence("F4"));
     parametersMenu->addSeparator();
     parametersMenu->addAction(tr("Save to File"), this, SLOT(saveParameters()));
     parametersMenu->addAction(tr("Load from File"), this, SLOT(loadParameters()));
@@ -1267,6 +1288,161 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
     return name;
 }
 
+void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+{
+            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+                QTime tiletime;
+                tiletime.start();
+
+                if (!progress.wasCanceled()) {
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+
+                    if (padding>0.0)  {
+                        auto nw = (int)(tileWidth / (1.0 + padding));
+                        auto nh = (int)(tileHeight / (1.0 + padding));
+                        int ox = (tileWidth-nw)/2;
+                        int oy = (tileHeight-nh)/2;
+                        im = im.copy(ox,oy,nw,nh);
+                    }
+
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                        cachedTileImages.append(im);
+                    }
+
+                    // display tiles while rendering if the tiles fit the window
+                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
+                        int dx = (tile / maxTiles);
+                        int dy = (maxTiles-1)-(tile % maxTiles);
+                        int xoff = dx*tileWidth;
+                        int yoff = dy*tileHeight;
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
+                        QPainter painter(engine);
+                        painter.drawImage(target, im, source);
+                    } else // display scaled tiles if tile is same size or smaller than the window
+                        if (engine->width() >= tileWidth &&
+                                engine->height() >= tileHeight) {
+                            float wScaleFactor = engine->width() / maxTiles;
+                            float hScaleFactor = engine->height() / maxTiles;
+                            int dx = (tile / maxTiles);
+                            int dy = (maxTiles-1)-(tile % maxTiles);
+                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
+                            QPainter painter ( engine );
+                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                            painter.drawImage ( target, im, source );
+                        }
+                } else {
+                    stopScript();
+                    tile = maxTiles*maxTiles;
+                }
+
+                if ((maxTiles * maxTiles) == 1) {
+                    engine->tileAVG = tiletime.elapsed();
+                } else {
+                    engine->tileAVG += tiletime.elapsed();
+                }
+                engine->update();
+            }
+}
+
+#ifdef USE_OPEN_EXR
+bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+{
+            //
+            // Write a tiled image with one level using a tile-sized framebuffer.
+            //
+
+            bool d2a = engine->wantsDepthToAlpha();
+            
+            Header header (maxTiles*tileWidth, maxTiles*tileHeight);
+            header.channels().insert ("R", Channel (Imf::FLOAT));
+            header.channels().insert ("G", Channel (Imf::FLOAT));
+            header.channels().insert ("B", Channel (Imf::FLOAT));
+            if(d2a)
+                header.channels().insert ("Z", Channel (Imf::FLOAT));
+            else
+                header.channels().insert ("A", Channel (Imf::FLOAT));
+            
+            header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
+            
+            TiledOutputFile out(name.toLatin1(), header);
+            
+            Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
+
+            FrameBuffer frameBuffer;
+            frameBuffer.insert ("R", Slice (Imf::FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("G", Slice (Imf::FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            frameBuffer.insert ("B", Slice (Imf::FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            if(d2a)
+                frameBuffer.insert ("Z", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            else
+                frameBuffer.insert ("A", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+            
+
+            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+
+              QTime tiletime;
+              tiletime.start();
+
+              if (!progress.wasCanceled()) {
+
+                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+                    im.fill(Qt::black);
+                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
+
+                    if (padding>0.0)  {
+                        int w = im.width();
+                        int h = im.height();
+                        auto nw = (int)(w / (1.0 + padding));
+                        auto nh = (int)(h / (1.0 + padding));
+                        int ox = (w-nw)/2;
+                        int oy = (h-nh)/2;
+                        im = im.copy(ox,oy,nw,nh);
+                    }
+
+                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                        cachedTileImages.append(im);
+                    }
+
+                    int dx = (tile / maxTiles);
+                    int dy = (maxTiles-1)-(tile % maxTiles);
+                    int xoff = dx*tileWidth;
+                    int yoff = dy*tileHeight;
+
+                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
+
+                    out.setFrameBuffer (frameBuffer);
+                    out.writeTile (dx, dy);
+
+                    // display tiles while rendering if the tiles fit the window
+                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
+                        QPainter painter(engine);
+                        QRect target(xoff, yoff, tileWidth, tileHeight);
+                        QRect source(0, 0, tileWidth, tileHeight);
+                        painter.drawImage(target, im, source);
+                    }
+                    }
+                } else {
+                  stopScript();
+                  tile = maxTiles*maxTiles;
+                }
+                if ((maxTiles * maxTiles) == 1) {
+                    engine->tileAVG = tiletime.elapsed();
+                } else {
+                    engine->tileAVG += tiletime.elapsed();
+                }
+            }
+
+            engine->update();
+            
+            return out.isValidLevel(0,0);
+
+}
+#endif
+
 void MainWindow::tileBasedRender()
 {
 
@@ -1278,9 +1454,8 @@ void MainWindow::tileBasedRender()
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
-    
+
     bool runFromScript = runningScript;
-    QString subdirName = od.getFolderName();
 
     if(!runFromScript) {
         if (od.exec() != QDialog::Accepted) {
@@ -1294,7 +1469,6 @@ retry:
     bufferXSpinBox->setValue(tileWidth);
     int tileHeight = od.getTileHeight();
     bufferYSpinBox->setValue(tileHeight);
-    int maxTiles = od.getTiles();
 
     if (od.doSaveFragment() || od.doAnimation()) {
         QString fileName = od.getFragmentFileName();
@@ -1352,42 +1526,41 @@ retry:
                 }
             } else            
             if (!oDir.mkdir(subdirName)) {
-                QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+
+              QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
                 goto retry;
             }
-            
             subdirName = oDir.filePath(subdirName); // full name
 
             if(od.doSaveFragment()) {
-                QFile fileStream(subdirName + QDir::separator() + fileName);
+            QFile fileStream(subdirName + QDir::separator() + fileName);
+            if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
+                QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
+                return;
+            }
 
-                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
-                    return;
-                }
+            QTextStream out(&fileStream);
+            out << final;
+            INFO(tr("Saved fragment + settings as: ") + subdirName +
+                 QDir::separator() + fileName);
 
-                QTextStream out(&fileStream);
-                out << final;
-                INFO(tr("Saved fragment + settings as: ") + subdirName +
-                    QDir::separator() + fileName);
-
-                if(includeWithAutoSave) {
-                    // Copy files.
-                    QStringList ll = p.getDependencies();
-                    foreach (QString from, ll) {
-                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
+            if(includeWithAutoSave) {
+                // Copy files.
+                QStringList ll = p.getDependencies();
+                foreach (QString from, ll) {
+                    QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
                         if(QFile::exists(to) && overWrite)
                         if (!QFile::remove(to)) {
                             QMessageBox::warning(
                                 this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1'").arg(from).arg(to));
                         }
                             
-                        if (!QFile::copy(from,to)) {
-                            QMessageBox::warning(
-                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
-                        }
+                    if (!QFile::copy(from,to)) {
+                        QMessageBox::warning(
+                            this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
                     }
                 }
+            }
             }
         } catch (Exception& e) {
             WARNING(e.getMessage());
@@ -1397,16 +1570,19 @@ retry:
     DisplayWidget::DrawingState oldState = engine->getState();
     engine->setState(DisplayWidget::Tiled);
     engine->clearTileBuffer();
+    engine->tilesCount = 0;
 
     double padding = od.getPadding();
     int maxSubframes = od.getSubFrames();
     QString fileName = od.getFileName();
     int fps = od.getFPS();
     int maxTime = od.getMaxTime();
-    int timeSteps = fps*maxTime;
     bool preview = od.preview();
-    int startTime = od.startAtFrame();
-    int endTime = od.endAtFrame();
+    int startTime = od.doAnimation() ? od.startAtFrame() : 0;
+    int endTime = od.doAnimation() ? od.endAtFrame() : 0;
+    int maxTiles = od.getTiles();
+
+    int timeSteps = fps*maxTime;
 
     bool imageSaved = false;
 #ifdef USE_OPEN_EXR
@@ -1435,11 +1611,13 @@ retry:
         }
     }
 
+    if(startTime == endTime) {timeSteps = 1; } endTime += 1;
+
     if (timeSteps==0) {
         startTime = getFrame();
         timeSteps = startTime+1;
     } else if (endTime > startTime) {
-        timeSteps = endTime+1;
+        timeSteps = endTime;
     }
 
     int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
@@ -1448,9 +1626,10 @@ retry:
     engine->tileAVG = 0;
     engine->renderAVG = 0;
     engine->renderETA =  "";
-    engine->framesToRender = endTime - startTime;
+    engine->renderToFrame = endTime-1;
 
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
+    progress.setMinimumDuration(1000);
     progress.setValue ( 0 );
     progress.move((width() - progress.width()) / 2, (height() - progress.height()) / 2);
     progress.setWindowModality(Qt::WindowModal);
@@ -1460,7 +1639,6 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-    progress.show();
     progress.resize(300, 120);
 
     QTime totalTime;
@@ -1498,13 +1676,13 @@ retry:
             name=makeImgFileName(timeStep, timeSteps, fileName);
         }
 
-        if ( od.doSaveFragment() || od.doAnimation() ) {
-            subdirName = od.getFolderName();
+        if (od.doSaveFragment() || od.doAnimation()) {
+            QString subdirName = od.getFolderName();
             QDir filedir ( QFileInfo ( subdirName ).absolutePath() );
 
             if ( !filedir.exists() ) {
                 filedir.mkdir ( QFileInfo ( subdirName ).absolutePath() );
-            }
+              }
 
             name = ( QFileInfo ( name ).absolutePath() + QDir::separator() +
                      subdirName + QDir::separator() + ( od.doAnimation() ?"Images/": "" ) +
@@ -1513,7 +1691,7 @@ retry:
             QDir imgdir ( QFileInfo ( name ).absolutePath() );
             if ( !imgdir.exists() ) {
                 imgdir.mkdir ( QFileInfo ( name ).absolutePath() );
-            }
+          }
         }
 
         QTime frametime;
@@ -1524,147 +1702,15 @@ retry:
 
         statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
 
+//         QSettings settings;
+//         if( settings.value("enableGLDebug").toBool() ) std::cout << name.toStdString() << std::endl << std::endl;
+        
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
-            //
-            // Write a tiled image with one level using a tile-sized framebuffer.
-            //
-            TiledRgbaOutputFile out (name.toLatin1(),
-                                     tileWidth*maxTiles, tileHeight*maxTiles,            // image size
-                                     tileWidth, tileHeight,                              // tile size
-                                     ONE_LEVEL);                        // level mode
-            //                           ROUND_DOWN,                        // rounding mode
-            //                           WRITE_RGBA,                        // channels in file
-            //                           1,                                 // float pixelAspectRatio
-            //                           IMATH_NAMESPACE::V2f (0, 0),       // const IMATH_NAMESPACE::V2f screenWindowCenter
-            //                           1,                                 // float screenWindowWidth
-            //                           INCREASING_Y,                      // LineOrder
-            //                           ZIP_COMPRESSION,                   // Compression
-            //                           globalThreadCount() );             // int numThreads
-
-            Array2D<Rgba> pixels (tileHeight, tileWidth);
-
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-
-              QTime tiletime;
-              tiletime.start();
-
-              if (!progress.wasCanceled()) {
-
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        int w = im.width();
-                        int h = im.height();
-                        auto nw = (int)(w / (1.0 + padding));
-                        auto nh = (int)(h / (1.0 + padding));
-                        int ox = (w-nw)/2;
-                        int oy = (h-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
-                    }
-
-                    int dx = (tile / maxTiles);
-                    int dy = (maxTiles-1)-(tile % maxTiles);
-                    int xoff = dx*tileWidth;
-                    int yoff = dy*tileHeight;
-
-                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
-                    Box2i range = out.dataWindowForTile (dx, dy);
-                    out.setFrameBuffer (&pixels[-range.min.y][-range.min.x],
-                                        1,  // xStride
-                                        tileWidth); // yStride
-
-                    out.writeTile (dx, dy);
-
-                    // display tiles while rendering if the tiles fit the window
-                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
-                        QPainter painter(engine);
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        painter.drawImage(target, im, source);
-                    }
-                    }
-                } else {
-                  stopScript();
-                  tile = maxTiles*maxTiles;
-                }
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
-            }
-
-            imageSaved = out.isValidLevel(0,0);
-            engine->update();
-
+            imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
         } else
 #endif
-        {
-
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-                QTime tiletime;
-                tiletime.start();
-
-                if (!progress.wasCanceled()) {
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        auto nw = (int)(tileWidth / (1.0 + padding));
-                        auto nh = (int)(tileHeight / (1.0 + padding));
-                        int ox = (tileWidth-nw)/2;
-                        int oy = (tileHeight-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
-                    }
-
-                    // display tiles while rendering if the tiles fit the window
-                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
-                        int dx = (tile / maxTiles);
-                        int dy = (maxTiles-1)-(tile % maxTiles);
-                        int xoff = dx*tileWidth;
-                        int yoff = dy*tileHeight;
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        QPainter painter(engine);
-                        painter.drawImage(target, im, source);
-                    } else // display scaled tiles if tile is same size or smaller than the window
-                        if (engine->width() >= tileWidth &&
-                                engine->height() >= tileHeight) {
-                            float wScaleFactor = engine->width() / maxTiles;
-                            float hScaleFactor = engine->height() / maxTiles;
-                            int dx = (tile / maxTiles);
-                            int dy = (maxTiles-1)-(tile % maxTiles);
-                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
-                            QPainter painter ( engine );
-                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                            painter.drawImage ( target, im, source );
-                        }
-                } else {
-                    stopScript();
-                    tile = maxTiles*maxTiles;
-                }
-
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
-                engine->update();
-            }
-        }
+        renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
 
         pause ? stop() : play();
 
@@ -1975,8 +2021,8 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeLabel);
 
     timeSlider = new QSlider(Qt::Horizontal, this);
-    timeSlider->setMinimum(0);
-    timeSlider->setValue(0);
+    timeSlider->setMinimum(1);
+    timeSlider->setValue(1);
 
     timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
@@ -2067,6 +2113,9 @@ void MainWindow::timeChanged(int value)
 
 void MainWindow::timeMaxChanged(int value)
 {
+    // so the render output dialog picks up the change immediately
+    QSettings settings;
+    settings.setValue("timeMax", value);
 
     lastTime->restart();
     lastStoredTime = getTimeSliderValue();
@@ -2134,7 +2183,7 @@ double MainWindow::getTime()
 
     DisplayWidget::DrawingState state = engine->getState();
 
-    int time = 0;
+    int time = 1;
     if (!engine->isContinuous() || state == DisplayWidget::Tiled) {
         // The engine is not in 'running' mode. Return last stored paused time.
         time = lastStoredTime;
@@ -2273,6 +2322,15 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
+
+    QStringList openFiles;
+    if (!tabInfo.isEmpty()) {
+        for (auto &i : tabInfo) {
+            openFiles << i.filename;
+        }
+    }
+
+    settings.setValue("openFiles", openFiles);
     settings.sync();
 
 }
@@ -2360,7 +2418,6 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
-
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
@@ -2376,23 +2433,18 @@ void MainWindow::loadFragFile(const QString &fileName)
         bool pp = pausePlay;
         stop();
 
-//         QString inputText = getTextEdit()->toPlainText();
-//         if (inputText.startsWith("#donotrun")) {
-//             variableEditor->resetUniforms(false);
-//         }
         if (QSettings().value("autorun", true).toBool()) {
-            rebuildRequired = initializeFragment();// once to initialize presets
-            bool requiresRecompile = variableEditor->setDefault();
+            variableEditor->resetUniforms(false); // set all values but do not initialize fragment
+            rebuildRequired = initializeFragment();// once to initialize presets and check locked vars
+            bool requiresRecompile = variableEditor->setDefault(); // set vars with default preset and check locked vars
             if (requiresRecompile || rebuildRequired) {
                 INFO(tr("Rebuilding to update locked uniforms..."));
                 rebuildRequired = initializeFragment();
                 variableEditor->setDefault();
             }
-            rebuildRequired = initializeFragment(); // makes textures persist
             processGuiEvents();
         }
 update();
-//         highlightBuildButton(!rebuildRequired);
 
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
@@ -2605,8 +2657,6 @@ bool MainWindow::initializeFragment()
     try {
         QTime start = QTime::currentTime();
         engine->setFragmentShader(fs);
-        if(engine->hasShader() && (fs.textures.count() > 0) )
-            engine->initFragmentTextures();
         ms = start.msecsTo(QTime::currentTime());
     } catch (Exception& e) {
         WARNING(e.getMessage());
@@ -2642,25 +2692,26 @@ bool MainWindow::initializeFragment()
 
 void MainWindow::hideUnusedVariableWidgets()
 {
-
     /// hide unused widgets unless the default state is locked
     QStringList wnames = variableEditor->getWidgetNames();
     for (int i = 0; i < wnames.count(); i++) {
         // find a widget in the variable editor
         auto *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
         if (vw != nullptr) {
-                /// get the uniform location from the shader
-                int uloc = vw->uniformLocation(engine->getShader());
+            /// get the uniform location from the shader
+            int uloc = vw->uniformLocation(engine->getShader());
+            vw->setLabelStyle( false ); // no buffershader indicator in gui
             if (uloc == -1 && engine->hasBufferShader()) {
-                    /// get the uniform location from the buffershader
-                    uloc = vw->uniformLocation(engine->getBufferShader());
+                /// get the uniform location from the buffershader
+                uloc = vw->uniformLocation(engine->getBufferShader());
+                vw->setLabelStyle( uloc != -1 ); // indicator in gui if exists in buffershader only
             }
             /// locked widgets are transformed into const or #define so don't show up as uniforms
             /// AutoFocus is a dummy so does not exist inside shader program
             if(uloc == -1 &&
                     !(vw->getLockType() == Parser::Locked ||
-                    vw->getDefaultLockType() == Parser::AlwaysLocked ||
-                    vw->getDefaultLockType() == Parser::NotLockable) &&
+                      vw->getDefaultLockType() == Parser::AlwaysLocked ||
+                      vw->getDefaultLockType() == Parser::NotLockable) &&
                     !wnames.at(i).contains("AutoFocus")  )  {
                 vw->hide();
             } else {
@@ -2668,6 +2719,8 @@ void MainWindow::hideUnusedVariableWidgets()
             }
         }
     }
+    
+    variableEditor->hideUnusedTabs();
 }
 
 namespace
@@ -2860,7 +2913,6 @@ void MainWindow::tabChanged(int index)
     }
 
     TextEdit *te = getTextEdit();
-
     te->saveSettings( variableEditor->getSettings() );
 
     TabInfo ti = tabInfo[index];
@@ -2882,11 +2934,11 @@ void MainWindow::tabChanged(int index)
     initializeFragment(); // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
-        if (!te->lastSettings().isEmpty() && variableEditor->setSettings(te->lastSettings())) {
-            initializeFragment();
+        if (!te->lastSettings().isEmpty()) {
+            variableEditor->setSettings(te->lastSettings());
         }
+        initializeFragment();
     }
-    initializeFragment(); // makes textures persist
 }
 
 void MainWindow::closeTab()
@@ -3401,7 +3453,7 @@ QString MainWindow::getPresetNames(bool keyframesORpresets)
         }
     }
 
-    return keyframesORpresets ? k.join(" ") : p.join(" ");
+    return keyframesORpresets ? k.join(";") : p.join(";");
 }
 
 void MainWindow::initKeyFrameControl()
@@ -3804,13 +3856,6 @@ void MainWindow::slotShortcutShiftF6()
     
     settings.setValue("cmdscriptfilename", fileName);
 }
-
-/// BEGIN 3DTexture
-// void MainWindow::setObjFile( QString ofn )
-// {
-//    engine->setObjFileName( ofn );
-// }
-/// END 3DTexture
 
 } // namespace GUI
 } // namespace Fragmentarium

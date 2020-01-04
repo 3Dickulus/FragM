@@ -285,9 +285,9 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
     if (up == nullptr || target == nullptr || eye == nullptr || fov == nullptr) {
         return false;
     }
+
     glm::dvec3 pos = glm::dvec3(e->pos().x() / (float(w)), e->pos().y() / (float(h)), 0.0);
-    //glm::dvec3 direction = (target->getValue()-eye->getValue());
-    // glm::dvec3 right = glm::dvec3::cross(direction.normalized(), up->getValue()).normalized();
+
     // Store down params
     if (e->type() ==  QEvent::MouseButtonPress) {
         orthogonalizeUpVector();
@@ -340,7 +340,6 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
                 my = rotate(my, glm::radians(-dp.y * mouseSpeed * 10.0), rightDown);
                 glm::dvec3 oDir = (my * mx) * (directionDown); //was -eyeDown
                 eye->setValue(targetDown - oDir);
-                // target->setValue( (my*mx)*directionDown-oDir);
                 up->setValue((my * mx)*upDown);
             } else if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // orient camera

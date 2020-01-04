@@ -4,7 +4,7 @@
 #define providesInit
 #define providesColor
 #include "MathUtils.frag"
-#include "DE-Raytracer-v0.9.10.frag"
+#include "DE-Raytracer.frag"
 
 #group Hyperbolic-tesselation
 // Iteration number.

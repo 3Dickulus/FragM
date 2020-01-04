@@ -9,7 +9,6 @@
 #include <QStatusBar>
 #include <QWheelEvent>
 
-
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -27,6 +26,77 @@ namespace Fragmentarium
 namespace GUI
 {
 
+#ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+    // ignore non-significant error/warning codes
+    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+
+    std::cout << "GL Debug message (" << id << "): " <<  message << " ";
+
+    switch (source)
+    {
+        case GL_DEBUG_SOURCE_API:             std::cout << "API "; break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Window System "; break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Shader Compiler "; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Third Party "; break;
+        case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Application "; break;
+        case GL_DEBUG_SOURCE_OTHER:           std::cout << "Other"; break;
+        default:           std::cout << "Source:" << source << " unknown"; break;
+    }
+
+    switch (type)
+    {
+        case GL_DEBUG_TYPE_ERROR:               std::cout << "Error "; break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Deprecated Behaviour "; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Undefined Behaviour "; break; 
+        case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Portability "; break;
+        case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Performance "; break;
+        case GL_DEBUG_TYPE_MARKER:              std::cout << "Marker "; break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Push Group "; break;
+        case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Pop Group "; break;
+        case GL_DEBUG_TYPE_OTHER:               std::cout << "Other "; break;
+        default:           std::cout << "Type:" << type << " unknown"; break;
+    }
+    
+    switch (severity)
+    {
+        case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high "; break;
+        case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium "; break;
+        case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low "; break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification "; break;
+        default:           std::cout << "Severity:" << severity << " unknown"; break;
+    }
+
+    std::cout << std::endl;
+}
+#endif
+#endif
+
+GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
+{
+    GLenum errorCode = GL_NO_ERROR;
+    
+    if( glDebugEnabled ) {
+        while ((errorCode = glGetError()) != GL_NO_ERROR)
+        {
+            std::cout << "-> " << func << "() @ line " << line << std::endl;
+        }
+    }
+    return errorCode;
+}
+
+// used immediately after glFunctions() to get line numbers with gl debug output
+#define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
+
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget(parent), mainWindow(mainWin)
 {
@@ -37,7 +107,8 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
 #ifdef USE_OPENGL_4
-    fmt.setVersion(4,1);
+    fmt.setVersion(4,5);
+    fmt.setDepthBufferSize(32);
 #else
     fmt.setVersion(3,3);
 #endif
@@ -88,13 +159,10 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     exrMode = false;
     depthToAlpha = false;
     ZAtMXY=0.0;
-    /// BEGIN 3DTexture
-    //     m3DTexId = 0;
-    /// END 3DTexture
     buttonDown = false;
     updateRefreshRate();
-
-    }
+    glDebugEnabled = false;
+}
 
 void DisplayWidget::initializeGL()
 {
@@ -107,10 +175,25 @@ void DisplayWidget::initializeGL()
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
+#ifdef Q_OS_LINUX
+#ifdef USE_OPENGL_4
+    // Enable debug output
+    QSettings settings;
+    if( settings.value("enableGLDebug").toBool() ) {
+        glDebugEnabled = true;
+        glEnable ( GL_DEBUG_OUTPUT );
+        glEnable ( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        glDebugMessageCallback( MessageCallback, nullptr );
+    }
+#endif
+#endif
+
 }
 
 void DisplayWidget::updateRefreshRate()
 {
+
     QSettings settings;
     int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if (timer == nullptr) {
@@ -147,11 +230,10 @@ DisplayWidget::~DisplayWidget() = default;
 
 void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 {
+
     if (ev->modifiers() == Qt::ShiftModifier) {
         if( mainWindow->isFullScreen()) {
             contextMenu->show();
-            //            QPoint
-            //            myPos((width()-contextMenu->width())/2,(height()-contextMenu->height())/2);
             contextMenu->move( mapToGlobal( ev->pos() ));
         }
     }
@@ -160,6 +242,10 @@ void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 void DisplayWidget::setFragmentShader(FragmentSource fs)
 {
 
+    GLint s;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
+    INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
+    
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
     iterationsBetweenRedraws = fs.iterationsBetweenRedraws;
@@ -204,29 +290,25 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     makeBuffers();
     INFO ( tr("Created front and back buffers as ") + b );
-    int s;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
-    INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
 
     requireRedraw ( true );
 
     initFragmentShader();
-
-    if (shaderProgram == nullptr) { // something went wrong so do not try to setup textures or buffer shader
+    
+    if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong so do not try to setup textures or buffer shader
         return;
-    }
-
-    if (fs.textures.count() != 0) {
-        initFragmentTextures();
     }
 
     initBufferShader();
 
-    resetUniformProvenance();
+    if(bufferShaderProgram != nullptr && bufferShaderProgram->isLinked()) {
+        // alas goot
+    }
 }
 
-void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
+void DisplayWidget::requireRedraw(bool clear )
 {
+
     if (disableRedraw) {
         return;
     }
@@ -242,66 +324,20 @@ void DisplayWidget::requireRedraw(bool clear, bool bufferShaderOnly)
     }
 }
 
-void DisplayWidget::uniformsHasChanged(Provenance provenance)
+void DisplayWidget::uniformsHaveChanged(bool bshaderonly)
 {
-  if(fragmentSource.depthToAlpha) {
+
+    if(fragmentSource.depthToAlpha) {
         BoolWidget *btest = dynamic_cast<BoolWidget *>(mainWindow->getVariableEditor()->getWidgetFromName("DepthToAlpha"));
         if (btest != nullptr) {
-      // widget detected
-      depthToAlpha = btest->isChecked();
+            // widget detected
+            depthToAlpha = btest->isChecked();
+        }
     }
-  }
-  bufferUniformsHaveChanged |= !!(provenance & FromBufferShader);
-  bool bufferShaderOnly = provenance == FromBufferShader;
-  requireRedraw ( bufferShaderOnly ? false : clearOnChange, bufferShaderOnly );
+    bufferShaderOnly = bshaderonly;
+    bufferUniformsHaveChanged |= bufferShaderOnly;
+    requireRedraw ( bufferShaderOnly ? false : clearOnChange );
 }
-
-/// /* Texture mapping */
-/// at some point I would like to make these selectable in the gui
-/// http://www.informit.com/articles/article.aspx?p=770639&seqNum=4 may help
-// GL_TEXTURE_ENV
-// GL_TEXTURE_ENV_MODE
-// GL_TEXTURE_1D
-// GL_TEXTURE_2D
-// GL_TEXTURE_WRAP_S
-// GL_TEXTURE_WRAP_T
-// GL_TEXTURE_MAG_FILTER
-// GL_TEXTURE_MIN_FILTER
-// GL_TEXTURE_ENV_COLOR
-// GL_TEXTURE_GEN_S
-// GL_TEXTURE_GEN_T
-// GL_TEXTURE_GEN_R
-// GL_TEXTURE_GEN_Q
-// GL_TEXTURE_GEN_MODE
-// GL_TEXTURE_BORDER_COLOR
-// GL_TEXTURE_WIDTH
-// GL_TEXTURE_HEIGHT
-// GL_TEXTURE_BORDER
-// GL_TEXTURE_COMPONENTS
-// GL_TEXTURE_RED_SIZE
-// GL_TEXTURE_GREEN_SIZE
-// GL_TEXTURE_BLUE_SIZE
-// GL_TEXTURE_ALPHA_SIZE
-// GL_TEXTURE_LUMINANCE_SIZE
-// GL_TEXTURE_INTENSITY_SIZE
-// GL_NEAREST_MIPMAP_NEAREST
-// GL_NEAREST_MIPMAP_LINEAR
-// GL_LINEAR_MIPMAP_NEAREST
-// GL_LINEAR_MIPMAP_LINEAR
-// GL_OBJECT_LINEAR
-// GL_OBJECT_PLANE
-// GL_EYE_LINEAR
-// GL_EYE_PLANE
-// GL_SPHERE_MAP
-// GL_DECAL
-// GL_MODULATE
-// GL_NEAREST
-// GL_REPEAT
-// GL_CLAMP
-// GL_S
-// GL_T
-// GL_R
-// GL_Q
 
 /*
 /// in a frag this should create a mipmapped texture
@@ -420,15 +456,14 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
 // this function parses the assembler text and returns a string list containing the lines
 QStringList DisplayWidget::shaderAsm(bool w)
 {
+
 #ifndef USE_OPENGL_4
                 return QStringList("This build is compiled without support for OpenGL 4!");
 #else
 
     QStringList asmList;
-    if (!foundnV) {
-        if( format().majorVersion() < 4 ) {
+    if (!foundnV || format().majorVersion() < 4 ) {
                 asmList = QStringList("nVidia GL > 4.0 required for this feature!");
-        }
     }
 
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
@@ -445,8 +480,6 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
     QString asmTxt = "";
 
-    // contains ALL uniforms in buffershader and shader program
-    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     bool foundFirstUniform=false;
     bool foundLastUniform=false;
 
@@ -466,7 +499,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
             asmTxt="";
         }
 
-        // this locates all of the uniform names not optimized out by the compiler
+        // this locates all of the uniform names
         if ( !asmTxt.isEmpty() && binary[x] == 0  ) { // end of string literal
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
@@ -490,13 +523,16 @@ QStringList DisplayWidget::shaderAsm(bool w)
         }
     }
 
+    // contains ALL uniforms in buffershader and shader program not optimized out by the compiler
+    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
     // find a value to go with the name, index in the program may not be the same as index in our list
     for( int n=0; n < vw.count(); n++) {
         asmTxt = vw[n]->getName();
         if( asmList.indexOf( asmTxt ) != -1 ){
             int uLoc = w ? shaderProgram->uniformLocation(asmTxt) : bufferShaderProgram->uniformLocation(asmTxt);
             if(uLoc != -1) {
-                QString newLine = QString("%1").arg(vw[n]->getLockedSubstitution());
+                // TODO: add types float vec3 etc.
+                QString newLine = vw[n]->isLocked() ? vw[n]->getLockedSubstitution() : QString("%1 = %2;").arg(asmTxt).arg(vw[n]->getValueAsText());
                 asmList[ asmList.indexOf(vw[n]->getName()) ] = newLine;
             }
         }
@@ -525,6 +561,7 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
 void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel priority, bool bS )
 {
+
     QStringList logList = log.split ( "\n" );
     QRegExp num ( "([0-9]+)" );
 
@@ -571,14 +608,16 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
 
 void DisplayWidget::initFragmentShader()
 {
+
     if (shaderProgram != nullptr) {
         shaderProgram->release();
-        shaderProgram->removeAllShaders();
         delete ( shaderProgram );
         shaderProgram = nullptr;
     }
 
     QSettings settings;
+
+    makeCurrent();
 
     shaderProgram = new QOpenGLShaderProgram ( context() );
 
@@ -641,14 +680,13 @@ void DisplayWidget::initFragmentShader()
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
-        makeCurrent();
         // Bind first texture to backbuffer
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
 
         int l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
               GLuint i = backBuffer->texture();
-              glBindTexture ( GL_TEXTURE_2D,i );
+              glBindTexture ( GL_TEXTURE_2D, i );
               if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
@@ -659,6 +697,9 @@ void DisplayWidget::initFragmentShader()
         WARNING ( tr("Use the buffer define, e.g.: '#buffer RGBA8' ") );
     }
 
+    if (fragmentSource.textures.count() != 0) {
+        initFragmentTextures();
+    }
 }
 
 /*
@@ -670,8 +711,9 @@ vec3  backgroundColor(vec3 dir) {
 }
 */
 
-bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
+bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID, QString textureUniformName )
 {
+
     HDRLoaderResult result;
     bool loaded = HDRLoader::load ( texturePath.toStdString().c_str(), result );
 
@@ -696,51 +738,113 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     return loaded;
 }
 
-#ifdef USE_OPEN_EXR
 //
-// Read an RGBA image using class RgbaInputFile:
+// Read an RGBA image using class InputFile:
 //
 //    - open the file
 //    - allocate memory for the pixels
 //    - describe the memory layout of the pixels
+//    - determine the channel(s)
 //    - read the pixels from the file
 //
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID)
+
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
-    RgbaInputFile file ( texturePath.toLatin1().data() );
-    Box2i dw = file.dataWindow();
+
+#ifndef USE_OPEN_EXR
+    // Qt loads EXR files
+    return loadQtTexture(texturePath, type, textureID, textureUniformName);
+#else
+    InputFile file ( texturePath.toLatin1().data() );
+    Box2i dw = file.header().dataWindow();
+
+    int chn = -1;
+    QString chv = "";
+    bool hasZ = false;
 
     if ( file.isComplete() ) {
 
+        int channelCount=0;
+        const ChannelList &channels = file.header().channels();
+        for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i) {
+            if(verbose && subframeCounter==1) {
+                std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
+            }
+            channelCount++;
+        }
+        
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
+        
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
-        s /= 4;
-        if ( w>s || h>(s*6) ) {
+
+        if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
             WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
 
-        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+        if(type == GL_SAMPLER_CUBE && (w>s || h != 6*w)){
+            WARNING(tr("Exrloader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
+            return false;
+        }
+        
+        Array2D<RGBAFLOAT>pixels ( w, 1 );
+        
+        if(type == GL_SAMPLER_2D) {
+            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
+            if(sw != nullptr && !sw->getName().isNull()) {
+                chv = sw->getChannelValue(); // channel name(s)
+                if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
+                    hasZ = false;
+                else
+                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
+                
+                if(chv.contains("All") && sw->channelList.contains("Z")) hasZ = true;
+                
+//                 chn = sw->hasChannel(chv); // channel index
+//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
+            }
+        } else chv = "All";
 
-        Array2D<Rgba>pixels ( w, 1 );
-
+        pixels.resizeErase (w, h);
+        
+        size_t xs = 1 * sizeof (RGBAFLOAT);
+        size_t ys = w * sizeof (RGBAFLOAT);
+        
         auto *cols = new float[w * h * 4];
+        
         while ( dw.min.y <= dw.max.y ) {
-            file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * w, 1, w);
-            file.readPixels ( dw.min.y, dw.min.y );
+
+            RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+
+            FrameBuffer fb;
+
+            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
+            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
+                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
+            else // this should allow arbitrary naming of the 4th channel
+                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
+
+            file.setFrameBuffer (fb);
+            file.readPixels ( dw.min.y );
+
             // process scanline (pixels)
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx]=pixels[0][i].r;
-                cols[indx+1]=pixels[0][i].g;
-                cols[indx+2]=pixels[0][i].b;
-                cols[indx+3]=pixels[0][i].a;
+                cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(chv.contains("A") || chv.contains("All") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
             }
             dw.min.y ++;
         }
+
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+
         if(type == GL_SAMPLER_CUBE) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
@@ -751,19 +855,21 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         } else {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, cols);
         }
+
         delete [] cols;
         cols = nullptr;
     } else {
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
     }
+#endif
     return true;
 }
-#endif
 
 // Qt format image, Qt 5+ loads EXR format on linux
-bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
+bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
 {
+
     QImage im;
     bool loaded = im.load(texturePath);
 
@@ -792,6 +898,7 @@ bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textu
 
 bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 {
+
     if(type == GL_SAMPLER_CUBE) {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -800,7 +907,8 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         return true;
 
-    } else if (fragmentSource.textureParams.contains(textureUniformName)) { // set texparms
+    } else if (fragmentSource.textureParams.contains(textureUniformName)) {
+        // set texparms
         setGlTexParameter ( fragmentSource.textureParams[textureUniformName] );
         return true;
     } else { // User did not set texparms Disable mip-mapping per default.
@@ -818,11 +926,11 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 
 void DisplayWidget::initFragmentTextures()
 {
-    if (shaderProgram == nullptr || fragmentSource.textures.count() < 1) {
+    if (shaderProgram == nullptr || fragmentSource.textures.count() < 1 || !checkShaderProg(shaderProgram->programId()) ) {
         return; // something went wrong so do not try to setup textures
     }
 
-    int u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
+    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
     QMap<QString, bool> textureCacheUsed;
 
     QMapIterator<QString, QString> it( fragmentSource.textures );
@@ -838,63 +946,77 @@ void DisplayWidget::initFragmentTextures()
 
             int l = shaderProgram->uniformLocation ( textureUniformName );
 
-            if ( l != -1 ) { // found named texture in shader program
+            if ( !(l < 0) ) { // found named texture in shader program
 
                 // 2D or Cube ?
-                GLsizei bufSize = 256;
-                GLsizei length;
-                GLint size;
-                GLenum type;
+                GLsizei bufSize = 0;
+                GLsizei length = 0;
+                GLint size = 0;
+                GLenum type = 0;
+                
+                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
                 GLchar name[bufSize];
-
-                glGetActiveUniform(shaderProgram->programId(), l, bufSize, &length, &size, &type, name);
-
+                
+                // bugfix for textures by claude #104 index vs location
+                GLuint idx;
+                // get a pointer to the char array in QString
+                GLchar *oneName = textureUniformName.toLatin1().data();
+                // returns index of "oneName" in idx;
+                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx);
+                // use idx to acquire more info about this uniform
+                glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
                 // set current texture
                 glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
 
-                // check cache first
-                if ( !TextureCache.contains ( texturePath ) ) {
-                    // if not in cache then create one and try to load and add to cache
-                    glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
-                    // allocate a texture id
-                    glGenTextures ( 1, &textureID );
+                if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
+                    // check cache first
+                    if ( !TextureCache.contains ( texturePath ) ) {
+                        // if not in cache then create one and try to load and add to cache
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
+                        // allocate a texture id
+                        glGenTextures ( 1, &textureID );
 
-                    if (verbose) {
-                        qDebug() << QString("Allocating texture ID: %1 %2").arg(textureID).arg(texturePath);
-                    }
+                        if (verbose) {
+                            qDebug() << QString("Allocating texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
 
-                    if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
-                        loaded = loadHDRTexture(texturePath, type, textureID);
-                    }
-#ifdef USE_OPEN_EXR
-                    else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                        loaded = loadEXRTexture(texturePath, type, textureID);
-                    }
-#endif
-                    else {
-                        loaded = loadQtTexture(texturePath, type, textureID);
-                    }
-                    if ( loaded ) {
-                        // add to cache
-                        TextureCache[texturePath] = textureID;
+                        if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
+                            loaded = loadHDRTexture(texturePath, type, textureID);
+                        }
+                        else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
+                            loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                        }
+                        else {
+                            loaded = loadQtTexture(texturePath, type, textureID);
+                        }
+                        if ( loaded ) {
+                            // add to cache
+                            TextureCache[texturePath] = textureID;
+                            textureCacheUsed[texturePath] = true;
+                        }
+                    } else { // use cache
+                        textureID = TextureCache[texturePath];
                         textureCacheUsed[texturePath] = true;
+                        loaded = true;
+                        if (verbose) {
+                            qDebug() << QString("Using cached texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                        }
                     }
-                } else { // use cache
-                    textureID = TextureCache[texturePath];
-                    textureCacheUsed[texturePath] = true;
-                    loaded = true;
                 }
-
 
                 if ( loaded ) {
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
-                        shaderProgram->setUniformValue ( l, ( GLuint ) u );
+                        // Texture is loaded and bound successfully
+//                         if(verbose && subframeCounter == 1) {
+//                             qDebug() <<  "Texture index:" << u << " ID:" << textureID << " Name:" << textureUniformName << " Location:" << l;
+//                             break;
+//                         }
                     }
-                    u++;
                 } else {
                     WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
                 }
+                u++;
             } else {
                 WARNING(tr("Unused sampler uniform: ") + textureUniformName);
             }
@@ -926,7 +1048,6 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
         QMutableMapIterator<QString, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
-            INFO("Removing texture from cache: " +i.key());
             GLuint id = i.value();
             glDeleteTextures(1, &id);
         }
@@ -1003,10 +1124,13 @@ void DisplayWidget::initBufferShader()
         bufferShaderProgram = nullptr;
         return;
     }
+
+    bufferUniformsHaveChanged = false;
 }
 
 void DisplayWidget::resetCamera(bool fullReset)
 {
+
     if (cameraControl == nullptr) {
         return;
     }
@@ -1015,6 +1139,7 @@ void DisplayWidget::resetCamera(bool fullReset)
 
 void DisplayWidget::makeBuffers()
 {
+
     int w = pixelWidth();
     int h = pixelHeight();
 
@@ -1094,6 +1219,7 @@ void DisplayWidget::clearBackBuffer()
 
 void DisplayWidget::setViewPort(int w, int h)
 {
+
     if ( drawingState == Tiled ) {
         glViewport ( 0, 0,bufferSizeX, bufferSizeY );
     } else if ( fitWindow ) {
@@ -1103,293 +1229,22 @@ void DisplayWidget::setViewPort(int w, int h)
     }
 }
 
-/// BEGIN 3DTexture
-// void DisplayWidget::init3DTexture() {
-//
-//   if(voxelFileName.isEmpty()) return;
-//   qDebug() << "Loading :" << voxelFileName << "...";
-//   //
-//   // parse the multipart input
-//   //
-//   string filename ( voxelFileName.toStdString() );
-//
-//   // add check for existance of the file
-//   try
-//   {
-//     MultiPartInputFile temp (filename.c_str());
-//   }
-//   catch (IEX_NAMESPACE::BaseExc &e)
-//   {
-//     std::cerr << std::endl << "ERROR: " << e.what() << std::endl;
-//     return;
-//   }
-//
-//   MultiPartInputFile *inputimage = new MultiPartInputFile (filename.c_str());
-//   int numOutputs = inputimage->parts();
-//
-//   int d;
-//   glGetIntegerv ( GL_MAX_3D_TEXTURE_SIZE, &d );
-//   d /= 4;
-//
-//   //
-//   // separate outputs
-//   //
-//   int p = 0;
-//   Box2i dw = inputimage->header(p).dataWindow();
-//   int w  = dw.max.x - dw.min.x + 1;
-//   int h = dw.max.y - dw.min.y + 1;
-//
-//   std::cout << "numOutputs: " << numOutputs << " W:" << w << " H:" << h << std::endl;
-//
-//   if ( w>d || h>d ) {
-//     WARNING ( QString ( "EXR voxel loader found X:%1 Y:%2 too large! max %3x%3" ).arg ( w ).arg ( h ).arg ( d ) );
-//     return;
-//   }
-//   else
-//     if ( w != numOutputs || h != numOutputs ) {
-//       WARNING ( QString ( "EXR voxel loader found X:%1 Y:%2 Z:%3" ).arg ( w ).arg ( h ).arg ( numOutputs ) );
-//       return;
-//     }
-//
-//     float *voxels = new float[w*h*d*4];
-//
-//   while (p < numOutputs)
-//   {
-//     Header header = inputimage->header(p);
-//
-//     std::string type = header.type();
-//
-//     std::cout << "image:" << p << "\r";
-//
-//     if ( inputimage->partComplete(p) ) {
-//
-//       Array2D<Rgba>pixels ( w, h );
-//       TiledInputPart tip( *inputimage, p );
-//
-//       FrameBuffer frameBuffer;
-//
-//       frameBuffer.insert ("R",                                     // name
-//                           Slice (HALF,                        // type
-//                                  (char *) &pixels[0][0].r,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       frameBuffer.insert ("G",                                     // name
-//                           Slice (HALF,                       // type
-//                                  (char *) &pixels[0][0].g,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       frameBuffer.insert ("B",                                     // name
-//                           Slice (HALF,                        // type
-//                                  (char *) &pixels[0][0].b,     // base
-//                                  sizeof (pixels[0][0]) * 1,       // xStride
-//                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-// //       frameBuffer.insert ("A",                                     // name
-// //                           Slice (HALF,                       // type
-// //                                  (char *) &pixels[0][0].a,     // base
-// //                                  sizeof (pixels[0][0]) * 1,       // xStride
-// //                                  sizeof (pixels[0][0]) * w)); // yStride
-//
-//       tip.setFrameBuffer ( frameBuffer );
-//       tip.readTile( 0, 0 );
-//
-//       // convert to GL pixels
-//       for ( int j = 0; j<h; j++ ) {
-//         for ( int i = 0; i<w; i++ ) {
-//           // convert 3D array to 1D
-//           int indx = ( (w*h*p) + (j*w+i) ) *4;
-//           voxels[indx]=pixels[j][i].r;
-//           voxels[indx+1]=pixels[j][i].g;
-//           voxels[indx+2]=pixels[j][i].b;
-//           // in this case we use r+g+b / 3 as alpha value to conserve some ram space
-//           voxels[indx+3] = (pixels[j][i].r+pixels[j][i].g+pixels[j][i].b) * 0.33333; // setting alpha
-//         }
-//       }
-//
-//     } else
-//       WARNING ( QString ( "Exrloader found EXR image: %1 part %2 is not complete" ).arg ( voxelFileName ).arg ( p ) );
-//
-//     p++;
-//   }
-//
-//   std::cout << "\nSending data to GPU...\n";
-//
-//   if( 0 != m3DTexId )
-//   {
-//     glDeleteTextures( 1, (GLuint*)&m3DTexId );
-//   }
-//   glGenTextures(1,(GLuint*)&m3DTexId );
-//   glBindTexture( GL_TEXTURE_3D, m3DTexId );
-//   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//   glTexImage3D ( GL_TEXTURE_3D, 0, GL_RGBA , w, h, numOutputs, 0, GL_RGBA, GL_FLOAT, voxels );
-//   glBindTexture( GL_TEXTURE_3D, 0 );
-//
-//   std::cout << "\nDone.\n";
-//
-//   if(!objFileName.isEmpty()) saveObjFile( voxels );
-//
-//   delete inputimage;
-//   delete [] voxels;
-//   voxels = 0;
-// }
-//
-// void DisplayWidget::draw3DTexture() {
-//
-//   if( m3DTexId==0 && !voxelFileName.isEmpty() ) init3DTexture();
-//   if( m3DTexId==0) return;
-//
-//   glEnable( GL_ALPHA_TEST );
-//   glAlphaFunc( GL_GREATER, 0.05f );
-//   glDisable(GL_CULL_FACE);
-//   glEnable(GL_BLEND);
-//   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-//
-//   glPushAttrib ( GL_ALL_ATTRIB_BITS );
-// //   glMatrixMode ( GL_PROJECTION );
-// //   glLoadIdentity();
-// //   glMatrixMode ( GL_MODELVIEW );
-// //   glLoadIdentity();
-//
-//
-//   QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
-//   float fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
-//   QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 eye = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//   cv = cs.filter ( "Target" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 target = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//   cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
-//   glm::dvec3 up = glm::dvec3 ( cv.at ( 0 ).toDouble(),cv.at ( 1 ).toDouble(),cv.at ( 2 ).toDouble() );
-//
-//   float aspectRatio = float( ( float ) width() / ( float ) height() );
-//   float zNear = 0.00001;
-//   float zFar = 1000.0;
-//   float vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
-//
-//   QMatrix4x4 matrix;
-//   matrix.setToIdentity();
-//   matrix.perspective ( vertAngle, aspectRatio, zNear, zFar );
-//   matrix.lookAt ( eye,target,up );
-//
-//   texMatrix = matrix;
-//
-//   glMatrixMode( GL_TEXTURE );
-//   glLoadIdentity();
-//
-// //   if(texMatrix != QMatrix() ) {
-// //     texMatrix.scale( (float)width()/(float)height(), -1.0f, 1.0f);
-// //     glLoadMatrixf(texMatrix.constData());
-// //   }
-// //   else{
-// //   // Translate and make 0.5f as the center
-// //   // (texture co ordinate is from 0 to 1.
-// //   // so center of rotation has to be 0.5f)
-//   glTranslatef( 0.5f, 0.5f, 0.5f );
-//   // A scaling applied to normalize the axis
-//   // (Usually the number of slices will be less so if this is not -
-//   // normalized then the z axis will look bulky)
-//   // Flipping of the y axis is done by giving a negative value in y axis.
-//   // This can be achieved either by changing the y co ordinates in -
-//   // texture mapping or by negative scaling of y axis
-//   glScalef( (float)width()/(float)height(),
-//             -1.0f,
-//             1.0f);
-//
-// // //   glRotatef(rotangle, vX,vY,vZ);
-// //
-//   glTranslatef( -0.5f,-0.5f, -0.5f );
-// //   }
-//
-//
-//   glEnable(GL_TEXTURE_3D);
-//   glBindTexture( GL_TEXTURE_3D, m3DTexId );
-//
-//     for ( float fIndx = -1.0f; fIndx <= 1.0f; fIndx+=0.0195f )
-//     {
-//         glBegin(GL_QUADS);
-//
-//         glTexCoord3f(0.0f, 0.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f(-1.0f,-1.0f,fIndx);
-//         glTexCoord3f(1.0f, 0.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f( 1.0f,-1.0f,fIndx);
-//         glTexCoord3f(1.0f, 1.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f( 1.0f, 1.0f,fIndx);
-//         glTexCoord3f(0.0f, 1.0f, ((float)fIndx+1.0f)/2.0f); glVertex3f(-1.0f, 1.0f,fIndx);
-//
-// //         glTexCoord3f(0.0f, ((float)fIndx+1.0f)/2.0f, 0.0f); glVertex3f(-1.0f,fIndx,-1.0f);
-// //         glTexCoord3f(1.0f, ((float)fIndx+1.0f)/2.0f, 0.0f); glVertex3f( 1.0f,fIndx,-1.0f);
-// //         glTexCoord3f(1.0f, ((float)fIndx+1.0f)/2.0f, 1.0f); glVertex3f( 1.0f,fIndx, 1.0f);
-// //         glTexCoord3f(0.0f, ((float)fIndx+1.0f)/2.0f, 1.0f); glVertex3f(-1.0f,fIndx, 1.0f);
-// //
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,0.0f, 0.0f); glVertex3f(fIndx,-1.0f,-1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,1.0f, 0.0f); glVertex3f(fIndx, 1.0f,-1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,1.0f, 1.0f); glVertex3f(fIndx, 1.0f, 1.0f);
-// //         glTexCoord3f( ((float)fIndx+1.0f)/2.0f,0.0f, 1.0f); glVertex3f(fIndx,-1.0f, 1.0f);
-//         glEnd();
-//     }
-//
-//   glBindTexture( GL_TEXTURE_3D, 0 );
-//   glPopAttrib();
-//   glEnable(GL_CULL_FACE);
-//
-// }
-//
-// void DisplayWidget::saveObjFile(float *vxls ){
-//
-//   std::cout << "Saving .obj point cloud..." << std::endl;
-//
-//   QFile fileStream( objFileName );
-//   if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-//     QMessageBox::warning(this, tr("Fragmentarium"),
-//                          tr("Cannot write file %1:\n%2.")
-//                          .arg(objFileName)
-//                          .arg(fileStream.errorString()));
-//     return;
-//   }
-//
-//   QTextStream out(&fileStream);
-//   int pcnt = 0;
-//
-//   out << "# Fragmentarium v1.0.25 point cloud\n";
-//   for(int z=0;z<512;z++) {
-//     for(int y=0;y<512;y++) {
-//       for(int x=0;x<512;x++) {
-//         int indx = ((512*512*z) + (y*512+x))*4;
-//         float scale = (1.0/512.0);
-//         if( vxls[indx+3] != 0.0 ) {
-//           out << "v " << (0.5-(scale*x))*16.0 << " " << (0.5-(scale*y))*16.0 << " " << (0.5-(scale*z))*14.0 << "\n";
-//           pcnt++;
-//         }
-//         std::cout << "Point:" << pcnt << '\r';
-//       } } } std::cout << "Done " << pcnt << " points out of " << 512*512*512 << std::endl;
-// }
-/// END 3DTexture
-
 bool DisplayWidget::checkShaderProg(GLuint programID)
 {
-    if(programID == shaderProgram->programId()) {
-        if(verbose) {
-            qDebug() << "\nshaderProgram";
-        }
-        return true;
+
+    if(hasShader() && programID == shaderProgram->programId()) {
+        return shaderProgram->isLinked();
     } else if (hasBufferShader() && programID == bufferShaderProgram->programId()) {
-        if(verbose) {
-            qDebug() << "\nbufferShaderProgram";
-        }
-        return true;
+        return bufferShaderProgram->isLinked();
     } else {
-        if(verbose) {
-            qDebug() << "\nNO ShaderProgram!!!";
-        }
+            WARNING("NO ShaderProgram!!!");
     }
     return false;
 }
 
 void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformValue)
 {
+
         if (uniformName.startsWith("gl_")) { uniformValue = "OpenGL variable"; }
         if (uniformName == "pixelSize") { uniformValue = "Special variable"; }
         if (uniformName == "globalPixelSize") { uniformValue = "Special variable"; }
@@ -1399,8 +1254,10 @@ void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformVal
         if (uniformName == "time") { uniformValue = "Special variable"; }
 }
 
-void DisplayWidget::setFloatType(GLenum type, QString &tp)
+// returns text name of type -> tp
+void DisplayWidget::get32Type(GLenum type, QString &tp)
 {
+
         switch(type) {
             case GL_BYTE:           tp = "BYTE  "; break;
             case GL_UNSIGNED_BYTE:  tp = "UNSIGNED_BYTE"; break;
@@ -1430,8 +1287,10 @@ void DisplayWidget::setFloatType(GLenum type, QString &tp)
 }
 
 #ifdef USE_OPENGL_4
-void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
+// returns text name of type -> tp and verified foundDouble flag
+void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName, QString uniformValue, bool &foundDouble, QString &tp)
 {
+
     double x,y,z,w;
 
     GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str());
@@ -1500,54 +1359,8 @@ void DisplayWidget::setDoubleType(GLuint programID, GLenum type, QString uniform
 }
 #endif
 
-void DisplayWidget::resetUniformProvenance()
-{
-    QVector<VariableWidget*> vw = mainWindow->getUserUniforms();
-    foreach (VariableWidget *w, vw) {
-        w->setProvenance(FromUnknown);
-    }
-    QOpenGLShaderProgram *programs[2] = { shaderProgram, bufferShaderProgram };
-    Provenance provenances[2] = { FromMainShader, FromBufferShader };
-    for (int k = 0; k < 2; ++k) {
-        QOpenGLShaderProgram *shaderProg = programs[k];
-        Provenance provenance = provenances[k];
-        if (shaderProg == nullptr) continue;
-        GLuint programID = shaderProg->programId();
-        if (programID == 0) continue;
-        GLint count = 0;
-        // this only returns uniforms that have not been optimized out
-        glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
-        for (int i = 0; i < count; i++) {
-            GLsizei bufSize = 256;
-            GLsizei length;
-            GLint size;
-            GLenum type;
-            GLchar name[bufSize];
-            glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
-            QString uniformName = (char *)name;
-            // FIXME this is quadratic: O(number of active uniforms * number of widgets declared)
-            // FIXME could go to n log n by sorting each by name and zip ascending?
-            foreach (VariableWidget *w, vw) {
-                if (uniformName == w->getName()) {
-                    w->addProvenance(provenance);
-                    break; // can't have more than one uniform with the same name
-                }
-            }
-        }
-    }
-    foreach (VariableWidget *w, vw) {
-        if (w->getProvenance() == FromBufferShader) {
-            QColor c = qApp->palette().color(QPalette::Inactive, QPalette::Mid);
-            w->setStyleSheet("QLabel { border-style: outset; border-width: 1px; border-color: " + c.name() + "; }");
-        } else {
-            w->setStyleSheet("QLabel { border: none; }");
-        }
-    }
-}
-
 void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 {
-
     GLuint programID = shaderProg->programId();
 
     if(!checkShaderProg(programID)) return;
@@ -1568,59 +1381,69 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         GLchar name[bufSize];
 
         glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
-        QString uniformName = (char *)name;
-        QString uniformValue;
-        checkForSpecialCase(uniformName, uniformValue);
-
-        // find a value to go with the name index in the program, may not be the same as index in our list
-        for( int n=0; n < vw.count(); n++) {
-            if(uniformName == vw[n]->getName()) {
-                // get slider values
-                uniformValue = vw[n]->getValueAsText();
-                // test and get filename
-                if (uniformValue.isEmpty()) {
-                    uniformValue = vw[n]->toString();
-                }
-                break;
-            }
-        }
-
-        if (uniformValue.isEmpty()) {
-            uniformValue = "Unused variable widget";
-        }
-
         QString tp = "";
-        setFloatType(type, tp);
+        get32Type(type, tp);
         bool foundDouble = false;
 
+        QString uniformName = (char *)name;
+        QString uniformValue = "";
+        checkForSpecialCase(name, uniformValue);
+        if(uniformValue.contains("variable")) {
+            // type name and value to console
+            if (verbose && subframeCounter == 1) {
+                qDebug() << tp << "\t" << uniformName << uniformValue;
+            }
+            continue;
+        }
+
+            // find a value to go with the name, index in the program, may not be the same as index in our list
+            for( int n=0; n < vw.count(); n++) {
+                if(uniformName == vw[n]->getName()) {
+                    // get slider values
+                    uniformValue = vw[n]->getValueAsText();
+                    // test and get filename
+                    if (uniformValue.isEmpty()) {
+                        uniformValue = vw[n]->toString();
+                    }
+                    break;
+                }
+            }
+
+        if(uniformValue.isEmpty()) {
+            uniformValue = "Unused variable";
+            continue;
+        }
+
+#ifdef USE_OPENGL_4
         if (format().majorVersion() > 3 && format().minorVersion() >= 0) {
             // do not try to set special, gl_ or unused uniform even if it is double type
             if (!uniformValue.contains("variable")) {
-#ifdef USE_OPENGL_4
-                setDoubleType(programID, type, uniformName, uniformValue, foundDouble, tp);
-#else
-                setFloatType(type, tp);
-#endif
+                get64Type(programID, type, uniformName, uniformValue, foundDouble, tp);
             }
         }
+#endif
 
-        // this sets User (32 bit) uniforms not handled above
+        // this sets User uniforms not handled above, sets sampler uniform texture ID
         if(!foundDouble) {
             for( int n=0; n < vw.count(); n++) {
                 if(uniformName == vw[n]->getName()) {
                     auto *sw = dynamic_cast<SamplerWidget *>(vw[n]);
                     if (sw != nullptr) {
                         QMapIterator<QString, QString> it( fragmentSource.textures );
+                        int u=1; // sampler textures start at 1
                         while( it.hasNext() ) {
                             it.next();
-                            if(it.value().contains(sw->getValue())) {
-                                sw->texID = TextureCache[it.value()]+GL_TEXTURE0;
-//                                 DBOUT << "Sampler real texID " << TextureCache[it.value()]+GL_TEXTURE0;
+                            if(it.value().contains(sw->getValue())) { // the cached value is GLAPI texID, glsl wants indexOf!
+                                sw->texID = u;//TextureCache[it.value()];
+                                sw->setUserUniform(shaderProg);
+//                                 DBOUT << "Sampler:" << uniformName << " FragMtexID:" << sw->texID << " CacheID:" << TextureCache[it.value()];
                             }
+                            u++;
                         }
+                    } else { 
+                        vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
+                        vw[n]->setUserUniform(shaderProg);
                     }
-                    vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
-                    vw[n]->setUserUniform(shaderProg);
                     break;
                 }
             }
@@ -1629,35 +1452,51 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         } // this takes care of buffershader (Post) sliders :D
 
         // type name and value to console
-        if (subframeCounter == 1 && verbose) {
+        if (verbose && subframeCounter == 1) {
             qDebug() << tp << "\t" << uniformName << uniformValue;
         }
     }
-    if (subframeCounter == 1 && verbose) {
+    if (verbose && subframeCounter == 1) {
         qDebug() << count << " active uniforms initialized\n";
+        if (shaderProg == shaderProgram) {
+            if ( mainWindow->getVariableEditor()->hasEasing() ) {
+                QStringList cs = curveSettings;
+                while(!cs.isEmpty()) {
+                    qDebug() << cs.at(0);
+                    cs.removeFirst();
+                }
+                qDebug() << curveSettings.count() << " active easingcurve settings." << endl;
+            }
+        }
+    }
+
+    if(hasBufferShader() && programID == bufferShaderProgram->programId()) {
+        bufferUniformsHaveChanged = false;
+        bufferShaderOnly = false;
     }
 }
 
-void DisplayWidget::setupShaderVars(int w, int h) {
+void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
+{
 
     cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
-    int l = shaderProgram->uniformLocation ( "pixelSize" );
+    int l = shaderProg->uniformLocation ( "pixelSize" );
 
     if ( l != -1 ) {
-        shaderProgram->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
+        shaderProg->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
     }
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
-    l = shaderProgram->uniformLocation ( "globalPixelSize" );
+    l = shaderProg->uniformLocation ( "globalPixelSize" );
 
     if ( l != -1 ) {
-        shaderProgram->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
+        shaderProg->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
     }
 
-    l = shaderProgram->uniformLocation ( "time" );
+    l = shaderProg->uniformLocation ( "time" );
 
     if ( l != -1 ) {
         double t = mainWindow->getTime() / ( double ) renderFPS;
-        shaderProgram->setUniformValue ( l, ( float ) t );
+        shaderProg->setUniformValue ( l, ( float ) t );
     } else {
         mainWindow->getTime();
     }
@@ -1665,9 +1504,9 @@ void DisplayWidget::setupShaderVars(int w, int h) {
     if ( bufferType!=0 ) {
         glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
         GLuint i = backBuffer->texture();
-        glBindTexture ( GL_TEXTURE_2D,i );
+        glBindTexture ( GL_TEXTURE_2D, i );
 
-        l = shaderProgram->uniformLocation ( "backbuffer" );
+        l = shaderProg->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
             if (verbose && subframeCounter == 1) {
                 qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
@@ -1675,21 +1514,31 @@ void DisplayWidget::setupShaderVars(int w, int h) {
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
             }
-            shaderProgram->setUniformValue ( l, 0 );
+            shaderProg->setUniformValue ( l, 0 );
         }
 
-        l = shaderProgram->uniformLocation ( "subframe" );
+        l = shaderProg->uniformLocation ( "subframe" );
 
         if ( l != -1 ) {
-            shaderProgram->setUniformValue ( l, subframeCounter );
+            shaderProg->setUniformValue ( l, subframeCounter );
             // if(verbose) qDebug() << QString("Setting subframe: %1").arg(subframeCounter);
         }
     }
+    
+        l = shaderProg->uniformLocation ( "frontbuffer" );
 
+        if ( l != -1 ) {
+            shaderProg->setUniformValue ( l, 0 );
+        } else {
+            if(shaderProg == bufferShaderProgram) {
+                WARNING(tr("No front buffer sampler found in buffer shader. This doesn't make sense."));
+            }
+        }
 }
 
 void DisplayWidget::draw3DHints()
 {
+
     if ( mainWindow->wantPaths()  && !isContinuous()) {
         if (eyeSpline != nullptr && drawingState != Animation && drawingState != Tiled) {
             if ( mainWindow->wantSplineOcc() ) {
@@ -1715,9 +1564,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         static int c = 0;
         qDebug() << QString("Draw fragment program: %1").arg(c++);
     }
-    /// BEGIN 3DTexture
-    //     if( m3DTexId==0 )
-    /// END 3DTexture
+
     shaderProgram->bind();
 
     // -- Viewport
@@ -1726,12 +1573,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     } else {
         setViewPort ( w,h );
     }
-
-    /// BEGIN 3DTexture
-    //     if( m3DTexId!=0 ) {
-    //     draw3DTexture();
-    //     return; }
-    /// END 3DTexture
 
     // -- Projection
     // The projection mode as used here
@@ -1750,13 +1591,13 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
     }
 
-    setupShaderVars(w, h);
+    // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
+    // these are constantly changing so need to be set every subframe
+    setupShaderVars(shaderProgram, w, h);
 
-    // Setup User Uniforms
-
-    // this should speed things up a little because we are only setting uniforms on
-    // the first subframe of the first tile
-    if (subframeCounter <= 1 && tilesCount <= 1) {
+    // Setup User Uniforms, this should speed things up a little
+    // we are only setting uniforms on the first tile and first subframe
+    if (tilesCount == 0 && subframeCounter == 1) {
         setShaderUniforms(shaderProgram);
     }
 
@@ -1778,7 +1619,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    glFinish(); // wait for GPU to return control
+    glFinish();  // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1832,34 +1673,6 @@ bool DisplayWidget::FBOcheck()
     return true;
 }
 
-void DisplayWidget::setupBufferShaderVars(int w, int h)
-{
-        int l = bufferShaderProgram->uniformLocation ( "pixelSize" );
-
-        if ( l != -1 ) {
-            shaderProgram->setUniformValue(l, (float)(1.0 / w), (float)(1.0 / h));
-        }
-        // for DepthBufferShader.frag & NODE-Raytracer.frag
-        l = bufferShaderProgram->uniformLocation ( "globalPixelSize" );
-
-        if ( l != -1 ) {
-            shaderProgram->setUniformValue(l, (1.0 / w), (1.0 / h));
-        }
-
-        l = bufferShaderProgram->uniformLocation ( "frontbuffer" );
-
-        if ( l != -1 ) {
-            bufferShaderProgram->setUniformValue ( l, 0 );
-        } else {
-            WARNING(tr("No front buffer sampler found in buffer shader. This doesn't make sense."));
-        }
-        // Setup User Uniforms
-        if (bufferUniformsHaveChanged) {
-            setShaderUniforms ( bufferShaderProgram );
-            bufferUniformsHaveChanged = false;
-        }
-}
-
 void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bool drawLast)
 {
 
@@ -1869,7 +1682,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     QSize s = backBuffer->size();
 
-    if ( !drawLast ) {
+    if ( !drawLast && !bufferShaderOnly ) {
         for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
@@ -1906,7 +1719,11 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     // Draw a textured quad using the preview texture.
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->bind();
-        setupBufferShaderVars( s.width(),s.height());
+        setupShaderVars(bufferShaderProgram, s.width(),s.height());
+        // Setup User Uniforms
+        if (bufferUniformsHaveChanged) {
+                setShaderUniforms ( bufferShaderProgram );
+        }
     }
 
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
@@ -1935,7 +1752,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glVertex3f ( 3.0f, -1.0f,  0.0f );
     glTexCoord2f ( 0.0f, 2.0f );
     glVertex3f ( -1.0f,  3.0f,  0.0f );
-    glEnd();
+    glEnd(); 
     glPopAttrib();
     glFinish(); // wait for GPU to return control
 
@@ -1955,6 +1772,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
  */
 void DisplayWidget::clearTileBuffer()
 {
+
     if (hiresBuffer != nullptr) {
         bool relcheck = hiresBuffer->release();
         if(relcheck) {
@@ -1964,6 +1782,7 @@ void DisplayWidget::clearTileBuffer()
             WARNING(tr("Failed to release hiresBuffer FBO"));
     }
     }
+    subframeCounter=0;
     mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
     makeBuffers();
 }
@@ -1981,7 +1800,7 @@ void DisplayWidget::clearGL()
 }
 
 #ifdef USE_OPEN_EXR
-bool DisplayWidget::getRGBAFtile(Array2D<Rgba> &array, int w, int h)
+bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
 {
 
     auto *myImgdata = (GLfloat *)malloc((h * w * 4 * sizeof(GLfloat)));
@@ -2024,10 +1843,11 @@ bool DisplayWidget::getRGBAFtile(Array2D<Rgba> &array, int w, int h)
     if(retOK) {
         for ( int i = 0; i < h; i++ ) {
             for ( int j = 0; j < w; j++ ) {
-                array[(h - 1) - i][j] = Rgba(
-                                            myImgdata[((i * w) + j) * 4 + 0], myImgdata[((i * w) + j) * 4 + 1],
-                                            myImgdata[((i * w) + j) * 4 + 2],
-                                            depthToAlpha ? myDepths[((i * w) + j) * 1 + 0] : myImgdata[((i * w) + j) * 4 + 3]);
+                array[(h - 1) - i][j] = RGBAFLOAT(
+                                            myImgdata[((i * w) + j) * sizeof(float) + 0],
+                                            myImgdata[((i * w) + j) * sizeof(float) + 1],
+                                            myImgdata[((i * w) + j) * sizeof(float) + 2],
+                                            depthToAlpha ? myDepths[((i * w) + j)] : myImgdata[((i * w) + j) * sizeof(float) + 3]);
             }
         }
     }
@@ -2043,6 +1863,7 @@ bool DisplayWidget::getRGBAFtile(Array2D<Rgba> &array, int w, int h)
 #endif
 
 bool DisplayWidget::initPreviewBuffer() {
+
     bool ret = true;
     if ( !previewBuffer->bind() ) {
       WARNING ( tr("Failed to bind previewBuffer FBO") );
@@ -2065,6 +1886,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                                QProgressDialog *progress, int *steps,
                                QImage *im, const QTime &totalTime)
 {
+
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -2090,11 +1912,11 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     }
 
     QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
-    QString framesize = QString("%1x%2").arg ( tileMax*w ).arg ( tileMax*h );
+    QString framesize = QString("%1x%2").arg ( (tileMax*w)/(1.0 + padding) ).arg ( (tileMax*h)/(1.0 + padding) );
 
     progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
                              .arg((int)(time * renderFPS))
-                             .arg(framesToRender)
+                             .arg(renderToFrame)
                              .arg(time, 8, 'g', 3, QChar(' ')));
 
     for ( int i = 0; i< subframes; i++ ) {
@@ -2153,11 +1975,13 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
 void DisplayWidget::setState(DrawingState state)
 {
+
     drawingState = state;
 }
 
 void DisplayWidget::paintGL()
 {
+
     if ( drawingState == Tiled ) {
         return;
     }
@@ -2214,11 +2038,13 @@ void DisplayWidget::paintGL()
 
 void DisplayWidget::updateBuffers()
 {
+
     resizeGL ( 0,0 );
 }
 
 void DisplayWidget::resizeGL(int /* width */, int /* height */)
 {
+
     // When resizing the perspective must be recalculated
     updatePerspective();
     makeBuffers();
@@ -2227,6 +2053,7 @@ void DisplayWidget::resizeGL(int /* width */, int /* height */)
 
 void DisplayWidget::updatePerspective()
 {
+
     if (pixelHeight() == 0 || pixelWidth() == 0) {
         return;
     }
@@ -2240,7 +2067,6 @@ void DisplayWidget::updatePerspective()
 
 void DisplayWidget::timerSignal()
 {
-
     static QWidget* lastFocusedWidget = QApplication::focusWidget();
     if (QApplication::focusWidget() != lastFocusedWidget && cameraControl != nullptr) {
         cameraControl->releaseControl();
@@ -2260,6 +2086,7 @@ void DisplayWidget::timerSignal()
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
             // we're done rendering
+            pendingRedraws = 0;
         } else {
             if (buttonDown) {
                 return;
@@ -2449,6 +2276,7 @@ void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
 
 void DisplayWidget::updateEasingCurves(int currentframe)
 {
+
     static int cf = 0; // prevent getting called more than once per frame ?
     if (cf == currentframe) {
         return;
@@ -2530,6 +2358,7 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
 void DisplayWidget::drawLookatVector()
 {
+
     glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glColor4f ( 1.0,1.0,0.0,1.0 );
@@ -2554,17 +2383,14 @@ void DisplayWidget::setPerspective()
     auto aspectRatio = double((double)width() / (double)height());
     double zNear = 0.00001;
     double zFar = 1000.0;
-    double vertAngle = 180.0 * ( 2.0 * atan2 ( 1.0, ( 1.0/fov ) ) / M_PI );
+    double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
     glm::dmat4 matrix;
     matrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
     matrix = matrix * glm::lookAt ( eye,target,up );
 
-    /// BEGIN 3DTexture
-    //     texMatrix = matrix;
-    /// END 3DTexture
-
     glLoadMatrixd ( &matrix[0][0] );
+
 }
 
 QStringList DisplayWidget::getCurveSettings()
@@ -2574,21 +2400,20 @@ QStringList DisplayWidget::getCurveSettings()
 
 void DisplayWidget::setCurveSettings(const QStringList cset)
 {
+
     mainWindow->getVariableEditor()->setEasingEnabled ( !cset.isEmpty() );
     curveSettings = cset;
-    if (verbose) {
-        qDebug() << cset;
-    }
 }
 
 void DisplayWidget::drawSplines()
 {
+
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if (depthToAlpha) {
         glDepthFunc ( GL_ALWAYS );
     } else {
-        glDepthFunc ( GL_LESS );    // closer to eye passes test
-        glDepthMask ( GL_FALSE );   // no Writing to depth buffer for splines
+        glDepthFunc ( GL_LESS );  // closer to eye passes test
+        glDepthMask ( GL_FALSE ); // no Writing to depth buffer for splines
     }
 
     // control point to highlight = currently selected preset keyframe
@@ -2606,6 +2431,7 @@ void DisplayWidget::drawSplines()
 
 void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
 {
+
     if( cameraID() == "3D" ) {
         auto *eyeCp = (glm::dvec3 *)eyeControlPoints.constData();
         auto *tarCp = (glm::dvec3 *)targetControlPoints.constData();
@@ -2627,6 +2453,7 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
 
 void DisplayWidget::addControlPoint(glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP)
 {
+
     eyeControlPoints.append ( eP );
     targetControlPoints.append ( tP );
     upControlPoints.append ( uP );
@@ -2634,6 +2461,7 @@ void DisplayWidget::addControlPoint(glm::dvec3 eP, glm::dvec3 tP, glm::dvec3 uP)
 
 void DisplayWidget::clearControlPoints()
 {
+
     eyeControlPoints.clear();
     targetControlPoints.clear();
     upControlPoints.clear();
