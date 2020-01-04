@@ -288,9 +288,6 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         bufferType = GL_RGBA8;
     }
 
-    makeBuffers();
-    INFO ( tr("Created front and back buffers as ") + b );
-
     requireRedraw ( true );
 
     initFragmentShader();
@@ -299,11 +296,16 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         return;
     }
 
-    initBufferShader();
+    if(!(nullptr == fragmentSource.bufferShaderSource)) {
+        initBufferShader();
 
-    if(bufferShaderProgram != nullptr && bufferShaderProgram->isLinked()) {
-        // alas goot
+        if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) {
+            return;
+        }
     }
+    
+    makeBuffers();
+    INFO ( tr("Created front and back buffers as ") + b );
 }
 
 void DisplayWidget::requireRedraw(bool clear )
@@ -314,7 +316,7 @@ void DisplayWidget::requireRedraw(bool clear )
     }
 
     if ( clear ) {
-        clearBackBuffer();
+        doClearBackBuffer = true;
         pendingRedraws = 1;
         bufferUniformsHaveChanged = true; // fixed bad image after rebuild
     } else if ( bufferShaderOnly ) {
@@ -1068,7 +1070,7 @@ void DisplayWidget::initBufferShader()
         return;
     }
 
-    bufferShaderProgram = new QOpenGLShaderProgram ( this );
+    bufferShaderProgram = new QOpenGLShaderProgram ( context() );
 
     // Vertex shader
     bool s = bufferShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.bufferShaderSource->vertexSource.join("\n"));
@@ -1198,7 +1200,7 @@ void DisplayWidget::makeBuffers()
     // we must create both the backbuffer and previewBuffer
     previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
-    clearBackBuffer();
+    doClearBackBuffer = true;
 
     if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -1210,11 +1212,12 @@ void DisplayWidget::makeBuffers()
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
     }
-}
 
-void DisplayWidget::clearBackBuffer()
-{
-    doClearBackBuffer = true;
+    glGenBuffers( 1, &vbo );
+	glBindBuffer( GL_ARRAY_BUFFER, vbo );
+	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
+	glGenVertexArrays( 1, &vao );
+    
 }
 
 void DisplayWidget::setViewPort(int w, int h)
@@ -1604,22 +1607,19 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // save current state
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
 
-    glColor4f ( 1.0,1.0,1.0,1.0 );
+    glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
+    glEnable ( GL_DEPTH_TEST );  // enable depth testing
+    glDepthMask ( GL_TRUE );     // enable depth buffer writing
 
-    glDepthFunc ( GL_ALWAYS );    // always passes test so we write color
-    glEnable ( GL_DEPTH_TEST );   // enable depth testing
-    glDepthMask ( GL_TRUE );      // enable depth buffer writing
+	glBindVertexArray( vao );
+	glEnableVertexAttribArray( 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, vbo );
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+	glDrawArrays( GL_TRIANGLES, 0, 3 ); // shader draws on this surface
 
-    glBegin ( GL_TRIANGLES );     // shader draws on this surface
-    glTexCoord2f ( 0.0f, 0.0f );
-    glVertex3f ( -1.0f, -1.0f,  0.0f );
-    glTexCoord2f ( 2.0f, 0.0f );
-    glVertex3f ( 3.0f, -1.0f,  0.0f );
-    glTexCoord2f ( 0.0f, 2.0f );
-    glVertex3f ( -1.0f,  3.0f,  0.0f );
-    glEnd();
-
-    glFinish();  // wait for GPU to return control
+    // restore state
+    glPopAttrib();
+    glFinish(); // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1634,8 +1634,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
             ZAtMXY = zatmxy;
         }
     }
-    // restore state
-    glPopAttrib();
 }
 
 bool DisplayWidget::FBOcheck()
@@ -1687,11 +1685,13 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
             if (backBuffer != nullptr) {
                 // swap backbuffer
                 QOpenGLFramebufferObject* temp = backBuffer;
-                backBuffer= previewBuffer;
+                backBuffer = previewBuffer;
                 previewBuffer = temp;
-                subframeCounter++;
-                makeCurrent();
             }
+            
+            subframeCounter++;
+
+            makeCurrent();
 
             if ( !previewBuffer->bind() ) {
               WARNING ( tr("Failed to bind FBO") );
@@ -1699,7 +1699,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
             }
 
             drawFragmentProgram ( s.width(),s.height(), true );
-
+            
             if ( !previewBuffer->release() ) {
               WARNING ( tr("Failed to release FBO") );
                 return;
@@ -1712,7 +1712,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     }
 
     if (buffer != nullptr && !buffer->bind()) {
-        WARNING ( tr("Failed to bind target buffer") );
+        WARNING ( tr("Failed to bind hires buffer") );
         return;
     }
 
@@ -1724,7 +1724,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         if (bufferUniformsHaveChanged) {
                 setShaderUniforms ( bufferShaderProgram );
         }
-    }
+    } else shaderProgram->bind();
 
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
     glMatrixMode ( GL_PROJECTION );
@@ -1742,23 +1742,21 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     glEnable ( GL_TEXTURE_2D );
 
-    glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
-    glDepthMask ( GL_FALSE );   // No writing: output is color data from post effects
+    glDisable ( GL_DEPTH_TEST );// No testing: coming from RTB (render to buffer)
+    glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
 
-    glBegin ( GL_TRIANGLES );
-    glTexCoord2f ( 0.0f, 0.0f );
-    glVertex3f ( -1.0f, -1.0f,  0.0f );
-    glTexCoord2f ( 2.0f, 0.0f );
-    glVertex3f ( 3.0f, -1.0f,  0.0f );
-    glTexCoord2f ( 0.0f, 2.0f );
-    glVertex3f ( -1.0f,  3.0f,  0.0f );
-    glEnd(); 
+	glBindVertexArray( vao );
+	glEnableVertexAttribArray( 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, vbo );
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+	glDrawArrays( GL_TRIANGLES, 0, 3 );
+
     glPopAttrib();
     glFinish(); // wait for GPU to return control
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
-    }
+    } else shaderProgram->release();
 
     if (buffer != nullptr && !buffer->release()) {
         WARNING ( tr("Failed to release target buffer") );

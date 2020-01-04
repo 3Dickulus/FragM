@@ -330,10 +330,14 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
 
+	GLuint vbo;
+	GLuint vao;
+
+	GLfloat points[9] = { -1.0f, -1.0f, 0.0f, 3.0f, -1.0f, 0.0f, -1.0f, 3.0f, 0.0f };
+
     void setShaderUniforms ( QOpenGLShaderProgram* shaderProg );
 
     void setGlTexParameter ( QMap<QString, QString> map );
-    void clearBackBuffer();
     void setViewPort ( int w, int h );
     void makeBuffers();
     void setPerspective();
