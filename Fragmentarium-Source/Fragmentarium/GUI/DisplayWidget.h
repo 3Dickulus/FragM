@@ -260,6 +260,8 @@ public:
         verbose = v;
     };
 
+    GLuint spline_program;
+
 public slots:
     void updateBuffers();
     void timerSignal();
@@ -292,6 +294,10 @@ public slots:
         return cameraControl->getID();
     }
 
+    // for spline paths
+    void delete_buffer_objects();
+    void init_arrays();
+
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
@@ -321,6 +327,12 @@ protected:
     void resizeGL ( int w, int h ) Q_DECL_OVERRIDE;
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
 
+    // for spline paths
+    void render_array(int number, double size);
+    uint compile_shader( const char* vsource, const char* fsource );
+    void init_shader( int h );
+    double pixel_scale;
+
 private:
     QOpenGLFramebufferObject* previewBuffer;
     QOpenGLFramebufferObject* backBuffer;
@@ -332,6 +344,9 @@ private:
 
 	GLuint vbo;
 	GLuint vao;
+    // for spline paths
+    GLuint svbo;
+    GLuint svao;
 
 	GLfloat points[9] = { -1.0f, -1.0f, 0.0f, 3.0f, -1.0f, 0.0f, -1.0f, 3.0f, 0.0f };
 
@@ -411,6 +426,42 @@ private:
     bool verbose;
     bool bufferShaderOnly;
     bool glDebugEnabled;
+
+/// Shaders /////////////////////////////////////////////////////////
+
+#define STRINGIFY(A) #A
+// vertex shader
+const char *vertexShader = STRINGIFY(
+                               uniform float pointRadius;  // point size in world space
+                               uniform float pointScale;   // scale to calculate size in pixels
+                               void main()
+{
+    // calculate window-space point size
+    vec3 posEye = vec3(gl_ModelViewMatrix * vec4(gl_Vertex.xyz, 1.0));       // [4 FLOPS]
+    float dist = length(posEye);
+    gl_PointSize = pointRadius * (pointScale / dist);                        // [2 FLOPS]
+    gl_TexCoord[0] = gl_MultiTexCoord0;
+    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);   // [4 FLOPS]
+    gl_FrontColor = gl_Color;
+}
+                           );                                                // 10 total
+
+const char *spherePixelShader = STRINGIFY(
+                                    void main()
+{
+    const vec3 lightDir = vec3(0.0, 0.0, 1.0);
+
+    // calculate normal from texture coordinates
+    vec3 N;
+    N.xy = gl_TexCoord[0].xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);              // [4 FLOPS]
+    float mag = dot(N.xy, N.xy);                                             // [3 FLOPS]
+    if (mag > 1.0) discard;   // kill pixels outside circle
+    N.z = sqrt(1.0-mag);                                                     // [2 FLOPS]
+    // calculate lighting
+    float diffuse = max(0.0, dot(lightDir, N));                              // [5 FLOPS]
+    gl_FragColor = gl_Color * diffuse;                                       // [4 FLOP]
+}
+                                );                                           // 15 total
 
 };
 }

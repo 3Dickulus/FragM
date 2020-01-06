@@ -18,6 +18,7 @@
 #include "MainWindow.h"
 #include "VariableWidget.h"
 #include "TextEdit.h"
+#include <QtSpline.h>
 
 #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
@@ -226,7 +227,7 @@ void DisplayWidget::paintEvent(QPaintEvent *ev)
     QOpenGLWidget::paintEvent(ev);
 }
 
-DisplayWidget::~DisplayWidget() = default;
+DisplayWidget::~DisplayWidget() { delete_buffer_objects();}
 
 void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 {
@@ -2408,20 +2409,22 @@ void DisplayWidget::drawSplines()
 
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if (depthToAlpha) {
-        glDepthFunc ( GL_ALWAYS );
+        glDepthFunc ( GL_ALWAYS );glCheckError();
     } else {
-        glDepthFunc ( GL_LESS );  // closer to eye passes test
-        glDepthMask ( GL_FALSE ); // no Writing to depth buffer for splines
+        glDepthFunc ( GL_LESS );glCheckError();  // closer to eye passes test
+        glDepthMask ( GL_FALSE );glCheckError(); // no Writing to depth buffer for splines
     }
+
+    glEnable(GL_POINT_SPRITE_ARB);glCheckError();
+    glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);glCheckError();
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE_NV);glCheckError();
 
     // control point to highlight = currently selected preset keyframe
     int p = mainWindow->getCurrentCtrlPoint();
 
-    targetSpline->drawSplinePoints();
-    targetSpline->drawControlPoints ( p );
+    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 6.0);glCheckError();
+    render_array(mainWindow->getFrameMax(), 2.0);glCheckError();
 
-    eyeSpline->drawSplinePoints();
-    eyeSpline->drawControlPoints ( p );
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
@@ -2436,15 +2439,18 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
         auto *upCp = (glm::dvec3 *)upControlPoints.constData();
 
         if (eyeCp != nullptr && tarCp != nullptr && upCp != nullptr) {
-            eyeSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, eyeCp);
-            targetSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, tarCp);
-            upSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, upCp);
+            eyeSpline = new QtSpline( numberOfControlPoints, numberOfFrames, eyeCp);
+            targetSpline = new QtSpline( numberOfControlPoints, numberOfFrames, tarCp);
+            upSpline = new QtSpline( numberOfControlPoints, numberOfFrames, upCp);
 
             eyeSpline->setSplineColor( QColor("red") );
             eyeSpline->setControlColor( QColor("green"));
 
             targetSpline->setSplineColor( QColor("blue"));
             targetSpline->setControlColor( QColor("green"));
+            
+            init_shader(pixelHeight());glCheckError();
+            init_arrays();glCheckError();
         }
     }
 }
@@ -2464,5 +2470,104 @@ void DisplayWidget::clearControlPoints()
     targetControlPoints.clear();
     upControlPoints.clear();
 }
+
+void DisplayWidget::delete_buffer_objects() {
+    // delete the buffers if they exist
+    if(svbo != 0) {
+        glDeleteBuffers(1, &svbo);glCheckError();
+        svbo = 0;
+    }
+}
+
+void DisplayWidget::init_arrays()
+{
+    uint size = mainWindow->getFrameMax() * sizeof ( double ) * 3;
+    // glBufferData with NULL pointer reserves memory space.
+    glGenBuffers(1, &svbo);glCheckError();
+    glBindBuffer(GL_ARRAY_BUFFER, svbo);glCheckError();
+    glBufferData(GL_ARRAY_BUFFER,    size, 0, GL_DYNAMIC_DRAW);glCheckError();
+	glGenVertexArrays( 1, &svao );
+
+    // map the buffer object into client's memory
+    glm::dvec3 *vptr = (glm::dvec3 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);glCheckError();
+    if(vptr)
+    {
+        // initialize svbo arrays with precalculated data
+            for ( int j = 0; j < eyeControlPoints.count(); ++j ) {
+                vptr[j] = eyeSpline->getControlPoint(j);
+            }
+
+            for ( int j = 0; j < mainWindow->getFrameMax(); ++j ) {
+                vptr[j] = eyeSpline->getSplinePoint(j);
+            }
+            
+        glUnmapBuffer(GL_ARRAY_BUFFER);glCheckError(); // release pointer to mapped buffer
+    } else DBOUT << "glMapBuffer() Failed!";
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);glCheckError();
+}
+
+void DisplayWidget::render_array(int number, double size)
+{
+    if(spline_program!=0) {
+        glUseProgram(spline_program);glCheckError();
+        glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);glCheckError();
+        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), size );glCheckError();
+        // specify vertex arrays
+        glBindVertexArray( svao );glCheckError();
+        glEnableVertexAttribArray( 0 );glCheckError();
+        glBindBuffer( GL_ARRAY_BUFFER, svbo );glCheckError();
+        glVertexAttribPointer( 0, 3, GL_DOUBLE, GL_FALSE, 0, NULL );glCheckError();
+
+        glDrawArrays(GL_POINTS, 0, number);glCheckError();
+
+        // disable arrays
+        glBindBuffer(GL_ARRAY_BUFFER, 0);glCheckError();
+
+        glUseProgram(0);
+    }
+}
+
+uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
+{
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);glCheckError();
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);glCheckError();
+
+    glShaderSource(vertexShader, 1, &vsource, 0);glCheckError();
+    glShaderSource(fragmentShader, 1, &fsource, 0);glCheckError();
+
+    glCompileShader(vertexShader);glCheckError();
+    glCompileShader(fragmentShader);glCheckError();
+
+    GLuint program = glCreateProgram();glCheckError();
+
+    glAttachShader(program, vertexShader);glCheckError();
+    glAttachShader(program, fragmentShader);glCheckError();
+
+    glLinkProgram(program);glCheckError();
+
+    // check if program linked
+    GLint success = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &success);glCheckError();
+
+    if (!success)
+    {
+        char temp[256];
+        glGetProgramInfoLog(program, 256, 0, temp);glCheckError();
+        std::cerr << "Failed to link program:"<<temp<<"\n";
+        glDeleteProgram(program);glCheckError();
+        program = 0;
+    }
+
+    return program;
+}
+
+void DisplayWidget::init_shader( int h )
+{
+    pixel_scale = 10.0;
+    // only need to do this once
+    spline_program = compile_shader(vertexShader, spherePixelShader);glCheckError();
+}
+
 } // namespace GUI
 } // namespace Fragmentarium
