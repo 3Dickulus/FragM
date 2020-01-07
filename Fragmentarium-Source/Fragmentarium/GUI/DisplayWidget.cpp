@@ -227,7 +227,7 @@ void DisplayWidget::paintEvent(QPaintEvent *ev)
     QOpenGLWidget::paintEvent(ev);
 }
 
-DisplayWidget::~DisplayWidget() { delete_buffer_objects();}
+DisplayWidget::~DisplayWidget() { delete_buffer_objects(); }
 
 void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 {
@@ -2471,13 +2471,20 @@ void DisplayWidget::clearControlPoints()
     upControlPoints.clear();
 }
 
+/// Spline Shaders /////////////////////////////////////////////////////////
+
 void DisplayWidget::delete_buffer_objects() {
     // delete the buffers if they exist
+    if(svao != 0) {
+        glDeleteBuffers(1, &svao);glCheckError();
+        svao = 0;
+    }
     if(svbo != 0) {
         glDeleteBuffers(1, &svbo);glCheckError();
         svbo = 0;
     }
 }
+
 
 void DisplayWidget::init_arrays()
 {
@@ -2492,6 +2499,12 @@ void DisplayWidget::init_arrays()
     glm::dvec3 *vptr = (glm::dvec3 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);glCheckError();
     if(vptr)
     {
+
+// TODO fix the vertex pointer assignment of array data
+// make array big enough for ALL path points plus control points (eyeSpline + targetSpline)
+// XYZ vectors @ control points aligned to upSpline vector
+// option to show vectors for all points vs controlpoints (keyframes) only
+
         // initialize svbo arrays with precalculated data
             for ( int j = 0; j < eyeControlPoints.count(); ++j ) {
                 vptr[j] = eyeSpline->getControlPoint(j);

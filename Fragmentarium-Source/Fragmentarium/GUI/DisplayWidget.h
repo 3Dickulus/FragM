@@ -294,9 +294,10 @@ public slots:
         return cameraControl->getID();
     }
 
-    // for spline paths
+/// Spline Shaders /////////////////////////////////////////////////////////
     void delete_buffer_objects();
     void init_arrays();
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
@@ -327,11 +328,12 @@ protected:
     void resizeGL ( int w, int h ) Q_DECL_OVERRIDE;
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
 
-    // for spline paths
+/// Spline Shaders /////////////////////////////////////////////////////////
     void render_array(int number, double size);
     uint compile_shader( const char* vsource, const char* fsource );
     void init_shader( int h );
     double pixel_scale;
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 private:
     QOpenGLFramebufferObject* previewBuffer;
@@ -342,11 +344,13 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
 
+/// Spline Shaders /////////////////////////////////////////////////////////
 	GLuint vbo;
 	GLuint vao;
     // for spline paths
     GLuint svbo;
     GLuint svao;
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 	GLfloat points[9] = { -1.0f, -1.0f, 0.0f, 3.0f, -1.0f, 0.0f, -1.0f, 3.0f, 0.0f };
 
@@ -427,14 +431,14 @@ private:
     bool bufferShaderOnly;
     bool glDebugEnabled;
 
-/// Shaders /////////////////////////////////////////////////////////
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 #define STRINGIFY(A) #A
 // vertex shader
 const char *vertexShader = STRINGIFY(
-                               uniform float pointRadius;  // point size in world space
-                               uniform float pointScale;   // scale to calculate size in pixels
-                               void main()
+uniform float pointRadius;  // point size in world space
+uniform float pointScale;   // scale to calculate size in pixels
+void main()
 {
     // calculate window-space point size
     vec3 posEye = vec3(gl_ModelViewMatrix * vec4(gl_Vertex.xyz, 1.0));       // [4 FLOPS]
@@ -447,7 +451,7 @@ const char *vertexShader = STRINGIFY(
                            );                                                // 10 total
 
 const char *spherePixelShader = STRINGIFY(
-                                    void main()
+void main()
 {
     const vec3 lightDir = vec3(0.0, 0.0, 1.0);
 
@@ -462,6 +466,7 @@ const char *spherePixelShader = STRINGIFY(
     gl_FragColor = gl_Color * diffuse;                                       // [4 FLOP]
 }
                                 );                                           // 15 total
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 };
 }
