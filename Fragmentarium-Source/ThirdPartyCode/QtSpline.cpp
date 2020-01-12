@@ -198,6 +198,22 @@ void QtSpline::setSplineColor(QColor c) const
     qSetColor(parts[1]->color, c);
 }
 
+glm::vec4 QtSpline::controlColor() const
+{
+    return glm::vec4(parts[0]->color[0],
+                     parts[0]->color[1],
+                     parts[0]->color[2],
+                     parts[0]->color[3]);
+}
+
+glm::vec4 QtSpline::splineColor() const
+{
+    return glm::vec4(parts[1]->color[0],
+                     parts[1]->color[1],
+                     parts[1]->color[2],
+                     parts[1]->color[3]);
+}
+
 glm::dvec3 QtSpline::getControlPoint( int n )
 {
     return geom->vertices[n];

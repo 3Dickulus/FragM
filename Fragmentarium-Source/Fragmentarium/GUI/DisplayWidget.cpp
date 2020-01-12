@@ -1551,8 +1551,8 @@ void DisplayWidget::draw3DHints()
                 glDisable ( GL_DEPTH_TEST );  // disable depth testing
             }
             setPerspective();
-            drawSplines();
             drawLookatVector();
+            drawSplines();
         }
     }
 }
@@ -2410,21 +2410,13 @@ void DisplayWidget::drawSplines()
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if (depthToAlpha) {
         glDepthFunc ( GL_ALWAYS );glCheckError();
+        glDepthMask ( GL_FALSE );glCheckError(); // no Writing to depth buffer
     } else {
         glDepthFunc ( GL_LESS );glCheckError();  // closer to eye passes test
-        glDepthMask ( GL_FALSE );glCheckError(); // no Writing to depth buffer for splines
     }
 
-    glEnable(GL_POINT_SPRITE_ARB);glCheckError();
-    glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);glCheckError();
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE_NV);glCheckError();
-
-    // control point to highlight = currently selected preset keyframe
-    int p = mainWindow->getCurrentCtrlPoint();
-
-    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 6.0);glCheckError();
-    render_array(mainWindow->getFrameMax(), 2.0);glCheckError();
-
+    render_array(mainWindow->getFrameMax(), 1.0);glCheckError();
+    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);glCheckError();
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
@@ -2488,30 +2480,31 @@ void DisplayWidget::delete_buffer_objects() {
 
 void DisplayWidget::init_arrays()
 {
-    uint size = mainWindow->getFrameMax() * sizeof ( double ) * 3;
+    uint kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
+    uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( double ) * 4;
     // glBufferData with NULL pointer reserves memory space.
     glGenBuffers(1, &svbo);glCheckError();
     glBindBuffer(GL_ARRAY_BUFFER, svbo);glCheckError();
-    glBufferData(GL_ARRAY_BUFFER,    size, 0, GL_DYNAMIC_DRAW);glCheckError();
+    glBufferData(GL_ARRAY_BUFFER,    size+size, 0, GL_STATIC_DRAW);glCheckError();
 	glGenVertexArrays( 1, &svao );
 
     // map the buffer object into client's memory
-    glm::dvec3 *vptr = (glm::dvec3 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);glCheckError();
+    glm::dvec4 *vptr = (glm::dvec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);glCheckError();
     if(vptr)
     {
 
-// TODO fix the vertex pointer assignment of array data
-// make array big enough for ALL path points plus control points (eyeSpline + targetSpline)
 // XYZ vectors @ control points aligned to upSpline vector
 // option to show vectors for all points vs controlpoints (keyframes) only
 
         // initialize svbo arrays with precalculated data
-            for ( int j = 0; j < eyeControlPoints.count(); ++j ) {
-                vptr[j] = eyeSpline->getControlPoint(j);
+            for ( int j = 0; j < kfcnt; ++j ) {
+                vptr[j] = glm::dvec4(eyeSpline->getControlPoint(j), 1);
+                vptr[j+kfcnt] = glm::dvec4(targetSpline->getControlPoint(j), 1);
             }
 
             for ( int j = 0; j < mainWindow->getFrameMax(); ++j ) {
-                vptr[j] = eyeSpline->getSplinePoint(j);
+                vptr[j+kfcnt+kfcnt] = glm::dvec4(eyeSpline->getSplinePoint(j), 1);
+                vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::dvec4(targetSpline->getSplinePoint(j), 1);
             }
             
         glUnmapBuffer(GL_ARRAY_BUFFER);glCheckError(); // release pointer to mapped buffer
@@ -2523,6 +2516,19 @@ void DisplayWidget::init_arrays()
 void DisplayWidget::render_array(int number, double size)
 {
     if(spline_program!=0) {
+
+    // control point to highlight = currently selected preset keyframe
+    int p = mainWindow->getCurrentCtrlPoint()-1;
+    glEnable(GL_POINT_SPRITE);glCheckError();
+    glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);glCheckError();
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);glCheckError();
+
+        int start = mainWindow->getVariableEditor()->getKeyFrameCount();
+        int count = mainWindow->getFrameMax();
+        if(number == start ) {
+            count = start; 
+            start=0;}
+
         glUseProgram(spline_program);glCheckError();
         glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);glCheckError();
         glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), size );glCheckError();
@@ -2530,9 +2536,46 @@ void DisplayWidget::render_array(int number, double size)
         glBindVertexArray( svao );glCheckError();
         glEnableVertexAttribArray( 0 );glCheckError();
         glBindBuffer( GL_ARRAY_BUFFER, svbo );glCheckError();
-        glVertexAttribPointer( 0, 3, GL_DOUBLE, GL_FALSE, 0, NULL );glCheckError();
+        glVertexAttribPointer( 0, 4, GL_DOUBLE, GL_FALSE, 0, NULL );glCheckError();
 
-        glDrawArrays(GL_POINTS, 0, number);glCheckError();
+        // couldn't figure out the vertex color array, attribute 0 = position by default
+        // so that works but attribute 1 could be anything so for now set color manually
+        if(start == 0) { // drawing control points
+            glm::vec4 c = eyeSpline->controlColor();
+            for(int i=0;i<count;++i) {
+                
+                if(p == i) {
+                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );glCheckError();
+                }
+                else {
+                    glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+                }
+                
+                glDrawArrays(GL_POINTS, i, 1 );glCheckError();
+            }
+            start = count;
+            c = targetSpline->controlColor();
+
+            for(int i=0;i<count;++i) {
+                if(p == i) {
+                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );glCheckError();
+                }
+                else {
+                    glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+                }
+                glDrawArrays(GL_POINTS, start+i, 1 );glCheckError();
+            }
+        }
+        else { // drawing path points
+            start *= 2;
+            glm::vec4 c = eyeSpline->splineColor();
+            glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+            glDrawArrays(GL_POINTS, start, count );glCheckError();
+            start = start+count; 
+            c = targetSpline->splineColor();
+            glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+            glDrawArrays(GL_POINTS, start, count );glCheckError();
+        }
 
         // disable arrays
         glBindBuffer(GL_ARRAY_BUFFER, 0);glCheckError();

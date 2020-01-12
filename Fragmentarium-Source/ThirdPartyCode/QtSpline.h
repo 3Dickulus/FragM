@@ -80,6 +80,8 @@ public:
 
     void setSplineColor ( QColor c ) const;
     void setControlColor ( QColor c ) const;
+    glm::vec4 splineColor () const;
+    glm::vec4 controlColor () const;
 
     QVector<glm::dvec3>getControlPoints(){ return parts[0]->geom->vertices; };
     QVector<glm::dvec3>getSplinePoints(){ return parts[1]->geom->vertices; };

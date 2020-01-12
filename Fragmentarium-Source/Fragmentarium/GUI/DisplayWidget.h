@@ -344,10 +344,10 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
 
-/// Spline Shaders /////////////////////////////////////////////////////////
+/// Shaders
 	GLuint vbo;
 	GLuint vao;
-    // for spline paths
+/// Spline Shaders /////////////////////////////////////////////////////////
     GLuint svbo;
     GLuint svao;
 /// Spline Shaders /////////////////////////////////////////////////////////
