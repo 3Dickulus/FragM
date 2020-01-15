@@ -289,6 +289,9 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         bufferType = GL_RGBA8;
     }
 
+    makeBuffers();
+    INFO ( tr("Created front and back buffers as ") + b );
+
     requireRedraw ( true );
 
     initFragmentShader();
@@ -297,16 +300,13 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         return;
     }
 
-    if(!(nullptr == fragmentSource.bufferShaderSource)) {
-        initBufferShader();
+    initBufferShader();
 
+    if(!(nullptr == fragmentSource.bufferShaderSource)) {
         if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) {
             return;
         }
-    }
-    
-    makeBuffers();
-    INFO ( tr("Created front and back buffers as ") + b );
+    }    
 }
 
 void DisplayWidget::requireRedraw(bool clear )
@@ -1376,7 +1376,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
     // this only returns uniforms that have not been optimized out
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    for (int i = 0; i < count; i++) {
+    for (uint i = 0; i < count; i++) {
 
         GLsizei bufSize = 256;
         GLsizei length;
@@ -1385,6 +1385,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         GLchar name[bufSize];
 
         glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
+
         QString tp = "";
         get32Type(type, tp);
         bool foundDouble = false;
@@ -1743,7 +1744,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     glEnable ( GL_TEXTURE_2D );
 
-    glDisable ( GL_DEPTH_TEST );// No testing: coming from RTB (render to buffer)
+    glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
     glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
 
 	glBindVertexArray( vao );
@@ -2412,11 +2413,11 @@ void DisplayWidget::drawSplines()
         glDepthFunc ( GL_ALWAYS );glCheckError();
         glDepthMask ( GL_FALSE );glCheckError(); // no Writing to depth buffer
     } else {
-        glDepthFunc ( GL_LESS );glCheckError();  // closer to eye passes test
+        glDepthFunc ( GL_LESS );  // closer to eye passes test
     }
 
-    render_array(mainWindow->getFrameMax(), 1.0);glCheckError();
-    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);glCheckError();
+    render_array(mainWindow->getFrameMax(), 1.0);
+    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
@@ -2441,8 +2442,8 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
             targetSpline->setSplineColor( QColor("blue"));
             targetSpline->setControlColor( QColor("green"));
             
-            init_shader(pixelHeight());glCheckError();
-            init_arrays();glCheckError();
+            init_shader(pixelHeight());
+            init_arrays();
         }
     }
 }
@@ -2468,11 +2469,11 @@ void DisplayWidget::clearControlPoints()
 void DisplayWidget::delete_buffer_objects() {
     // delete the buffers if they exist
     if(svao != 0) {
-        glDeleteBuffers(1, &svao);glCheckError();
+        glDeleteBuffers(1, &svao);
         svao = 0;
     }
     if(svbo != 0) {
-        glDeleteBuffers(1, &svbo);glCheckError();
+        glDeleteBuffers(1, &svbo);
         svbo = 0;
     }
 }
@@ -2483,13 +2484,13 @@ void DisplayWidget::init_arrays()
     uint kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
     uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( double ) * 4;
     // glBufferData with NULL pointer reserves memory space.
-    glGenBuffers(1, &svbo);glCheckError();
-    glBindBuffer(GL_ARRAY_BUFFER, svbo);glCheckError();
-    glBufferData(GL_ARRAY_BUFFER,    size+size, 0, GL_STATIC_DRAW);glCheckError();
+    glGenBuffers(1, &svbo);
+    glBindBuffer(GL_ARRAY_BUFFER, svbo);
+    glBufferData(GL_ARRAY_BUFFER,    size+size, 0, GL_STATIC_DRAW);
 	glGenVertexArrays( 1, &svao );
 
     // map the buffer object into client's memory
-    glm::dvec4 *vptr = (glm::dvec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);glCheckError();
+    glm::dvec4 *vptr = (glm::dvec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
     if(vptr)
     {
 
@@ -2507,10 +2508,10 @@ void DisplayWidget::init_arrays()
                 vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::dvec4(targetSpline->getSplinePoint(j), 1);
             }
             
-        glUnmapBuffer(GL_ARRAY_BUFFER);glCheckError(); // release pointer to mapped buffer
+        glUnmapBuffer(GL_ARRAY_BUFFER); // release pointer to mapped buffer
     } else DBOUT << "glMapBuffer() Failed!";
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);glCheckError();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void DisplayWidget::render_array(int number, double size)
@@ -2519,9 +2520,9 @@ void DisplayWidget::render_array(int number, double size)
 
     // control point to highlight = currently selected preset keyframe
     int p = mainWindow->getCurrentCtrlPoint()-1;
-    glEnable(GL_POINT_SPRITE);glCheckError();
-    glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);glCheckError();
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);glCheckError();
+    glEnable(GL_POINT_SPRITE);
+    glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
         int start = mainWindow->getVariableEditor()->getKeyFrameCount();
         int count = mainWindow->getFrameMax();
@@ -2529,56 +2530,61 @@ void DisplayWidget::render_array(int number, double size)
             count = start; 
             start=0;}
 
-        glUseProgram(spline_program);glCheckError();
-        glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);glCheckError();
-        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), size );glCheckError();
+        glUseProgram(spline_program);
+        glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);
+        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), size );
         // specify vertex arrays
-        glBindVertexArray( svao );glCheckError();
-        glEnableVertexAttribArray( 0 );glCheckError();
-        glBindBuffer( GL_ARRAY_BUFFER, svbo );glCheckError();
-        glVertexAttribPointer( 0, 4, GL_DOUBLE, GL_FALSE, 0, NULL );glCheckError();
+        glBindVertexArray( svao );
+        glEnableVertexAttribArray( 0 );
+        glBindBuffer( GL_ARRAY_BUFFER, svbo );
+        glVertexAttribPointer( 0, 4, GL_DOUBLE, GL_FALSE, 0, NULL );
 
-        // couldn't figure out the vertex color array, attribute 0 = position by default
+        // couldn't figure out the vertex color array, attribute 0 = position by default ?
         // so that works but attribute 1 could be anything so for now set color manually
         if(start == 0) { // drawing control points
+
             glm::vec4 c = eyeSpline->controlColor();
+
             for(int i=0;i<count;++i) {
                 
-                if(p == i) {
-                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );glCheckError();
+                if(p == i) { // highlight the currently selected keyframe controlpoint
+                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );
                 }
                 else {
-                    glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+                    glColor4f ( c.x, c.y, c.z, 1.0  );
                 }
                 
-                glDrawArrays(GL_POINTS, i, 1 );glCheckError();
+                glDrawArrays(GL_POINTS, i, 1 );
             }
+
             start = count;
             c = targetSpline->controlColor();
 
             for(int i=0;i<count;++i) {
-                if(p == i) {
-                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );glCheckError();
+
+                if(p == i) { // highlight the currently selected keyframe controlpoint
+                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );
                 }
                 else {
-                    glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
+                    glColor4f ( c.x, c.y, c.z, 1.0  );
                 }
-                glDrawArrays(GL_POINTS, start+i, 1 );glCheckError();
+
+                glDrawArrays(GL_POINTS, start+i, 1 );
             }
         }
         else { // drawing path points
             start *= 2;
             glm::vec4 c = eyeSpline->splineColor();
-            glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
-            glDrawArrays(GL_POINTS, start, count );glCheckError();
+            glColor4f ( c.x, c.y, c.z, 1.0  );
+            glDrawArrays(GL_POINTS, start, count );
             start = start+count; 
             c = targetSpline->splineColor();
-            glColor4f ( c.x, c.y, c.z, 1.0  );glCheckError();
-            glDrawArrays(GL_POINTS, start, count );glCheckError();
+            glColor4f ( c.x, c.y, c.z, 1.0  );
+            glDrawArrays(GL_POINTS, start, count );
         }
 
         // disable arrays
-        glBindBuffer(GL_ARRAY_BUFFER, 0);glCheckError();
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glUseProgram(0);
     }
@@ -2586,32 +2592,32 @@ void DisplayWidget::render_array(int number, double size)
 
 uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 {
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);glCheckError();
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);glCheckError();
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(vertexShader, 1, &vsource, 0);glCheckError();
-    glShaderSource(fragmentShader, 1, &fsource, 0);glCheckError();
+    glShaderSource(vertexShader, 1, &vsource, 0);
+    glShaderSource(fragmentShader, 1, &fsource, 0);
 
-    glCompileShader(vertexShader);glCheckError();
-    glCompileShader(fragmentShader);glCheckError();
+    glCompileShader(vertexShader);
+    glCompileShader(fragmentShader);
 
-    GLuint program = glCreateProgram();glCheckError();
+    GLuint program = glCreateProgram();
 
-    glAttachShader(program, vertexShader);glCheckError();
-    glAttachShader(program, fragmentShader);glCheckError();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
 
-    glLinkProgram(program);glCheckError();
+    glLinkProgram(program);
 
     // check if program linked
     GLint success = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);glCheckError();
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
 
     if (!success)
     {
         char temp[256];
-        glGetProgramInfoLog(program, 256, 0, temp);glCheckError();
+        glGetProgramInfoLog(program, 256, 0, temp);
         std::cerr << "Failed to link program:"<<temp<<"\n";
-        glDeleteProgram(program);glCheckError();
+        glDeleteProgram(program);
         program = 0;
     }
 
@@ -2622,7 +2628,7 @@ void DisplayWidget::init_shader( int h )
 {
     pixel_scale = 10.0;
     // only need to do this once
-    spline_program = compile_shader(vertexShader, spherePixelShader);glCheckError();
+    spline_program = compile_shader(vertexShader, spherePixelShader);
 }
 
 } // namespace GUI
