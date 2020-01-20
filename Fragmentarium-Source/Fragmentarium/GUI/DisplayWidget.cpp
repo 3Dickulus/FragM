@@ -105,7 +105,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     QSurfaceFormat fmt;
     fmt.setSwapInterval(0);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-    fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
 #ifdef USE_OPENGL_4
     fmt.setVersion(4,5);
@@ -163,6 +163,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     buttonDown = false;
     updateRefreshRate();
     glDebugEnabled = false;
+    spline_program = 0;
 }
 
 void DisplayWidget::initializeGL()
@@ -189,7 +190,7 @@ void DisplayWidget::initializeGL()
     }
 #endif
 #endif
-
+    compatibilityProfile = format().profile() == QSurfaceFormat::CompatibilityProfile;
 }
 
 void DisplayWidget::updateRefreshRate()
@@ -372,7 +373,7 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
             } // just an arbitrary small number, GL default = 1000
             glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
 
-            if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
+            if (format().majorVersion() > 2 || isCompat()) {
                 glGenerateMipmap(GL_TEXTURE_2D); // Generate mipmaps here!!!
             }
             else {
@@ -1203,7 +1204,7 @@ void DisplayWidget::makeBuffers()
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     doClearBackBuffer = true;
 
-    if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
+    if (format().majorVersion() > 2 || isCompat()) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
             qDebug( ) << tr("FBO Incomplete Error!");
@@ -1218,7 +1219,6 @@ void DisplayWidget::makeBuffers()
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
 	glGenVertexArrays( 1, &vao );
-    
 }
 
 void DisplayWidget::setViewPort(int w, int h)
@@ -1484,7 +1484,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
 {
 
-    cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
+    if(compatibilityProfile)
+        cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
     int l = shaderProg->uniformLocation ( "pixelSize" );
 
     if ( l != -1 ) {
@@ -1544,6 +1545,8 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 void DisplayWidget::draw3DHints()
 {
 
+    if(!hasKeyFrames) return;
+
     if ( mainWindow->wantPaths()  && !isContinuous()) {
         if (eyeSpline != nullptr && drawingState != Animation && drawingState != Tiled) {
             if ( mainWindow->wantSplineOcc() ) {
@@ -1583,17 +1586,18 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // The projection mode as used here
     // allow us to render only a region of the viewport.
     // This allows us to perform tile based rendering.
-    glMatrixMode ( GL_PROJECTION );
+    if(compatibilityProfile) glMatrixMode ( GL_PROJECTION );
 
     if ( getState() == DisplayWidget::Tiled ) {
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
 
-        glLoadIdentity();
-
-        // only available in GL > 2.0 < 3.2 and compatibility profile
-        glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
-        glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
+        if(compatibilityProfile) {
+            // only available in GL > 2.0 < 3.2 and compatibility profile
+            glLoadIdentity();
+            glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
+            glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
+        }
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -1607,7 +1611,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     }
 
     // save current state
-    glPushAttrib ( GL_ALL_ATTRIB_BITS );
+    if(compatibilityProfile) glPushAttrib ( GL_ALL_ATTRIB_BITS );
 
     glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
     glEnable ( GL_DEPTH_TEST );  // enable depth testing
@@ -1620,7 +1624,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
 	glDrawArrays( GL_TRIANGLES, 0, 3 ); // shader draws on this surface
 
     // restore state
-    glPopAttrib();
+    if(compatibilityProfile) glPopAttrib();
     glFinish(); // wait for GPU to return control
 
     // finished with the shader
@@ -1728,12 +1732,14 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else shaderProgram->bind();
 
+    if(compatibilityProfile) {
     glPushAttrib ( GL_ALL_ATTRIB_BITS );
     glMatrixMode ( GL_PROJECTION );
     glLoadIdentity();
     glMatrixMode ( GL_MODELVIEW );
     glLoadIdentity();
-
+    }
+    
     setViewPort ( pixelWidth(),pixelHeight() );
 
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
@@ -1742,7 +1748,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
-    glEnable ( GL_TEXTURE_2D );
+    if(compatibilityProfile) glEnable ( GL_TEXTURE_2D );
 
     glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
     glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
@@ -1753,7 +1759,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
 
-    glPopAttrib();
+    if(compatibilityProfile) glPopAttrib();
     glFinish(); // wait for GPU to return control
 
     if (bufferShaderProgram != nullptr) {
@@ -2195,11 +2201,9 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
                     // only do this for 3D scenes
                     if(cameraID() == "3D" ) {
                         // get the eye pos
-                        QStringList in = mainWindow->getParameter("Eye").split(",");
-                        // convert parameter to 3d vector
-                        glm::dvec3 e = glm::dvec3(in.at(0).toDouble(), in.at(1).toDouble(), in.at(2).toDouble());
+                        glm::vec3 e = mainWindow->getParameter3f("Eye");
                         // calculate distance between camera and target
-                        double d = distance(mXYZ, e);
+                        double d = distance(mXYZ, glm::dvec3(e));
                         // set the focal plane to this distance
                         mainWindow->setParameter( "FocalPlane", d );
                         mainWindow->statusBar()->showMessage(
@@ -2361,11 +2365,14 @@ void DisplayWidget::drawLookatVector()
 
     glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
-    glColor4f ( 1.0,1.0,0.0,1.0 );
-    glBegin ( GL_LINE_STRIP );
-    glVertex3f ( ec.x,ec.y,ec.z );
-    glVertex3f ( tc.x,tc.y,tc.z );
-    glEnd();
+
+    if(compatibilityProfile) {
+        glColor4f ( 1.0,1.0,0.0,1.0 );
+        glBegin ( GL_LINE_STRIP );
+        glVertex3f ( ec.x,ec.y,ec.z );
+        glVertex3f ( tc.x,tc.y,tc.z );
+        glEnd();
+    }
 }
 
 void DisplayWidget::setPerspective()
@@ -2385,11 +2392,12 @@ void DisplayWidget::setPerspective()
     double zFar = 1000.0;
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
-    glm::dmat4 matrix;
-    matrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
-    matrix = matrix * glm::lookAt ( eye,target,up );
+    m_projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
+    m_modelViewMatrix = glm::lookAt ( eye,target,up );
+    glm::mat4 matrix;
+    matrix = m_projectionMatrix * m_modelViewMatrix;
 
-    glLoadMatrixd ( &matrix[0][0] );
+    if(compatibilityProfile) glLoadMatrixf ( glm::value_ptr(matrix) );
 
 }
 
@@ -2410,14 +2418,14 @@ void DisplayWidget::drawSplines()
 
     // this lets splines be visible when DEPTH_TO_ALPHA mode is active
     if (depthToAlpha) {
-        glDepthFunc ( GL_ALWAYS );glCheckError();
-        glDepthMask ( GL_FALSE );glCheckError(); // no Writing to depth buffer
+        glDepthFunc ( GL_ALWAYS );
+        glDepthMask ( GL_FALSE ); // no Writing to depth buffer
     } else {
         glDepthFunc ( GL_LESS );  // closer to eye passes test
     }
 
-    render_array(mainWindow->getFrameMax(), 1.0);
     render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
+    render_array(mainWindow->getFrameMax(), 1.0);
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
@@ -2478,51 +2486,50 @@ void DisplayWidget::delete_buffer_objects() {
     }
 }
 
-
 void DisplayWidget::init_arrays()
 {
     uint kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
-    uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( double ) * 4;
-    // glBufferData with NULL pointer reserves memory space.
-    glGenBuffers(1, &svbo);
-    glBindBuffer(GL_ARRAY_BUFFER, svbo);
-    glBufferData(GL_ARRAY_BUFFER,    size+size, 0, GL_STATIC_DRAW);
-	glGenVertexArrays( 1, &svao );
+    uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( float ) * 4;
+
+	glGenBuffers( 1, &svbo );
+	glBindBuffer( GL_ARRAY_BUFFER, svbo );
+	glBufferData( GL_ARRAY_BUFFER, size+size, 0, GL_STATIC_DRAW );
 
     // map the buffer object into client's memory
-    glm::dvec4 *vptr = (glm::dvec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
+    glm::vec4 *vptr = (glm::vec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
     if(vptr)
     {
-
-// XYZ vectors @ control points aligned to upSpline vector
-// option to show vectors for all points vs controlpoints (keyframes) only
-
         // initialize svbo arrays with precalculated data
             for ( int j = 0; j < kfcnt; ++j ) {
-                vptr[j] = glm::dvec4(eyeSpline->getControlPoint(j), 1);
-                vptr[j+kfcnt] = glm::dvec4(targetSpline->getControlPoint(j), 1);
+                vptr[j] = glm::vec4(eyeSpline->getControlPoint(j), 1);
+                vptr[j+kfcnt] = glm::vec4(targetSpline->getControlPoint(j), 1);
             }
 
             for ( int j = 0; j < mainWindow->getFrameMax(); ++j ) {
-                vptr[j+kfcnt+kfcnt] = glm::dvec4(eyeSpline->getSplinePoint(j), 1);
-                vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::dvec4(targetSpline->getSplinePoint(j), 1);
+                vptr[j+kfcnt+kfcnt] = glm::vec4(eyeSpline->getSplinePoint(j), 1);
+                vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::vec4(targetSpline->getSplinePoint(j), 1);
             }
             
         glUnmapBuffer(GL_ARRAY_BUFFER); // release pointer to mapped buffer
-    } else DBOUT << "glMapBuffer() Failed!";
+    } else DBOUT << "spline vertex glMapBuffer() Failed!";
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// create the VAO.
+	glGenVertexArrays( 1, &svao );
+	glBindVertexArray( svao );
+	glBindBuffer( GL_ARRAY_BUFFER, svbo );
+	glEnableVertexAttribArray( 0 );
+	glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
+
 }
 
+// XYZ vectors @ control points aligned to upSpline vector
+// option to show vectors for all points vs controlpoints (keyframes) only
 void DisplayWidget::render_array(int number, double size)
 {
     if(spline_program!=0) {
 
-    // control point to highlight = currently selected preset keyframe
-    int p = mainWindow->getCurrentCtrlPoint()-1;
-    glEnable(GL_POINT_SPRITE);
-    glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+        // control point to highlight = currently selected preset keyframe
+        int p = mainWindow->getCurrentCtrlPoint()-1;
 
         int start = mainWindow->getVariableEditor()->getKeyFrameCount();
         int count = mainWindow->getFrameMax();
@@ -2530,28 +2537,59 @@ void DisplayWidget::render_array(int number, double size)
             count = start; 
             start=0;}
 
+        // GL < 3.2 TODO: modify spline shaders for GL 4.1+ core gl_PointCoord gl_FragCoord
+        // GL_POINT_SPRITE is effectively forced on in the core profile (which doesn’t support non-sprite points).
+        // In the compatibility profile, point sprites are an option (and are disabled by default).
+        // gl_PointCoord is normalised (coordinates range from 0.0 to 1.0, so 1.0 is the width of the point),
+        // while gl_FragCoord is in pixels (coordinates range from 0.0 to the width/height of the window,
+        // and 1.0 is the width/height of a single pixel).
+        if(compatibilityProfile) {
+            glEnable(GL_POINT_SPRITE);
+            glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+        } else {
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glPointParameteri( GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT );
+        }
+        
+        glPointSize(size);
+
         glUseProgram(spline_program);
         glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);
         glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), size );
+
+        glm::vec3 eye = mainWindow->getParameter3f("Eye");
+        glUniform3f(glGetUniformLocation(spline_program, "posEye"), eye.x, eye.y, eye.z );
+        float fov = mainWindow->getParameter1f("FOV");
+        glUniform1f(glGetUniformLocation(spline_program, "FOV"), fov );
+
+        if(!compatibilityProfile) {
+            glUniformMatrix4fv(glGetUniformLocation(spline_program, "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(m_projectionMatrix));
+            glUniformMatrix4fv(glGetUniformLocation(spline_program, "modelViewMatrix"), 1,  GL_FALSE, glm::value_ptr(m_modelViewMatrix));
+        }
+
+        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+            
         // specify vertex arrays
         glBindVertexArray( svao );
-        glEnableVertexAttribArray( 0 );
-        glBindBuffer( GL_ARRAY_BUFFER, svbo );
-        glVertexAttribPointer( 0, 4, GL_DOUBLE, GL_FALSE, 0, NULL );
 
-        // couldn't figure out the vertex color array, attribute 0 = position by default ?
-        // so that works but attribute 1 could be anything so for now set color manually
-        if(start == 0) { // drawing control points
+        if(start == 0) { // drawing control points one at a time
 
             glm::vec4 c = eyeSpline->controlColor();
 
             for(int i=0;i<count;++i) {
                 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );
+                    if(cloc != -1 && !compatibilityProfile)
+                        glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+                    else
+                        glColor4f ( 1.0, 1.0, 0.0, 1.0 );
                 }
                 else {
-                    glColor4f ( c.x, c.y, c.z, 1.0  );
+                   if(cloc != -1 && !compatibilityProfile)
+                        glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    else
+                        glColor4f ( c.x, c.y, c.z, 1.0 );
                 }
                 
                 glDrawArrays(GL_POINTS, i, 1 );
@@ -2563,10 +2601,16 @@ void DisplayWidget::render_array(int number, double size)
             for(int i=0;i<count;++i) {
 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    glColor4f ( 1.0, 1.0, 0.0, 1.0  );
+                    if(cloc != -1 && !compatibilityProfile)
+                        glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+                    else
+                        glColor4f ( 1.0, 1.0, 0.0, 1.0  );
                 }
                 else {
-                    glColor4f ( c.x, c.y, c.z, 1.0  );
+                    if(cloc != -1 && !compatibilityProfile)
+                        glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    else
+                        glColor4f ( c.x, c.y, c.z, 1.0  );
                 }
 
                 glDrawArrays(GL_POINTS, start+i, 1 );
@@ -2575,11 +2619,17 @@ void DisplayWidget::render_array(int number, double size)
         else { // drawing path points
             start *= 2;
             glm::vec4 c = eyeSpline->splineColor();
-            glColor4f ( c.x, c.y, c.z, 1.0  );
+            if(cloc != -1 && !compatibilityProfile)
+                glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            else
+                glColor4f ( c.x, c.y, c.z, 1.0  );
             glDrawArrays(GL_POINTS, start, count );
             start = start+count; 
             c = targetSpline->splineColor();
-            glColor4f ( c.x, c.y, c.z, 1.0  );
+            if(cloc != -1 && !compatibilityProfile)
+                glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            else
+                glColor4f ( c.x, c.y, c.z, 1.0  );
             glDrawArrays(GL_POINTS, start, count );
         }
 
@@ -2592,19 +2642,32 @@ void DisplayWidget::render_array(int number, double size)
 
 uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 {
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(vertexShader, 1, &vsource, 0);
-    glShaderSource(fragmentShader, 1, &fsource, 0);
-
-    glCompileShader(vertexShader);
-    glCompileShader(fragmentShader);
 
     GLuint program = glCreateProgram();
 
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
+    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource( vShader, 1, &vsource, 0);
+    glCompileShader( vShader );
+	// check for compile errors
+	int params = -1;
+	glGetShaderiv( vShader, GL_COMPILE_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		std::cerr << "ERROR: Spline vshader index " << vShader << " did not compile!" << std::endl;
+        return 0;
+	}
+    glAttachShader(program, vShader );
+    
+    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource( fShader, 1, &fsource, 0);
+    glCompileShader( fShader );
+	// check for compile errors
+	params = -1;
+	glGetShaderiv( fShader, GL_COMPILE_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		std::cerr << "ERROR: Spline fshader index " << fShader << " did not compile!" << std::endl;
+        return 0;
+	}
+    glAttachShader(program, fShader );
 
     glLinkProgram(program);
 
@@ -2614,11 +2677,11 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 
     if (!success)
     {
-        char temp[256];
-        glGetProgramInfoLog(program, 256, 0, temp);
-        std::cerr << "Failed to link program:"<<temp<<"\n";
+        char temp[512];
+        glGetProgramInfoLog(program, 512, 0, temp);
+        std::cerr << "Failed to link spline shader program:" << temp << std::endl;
         glDeleteProgram(program);
-        program = 0;
+        return 0;
     }
 
     return program;
@@ -2626,9 +2689,18 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 
 void DisplayWidget::init_shader( int h )
 {
+    // only need to do this once?
+    if(spline_program != 0) return; 
     pixel_scale = 10.0;
-    // only need to do this once
-    spline_program = compile_shader(vertexShader, spherePixelShader);
+    const char *vs, *ps;
+    if(compatibilityProfile) {
+        vs = vertexShader;
+        ps = spherePixelShader;
+    } else {
+        vs = vertexShader4.toLatin1();
+        ps = spherePixelShader4.toLatin1();
+    }
+    spline_program = compile_shader(vs, ps);
 }
 
 } // namespace GUI

@@ -104,7 +104,7 @@ class CameraControl;
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
 #ifdef USE_OPENGL_4
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility
+class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Core
 #else
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
 #endif
@@ -293,6 +293,8 @@ public slots:
     {
         return cameraControl->getID();
     }
+    
+    bool isCompat(){ return compatibilityProfile; };
 
 /// Spline Shaders /////////////////////////////////////////////////////////
     void delete_buffer_objects();
@@ -344,14 +346,12 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
 
-/// Shaders
+/// for Main Shaders
 	GLuint vbo;
 	GLuint vao;
-/// Spline Shaders /////////////////////////////////////////////////////////
-	GLuint scbo;
+/// for Spline Shaders
     GLuint svbo;
     GLuint svao;
-/// Spline Shaders /////////////////////////////////////////////////////////
 
 	GLfloat points[9] = { -1.0f, -1.0f, 0.0f, 3.0f, -1.0f, 0.0f, -1.0f, 3.0f, 0.0f };
 
@@ -431,42 +431,80 @@ private:
     bool verbose;
     bool bufferShaderOnly;
     bool glDebugEnabled;
-
+    bool compatibilityProfile;
 /// Spline Shaders /////////////////////////////////////////////////////////
+// GLSL legacy code works here for now, modern code will require adjustments
 
 #define STRINGIFY(A) #A
 // vertex shader
 const char *vertexShader = STRINGIFY(
+uniform vec3 posEye;
+uniform float FOV;
 uniform float pointRadius;  // point size in world space
 uniform float pointScale;   // scale to calculate size in pixels
 void main()
 {
     // calculate window-space point size
-    vec3 posEye = vec3(gl_ModelViewMatrix * vec4(gl_Vertex.xyz, 1.0));       // [4 FLOPS]
-    float dist = length(posEye);
-    gl_PointSize = pointRadius * (pointScale / dist);                        // [2 FLOPS]
-    gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);   // [4 FLOPS]
+    float dist = length(posEye)*FOV;
+    gl_PointSize = pointRadius * (pointScale / dist);
+    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);
     gl_FrontColor = gl_Color;
 }
-                           );                                                // 10 total
+);
 
 const char *spherePixelShader = STRINGIFY(
 void main()
 {
     const vec3 lightDir = vec3(0.0, 0.0, 1.0);
 
-    // calculate normal from texture coordinates
+    // calculate normal
     vec3 N;
-    N.xy = gl_TexCoord[0].xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);              // [4 FLOPS]
-    float mag = dot(N.xy, N.xy);                                             // [3 FLOPS]
+    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);
+    float mag = dot(N.xy, N.xy);
     if (mag > 1.0) discard;   // kill pixels outside circle
-    N.z = sqrt(1.0-mag);                                                     // [2 FLOPS]
+    N.z = sqrt(mag);
     // calculate lighting
-    float diffuse = max(0.0, dot(lightDir, N));                              // [5 FLOPS]
-    gl_FragColor = gl_Color * diffuse;                                       // [4 FLOP]
+    float diffuse = max(0.0, dot(lightDir, N));
+    gl_FragColor = vec4(gl_Color.rgb, diffuse);
 }
-                                );                                           // 15 total
+);
+
+glm::mat4 m_projectionMatrix;
+glm::mat4 m_modelViewMatrix;
+
+/// GL4
+// STRINGIFY does not allow #version statement
+QString vertexShader4 = QString("#version 450 core\n"
+"layout(location = 0) in vec4 vertex_position;\n"
+"uniform vec4 vertex_colour;\n"
+"out vec4 colour;\n"
+"uniform mat4 projectionMatrix;\n"
+"uniform mat4 modelViewMatrix;\n"
+"uniform vec3 posEye;\n"
+"uniform float FOV;\n"
+"uniform float pointRadius;\n"
+"uniform float pointScale;\n"
+"void main() {\n"
+"    float dist = length(posEye)*FOV;\n"
+"    gl_PointSize = pointRadius * (pointScale / dist);\n"
+"    gl_Position = projectionMatrix * modelViewMatrix * vec4(vertex_position.xyz, 1.0);\n"
+"    colour = vertex_colour;\n"
+"}\n");
+
+QString spherePixelShader4 = QString("#version 450 core\n"
+"in vec4 colour;\n"
+"out vec4 frag_colour;\n"
+"void main() {\n"
+"    const vec3 lightDir = vec3(0.0, 0.0, 1.0);\n"
+"    vec3 N;\n"
+"    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);\n"
+"    float mag = dot(N.xy, N.xy);\n"
+"    if (mag > 1.0) discard;\n"
+"    N.z = sqrt(mag);\n"
+"    float diffuse = max(0.0, dot(lightDir, N));\n"
+"    frag_colour = vec4(colour.rgb, 1.0-diffuse);\n"
+"}\n");
+
 /// Spline Shaders /////////////////////////////////////////////////////////
 
 };
