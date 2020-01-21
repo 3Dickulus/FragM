@@ -789,75 +789,75 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             return false;
         }
         
-        Array2D<RGBAFLOAT>pixels ( w, 1 );
-        
-        if(type == GL_SAMPLER_2D) {
-            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
-            if(sw != nullptr && !sw->getName().isNull()) {
-                chv = sw->getChannelValue(); // channel name(s)
-                if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
-                    hasZ = false;
-                else
-                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
-                
-                if(chv.contains("All") && sw->channelList.contains("Z")) hasZ = true;
-                
-//                 chn = sw->hasChannel(chv); // channel index
-//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
-            }
-        } else chv = "All";
+        SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
+        if(sw == nullptr || sw->getName().isNull()) {
+            WARNING(tr("Exrloader could not get SamplerWidget for %1!").arg(textureUniformName).arg(h));
+            return false;
+        }
 
-        pixels.resizeErase (w, h);
-        
+        // OpenEXR doesn't like reading the same channel name into
+        // more than one slice of a single framebuffer, so we need
+        // to keep track and copy the data manually
+        QString sliceChannel[4] = { "", "", "", "" };
+        int sliceCopyFrom[4] = { -1, -1, -1, -1 };
+        for (int channel = 0; channel < 4; ++channel) {
+            sliceChannel[channel] = sw->getChannelValue(channel);
+            bool copySlice = false;
+            for (int earlierChannel = 0; earlierChannel < channel; ++ earlierChannel) {
+                if (sliceChannel[earlierChannel] == sliceChannel[channel]) {
+                    sliceCopyFrom[channel] = earlierChannel;
+                    break;
+                }
+            }
+        }
+
+        // just in case, if these aren't true then bad things will happen
+        assert(sizeof(RGBAFLOAT) == 4 * sizeof(float));
+        assert(offsetof(RGBAFLOAT,r) == 0);
+
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
-        
-        auto *cols = new float[w * h * 4];
-        
-        while ( dw.min.y <= dw.max.y ) {
-
-            RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
-
-            FrameBuffer fb;
-
-            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
-                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-            else // this should allow arbitrary naming of the 4th channel
-                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-
-            file.setFrameBuffer (fb);
-            file.readPixels ( dw.min.y );
-
-            // process scanline (pixels)
-            for ( int i = 0; i<w; i++ ) {
-                // convert 3D array to 1D
-                int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv.contains("A") || chv.contains("All") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
+        Array2D<RGBAFLOAT>pixels ( w, h );
+        RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+        FrameBuffer fb;
+        float def = 0.0f/0.0f; // NaN
+        for (int channel = 0; channel < 4; ++channel) {
+            if (sliceCopyFrom[channel] == -1) {
+                char *ptr = (char *) (&base[0].r + channel);
+                fb.insert(sliceChannel[channel].toStdString(),
+                  Slice(Imf::FLOAT, ptr, xs, ys, 1, 1, def));
             }
-            dw.min.y ++;
+        }
+        file.setFrameBuffer (fb);
+        file.readPixels(dw.min.y, dw.max.y);
+        
+        for (int channel = 0; channel < 4; ++channel) {
+            int earlierChannel = sliceCopyFrom[channel];
+            if (earlierChannel != -1) {
+                float *src_ptr = &base[0].r + earlierChannel;
+                float *dst_ptr = &base[0].r + channel;
+                for (int y = 0; y < h; ++y) {
+                    for (int x = 0; x < w; ++x) {
+                        size_t k = (x + size_t(w) * y) * 4;
+                        dst_ptr[k] = src_ptr[k];
+                    }
+                }
+            }
         }
 
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
 
         if(type == GL_SAMPLER_CUBE) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 2));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 3));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 4));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 5));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 0));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 1));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 2));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5));
         } else {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, cols);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, base);
         }
 
-        delete [] cols;
-        cols = nullptr;
     } else {
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
