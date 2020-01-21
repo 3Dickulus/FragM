@@ -606,6 +606,22 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
     }
 }
 
+QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
+{
+    SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
+    if(sw == nullptr || sw->getName().isNull()) {
+        WARNING(tr("getTextureChannels() could not get SamplerWidget for %1!").arg(textureUniformName));
+        return QStringList();
+    }
+    QStringList result;
+    for (int channel = 0; channel < 4; ++channel)
+    {
+        std::cout << sw->getChannelValue(channel).toStdString() << std::endl;
+        result += sw->getChannelValue(channel);
+    }
+    return result;
+}
+
 void DisplayWidget::initFragmentShader()
 {
 
@@ -711,7 +727,7 @@ vec3  backgroundColor(vec3 dir) {
 }
 */
 
-bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID, QString textureUniformName )
+bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
 {
 
     HDRLoaderResult result;
@@ -748,12 +764,12 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 //    - read the pixels from the file
 //
 
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels)
 {
 
 #ifndef USE_OPEN_EXR
     // Qt loads EXR files
-    return loadQtTexture(texturePath, type, textureID, textureUniformName);
+    return loadQtTexture(texturePath, type, textureID);
 #else
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
@@ -789,19 +805,14 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             return false;
         }
         
-        SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
-        if(sw == nullptr || sw->getName().isNull()) {
-            WARNING(tr("Exrloader could not get SamplerWidget for %1!").arg(textureUniformName).arg(h));
-            return false;
-        }
-
         // OpenEXR doesn't like reading the same channel name into
         // more than one slice of a single framebuffer, so we need
         // to keep track and copy the data manually
+        assert(textureChannels.size() == 4);
         QString sliceChannel[4] = { "", "", "", "" };
         int sliceCopyFrom[4] = { -1, -1, -1, -1 };
         for (int channel = 0; channel < 4; ++channel) {
-            sliceChannel[channel] = sw->getChannelValue(channel);
+            sliceChannel[channel] = textureChannels[channel];
             bool copySlice = false;
             for (int earlierChannel = 0; earlierChannel < channel; ++ earlierChannel) {
                 if (sliceChannel[earlierChannel] == sliceChannel[channel]) {
@@ -882,7 +893,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 }
 
 // Qt format image, Qt 5+ loads EXR format on linux
-bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
+bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
 {
 
     QImage im;
@@ -945,9 +956,17 @@ void DisplayWidget::initFragmentTextures()
         return; // something went wrong so do not try to setup textures
     }
 
-    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
-    QMap<QString, bool> textureCacheUsed;
+    // unbind all textures so texture memory of deleted textures can be reclaimed
+    for (int u = 0; u < TextureUnitCache.size(); ++u) {
+      glActiveTexture(GL_TEXTURE0 + 1 + u);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+    // clear cache of texture units, it will be regenerated below
+    TextureUnitCache = QMap<QString, int>();
 
+    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
+    QMap<QPair<QString, QStringList>, bool> textureCacheUsed;
     QMapIterator<QString, QString> it( fragmentSource.textures );
     while( it.hasNext() ) {
         it.next();
@@ -985,42 +1004,45 @@ void DisplayWidget::initFragmentTextures()
 
                 if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
                     // check cache first
-                    if ( !TextureCache.contains ( texturePath ) ) {
+                    QStringList textureChannels = getTextureChannels(textureUniformName);
+                    QPair<QString, QStringList> textureCacheKey(texturePath, textureChannels);
+                    if ( !TextureCache.contains ( textureCacheKey ) ) {
                         // if not in cache then create one and try to load and add to cache
                         glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
                         // allocate a texture id
                         glGenTextures ( 1, &textureID );
 
                         if (verbose) {
-                            qDebug() << QString("Allocating texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                            qDebug() << QString("Allocating texture (ID: %1) %2 %3").arg(textureID).arg(texturePath).arg(textureChannels.join(";"));
                         }
 
                         if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
                             loaded = loadHDRTexture(texturePath, type, textureID);
                         }
                         else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                            loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                            loaded = loadEXRTexture(texturePath, type, textureID, textureChannels);
                         }
                         else {
                             loaded = loadQtTexture(texturePath, type, textureID);
                         }
                         if ( loaded ) {
                             // add to cache
-                            TextureCache[texturePath] = textureID;
-                            textureCacheUsed[texturePath] = true;
+                            TextureCache[textureCacheKey] = textureID;
+                            textureCacheUsed[textureCacheKey] = true;
                         }
                     } else { // use cache
-                        textureID = TextureCache[texturePath];
-                        textureCacheUsed[texturePath] = true;
+                        textureID = TextureCache[textureCacheKey];
+                        textureCacheUsed[textureCacheKey] = true;
                         loaded = true;
                         if (verbose) {
-                            qDebug() << QString("Using cached texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                            qDebug() << QString("Using cached texture (ID: %1) %2 %3").arg(textureID).arg(texturePath).arg(textureChannels.join(";"));
                         }
                     }
                 }
 
                 if ( loaded ) {
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+                    TextureUnitCache[textureUniformName] = u;
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
 //                         if(verbose && subframeCounter == 1) {
@@ -1040,19 +1062,18 @@ void DisplayWidget::initFragmentTextures()
 
     // Check for unused textures
     clearTextureCache(&textureCacheUsed);
-
 }
 
-void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
+void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *textureCacheUsed)
 {
 
     // Check for unused textures
     if (textureCacheUsed != nullptr) {
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while ( i.hasNext() ) {
             i.next();
             if (!textureCacheUsed->contains(i.key())) {
-                INFO("Removing texture from cache: " +i.key());
+                INFO(QString("Removing texture from cache: %1 %2").arg(i.key().first).arg(i.key().second.join(";")));
                 GLuint id = i.value();
                 glDeleteTextures(1, &id);
                 i.remove();
@@ -1060,7 +1081,7 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
 
         }
     } else { // clear cache and textures
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
             GLuint id = i.value();
@@ -1444,17 +1465,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                 if(uniformName == vw[n]->getName()) {
                     auto *sw = dynamic_cast<SamplerWidget *>(vw[n]);
                     if (sw != nullptr) {
-                        QMapIterator<QString, QString> it( fragmentSource.textures );
-                        int u=1; // sampler textures start at 1
-                        while( it.hasNext() ) {
-                            it.next();
-                            if(it.value().contains(sw->getValue())) { // the cached value is GLAPI texID, glsl wants indexOf!
-                                sw->texID = u;//TextureCache[it.value()];
-                                sw->setUserUniform(shaderProg);
-//                                 DBOUT << "Sampler:" << uniformName << " FragMtexID:" << sw->texID << " CacheID:" << TextureCache[it.value()];
-                            }
-                            u++;
-                        }
+                        if (TextureUnitCache.contains(uniformName)) {
+                            sw->texID = TextureUnitCache[uniformName];
+                            sw->setUserUniform(shaderProg);
+                         }
                     } else { 
                         vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
                         vw[n]->setUserUniform(shaderProg);

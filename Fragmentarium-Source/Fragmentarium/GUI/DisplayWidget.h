@@ -212,7 +212,8 @@ public:
 
     bool buttonDown;
 
-    void clearTextureCache ( QMap<QString, bool>* textureCacheUsed );
+    QStringList getTextureChannels(QString textureUniformName);
+    void clearTextureCache ( QMap<QPair<QString, QStringList>, bool>* textureCacheUsed );
 
     QStringList getCurveSettings();
     void setCurveSettings ( const QStringList cset );
@@ -340,11 +341,11 @@ private:
 
     bool initPreviewBuffer();
 
-    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+    bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
 // #ifdef USE_OPEN_EXR
-    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+    bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels);
 // #endif
-    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString uniformName="");
+    bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
 
     bool setTextureParms(QString textureUniformName, GLenum type);
     void checkForSpecialCase(QString uniformName, QString &uniformValue);
@@ -383,7 +384,8 @@ private:
     GLenum bufferType;
 
     QDateTime tileRenderStart;
-    QMap<QString, int> TextureCache;
+    QMap<QPair<QString, QStringList>, int> TextureCache; // (filepath, channels) -> texture object
+    QMap<QString, int> TextureUnitCache; // uniform name -> texture unit index
 
     bool doClearBackBuffer;
     QTimer* timer;
