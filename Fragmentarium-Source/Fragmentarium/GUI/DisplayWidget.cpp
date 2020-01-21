@@ -1484,8 +1484,8 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
 {
 
-    if(compatibilityProfile)
-        cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity
+    cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity not required?
+
     int l = shaderProg->uniformLocation ( "pixelSize" );
 
     if ( l != -1 ) {
@@ -2393,12 +2393,13 @@ void DisplayWidget::setPerspective()
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
     m_projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
-    m_modelViewMatrix = glm::lookAt ( eye,target,up );
-    glm::mat4 matrix;
-    matrix = m_projectionMatrix * m_modelViewMatrix;
+    m_viewMatrix = glm::lookAt ( eye,target,up );
+    m_modelMatrix = glm::mat4(1); // identity
+    m_pvmMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
-    if(compatibilityProfile) glLoadMatrixf ( glm::value_ptr(matrix) );
-
+    if(compatibilityProfile) {
+        glLoadMatrixf ( glm::value_ptr(m_pvmMatrix) );
+    }
 }
 
 QStringList DisplayWidget::getCurveSettings()
@@ -2537,7 +2538,6 @@ void DisplayWidget::render_array(int number, double size)
             count = start; 
             start=0;}
 
-        // GL < 3.2 TODO: modify spline shaders for GL 4.1+ core gl_PointCoord gl_FragCoord
         // GL_POINT_SPRITE is effectively forced on in the core profile (which doesn’t support non-sprite points).
         // In the compatibility profile, point sprites are an option (and are disabled by default).
         // gl_PointCoord is normalised (coordinates range from 0.0 to 1.0, so 1.0 is the width of the point),
@@ -2564,8 +2564,7 @@ void DisplayWidget::render_array(int number, double size)
         glUniform1f(glGetUniformLocation(spline_program, "FOV"), fov );
 
         if(!compatibilityProfile) {
-            glUniformMatrix4fv(glGetUniformLocation(spline_program, "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(m_projectionMatrix));
-            glUniformMatrix4fv(glGetUniformLocation(spline_program, "modelViewMatrix"), 1,  GL_FALSE, glm::value_ptr(m_modelViewMatrix));
+            glUniformMatrix4fv(glGetUniformLocation(spline_program, "pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix));
         }
 
         GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");

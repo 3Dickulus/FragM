@@ -470,7 +470,9 @@ void main()
 );
 
 glm::mat4 m_projectionMatrix;
-glm::mat4 m_modelViewMatrix;
+glm::mat4 m_viewMatrix;
+glm::mat4 m_modelMatrix; // identity
+glm::mat4 m_pvmMatrix;
 
 /// GL4
 // STRINGIFY does not allow #version statement
@@ -478,8 +480,7 @@ QString vertexShader4 = QString("#version 450 core\n"
 "layout(location = 0) in vec4 vertex_position;\n"
 "uniform vec4 vertex_colour;\n"
 "out vec4 colour;\n"
-"uniform mat4 projectionMatrix;\n"
-"uniform mat4 modelViewMatrix;\n"
+"uniform mat4 pvmMatrix;\n"
 "uniform vec3 posEye;\n"
 "uniform float FOV;\n"
 "uniform float pointRadius;\n"
@@ -487,7 +488,7 @@ QString vertexShader4 = QString("#version 450 core\n"
 "void main() {\n"
 "    float dist = length(posEye)*FOV;\n"
 "    gl_PointSize = pointRadius * (pointScale / dist);\n"
-"    gl_Position = projectionMatrix * modelViewMatrix * vec4(vertex_position.xyz, 1.0);\n"
+"    gl_Position = pvmMatrix * vec4(vertex_position.xyz, 1.0);\n"
 "    colour = vertex_colour;\n"
 "}\n");
 
