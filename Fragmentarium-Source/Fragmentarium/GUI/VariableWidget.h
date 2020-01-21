@@ -509,32 +509,35 @@ public:
     }
     void reset()
     {
+        // updates channel combo box list from file, showing them (if EXR)
         comboBox->setEditText ( defaultValue );
-        if(!defaultChannelValue.isEmpty()) {
-            channelComboBox->show();
-            int i = channelComboBox->findText(defaultChannelValue);
-            if(i != -1) {
-                channelComboBox->setCurrentIndex(i);
+        for (int channel = 0; channel < 4; ++channel)
+        {
+            // this test should always be true for EXR
+            if(channel < defaultChannelValue.size() && ! defaultChannelValue[channel].isEmpty()) {
+                channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
             }
-        } else channelComboBox->hide();
+        }
+    }
+    QString getChannelValue(int channel)
+    {
+        if(!channelComboBox[channel]->isHidden())
+            return channelComboBox[channel]->currentText();
+        else return "";
     }
     QString getChannelValue()
     {
-        if(!channelComboBox->isHidden()) {
-            QString chv = "";
-            QMapIterator<QString, Qt::CheckState> it(channelsUsed);
-            while (it.hasNext()) {
-                it.next();
-                if(it.value() == Qt::Checked) chv += it.key() + ";";
+        QStringList l = QStringList();
+        for (int channel = 0; channel < 4; ++channel) {
+            QString c = getChannelValue(channel);
+            if (! c.isEmpty()) {
+                l += c;
             }
-            chv.remove(chv.length()-1,1);
-            return chv;
         }
-
-        else return "";
+        return l.join(";");
     }
     
-    int hasChannel(QString chan);
+    int hasChannel(int channel, QString chan);
     
     QString getLockedSubstitution()
     {
@@ -554,16 +557,6 @@ public:
     QStringList channelList;
 
 public slots:
-    void slot_changed(QStandardItem *item)
-    {
-        channelsUsed[item->text()] = item->checkState();
-//         if(item->checkState() == Qt::Unchecked) {
-//             DBOUT << item->text() << "Unchecked!";
-//         } else if(item->checkState() == Qt::Checked) {
-//             DBOUT << item->text() << "Checked!";
-//         }
-//         channelChanged(item->text());
-    }
 
 signals:
     void changed();
@@ -578,12 +571,11 @@ protected slots:
 private:
 
     QComboBox* comboBox;
-    QComboBox* channelComboBox;
+    QComboBox* channelComboBox[4];
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
-    QString defaultChannelValue;
-    QMap<QString, Qt::CheckState> channelsUsed;
+    QStringList defaultChannelValue;
 };
 
 class hSamplerWidget : public SamplerWidget

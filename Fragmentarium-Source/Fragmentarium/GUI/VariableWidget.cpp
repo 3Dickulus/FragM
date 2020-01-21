@@ -718,9 +718,23 @@ void IntWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 // SamplerWidget
 // ------------------------------------------------------------------
 
-SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
-    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue), defaultChannelValue(defaultChannelValue)
+SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValueString)
+    : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue)
 {
+    // process EXR channel list as set in .frag source widget specification
+    QStringList defaultDefaultChannelValues = QString("R;G;B;A").split(";");
+    QStringList samplerDefaultChannelValues = defaultChannelValueString.split(";");
+    defaultChannelValue = QStringList();
+    for (int channel = 0; channel < 4; ++channel) {
+        if (channel < samplerDefaultChannelValues.size() && ! samplerDefaultChannelValues[channel].isEmpty()) {
+            defaultChannelValue += samplerDefaultChannelValues[channel];
+        } else {
+            defaultChannelValue += defaultDefaultChannelValues[channel];
+        }
+    }
+    // better to crash now knowing why than in later code unpredictably
+    // but if the code above is correct the assertion should never fail
+    assert(defaultChannelValue.size() == 4);
 
     auto *l = new QHBoxLayout(widget);
     l->setSpacing(2);
@@ -737,48 +751,49 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
     comboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
     comboBox->view()->setCornerWidget(new QSizeGrip(comboBox));
-    
-        channelComboBox = new QComboBox(parent);
-        channelComboBox->setEditable(false);
-        channelComboBox->setEditText(defaultChannelValue);
-        channelComboBox->setObjectName(name+"Channel");
-        channelComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-        l->addWidget(channelComboBox);
-        channelComboBox->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
-        channelComboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
-        channelComboBox->view()->setCornerWidget(new QSizeGrip(channelComboBox));
-        
-        connect(channelComboBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
 
-        if(defaultChannelValue.isEmpty()){
-            channelComboBox->hide();
-        }
+    for (int channel = 0; channel < 4; ++channel) {
+        channelComboBox[channel] = new QComboBox(parent);
+        channelComboBox[channel]->setEditable(false);
+        channelComboBox[channel]->setObjectName(name+"Channel"+QString(channel));
+        channelComboBox[channel]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+        l->addWidget(channelComboBox[channel]);
+        channelComboBox[channel]->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum));
+        channelComboBox[channel]->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // necessarily!
+        channelComboBox[channel]->view()->setCornerWidget(new QSizeGrip(channelComboBox[channel]));
+        connect(channelComboBox[channel], SIGNAL(currentTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
+    }
 
     pushButton = new QPushButton("...", parent);
     l->addWidget(pushButton);
     pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     connect(comboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(textChanged(const QString &)));
     connect(pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
-    textChanged(defaultValue);
+    textChanged(defaultValue); // updates channel combo boxes list of items (and visibility) from EXR file contents
+
+    // select channel combo box items from widget specification
+    for (int channel = 0; channel < 4; ++channel) {
+        channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
+    }
 
     texID=0;
 }
 
-int SamplerWidget::hasChannel(QString chan)
+int SamplerWidget::hasChannel(int channel, QString chan)
 {
     int ci=-1;
-    if(!channelComboBox->isHidden()) {
-        ci=channelComboBox->findText(chan);
+    if(!channelComboBox[channel]->isHidden()) {
+        ci=channelComboBox[channel]->findText(chan);
     }
     
-    if(ci == -1 && chan != tr("All")) {
-        QPalette pal = channelComboBox->palette();
-        pal.setColor(channelComboBox->backgroundRole(), Qt::red);
-        channelComboBox->setPalette(pal);
-        channelComboBox->setAutoFillBackground(true);
+    if(ci == -1) {
+        QPalette pal = channelComboBox[channel]->palette();
+        pal.setColor(channelComboBox[channel]->backgroundRole(), Qt::red);
+        channelComboBox[channel]->setPalette(pal);
+        channelComboBox[channel]->setAutoFillBackground(true);
     } else {
-        channelComboBox->setPalette(QApplication::palette(channelComboBox));
-        channelComboBox->setAutoFillBackground(false);
+        channelComboBox[channel]->setPalette(QApplication::palette(channelComboBox[channel]));
+        channelComboBox[channel]->setAutoFillBackground(false);
     }
 
     return ci;
@@ -791,13 +806,11 @@ void SamplerWidget::channelChanged(const QString &text)
         
         bool check = true;
         
-        if(text != "All") {
             if(!channelList.contains(text)) {
                 check=false;
                 WARNING("Channel " + text + " not found!");
             }
 //             else DBOUT << channelComboBox->currentIndex();
-        }
 
         if(check) {
             valueChanged();
@@ -824,48 +837,30 @@ void SamplerWidget::textChanged(const QString &text)
         fileName="Examples/"+text;
     else  if(QFileInfo("Examples/Include/"+text).exists())
         fileName="Examples/Include/"+text;
-    
+
+    for (int channel = 0; channel < 4; ++channel) {
+        channelComboBox[channel]->clear();
+        channelComboBox[channel]->setHidden(true);
+    }
 #ifdef USE_OPEN_EXR
     if(!fileName.isEmpty() && fileName.endsWith(".exr") ) {
         InputFile file ( fileName.toLatin1().data() );
 
         // setup channelComboBox
         if ( file.isComplete() ) {
-            channelList = QStringList("All");
-            channelComboBox->clear();
-                 
+            channelList = QStringList();
             const ChannelList &channels = file.header().channels();
             for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
             {
                 channelList += i.name();
             }
-
-            QStandardItemModel *model = new QStandardItemModel(channelList.count(),1); // n rows, 1 col
-
-            for (int ch = 0; ch < channelList.count(); ++ch)
-            {
-                QStandardItem* item = new QStandardItem();
-                item->setText(channelList.at(ch));
-                item->setTextAlignment(Qt::AlignHCenter);
-                item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-                item->setData(defaultChannelValue.contains(channelList.at(ch)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
-                channelsUsed[item->text()] = item->checkState();
-                model->setItem(ch, 0, item);
-                
+            for (int channel = 0; channel < 4; ++channel) {
+                channelComboBox[channel]->addItems(channelList);
+                channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
+                channelComboBox[channel]->setHidden(false);
             }
-
-            channelComboBox->setModel(model);
-            
-            connect(model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slot_changed(QStandardItem *)));
-
-            SubclassOfQStyledItemDelegate *delegate = new SubclassOfQStyledItemDelegate();
-            channelComboBox->setItemDelegate(delegate);
-
-            channelComboBox->setHidden(false);
-            
-        }    
-    } else
-        channelComboBox->setHidden(true);
+        }
+    }
 #endif
     //emit changed();
     valueChanged();
@@ -897,7 +892,8 @@ void SamplerWidget::buttonClicked()
 QString SamplerWidget::toString()
 {
     QString returnValue = comboBox->currentText();
-    returnValue += (channelComboBox->isHidden()) ? "" : " " + getChannelValue();
+    // all the channel combo boxes should have the same isHidden state, pick one arbitrarily
+    returnValue += (channelComboBox[0]->isHidden()) ? "" : " " + getChannelValue();
     return returnValue;
 }
 
@@ -914,29 +910,22 @@ bool SamplerWidget::fromString(QString string)
     }
     QStringList test = string.split(" ");
     QString value = test.at(0);
-    if(value != string) {
-        if(value.endsWith(".exr")) {
-            
-            for(int i=0; i < channelComboBox->count(); i++) {
-                channelComboBox->setHidden(false);
-                channelComboBox->setCurrentIndex(i);
-                channelsUsed[channelComboBox->itemText(i)] = Qt::Unchecked;
+    comboBox->setEditText(value.trimmed()); // also refreshes channel list from EXR file
+    if(value != string) { // requested channel list is present
+        if (value.endsWith(".exr")) {
+            QStringList requestedChannels = test.at(1).split(";");
+            for (int channel = 0; channel < 4; ++channel)
+            {
+                if (channel < requestedChannels.size()) {
+                    channelComboBox[channel]->setCurrentText(requestedChannels[channel]);
+                }
             }
-            
-            QStringList channel = string.split(" ").at(1).split(";");
-            while(channel.count() !=0) {
-                channelComboBox->setHidden(false);
-                channelsUsed[channel.last()] = Qt::Checked;
-                channel.removeLast();
+        } else {
+            for (int channel = 0; channel < 4; ++channel) {
+                channelComboBox[channel]->setHidden(true);
             }
-            for(int i=0; i < channelComboBox->count(); i++) {
-                channelComboBox->model()->setData( channelComboBox->model()->index(i,0) , channelsUsed[channelComboBox->itemText(i)], Qt::CheckStateRole );
-            }
-            
-            channelComboBox->setCurrentIndex(channelList.indexOf(string.split(" ").at(1).split(";").at(0)));
         }
-    } else channelComboBox->setHidden(true);
-    comboBox->setEditText(value.trimmed());
+    }
     return isLocked();
 }
 
