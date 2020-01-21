@@ -820,20 +820,35 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         Array2D<RGBAFLOAT>pixels ( w, h );
         RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
         FrameBuffer fb;
+        int sliceCount = 0;
         float def = 0.0f/0.0f; // NaN
         for (int channel = 0; channel < 4; ++channel) {
-            if (sliceCopyFrom[channel] == -1) {
+            // OpenEXR aborts if the slice channel name is empty
+            if (sliceCopyFrom[channel] == -1 && ! sliceChannel[channel].isEmpty()) {
                 char *ptr = (char *) (&base[0].r + channel);
                 fb.insert(sliceChannel[channel].toStdString(),
                   Slice(Imf::FLOAT, ptr, xs, ys, 1, 1, def));
+                sliceCount++;
             }
         }
-        file.setFrameBuffer (fb);
-        file.readPixels(dw.min.y, dw.max.y);
+        // OpenEXR aborts if there are no slices
+        if (sliceCount > 0) {
+            file.setFrameBuffer (fb);
+            file.readPixels(dw.min.y, dw.max.y);
+        }
         
         for (int channel = 0; channel < 4; ++channel) {
             int earlierChannel = sliceCopyFrom[channel];
-            if (earlierChannel != -1) {
+            if (sliceChannel[channel].isEmpty()) {
+                float src_val = def;
+                float *dst_ptr = &base[0].r + channel;
+                for (int y = 0; y < h; ++y) {
+                    for (int x = 0; x < w; ++x) {
+                        size_t k = (x + size_t(w) * y) * 4;
+                        dst_ptr[k] = src_val;
+                    }
+                }
+            } else if (earlierChannel != -1) {
                 float *src_ptr = &base[0].r + earlierChannel;
                 float *dst_ptr = &base[0].r + channel;
                 for (int y = 0; y < h; ++y) {
