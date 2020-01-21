@@ -11,8 +11,6 @@ double M_PI2 = M_PI/2.0LF;
 double M_E =   2.71828182845904523536LF;
 double M_EHALF = 1.6487212707001281469LF;
 
-#include "DoubleMath.frag"
-
 #else
 
 float M_PI = 	3.14159265358979323846;
@@ -22,6 +20,8 @@ float M_E =   2.71828182845904523536;
 float M_EHALF = 1.6487212707001281469;
 
 #endif
+
+#include "DoubleMath.frag"
 
 #define REAL float
 #define VEC2 vec2

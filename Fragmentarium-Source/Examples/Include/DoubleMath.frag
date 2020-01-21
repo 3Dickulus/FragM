@@ -5,6 +5,15 @@ for GLSL >= 400, double precision functions:
   sqrt, length, distance, normalize,
   sin, cos, tan, exp, pow, log, log2 log10, atan
 
+functions not present in early GLSL versions
+  isnan, sign, inversesqrt, sinh, cosh, tanh, modf, smoothstep
+
+for GLSL >= 400, double precision functions
+  sinh, cosh, tanh
+
+functions not present in GLSL
+  log10
+
 */
 
 //--------------------------------------------------------------------
@@ -613,4 +622,212 @@ double atan(double y, double x){
     if(y < 0.0) th = -th;              // [-π,π]
     return sign_factor * th;
 }
+#endif
+
+
+//----------------------------------------------------------------
+// functions not present in early GLSL versions
+
+// isnan, sign, inversesqrt, sinh, cosh, tanh, modf, smoothstep
+
+#if __VERSION__ < 130
+
+float isnan(float val)
+{
+  return ! (val == val);
+}
+
+bvec2 isnan(vec2 val) { return bvec2(isnan(val.x), isnan(val.y)); }
+bvec3 isnan(vec3 val) { return bvec3(isnan(val.x), isnan(val.y), isnan(val.z)); }
+bvec4 isnan(vec4 val) { return bvec4(isnan(val.x), isnan(val.y), isnan(val.z), isnan(val.w)); }
+
+float sign(float val)
+{
+  if (val <  0.0) return -1.0;
+  if (val == 0.0) return  0.0;
+  if (val >= 0.0) return  1.0;
+  return val; // NaN
+}
+
+vec2 sign(vec2 val) { return vec2(sign(val.x), sign(val.y)); }
+vec3 sign(vec3 val) { return vec3(sign(val.x), sign(val.y), sign(val.z)); }
+vec4 sign(vec4 val) { return vec4(sign(val.x), sign(val.y), sign(val.z), sign(val.w)); }
+
+float inversesqrt(float val)
+{
+  return 1.0 / sqrt(val);
+}
+
+vec2 inversesqrt(vec2 val) { return vec2(inversesqrt(val.x), inversesqrt(val.y)); }
+vec3 inversesqrt(vec3 val) { return vec3(inversesqrt(val.x), inversesqrt(val.y), inversesqrt(val.z)); }
+vec4 inversesqrt(vec4 val) { return vec4(inversesqrt(val.x), inversesqrt(val.y), inversesqrt(val.z), inversesqrt(val.w)); }
+
+float sinh(float val) {
+  float tmp = exp(val); // FIXME expm1 may be better near 0
+  return (tmp - 1.0 / tmp) / 2.0;
+}
+
+vec2 sinh(vec2 val) { return vec2(sinh(val.x), sinh(val.y)); }
+vec3 sinh(vec3 val) { return vec3(sinh(val.x), sinh(val.y), sinh(val.z)); }
+vec4 sinh(vec4 val) { return vec4(sinh(val.x), sinh(val.y), sinh(val.z), sinh(val.w)); }
+
+float cosh(float val) {
+  float tmp = exp(val);
+  return (tmp + 1.0 / tmp) / 2.0;
+}
+
+vec2 cosh(vec2 val) { return vec2(cosh(val.x), cosh(val.y)); }
+vec3 cosh(vec3 val) { return vec3(cosh(val.x), cosh(val.y), cosh(val.z)); }
+vec4 cosh(vec4 val) { return vec4(cosh(val.x), cosh(val.y), cosh(val.z), cosh(val.w)); }
+
+float tanh(float val) {
+  float tmp = exp(val);
+  return (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
+}
+
+vec2 tanh(vec2 val) { return vec2(tanh(val.x), tanh(val.y)); }
+vec3 tanh(vec3 val) { return vec3(tanh(val.x), tanh(val.y), tanh(val.z)); }
+vec4 tanh(vec4 val) { return vec4(tanh(val.x), tanh(val.y), tanh(val.z), tanh(val.w)); }
+
+float modf(float x, out float i)
+{
+  i = floor(x);
+  return x - i;
+}
+
+vec2 modf(vec2 x, out vec2 i)
+{
+  i = floor(x);
+  return x - i;
+}
+
+vec3 modf(vec3 x, out vec3 i)
+{
+  i = floor(x);
+  return x - i;
+}
+
+vec4 modf(vec4 x, out vec4 i)
+{
+  i = floor(x);
+  return x - i;
+}
+
+float smoothstep(float edge0, float edge1, float x)
+{
+  float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+  return t * t * (3.0 - 2.0 * t);
+}
+
+vec2 smoothstep(vec2 edge0, vec2 edge1, vec2 x)
+{
+  vec2 t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+  return t * t * (3.0 - 2.0 * t);
+}
+
+vec2 smoothstep(float edge0, float edge1, vec2 x)
+{
+  return smoothstep(vec2(edge0), vec2(edge1), x);
+}
+
+vec3 smoothstep(vec3 edge0, vec3 edge1, vec3 x)
+{
+  vec3 t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+  return t * t * (3.0 - 2.0 * t);
+}
+
+vec3 smoothstep(float edge0, float edge1, vec3 x)
+{
+  return smoothstep(vec3(edge0), vec3(edge1), x);
+}
+
+vec4 smoothstep(vec4 edge0, vec4 edge1, vec4 x)
+{
+  vec4 t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+  return t * t * (3.0 - 2.0 * t);
+}
+
+vec4 smoothstep(float edge0, float edge1, vec4 x)
+{
+  return smoothstep(vec4(edge0), vec4(edge1), x);
+}
+
+#else
+
+// capture builtins for overloading
+
+float _builtin_sinh(float x) { return sinh(x); }
+vec2 _builtin_sinh(vec2 x) { return sinh(x); }
+vec3 _builtin_sinh(vec3 x) { return sinh(x); }
+vec4 _builtin_sinh(vec4 x) { return sinh(x); }
+float sinh(float x) { return _builtin_sinh(x); }
+vec2 sinh(vec2 x) { return _builtin_sinh(x); }
+vec3 sinh(vec3 x) { return _builtin_sinh(x); }
+vec4 sinh(vec4 x) { return _builtin_sinh(x); }
+
+float _builtin_cosh(float x) { return cosh(x); }
+vec2 _builtin_cosh(vec2 x) { return cosh(x); }
+vec3 _builtin_cosh(vec3 x) { return cosh(x); }
+vec4 _builtin_cosh(vec4 x) { return cosh(x); }
+float cosh(float x) { return _builtin_cosh(x); }
+vec2 cosh(vec2 x) { return _builtin_cosh(x); }
+vec3 cosh(vec3 x) { return _builtin_cosh(x); }
+vec4 cosh(vec4 x) { return _builtin_cosh(x); }
+
+float _builtin_tanh(float x) { return tanh(x); }
+vec2 _builtin_tanh(vec2 x) { return tanh(x); }
+vec3 _builtin_tanh(vec3 x) { return tanh(x); }
+vec4 _builtin_tanh(vec4 x) { return tanh(x); }
+float tanh(float x) { return _builtin_tanh(x); }
+vec2 tanh(vec2 x) { return _builtin_tanh(x); }
+vec3 tanh(vec3 x) { return _builtin_tanh(x); }
+vec4 tanh(vec4 x) { return _builtin_tanh(x); }
+
+// double versions of sinh, cosh, tanh
+
+#if __VERSION__ >= 400
+
+double sinh(double val) {
+  double tmp = exp(val); // FIXME expm1 may be better near 0
+  return (tmp - 1.0LF / tmp) / 2.0LF;
+}
+
+dvec2 sinh(dvec2 val) { return dvec2(sinh(val.x), sinh(val.y)); }
+dvec3 sinh(dvec3 val) { return dvec3(sinh(val.x), sinh(val.y), sinh(val.z)); }
+dvec4 sinh(dvec4 val) { return dvec4(sinh(val.x), sinh(val.y), sinh(val.z), sinh(val.w)); }
+
+double cosh(double val) {
+  double tmp = exp(val);
+  return (tmp + 1.0LF / tmp) / 2.0LF;
+}
+
+dvec2 cosh(dvec2 val) { return dvec2(cosh(val.x), cosh(val.y)); }
+dvec3 cosh(dvec3 val) { return dvec3(cosh(val.x), cosh(val.y), cosh(val.z)); }
+dvec4 cosh(dvec4 val) { return dvec4(cosh(val.x), cosh(val.y), cosh(val.z), cosh(val.w)); }
+
+double tanh(double val) {
+  double tmp = exp(val); // FIXME expm1 may be better near 0
+  return (tmp - 1.0LF / tmp) / (tmp + 1.0LF / tmp);
+}
+
+dvec2 tanh(dvec2 val) { return dvec2(tanh(val.x), tanh(val.y)); }
+dvec3 tanh(dvec3 val) { return dvec3(tanh(val.x), tanh(val.y), tanh(val.z)); }
+dvec4 tanh(dvec4 val) { return dvec4(tanh(val.x), tanh(val.y), tanh(val.z), tanh(val.w)); }
+
+#endif
+
+#endif
+
+// extra functions not in GLSL
+// log10
+
+float log10(float x) { return log(x) / log(float(10.0)); }
+vec2 log10(vec2 x) { return log(x) / log(float(10.0)); }
+vec3 log10(vec3 x) { return log(x) / log(float(10.0)); }
+vec4 log10(vec4 x) { return log(x) / log(float(10.0)); }
+#if __VERSION__ >= 400
+double log10(double x) { return log(x) / log(double(10.0)); }
+dvec2 log10(dvec2 x) { return log(x) / log(double(10.0)); }
+dvec3 log10(dvec3 x) { return log(x) / log(double(10.0)); }
+dvec4 log10(dvec4 x) { return log(x) / log(double(10.0)); }
 #endif

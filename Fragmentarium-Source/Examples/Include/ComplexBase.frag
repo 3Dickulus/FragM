@@ -38,35 +38,6 @@ TODO:
 ----------------------------------------------------------------*/
 
 //----------------------------------------------------------------
-// REAL functions not present in early GLSL versions
-
-REAL cosh(REAL val)
-{
-  REAL tmp = exp(val);
-  REAL cosH = (tmp + 1.0 / tmp) / 2.0;
-  return cosH;
-}
-
-REAL tanh(REAL val)
-{
-  REAL tmp = exp(val);
-  REAL tanH = (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
-  return tanH;
-}
-
-REAL sinh(REAL val)
-{
-  REAL tmp = exp(val);
-  REAL sinH = (tmp - 1.0 / tmp) / 2.0;
-  return sinH;
-}
-
-REAL log10(REAL x) { return log(x) / log(REAL(10.0)); }
-VEC2 log10(VEC2 x) { return log(x) / log(REAL(10.0)); }
-VEC3 log10(VEC3 x) { return log(x) / log(REAL(10.0)); }
-VEC4 log10(VEC4 x) { return log(x) / log(REAL(10.0)); }
-
-//----------------------------------------------------------------
 // complex number functions
 
 VEC2 cAdd( VEC2 a, REAL s ) {
