@@ -873,12 +873,9 @@ void SamplerWidget::buttonClicked()
     QList<QByteArray> a;
     a << "";
     a << "hdr";
-
-// #ifdef USE_OPEN_EXR
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(USE_OPEN_EXR)
     a << "exr";
 #endif
-// #endif
     a << QImageReader::supportedImageFormats();
     foreach(QByteArray s, a) {
         extensions.append(QString(s));
