@@ -57,7 +57,7 @@ vec3 sqrt(vec3 x) { return _builtin_sqrt(x); }
 vec4 sqrt(vec4 x) { return _builtin_sqrt(x); }
 
 // implement improved square root
-#if __VERSION >= 400
+#if __VERSION__ >= 400
 double sqrt(double x); // defined below
 dvec2 sqrt(dvec2 x) { return dvec2(sqrt(x.x), sqrt(x.y)); }
 dvec3 sqrt(dvec3 x) { return dvec3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }
