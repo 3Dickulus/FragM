@@ -820,7 +820,7 @@ void SamplerWidget::channelChanged(const QString &text)
 
 void SamplerWidget::textChanged(const QString &text)
 {
-    if (!fileManager->fileExists(comboBox->currentText())) {
+    if (!fileManager->fileExists(text)) {
         QPalette pal = comboBox->palette();
         pal.setColor(comboBox->backgroundRole(), Qt::red);
         comboBox->setPalette(pal);
@@ -830,35 +830,38 @@ void SamplerWidget::textChanged(const QString &text)
         comboBox->setAutoFillBackground(false);
     }
 
-    QString fileName="";
-    if(QFileInfo(text).exists())
-        fileName=text;
-    else if(QFileInfo("Examples/"+text).exists())
-        fileName="Examples/"+text;
-    else  if(QFileInfo("Examples/Include/"+text).exists())
-        fileName="Examples/Include/"+text;
+    QString fileName = "";
+    try {
+        fileName = fileManager->resolveName(text, false);
+    } catch (SyntopiaCore::Exceptions::Exception &) {
+        // ignore (an empty fileName is fine as it does not end in .exr)
+    }
 
     for (int channel = 0; channel < 4; ++channel) {
         channelComboBox[channel]->clear();
         channelComboBox[channel]->setHidden(true);
     }
 #ifdef USE_OPEN_EXR
-    if(!fileName.isEmpty() && fileName.endsWith(".exr") ) {
-        InputFile file ( fileName.toLatin1().data() );
-
-        // setup channelComboBox
-        if ( file.isComplete() ) {
-            channelList = QStringList();
-            const ChannelList &channels = file.header().channels();
-            for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
-            {
-                channelList += i.name();
+    if(fileName.endsWith(".exr")) {
+        try {
+            InputFile file ( fileName.toLatin1().data() );
+            // setup channelComboBox
+            if ( file.isComplete() ) {
+                channelList = QStringList();
+                const ChannelList &channels = file.header().channels();
+                for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
+                {
+                    channelList += i.name();
+                }
+                for (int channel = 0; channel < 4; ++channel) {
+                    channelComboBox[channel]->addItems(channelList);
+                    channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
+                    channelComboBox[channel]->setHidden(false);
+                }
             }
-            for (int channel = 0; channel < 4; ++channel) {
-                channelComboBox[channel]->addItems(channelList);
-                channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
-                channelComboBox[channel]->setHidden(false);
-            }
+        } catch (...) {
+            // maybe the file disappeared between resolving and opening?
+            // ignore
         }
     }
 #endif
