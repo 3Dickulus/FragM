@@ -1,10 +1,9 @@
 #donotrun
-// this file is intended to be included by Complex.frag
-
 /*
 
-for GLSL >= 400, double precision with trig functions:
-  sin, cos, exp, tan, atan, log, log2 log10
+for GLSL >= 400, double precision functions:
+  sqrt, length, distance, normalize,
+  sin, cos, tan, exp, pow, log, log2 log10, atan
 
 */
 
@@ -16,11 +15,12 @@ float _builtin_sqrt(float x) { return sqrt(x); }
 vec2 _builtin_sqrt(vec2 x) { return sqrt(x); }
 vec3 _builtin_sqrt(vec3 x) { return sqrt(x); }
 vec4 _builtin_sqrt(vec4 x) { return sqrt(x); }
+#if __VERSION__ >= 400
 double _builtin_sqrt(double x) { return sqrt(x); }
 dvec2 _builtin_sqrt(dvec2 x) { return sqrt(x); }
 dvec3 _builtin_sqrt(dvec3 x) { return sqrt(x); }
 dvec4 _builtin_sqrt(dvec4 x) { return sqrt(x); }
-
+#endif
 // redefine new square root for overloading
 float sqrt(float x) { return _builtin_sqrt(x); }
 vec2 sqrt(vec2 x) { return _builtin_sqrt(x); }
@@ -28,6 +28,7 @@ vec3 sqrt(vec3 x) { return _builtin_sqrt(x); }
 vec4 sqrt(vec4 x) { return _builtin_sqrt(x); }
 
 // implement improved square root
+#if __VERSION >= 400
 double sqrt(double x); // defined below
 dvec2 sqrt(dvec2 x) { return dvec2(sqrt(x.x), sqrt(x.y)); }
 dvec3 sqrt(dvec3 x) { return dvec3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }
@@ -44,16 +45,19 @@ double sqrt(double m)
   z = (z + m / z) / 2.0LF;
   return z;
 }
+#endif
 
 // save built in length
 float _builtin_length(float x) { return length(x); }
 float _builtin_length(vec2 x) { return length(x); }
 float _builtin_length(vec3 x) { return length(x); }
 float _builtin_length(vec4 x) { return length(x); }
+#if __VERSION__ >= 400
 double _builtin_length(double x) { return length(x); }
 double _builtin_length(dvec2 x) { return length(x); }
 double _builtin_length(dvec3 x) { return length(x); }
 double _builtin_length(dvec4 x) { return length(x); }
+#endif
 
 // redefine new length for overloading
 float length(float x) { return _builtin_length(x); }
@@ -62,20 +66,24 @@ float length(vec3 x) { return _builtin_length(x); }
 float length(vec4 x) { return _builtin_length(x); }
 
 // implement improved length
+#if __VERSION__ >= 400
 double length(double x) { return abs(x); }
 double length(dvec2 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
 double length(dvec3 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
 double length(dvec4 x) { return sqrt(dot(x, x)); } // FIXME overflow / underflow
+#endif
 
 // save built in distance
 float _builtin_distance(float x, float y) { return distance(x, y); }
 float _builtin_distance(vec2 x, vec2 y) { return distance(x, y); }
 float _builtin_distance(vec3 x, vec3 y) { return distance(x, y); }
 float _builtin_distance(vec4 x, vec4 y) { return distance(x, y); }
+#if __VERSION__ >= 400
 double _builtin_distance(double x, double y) { return distance(x, y); }
 double _builtin_distance(dvec2 x, dvec2 y) { return distance(x, y); }
 double _builtin_distance(dvec3 x, dvec3 y) { return distance(x, y); }
 double _builtin_distance(dvec4 x, dvec4 y) { return distance(x, y); }
+#endif
 
 // redefine new distance for overloading
 float distance(float x, float y) { return _builtin_distance(x, y); }
@@ -84,20 +92,24 @@ float distance(vec3 x, vec3 y) { return _builtin_distance(x, y); }
 float distance(vec4 x, vec4 y) { return _builtin_distance(x, y); }
 
 // implement improved length
+#if __VERSION__ >= 400
 double distance(double x, double y) { return length(x - y); }
 double distance(dvec2 x, dvec2 y) { return length(x - y); }
 double distance(dvec3 x, dvec3 y) { return length(x - y); }
 double distance(dvec4 x, dvec4 y) { return length(x - y); }
+#endif
 
 // save built in normalize
 float _builtin_normalize(float x) { return normalize(x); }
 vec2 _builtin_normalize(vec2 x) { return normalize(x); }
 vec3 _builtin_normalize(vec3 x) { return normalize(x); }
 vec4 _builtin_normalize(vec4 x) { return normalize(x); }
+#if __VERSION__ >= 400
 double _builtin_normalize(double x) { return normalize(x); }
 dvec2 _builtin_normalize(dvec2 x) { return normalize(x); }
 dvec3 _builtin_normalize(dvec3 x) { return normalize(x); }
 dvec4 _builtin_normalize(dvec4 x) { return normalize(x); }
+#endif
 
 // redefine new normalize for overloading
 float normalize(float x) { return _builtin_normalize(x); }
@@ -106,10 +118,12 @@ vec3 normalize(vec3 x) { return _builtin_normalize(x); }
 vec4 normalize(vec4 x) { return _builtin_normalize(x); }
 
 // implement improved normalize
+#if __VERSION__ >= 400
 double normalize(double x) { double l = length(x); return l > 0.0LF ? x / l : 0.0LF; }
 dvec2 normalize(dvec2 x) { double l = length(x); return l > 0.0LF ? x / l : dvec2(0.0LF); }
 dvec3 normalize(dvec3 x) { double l = length(x); return l > 0.0LF ? x / l : dvec3(0.0LF); }
 dvec4 normalize(dvec4 x) { double l = length(x); return l > 0.0LF ? x / l : dvec4(0.0LF); }
+#endif
 
 // 2018-08-13 }}} improved sqrt by claude
 //--------------------------------------------------------------------
@@ -133,10 +147,12 @@ dvec4 normalize(dvec4 x) { double l = length(x); return l > 0.0LF ? x / l : dvec
 //--------------------------------------------------------------------
 
 // Trig functions
+#if __VERSION__ >= 400
 const uint TrigIterMax = 20;
 #group Trig
 uniform int TrigIter;slider[0,5,20]
 uniform double TrigLimit;slider[0.001,1.1,1.5]
+#endif
 
 // sine
 
@@ -149,6 +165,7 @@ vec2 sin(vec2 x) { return _builtin_sin(x); }
 vec3 sin(vec3 x) { return _builtin_sin(x); }
 vec4 sin(vec4 x) { return _builtin_sin(x); }
 
+#if __VERSION__ >= 400
 double sin( double x ){
   int i;
   int counter = 0;
@@ -177,6 +194,7 @@ double sin( double x ){
 
   return sum;
 }
+#endif
 
 // cosine
 
@@ -189,6 +207,7 @@ vec2 cos(vec2 x) { return _builtin_cos(x); }
 vec3 cos(vec3 x) { return _builtin_cos(x); }
 vec4 cos(vec4 x) { return _builtin_cos(x); }
 
+#if __VERSION__ >= 400
 double cos( double x ){
   int i;
   int counter = 0;
@@ -219,7 +238,7 @@ double cos( double x ){
  * on interval [ 0, 1.0 ]
  * with a polynomial of degree 10.
  */
- double exp_approx( double x ) {
+double exp_approx( double x ) {
     double u = 4.5714785424007307e-7LF;
     u = u * x + 2.2861717525121477e-6LF;
     u = u * x + 2.5459354562599535e-5LF;
@@ -235,6 +254,7 @@ double cos( double x ){
     return 0.0LF;
     return u;
 }
+#endif
 
 float _builtin_exp(float x) { return exp(x); }
 vec2 _builtin_exp(vec2 x) { return exp(x); }
@@ -245,6 +265,7 @@ vec2 exp(vec2 x) { return _builtin_exp(x); }
 vec3 exp(vec3 x) { return _builtin_exp(x); }
 vec4 exp(vec4 x) { return _builtin_exp(x); }
 
+#if __VERSION__ >= 400
 double exp(double x){
 
   int i;
@@ -285,6 +306,7 @@ double exp(double x){
 
   return answer;
 }
+#endif
 
 float _builtin_tan(float x) { return tan(x); }
 vec2 _builtin_tan(vec2 x) { return tan(x); }
@@ -295,6 +317,7 @@ vec2 tan(vec2 x) { return _builtin_tan(x); }
 vec3 tan(vec3 x) { return _builtin_tan(x); }
 vec4 tan(vec4 x) { return _builtin_tan(x); }
 
+#if __VERSION__ >= 400
 double tan(double x) {
     return sin(x)/cos(x);
 }
@@ -313,6 +336,7 @@ double log_approx(double x)
     u = u * x + 9.8897820531599449LF;
     return u * x + -2.9427826194103015LF;
 }
+#endif
 
 // ln_ieee754(double x)
 
@@ -325,6 +349,7 @@ vec2 log(vec2 x) { return _builtin_log(x); }
 vec3 log(vec3 x) { return _builtin_log(x); }
 vec4 log(vec4 x) { return _builtin_log(x); }
 
+#if __VERSION__ >= 400
 // https://gist.github.com/dhermes/105da2a3c9861c90ea39
 // Accuracy: the error is always less than 1 ulp
 // modified for FragM by 3Dickulus @ FractalForums.org
@@ -378,7 +403,7 @@ double log(double x)  {
     return k*Ln2Hi - ((hfsq - (s*(hfsq+R) + k*Ln2Lo)) - f);
 
 }
-
+#endif
 
 float _builtin_log2(float x) { return log2(x); }
 vec2 _builtin_log2(vec2 x) { return log2(x); }
@@ -389,6 +414,7 @@ vec2 log2(vec2 x) { return _builtin_log2(x); }
 vec3 log2(vec3 x) { return _builtin_log2(x); }
 vec4 log2(vec4 x) { return _builtin_log2(x); }
 
+#if __VERSION__ >= 400
 double log2(double N)
 {
     return (log(N) / 0.69314718055995LF);
@@ -410,6 +436,7 @@ dvec3 log( dvec3 n ) {
 dvec4 log( dvec4 n ) {
     return dvec4(log(n.x), log(n.y), log(n.z), log(n.w));
 }
+#endif
 
 // double pow(double a, double b) {
 //
@@ -451,6 +478,7 @@ vec2 pow(vec2 x, vec2 y) { return _builtin_pow(x, y); }
 vec3 pow(vec3 x, vec3 y) { return _builtin_pow(x, y); }
 vec4 pow(vec4 x, vec4 y) { return _builtin_pow(x, y); }
 
+#if __VERSION__ >= 400
 double pow(double a, double b) {
 
 return exp(log(a) * b);
@@ -530,6 +558,7 @@ double atan_approx(double x)
         return double(0.0);
     return u;
 }
+#endif
 
 float _builtin_atan(float yx) { return atan(yx); }
 vec2 _builtin_atan(vec2 yx) { return atan(yx); }
@@ -548,6 +577,7 @@ vec2 atan(vec2 y, vec2 x) { return _builtin_atan(y, x); }
 vec3 atan(vec3 y, vec3 x) { return _builtin_atan(y, x); }
 vec4 atan(vec4 y, vec4 x) { return _builtin_atan(y, x); }
 
+#if __VERSION__ >= 400
 double atan(double y, double x){
 
     double sign_factor = 1.0;
@@ -583,3 +613,4 @@ double atan(double y, double x){
     if(y < 0.0) th = -th;              // [-π,π]
     return sign_factor * th;
 }
+#endif
