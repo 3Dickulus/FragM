@@ -469,9 +469,6 @@ void main()
 }
 );
 
-glm::mat4 m_projectionMatrix;
-glm::mat4 m_viewMatrix;
-glm::mat4 m_modelMatrix; // identity
 glm::mat4 m_pvmMatrix;
 
 /// GL4

@@ -2447,10 +2447,10 @@ void DisplayWidget::setPerspective()
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
     // these are accurate for spline shaders NOT scene shaders
-    m_projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
-    m_viewMatrix = glm::lookAt ( eye,target,up );
-    m_modelMatrix = glm::mat4(1); // identity
-    m_pvmMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+    glm::mat4 projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
+    glm::mat4 viewMatrix = glm::lookAt ( eye,target,up );
+    glm::mat4 modelMatrix = glm::mat4(1); // identity
+    m_pvmMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
     if(compatibilityProfile) {
         glLoadMatrixf ( glm::value_ptr(m_pvmMatrix) );
