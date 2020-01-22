@@ -355,7 +355,7 @@ public slots:
         float v = s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed().toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return 0;
+            return 0.0;
         }
         return v;
     };
@@ -370,7 +370,7 @@ public slots:
         x = s.at(0).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec2(0.0);
+            return glm::vec2(0.0,0.0);
         }
 
         y = s.at(1).toFloat(&ok);
@@ -392,13 +392,13 @@ public slots:
         x = s.at(0).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec3(0.0);
+            return glm::vec3(0.0,0.0,0.0);
         }
 
         y = s.at(1).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec3(x,glm::vec2(0.0));
+            return glm::vec3(x,0.0,0.0);
         }
         
         z = s.at(2).toFloat(&ok);
@@ -420,19 +420,19 @@ public slots:
         x = s.at(0).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec4(0.0);
+            return glm::vec4(0.0,0.0,0.0,0.0);
         }
 
         y = s.at(1).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec4(x,glm::vec3(0.0));
+            return glm::vec4(x,0.0,0.0,0.0);
         }
         
         z = s.at(2).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
-            return glm::vec4(x,y,glm::vec2(0.0));
+            return glm::vec4(x,y,0.0,0.0);
         }
         
         w = s.at(3).toFloat(&ok);

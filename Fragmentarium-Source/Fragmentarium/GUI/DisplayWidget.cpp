@@ -681,6 +681,11 @@ void DisplayWidget::initFragmentShader()
         shaderProgram = nullptr;
         return;
     }
+    
+    if(!compatibilityProfile) {
+        glm::mat4 identityMatrix = glm::mat4(1);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    }
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
@@ -1128,6 +1133,11 @@ void DisplayWidget::initBufferShader()
         bufferShaderProgram = nullptr;
         return;
     }
+    
+    if(!compatibilityProfile) {
+        glm::mat4 identityMatrix = glm::mat4(1);
+        glUniformMatrix4fv(glGetUniformLocation(bufferShaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    }
 
     bufferUniformsHaveChanged = false;
 }
@@ -1555,8 +1565,8 @@ void DisplayWidget::draw3DHints()
                 glDisable ( GL_DEPTH_TEST );  // disable depth testing
             }
             setPerspective();
-            drawLookatVector();
             drawSplines();
+            drawLookatVector();
         }
     }
 }
@@ -1597,7 +1607,12 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
             glLoadIdentity();
             glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
             glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
+        } else {
+            glm::mat4 transmatrix = glm::translate(glm::mat4(1.0), glm::vec3(x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0) );
+            glm::mat4 scalematrix = glm::scale(transmatrix, glm::vec3( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles, 1.0) );
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
         }
+
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -1626,6 +1641,12 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // restore state
     if(compatibilityProfile) glPopAttrib();
     glFinish(); // wait for GPU to return control
+
+    // before releasing the program set the projection matrix back to identity
+    if(!compatibilityProfile) {
+        glm::mat4 identityMatrix = glm::mat4(1);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    }
 
     // finished with the shader
     shaderProgram->release();
@@ -1733,11 +1754,11 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     } else shaderProgram->bind();
 
     if(compatibilityProfile) {
-    glPushAttrib ( GL_ALL_ATTRIB_BITS );
-    glMatrixMode ( GL_PROJECTION );
-    glLoadIdentity();
-    glMatrixMode ( GL_MODELVIEW );
-    glLoadIdentity();
+        glPushAttrib ( GL_ALL_ATTRIB_BITS );
+        glMatrixMode ( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode ( GL_MODELVIEW );
+        glLoadIdentity();
     }
     
     setViewPort ( pixelWidth(),pixelHeight() );
@@ -2362,9 +2383,42 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
 void DisplayWidget::drawLookatVector()
 {
+    int currentframe = mainWindow->getTime();
+    
+    glm::dvec3 ec = eyeSpline->getSplinePoint ( currentframe +1);
+    glm::dvec3 tc = targetSpline->getSplinePoint ( currentframe +1);
 
-    glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
-    glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
+    // specify vertex arrays
+    glBindVertexArray( svao );
+
+    // test current frame
+    if(currentframe > 1) {
+        int start = mainWindow->getVariableEditor()->getKeyFrameCount() * 2;
+        int count = mainWindow->getFrameMax()-1;
+
+        if(spline_program != 0) {
+            GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+
+            glUseProgram(spline_program);
+            glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), 3 );
+
+            // test if core and set color accordingly
+            if(cloc != -1 && !compatibilityProfile)
+                glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            else
+                glColor4f ( 1.0, 1.0, 0.0, 1.0 );
+            // highlight the path position
+            glDrawArrays(GL_POINTS, start+currentframe, 1 );
+            // test if core and set color accordingly
+            if(cloc != -1 && !compatibilityProfile)
+                glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            else
+                glColor4f ( 1.0, 1.0, 0.0, 1.0 );
+            // highlight the path position
+            glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
+            glUseProgram(0);
+        }
+    }
 
     if(compatibilityProfile) {
         glColor4f ( 1.0,1.0,0.0,1.0 );
@@ -2392,6 +2446,7 @@ void DisplayWidget::setPerspective()
     double zFar = 1000.0;
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
+    // these are accurate for spline shaders NOT scene shaders
     m_projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
     m_viewMatrix = glm::lookAt ( eye,target,up );
     m_modelMatrix = glm::mat4(1); // identity
@@ -2451,7 +2506,7 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
             targetSpline->setSplineColor( QColor("blue"));
             targetSpline->setControlColor( QColor("green"));
             
-            init_shader(pixelHeight());
+            init_shader(pixelHeight(),pixelWidth());
             init_arrays();
         }
     }
@@ -2529,15 +2584,14 @@ void DisplayWidget::render_array(int number, double size)
 {
     if(spline_program!=0) {
 
+        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+            
         // control point to highlight = currently selected preset keyframe
         int p = mainWindow->getCurrentCtrlPoint()-1;
 
         int start = mainWindow->getVariableEditor()->getKeyFrameCount();
         int count = mainWindow->getFrameMax();
-        if(number == start ) {
-            count = start; 
-            start=0;}
-
+        
         // GL_POINT_SPRITE is effectively forced on in the core profile (which doesn’t support non-sprite points).
         // In the compatibility profile, point sprites are an option (and are disabled by default).
         // gl_PointCoord is normalised (coordinates range from 0.0 to 1.0, so 1.0 is the width of the point),
@@ -2567,10 +2621,14 @@ void DisplayWidget::render_array(int number, double size)
             glUniformMatrix4fv(glGetUniformLocation(spline_program, "pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix));
         }
 
-        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
-            
         // specify vertex arrays
         glBindVertexArray( svao );
+
+        
+        if(number == start ) {
+            count = start; 
+            start=0;}
+
 
         if(start == 0) { // drawing control points one at a time
 
@@ -2616,22 +2674,30 @@ void DisplayWidget::render_array(int number, double size)
             }
         }
         else { // drawing path points
+            // skip the control points
             start *= 2;
+            // get the spline color
             glm::vec4 c = eyeSpline->splineColor();
+            // test if core and set color accordingly
             if(cloc != -1 && !compatibilityProfile)
                 glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             else
                 glColor4f ( c.x, c.y, c.z, 1.0  );
+            // render the camera path
             glDrawArrays(GL_POINTS, start, count );
+            // skip the control points and camera path points
             start = start+count; 
+            // get the spline color
             c = targetSpline->splineColor();
+            // test if core and set color accordingly
             if(cloc != -1 && !compatibilityProfile)
                 glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             else
                 glColor4f ( c.x, c.y, c.z, 1.0  );
+            // render the target path
             glDrawArrays(GL_POINTS, start, count );
+            
         }
-
         // disable arrays
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -2652,6 +2718,13 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 	glGetShaderiv( vShader, GL_COMPILE_STATUS, &params );
 	if ( GL_TRUE != params ) {
 		std::cerr << "ERROR: Spline vshader index " << vShader << " did not compile!" << std::endl;
+        {
+            int max_length = 2048;
+            int actual_length = 0;
+            char log[2048];
+            glGetShaderInfoLog( vShader, max_length, &actual_length, log );
+            std::cerr << "shader info log for GL index " << vShader << std::endl << log << std::endl;
+        }
         return 0;
 	}
     glAttachShader(program, vShader );
@@ -2664,6 +2737,13 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 	glGetShaderiv( fShader, GL_COMPILE_STATUS, &params );
 	if ( GL_TRUE != params ) {
 		std::cerr << "ERROR: Spline fshader index " << fShader << " did not compile!" << std::endl;
+        {
+            int max_length = 2048;
+            int actual_length = 0;
+            char log[2048];
+            glGetShaderInfoLog( fShader, max_length, &actual_length, log );
+            std::cerr << "shader info log for GL index " << fShader << std::endl << log << std::endl;
+        }
         return 0;
 	}
     glAttachShader(program, fShader );
@@ -2686,16 +2766,16 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
     return program;
 }
 
-void DisplayWidget::init_shader( int h )
+void DisplayWidget::init_shader( int h, int w )
 {
     // only need to do this once?
-    if(spline_program != 0) return; 
-    pixel_scale = 10.0;
+    if(spline_program != 0) return;
+    pixel_scale = 10;
     const char *vs, *ps;
-    if(compatibilityProfile) {
+    if(compatibilityProfile) {   // use legacy shader
         vs = vertexShader;
         ps = spherePixelShader;
-    } else {
+    } else {                    // use modern shader
         vs = vertexShader4.toLatin1();
         ps = spherePixelShader4.toLatin1();
     }

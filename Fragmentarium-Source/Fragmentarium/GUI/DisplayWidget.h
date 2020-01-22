@@ -333,7 +333,7 @@ protected:
 /// Spline Shaders /////////////////////////////////////////////////////////
     void render_array(int number, double size);
     uint compile_shader( const char* vsource, const char* fsource );
-    void init_shader( int h );
+    void init_shader( int h, int w );
     double pixel_scale;
 /// Spline Shaders /////////////////////////////////////////////////////////
 
