@@ -111,7 +111,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setVersion(4,5);
     fmt.setDepthBufferSize(32);
 #else
-    fmt.setVersion(3,3);
+    fmt.setVersion(3,2);
 #endif
 
 #ifdef Q_OS_MAC
@@ -2769,13 +2769,16 @@ uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
 void DisplayWidget::init_shader( int h, int w )
 {
     // only need to do this once?
-    if(spline_program != 0) return;
     pixel_scale = 10;
     const char *vs, *ps;
     if(compatibilityProfile) {   // use legacy shader
         vs = vertexShader;
         ps = spherePixelShader;
     } else {                    // use modern shader
+            if(fragmentSource.source[0].contains("#version")) {
+                vertexShader4.replace(QString("#version 450 core"),fragmentSource.source[0]);
+                spherePixelShader4.replace(QString("#version 450 core"),fragmentSource.source[0]);
+            }
         vs = vertexShader4.toLatin1();
         ps = spherePixelShader4.toLatin1();
     }
