@@ -105,7 +105,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     QSurfaceFormat fmt;
     fmt.setSwapInterval(0);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-    fmt.setProfile(QSurfaceFormat::CoreProfile);
+    fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
 #ifdef USE_OPENGL_4
     fmt.setVersion(4,5);
@@ -769,8 +769,8 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
     int chn = -1;
     QString chv = "";
-    bool hasZ = false;
-
+    QStringList chs;
+    
     if ( file.isComplete() ) {
 
         int channelCount=0;
@@ -780,6 +780,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                 std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
             }
             channelCount++;
+            chs << i.name();
         }
         
         int w  = dw.max.x - dw.min.x + 1;
@@ -798,26 +799,49 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             return false;
         }
         
+        // internal textures are RGBA 4 channels max so truncate and emit warning
+        // will use the first 4 as RGBA
+        // TODO: enable <uniformname[0-n]> to handle channels > 4 ... layers? 3D textures?
+        if(channelCount > 4) {
+            WARNING( tr("Channel count %1! Layers not yet implemented!\nUsing the first 4 channels for %2.rgba from texture %3")
+                .arg(channelCount)
+                .arg(textureUniformName)
+                .arg(texturePath)
+            );
+            channelCount = 4;
+        }
+
+        if(channelCount < 1) return false; // uhoh :(
+
+        // resort channels, OpenEXR ALWAYS sorts channel names alphabetically when writing to file
+        // the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
+        
+        // temp for channel re-order
+        QStringList chs_tmp; chs_tmp << "All";
+        // first check to see if we have FragM standard RGB[A|Z] this assumes allcaps for channel names
+        bool haveR = false;
+        for (int i=0; i<channelCount; i++) { haveR |= chs.at(i) == "R"; } if(haveR) { chs_tmp << "R"; }
+        bool haveG = false;
+        for (int i=0; i<channelCount; i++) { haveG |= chs.at(i) == "G"; } if(haveG) { chs_tmp << "G"; }
+        bool haveB = false;
+        for (int i=0; i<channelCount; i++) { haveB |= chs.at(i) == "B"; } if(haveB) { chs_tmp << "B"; }
+        bool haveA = false;
+        for (int i=0; i<channelCount; i++) { haveA |= chs.at(i) == "A"; } if(haveA) { chs_tmp << "A"; }
+        bool haveZ = false;
+        for (int i=0; i<channelCount; i++) { haveZ |= chs.at(i) == "Z"; } if(haveZ) { chs_tmp << "Z"; }
+        
+        // if not at least RGB then will use the arbitrary channel names and order from the EXR file
+        if(haveR && haveG && haveB) chs = chs_tmp; else chs.insert(-1,"All");
+
         Array2D<RGBAFLOAT>pixels ( w, 1 );
         
         if(type == GL_SAMPLER_2D) {
             SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
             if(sw != nullptr && !sw->getName().isNull()) {
-                chv = sw->getChannelValue(); // channel name(s)
-                if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
-                    hasZ = false;
-                else
-                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
-                
-                if(chv.contains("All") && sw->channelList.contains("Z")) hasZ = true;
-                
-//                 chn = sw->hasChannel(chv); // channel index
-//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
+                chv = sw->getChannelValue(); // currently selected channel name(s) separated by ";"
             }
         } else chv = "All";
 
-        pixels.resizeErase (w, h);
-        
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
         
@@ -829,13 +853,12 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
             FrameBuffer fb;
 
-            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
-                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-            else // this should allow arbitrary naming of the 4th channel
-                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
+            // this should allow arbitrary naming the channels and ensure we have a valid RGBA texture
+            // accounts for non-existent channels and names them appropriately
+            fb.insert ((channelCount > 0) ? chs.at(1).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ((channelCount > 1) ? chs.at(2).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ((channelCount > 2) ? chs.at(3).toLatin1().data() : "B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
+            fb.insert ((channelCount > 3) ? chs.at(4).toLatin1().data() : "A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
 
             file.setFrameBuffer (fb);
             file.readPixels ( dw.min.y );
@@ -844,10 +867,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv.contains("A") || chv.contains("All") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
+                cols[indx] = (channelCount > 0 && (chv.contains(chs.at(1)) || chv.contains("All"))) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(channelCount > 1 && (chv.contains(chs.at(2)) || chv.contains("All"))) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(channelCount > 2 && (chv.contains(chs.at(3)) || chv.contains("All"))) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(channelCount > 3 && (chv.contains(chs.at(4)) || chv.contains("All"))) ? pixels[0][i].a : 1.0;
             }
             dw.min.y ++;
         }
@@ -2569,13 +2592,6 @@ void DisplayWidget::init_arrays()
         glUnmapBuffer(GL_ARRAY_BUFFER); // release pointer to mapped buffer
     } else DBOUT << "spline vertex glMapBuffer() Failed!";
 
-	// create the VAO.
-	glGenVertexArrays( 1, &svao );
-	glBindVertexArray( svao );
-	glBindBuffer( GL_ARRAY_BUFFER, svbo );
-	glEnableVertexAttribArray( 0 );
-	glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
-
 }
 
 // XYZ vectors @ control points aligned to upSpline vector
@@ -2583,6 +2599,13 @@ void DisplayWidget::init_arrays()
 void DisplayWidget::render_array(int number, double size)
 {
     if(spline_program!=0) {
+
+        // create the VAO.
+        glGenVertexArrays( 1, &svao );
+        glBindVertexArray( svao );
+        glBindBuffer( GL_ARRAY_BUFFER, svbo );
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
 
         GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
             

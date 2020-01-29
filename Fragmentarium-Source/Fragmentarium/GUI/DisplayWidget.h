@@ -104,7 +104,7 @@ class CameraControl;
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
 #ifdef USE_OPENGL_4
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Core
+class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility
 #else
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
 #endif
@@ -294,7 +294,8 @@ public slots:
         return cameraControl->getID();
     }
     
-    bool isCompat(){ return compatibilityProfile; };
+    bool isCompat(){ return format().profile() == QSurfaceFormat::CompatibilityProfile; };
+    void useCompat(bool c){ compatibilityProfile = c; };
 
 /// Spline Shaders /////////////////////////////////////////////////////////
     void delete_buffer_objects();
@@ -500,7 +501,7 @@ QString spherePixelShader4 = QString("#version 450 core\n"
 "    if (mag > 1.0) discard;\n"
 "    N.z = sqrt(mag);\n"
 "    float diffuse = max(0.0, dot(lightDir, N));\n"
-"    frag_colour = vec4(colour.rgb, 1.0-diffuse);\n"
+"    frag_colour = vec4(colour.rgb, diffuse);\n"
 "}\n");
 
 /// Spline Shaders /////////////////////////////////////////////////////////

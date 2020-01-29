@@ -17,11 +17,9 @@ QStringList FileManager::getImageFiles()
     QStringList extensions;
     QList<QByteArray> a;
     a << "hdr";
-// #ifdef USE_OPEN_EXR
-  #ifdef Q_OS_WIN
+#ifdef USE_OPEN_EXR
     a << "exr";
-  #endif
-// #endif
+#endif
     a << QImageReader::supportedImageFormats();
     foreach(QByteArray s, a) {
         extensions.append(QString("*."+s));

@@ -557,12 +557,7 @@ public slots:
     void slot_changed(QStandardItem *item)
     {
         channelsUsed[item->text()] = item->checkState();
-//         if(item->checkState() == Qt::Unchecked) {
-//             DBOUT << item->text() << "Unchecked!";
-//         } else if(item->checkState() == Qt::Checked) {
-//             DBOUT << item->text() << "Checked!";
-//         }
-//         channelChanged(item->text());
+        channelChanged(item->text());
     }
 
 signals:
