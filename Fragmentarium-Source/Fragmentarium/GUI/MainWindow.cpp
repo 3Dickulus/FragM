@@ -1291,6 +1291,14 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
 
 void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
+            // create an overlay using enginePixmap as background
+            QLabel* label = new QLabel();
+            auto *l = new QVBoxLayout;
+            l->setMargin(0);
+            l->addWidget(label);
+            // apply overlay to GL area
+            engine->setLayout(l);
+            
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
                 QTime tiletime;
                 tiletime.start();
@@ -1312,29 +1320,21 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                         cachedTileImages.append(im);
                     }
 
-                    // display tiles while rendering if the tiles fit the window
-                    if (engine->width() >= tileWidth * maxTiles && engine->height() >= tileHeight * maxTiles) {
-                        int dx = (tile / maxTiles);
-                        int dy = (maxTiles-1)-(tile % maxTiles);
-                        int xoff = dx*tileWidth;
-                        int yoff = dy*tileHeight;
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        QPainter painter(engine);
-                        painter.drawImage(target, im, source);
-                    } else // display scaled tiles if tile is same size or smaller than the window
-                        if (engine->width() >= tileWidth &&
-                                engine->height() >= tileHeight) {
-                            float wScaleFactor = engine->width() / maxTiles;
-                            float hScaleFactor = engine->height() / maxTiles;
-                            int dx = (tile / maxTiles);
-                            int dy = (maxTiles-1)-(tile % maxTiles);
-                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                            QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
-                            QPainter painter ( engine );
-                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                            painter.drawImage ( target, im, source );
-                        }
+                    // display scaled tiles
+                    float wScaleFactor = engine->width() / maxTiles;
+                    float hScaleFactor = engine->height() / maxTiles;
+                    int dx = (tile / maxTiles);
+                    int dy = (maxTiles-1)-(tile % maxTiles);
+                    QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                    QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+                    im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    // render scaled tiles into the overlay pixmap
+                    QPainter painter( &enginePixmap );
+                    painter.drawImage ( target, im, source );
+                    painter.end();
+                    // update the GL area overlay
+                    label->setPixmap(enginePixmap);
+                    
                 } else {
                     stopScript();
                     tile = maxTiles*maxTiles;
@@ -1345,8 +1345,11 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                 } else {
                     engine->tileAVG += tiletime.elapsed();
                 }
-                engine->update();
             }
+            // cleanup the leftovers?
+            delete label;
+            delete l;
+            enginePixmap = QPixmap();
 }
 
 #ifdef USE_OPEN_EXR
@@ -1471,7 +1474,7 @@ retry:
     int tileHeight = od.getTileHeight();
     bufferYSpinBox->setValue(tileHeight);
 
-    if (od.doSaveFragment() || od.doAnimation()) {
+    if ( (od.doSaveFragment() || od.doAnimation()) && !od.preview()) {
         QString fileName = od.getFragmentFileName();
         logger->getListWidget()->clear();
         if (tabBar->currentIndex() == -1) {
@@ -1567,6 +1570,9 @@ retry:
             WARNING(e.getMessage());
         }
     }
+
+    // before clearing the buffer grab a copy for render progress background
+    enginePixmap = engine->grab();
 
     DisplayWidget::DrawingState oldState = engine->getState();
     engine->setState(DisplayWidget::Tiled);
@@ -3409,7 +3415,7 @@ void MainWindow::setFPS(float fps)
 QString MainWindow::getCameraSettings()
 {
 
-    QString settings = variableEditor->getSettings();
+    QString settings = variableEditor->cameraSettings();
     QStringList l = settings.split("\n");
     QStringList r;
     // added " =" to Eye because Axolotl has Eyes!

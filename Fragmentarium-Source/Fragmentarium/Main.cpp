@@ -77,13 +77,13 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-    QApplication::setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
+    qApp->setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
 
     /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
     /// replaced with "_" fixed preferences settings not loading...
     /// was saved in "~/.config/Syntopia Software/" tried to load from "~/.config/Syntopia/"
-    QApplication::setOrganizationName(QString("Syntopia_Software"));
-    QApplication::setApplicationName(QString("Fragmentarium"));
+    qApp->setOrganizationName(QString("Syntopia_Software"));
+    qApp->setApplicationName(QString("Fragmentarium"));
 
     auto *app = new QApplication(argc, argv);
     app->setObjectName("Application");

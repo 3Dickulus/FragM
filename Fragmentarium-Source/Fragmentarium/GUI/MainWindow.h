@@ -843,6 +843,8 @@ private:
 
     QShortcut       *keyF6;           // Entity of F6 hotkey
     QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
+    
+    QPixmap enginePixmap;
 
 };
 }

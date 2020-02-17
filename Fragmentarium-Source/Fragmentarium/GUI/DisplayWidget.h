@@ -338,6 +338,9 @@ protected:
     double pixel_scale;
 /// Spline Shaders /////////////////////////////////////////////////////////
 
+/// tiled render image feedback
+    QImage *tileImage;
+
 private:
     QOpenGLFramebufferObject* previewBuffer;
     QOpenGLFramebufferObject* backBuffer;

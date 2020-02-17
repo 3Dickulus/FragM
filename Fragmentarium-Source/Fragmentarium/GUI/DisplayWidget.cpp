@@ -200,6 +200,7 @@ void DisplayWidget::updateRefreshRate()
     int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if (timer == nullptr) {
         timer = new QTimer();
+        timer->setTimerType(Qt::PreciseTimer);
         connect ( timer, SIGNAL ( timeout() ), this, SLOT ( timerSignal() ) );
     }
     if (i == 0) {
@@ -215,10 +216,10 @@ void DisplayWidget::updateRefreshRate()
 // let the system handle widget paint events,without shaders
 void DisplayWidget::paintEvent(QPaintEvent *ev)
 {
-
     if ( drawingState == Tiled ) {
         return;
     }
+
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
     }
@@ -767,9 +768,8 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    int chn = -1;
     QString chv = "";
-    QStringList chs;
+    QStringList channelList;
     
     if ( file.isComplete() ) {
 
@@ -780,9 +780,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                 std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
             }
             channelCount++;
-            chs << i.name();
+            channelList << i.name();
         }
-        
+
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
@@ -817,28 +817,46 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         // the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
         
         // temp for channel re-order
-        QStringList chs_tmp; chs_tmp << "All";
+        QStringList chs_tmp;
         // first check to see if we have FragM standard RGB[A|Z] this assumes allcaps for channel names
         bool haveR = false;
-        for (int i=0; i<channelCount; i++) { haveR |= chs.at(i) == "R"; } if(haveR) { chs_tmp << "R"; }
+        for (int i=0; i<channelCount; i++) { haveR |= channelList.at(i) == "R"; } if(haveR) { chs_tmp << "R"; }
         bool haveG = false;
-        for (int i=0; i<channelCount; i++) { haveG |= chs.at(i) == "G"; } if(haveG) { chs_tmp << "G"; }
+        for (int i=0; i<channelCount; i++) { haveG |= channelList.at(i) == "G"; } if(haveG) { chs_tmp << "G"; }
         bool haveB = false;
-        for (int i=0; i<channelCount; i++) { haveB |= chs.at(i) == "B"; } if(haveB) { chs_tmp << "B"; }
+        for (int i=0; i<channelCount; i++) { haveB |= channelList.at(i) == "B"; } if(haveB) { chs_tmp << "B"; }
         bool haveA = false;
-        for (int i=0; i<channelCount; i++) { haveA |= chs.at(i) == "A"; } if(haveA) { chs_tmp << "A"; }
+        for (int i=0; i<channelCount; i++) { haveA |= channelList.at(i) == "A"; } if(haveA) { chs_tmp << "A"; }
         bool haveZ = false;
-        for (int i=0; i<channelCount; i++) { haveZ |= chs.at(i) == "Z"; } if(haveZ) { chs_tmp << "Z"; }
+        for (int i=0; i<channelCount; i++) { haveZ |= channelList.at(i) == "Z"; } if(haveZ) { chs_tmp << "Z"; }
         
         // if not at least RGB then will use the arbitrary channel names and order from the EXR file
-        if(haveR && haveG && haveB) chs = chs_tmp; else chs.insert(-1,"All");
-
+        if(haveR && haveG && haveB && (haveA || haveZ)) channelList = chs_tmp;
+        else // have RGB but channel count is greater than 3
+        if(haveR && haveG && haveB && channelCount == 4) { // figure out the extra channel name possibly D or DEPTH
+            for (int i=0; i<channelCount; i++) {
+                if(!chs_tmp.contains(channelList.at(i))) chs_tmp << channelList.at(i);
+            }
+                channelList = chs_tmp;
+        }
+        else 
+            if(haveR && haveG && haveB && channelCount == 3){
+            // RGB only
+                channelList = chs_tmp;
+        }
+        else {
+                // not RGB not [A|Z|D|DEPTH]   may have more than 4 channels
+            }
+        
         Array2D<RGBAFLOAT>pixels ( w, 1 );
         
         if(type == GL_SAMPLER_2D) {
             SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
             if(sw != nullptr && !sw->getName().isNull()) {
                 chv = sw->getChannelValue(); // currently selected channel name(s) separated by ";"
+                // see if the requested channels are available
+//                 DBOUT << chv;
+//                 DBOUT << channelList;
             }
         } else chv = "All";
 
@@ -855,10 +873,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
             // this should allow arbitrary naming the channels and ensure we have a valid RGBA texture
             // accounts for non-existent channels and names them appropriately
-            fb.insert ((channelCount > 0) ? chs.at(1).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ((channelCount > 1) ? chs.at(2).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ((channelCount > 2) ? chs.at(3).toLatin1().data() : "B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            fb.insert ((channelCount > 3) ? chs.at(4).toLatin1().data() : "A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
+            fb.insert ((channelCount > 0) ? channelList.at(0).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ((channelCount > 1) ? channelList.at(1).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ((channelCount > 2) ? channelList.at(2).toLatin1().data() : "B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
+            fb.insert ((channelCount > 3) ? channelList.at(3).toLatin1().data() : "A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
 
             file.setFrameBuffer (fb);
             file.readPixels ( dw.min.y );
@@ -867,10 +885,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (channelCount > 0 && (chv.contains(chs.at(1)) || chv.contains("All"))) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(channelCount > 1 && (chv.contains(chs.at(2)) || chv.contains("All"))) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(channelCount > 2 && (chv.contains(chs.at(3)) || chv.contains("All"))) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(channelCount > 3 && (chv.contains(chs.at(4)) || chv.contains("All"))) ? pixels[0][i].a : 1.0;
+                cols[indx] = (channelCount > 0 && (chv.contains(channelList.at(0)) || chv.contains("All"))) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(channelCount > 1 && (chv.contains(channelList.at(1)) || chv.contains("All"))) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(channelCount > 2 && (chv.contains(channelList.at(2)) || chv.contains("All"))) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(channelCount > 3 && (chv.contains(channelList.at(3)) || chv.contains("All"))) ? pixels[0][i].a : 1.0;
             }
             dw.min.y ++;
         }
@@ -1100,7 +1118,7 @@ void DisplayWidget::initBufferShader()
         return;
     }
 
-    bufferShaderProgram = new QOpenGLShaderProgram ( context() );
+    bufferShaderProgram = new QOpenGLShaderProgram ( this );
 
     // Vertex shader
     bool s = bufferShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.bufferShaderSource->vertexSource.join("\n"));
@@ -1737,11 +1755,10 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
                 QOpenGLFramebufferObject* temp = backBuffer;
                 backBuffer = previewBuffer;
                 previewBuffer = temp;
-            }
             
             subframeCounter++;
-
             makeCurrent();
+            }
 
             if ( !previewBuffer->bind() ) {
               WARNING ( tr("Failed to bind FBO") );
@@ -2015,7 +2032,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     }
 
     (*im) = hiresBuffer->toImage();
-
+    tileImage = im;
     subframeCounter=0;
 
     if ( !hiresBuffer->release() ) {
@@ -2031,10 +2048,10 @@ void DisplayWidget::setState(DrawingState state)
 
 void DisplayWidget::paintGL()
 {
-
     if ( drawingState == Tiled ) {
         return;
     }
+
     if (pixelHeight() == 0 || pixelWidth() == 0) {
         return;
     }
@@ -2183,7 +2200,7 @@ void DisplayWidget::showEvent(QShowEvent *ev)
 
 void DisplayWidget::wheelEvent(QWheelEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2194,13 +2211,13 @@ void DisplayWidget::wheelEvent(QWheelEvent *ev)
 
 void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
-        return;
-    }
 
     mouseXY = ev->pos();
 
     if( buttonDown) {
+        if (drawingState == Tiled) {
+            return;
+        }
         bool redraw = cameraControl->mouseEvent ( ev, width(), height() );
         if ( redraw ) {
             requireRedraw ( clearOnChange );
@@ -2211,7 +2228,7 @@ void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 
 void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2273,7 +2290,7 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 {
     buttonDown=true;
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
     if (ev->button() == Qt::MouseButton::RightButton &&
@@ -2294,7 +2311,7 @@ void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 
 void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2309,7 +2326,7 @@ void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 
 void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 

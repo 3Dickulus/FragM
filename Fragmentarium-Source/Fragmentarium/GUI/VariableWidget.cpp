@@ -858,10 +858,10 @@ void SamplerWidget::textChanged(const QString &text)
             
             int channelCount = channelList.count();
             // TODO: enable <uniformname[0-n]> to handle channels > 4 ... layers? 3D textures?
-            if(channelCount > 4) channelCount = 4; // plus one for "All"
+            if(channelCount > 4) channelCount = 4;
             
             // temp for channel re-order
-            QStringList chs_tmp;  chs_tmp << "All";
+            QStringList chs_tmp;
             // first check to see if we have FragM standard RGB[A|Z] this assumes allcaps for channel names
             bool haveR = false;
             for (int i=0; i<channelCount; i++) { haveR |= channelList.at(i) == "R"; } if(haveR) { chs_tmp << "R"; }
@@ -875,9 +875,28 @@ void SamplerWidget::textChanged(const QString &text)
             for (int i=0; i<channelCount; i++) { haveZ |= channelList.at(i) == "Z"; } if(haveZ) { chs_tmp << "Z"; }
             
             // if not at least RGB then will use the arbitrary channel names and order from the EXR file
-            if(haveR && haveG && haveB) channelList = chs_tmp; else channelList.insert(-1,"All");
+            if(haveR && haveG && haveB && (haveA || haveZ)) { // preferred default
+                channelList = chs_tmp;
+            }
+            else // have RGB but channel count is greater than 3
+                if(haveR && haveG && haveB && channelCount == 4) { // figure out the extra channel name possibly D or DEPTH
+                    for (int i=0; i<channelCount; i++) {
+                        if(!chs_tmp.contains(channelList.at(i))) chs_tmp << channelList.at(i);
+                    }
+                    channelList = chs_tmp;
+                }
+                else if(haveR && haveG && haveB && channelCount == 3) {
+                    // RGB only
+                    channelList = chs_tmp;
+                }
+                else {
+                    // not RGB not [A|Z|D|DEPTH]   may have more than 4 channels
+                }
+
             channelCount++; // for "All"
-            
+
+            channelList.insert(-1,"All");
+
             QStandardItemModel *model = new QStandardItemModel(channelCount,1); // n rows, 1 col
 
             for (int ch = 0; ch < channelCount; ++ch)
