@@ -18,7 +18,7 @@ sudo: false
 
 branches:
   only:
-  - Development
+  - gl4dev
 
 env:
   global:
@@ -216,7 +216,7 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: Development
+        branch: gl4dev
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   # macOS Development release
@@ -228,7 +228,7 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: Development
+        branch: gl4dev
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 
