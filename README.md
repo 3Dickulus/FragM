@@ -91,9 +91,9 @@ Status
     1. any new feature must work on the widest range of hardware, ( AMD Intel and nVidia ) all if possible
     2. any changes to existing features must be compatible with the existing fragment base
     3. existing features that only work on specific hardware should be phased out or modified to work on all hardware.
-    4. when adding options or settings they must be in line with the exiting structure for handling options and settings
+    4. when adding options or settings they must be in line with the existing structure for handling options and settings
        (unless you have a better idea that makes the current structure obsolete)
-    5. priority should go towards handling more modern GLSL versions and practices
+    5. priority should go towards handling more modern GL & GLSL versions and practices
     6. changes and additions must be tested against all other features, animating, timeline management,
        easing curve controls etc... and render the base frags properly before merging will be considered.
 
