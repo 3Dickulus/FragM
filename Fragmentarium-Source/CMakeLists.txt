@@ -126,11 +126,11 @@ IF ( USE_OPEN_EXR )
     ENDIF ()
 
     IF(APPLE)
-        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.3.0/lib )
-        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.3.0/lib )
+        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.4.0/lib )
+        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.4.0/lib )
 
-        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.3.0/include/OpenEXR )
-        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.3.0/include/OpenEXR )
+        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.4.0/include/OpenEXR )
+        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.4.0/include/OpenEXR )
 
         set( OpenEXR_LIBS
             IlmImf
