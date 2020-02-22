@@ -115,7 +115,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
 #endif
 
 #ifdef Q_OS_MAC
-    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+    fmt.setVersion(4,1);
     fmt.setProfile(QSurfaceFormat::CoreProfile);
 #endif
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);

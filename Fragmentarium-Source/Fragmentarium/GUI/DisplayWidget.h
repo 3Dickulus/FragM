@@ -477,7 +477,7 @@ glm::mat4 m_pvmMatrix;
 
 /// GL4
 // STRINGIFY does not allow #version statement
-QString vertexShader4 = QString("#version 450 core\n"
+QString vertexShader4 = QString("#version 410 core\n"
 "layout(location = 0) in vec4 vertex_position;\n"
 "uniform vec4 vertex_colour;\n"
 "out vec4 colour;\n"
@@ -493,7 +493,7 @@ QString vertexShader4 = QString("#version 450 core\n"
 "    colour = vertex_colour;\n"
 "}\n");
 
-QString spherePixelShader4 = QString("#version 450 core\n"
+QString spherePixelShader4 = QString("#version 410 core\n"
 "in vec4 colour;\n"
 "out vec4 frag_colour;\n"
 "void main() {\n"
