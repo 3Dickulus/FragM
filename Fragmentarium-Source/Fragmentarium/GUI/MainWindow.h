@@ -215,7 +215,7 @@ public:
 
     TextEdit *getTextEdit();
     void createCommandHelpMenu ( QMenu *menu, QWidget *textEdit, MainWindow *mainWindow );
-    VariableEditor *getVariableEditor()
+        VariableEditor *getVariableEditor()
     {
         return variableEditor;
     }
@@ -344,6 +344,7 @@ public slots:
         }
         return s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed();
     };
+
     void setAnimationLength ( int m )
     {
         timeMaxSpinBox->setValue ( m );
@@ -743,6 +744,8 @@ private:
 
     QShortcut       *keyF6;           // Entity of F6 hotkey
     QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
+    
+    QPixmap enginePixmap;
 
 };
 }

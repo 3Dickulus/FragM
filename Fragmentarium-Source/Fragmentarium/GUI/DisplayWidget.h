@@ -291,7 +291,7 @@ public slots:
     {
         return cameraControl->getID();
     }
-
+    
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
@@ -320,6 +320,16 @@ protected:
     /// Triggers a perspective update and a redraw
     void resizeGL ( int w, int h ) Q_DECL_OVERRIDE;
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
+
+/// Spline Shaders /////////////////////////////////////////////////////////
+    void render_array(int number, double size);
+    uint compile_shader( const char* vsource, const char* fsource );
+    void init_shader( int h, int w );
+    double pixel_scale;
+/// Spline Shaders /////////////////////////////////////////////////////////
+
+/// tiled render image feedback
+    QImage *tileImage;
 
 private:
     QOpenGLFramebufferObject* previewBuffer;
