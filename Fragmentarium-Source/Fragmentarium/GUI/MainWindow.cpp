@@ -3408,7 +3408,7 @@ void MainWindow::setFPS(float fps)
 QString MainWindow::getCameraSettings()
 {
 
-    QString settings = variableEditor->getSettings();
+    QString settings = variableEditor->cameraSettings();
     QStringList l = settings.split("\n");
     QStringList r;
     // added " =" to Eye because Axolotl has Eyes!
