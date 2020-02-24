@@ -749,7 +749,7 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
         channelComboBox->view()->setCornerWidget(new QSizeGrip(channelComboBox));
         
         connect(channelComboBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
-
+        
         if(defaultChannelValue.isEmpty()){
             channelComboBox->hide();
         }
@@ -783,7 +783,7 @@ int SamplerWidget::hasChannel(QString chan)
 
     return ci;
 }
-    
+
 void SamplerWidget::channelChanged(const QString &text)
 {
     
@@ -798,7 +798,7 @@ void SamplerWidget::channelChanged(const QString &text)
             }
 //             else DBOUT << channelComboBox->currentIndex();
         }
-
+        
         if(check) {
             valueChanged();
         }
@@ -838,7 +838,7 @@ void SamplerWidget::textChanged(const QString &text)
             for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
             {
                 channelList += i.name();
-            }
+                }
 
             QStandardItemModel *model = new QStandardItemModel(channelList.count(),1); // n rows, 1 col
 
@@ -851,9 +851,8 @@ void SamplerWidget::textChanged(const QString &text)
                 item->setData(defaultChannelValue.contains(channelList.at(ch)) ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
                 channelsUsed[item->text()] = item->checkState();
                 model->setItem(ch, 0, item);
-                
             }
-
+            
             channelComboBox->setModel(model);
             
             connect(model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(slot_changed(QStandardItem *)));
@@ -862,7 +861,7 @@ void SamplerWidget::textChanged(const QString &text)
             channelComboBox->setItemDelegate(delegate);
 
             channelComboBox->setHidden(false);
-            
+
         }    
     } else
         channelComboBox->setHidden(true);
@@ -878,17 +877,17 @@ void SamplerWidget::buttonClicked()
     QList<QByteArray> a;
     a << "";
     a << "hdr";
-
-// #ifdef USE_OPEN_EXR
-#ifdef Q_OS_WIN
+#ifdef USE_OPEN_EXR
     a << "exr";
 #endif
-// #endif
     a << QImageReader::supportedImageFormats();
+
     foreach(QByteArray s, a) {
         extensions.append(QString(s));
     }
+
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select a Texture"), QString(), tr("Images (") + extensions.join(" *.") + tr(");;All (*.*)"));
+    
     if (!fileName.isEmpty()) {
         comboBox->setEditText(fileName);
     }
