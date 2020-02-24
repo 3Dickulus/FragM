@@ -110,11 +110,11 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setVersion(4,5);
     fmt.setDepthBufferSize(32);
 #else
-    fmt.setVersion(3,3);
+    fmt.setVersion(3,2);
 #endif
 
 #ifdef Q_OS_MAC
-    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+    fmt.setVersion(4,1);
     fmt.setProfile(QSurfaceFormat::CoreProfile);
 #endif
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
@@ -198,6 +198,7 @@ void DisplayWidget::updateRefreshRate()
     int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if (timer == nullptr) {
         timer = new QTimer();
+        timer->setTimerType(Qt::PreciseTimer);
         connect ( timer, SIGNAL ( timeout() ), this, SLOT ( timerSignal() ) );
     }
     if (i == 0) {
@@ -213,10 +214,10 @@ void DisplayWidget::updateRefreshRate()
 // let the system handle widget paint events,without shaders
 void DisplayWidget::paintEvent(QPaintEvent *ev)
 {
-
     if ( drawingState == Tiled ) {
         return;
     }
+
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
     }
@@ -301,9 +302,11 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     initBufferShader();
 
-    if(bufferShaderProgram != nullptr && bufferShaderProgram->isLinked()) {
-        // alas goot
-    }
+    if(!(nullptr == fragmentSource.bufferShaderSource)) {
+        if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) {
+            return;
+        }
+    }    
 }
 
 void DisplayWidget::requireRedraw(bool clear )
@@ -314,7 +317,7 @@ void DisplayWidget::requireRedraw(bool clear )
     }
 
     if ( clear ) {
-        clearBackBuffer();
+        doClearBackBuffer = true;
         pendingRedraws = 1;
         bufferUniformsHaveChanged = true; // fixed bad image after rebuild
     } else if ( bufferShaderOnly ) {
@@ -677,7 +680,7 @@ void DisplayWidget::initFragmentShader()
         shaderProgram = nullptr;
         return;
     }
-
+    
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
         // Bind first texture to backbuffer
@@ -761,7 +764,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     int chn = -1;
     QString chv = "";
     bool hasZ = false;
-
+    
     if ( file.isComplete() ) {
 
         int channelCount=0;
@@ -772,7 +775,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             }
             channelCount++;
         }
-        
+
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
@@ -1124,7 +1127,7 @@ void DisplayWidget::initBufferShader()
         bufferShaderProgram = nullptr;
         return;
     }
-
+    
     bufferUniformsHaveChanged = false;
 }
 
@@ -1198,7 +1201,7 @@ void DisplayWidget::makeBuffers()
     // we must create both the backbuffer and previewBuffer
     previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
-    clearBackBuffer();
+    doClearBackBuffer = true;
 
     if (format().majorVersion() > 2 || format().profile() == QSurfaceFormat::CompatibilityProfile) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -1372,7 +1375,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
     // this only returns uniforms that have not been optimized out
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    for (int i = 0; i < count; i++) {
+    for (uint i = 0; i < count; i++) {
 
         GLsizei bufSize = 256;
         GLsizei length;
@@ -1381,6 +1384,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         GLchar name[bufSize];
 
         glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
+
         QString tp = "";
         get32Type(type, tp);
         bool foundDouble = false;
@@ -1539,6 +1543,8 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 void DisplayWidget::draw3DHints()
 {
 
+    if(!hasKeyFrames) return;
+
     if ( mainWindow->wantPaths()  && !isContinuous()) {
         if (eyeSpline != nullptr && drawingState != Animation && drawingState != Tiled) {
             if ( mainWindow->wantSplineOcc() ) {
@@ -1584,11 +1590,11 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
 
-        glLoadIdentity();
+            glLoadIdentity();
 
         // only available in GL > 2.0 < 3.2 and compatibility profile
-        glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
-        glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
+            glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
+            glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -1606,9 +1612,9 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
 
     glColor4f ( 1.0,1.0,1.0,1.0 );
 
-    glDepthFunc ( GL_ALWAYS );    // always passes test so we write color
-    glEnable ( GL_DEPTH_TEST );   // enable depth testing
-    glDepthMask ( GL_TRUE );      // enable depth buffer writing
+    glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
+    glEnable ( GL_DEPTH_TEST );  // enable depth testing
+    glDepthMask ( GL_TRUE );     // enable depth buffer writing
 
     glBegin ( GL_TRIANGLES );     // shader draws on this surface
     glTexCoord2f ( 0.0f, 0.0f );
@@ -1619,7 +1625,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     glVertex3f ( -1.0f,  3.0f,  0.0f );
     glEnd();
 
-    glFinish();  // wait for GPU to return control
+    glFinish(); // wait for GPU to return control
 
     // finished with the shader
     shaderProgram->release();
@@ -1687,10 +1693,11 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
             if (backBuffer != nullptr) {
                 // swap backbuffer
                 QOpenGLFramebufferObject* temp = backBuffer;
-                backBuffer= previewBuffer;
+                backBuffer = previewBuffer;
                 previewBuffer = temp;
-                subframeCounter++;
-                makeCurrent();
+            
+            subframeCounter++;
+            makeCurrent();
             }
 
             if ( !previewBuffer->bind() ) {
@@ -1699,7 +1706,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
             }
 
             drawFragmentProgram ( s.width(),s.height(), true );
-
+            
             if ( !previewBuffer->release() ) {
               WARNING ( tr("Failed to release FBO") );
                 return;
@@ -1712,7 +1719,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     }
 
     if (buffer != nullptr && !buffer->bind()) {
-        WARNING ( tr("Failed to bind target buffer") );
+        WARNING ( tr("Failed to bind hires buffer") );
         return;
     }
 
@@ -1726,12 +1733,12 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     }
 
-    glPushAttrib ( GL_ALL_ATTRIB_BITS );
-    glMatrixMode ( GL_PROJECTION );
-    glLoadIdentity();
-    glMatrixMode ( GL_MODELVIEW );
-    glLoadIdentity();
-
+        glPushAttrib ( GL_ALL_ATTRIB_BITS );
+        glMatrixMode ( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode ( GL_MODELVIEW );
+        glLoadIdentity();
+    
     setViewPort ( pixelWidth(),pixelHeight() );
 
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
@@ -1743,7 +1750,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     glEnable ( GL_TEXTURE_2D );
 
     glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
-    glDepthMask ( GL_FALSE );   // No writing: output is color data from post effects
+    glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
 
     glBegin ( GL_TRIANGLES );
     glTexCoord2f ( 0.0f, 0.0f );
@@ -1981,10 +1988,10 @@ void DisplayWidget::setState(DrawingState state)
 
 void DisplayWidget::paintGL()
 {
-
     if ( drawingState == Tiled ) {
         return;
     }
+
     if (pixelHeight() == 0 || pixelWidth() == 0) {
         return;
     }
@@ -2361,12 +2368,12 @@ void DisplayWidget::drawLookatVector()
 
     glm::dvec3 ec = eyeSpline->getSplinePoint ( mainWindow->getTime() +1 );
     glm::dvec3 tc = targetSpline->getSplinePoint ( mainWindow->getTime() +1 );
-    glColor4f ( 1.0,1.0,0.0,1.0 );
-    glBegin ( GL_LINE_STRIP );
-    glVertex3f ( ec.x,ec.y,ec.z );
-    glVertex3f ( tc.x,tc.y,tc.z );
-    glEnd();
-}
+        glColor4f ( 1.0,1.0,0.0,1.0 );
+        glBegin ( GL_LINE_STRIP );
+        glVertex3f ( ec.x,ec.y,ec.z );
+        glVertex3f ( tc.x,tc.y,tc.z );
+        glEnd();
+    }
 
 void DisplayWidget::setPerspective()
 {
