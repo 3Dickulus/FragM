@@ -905,6 +905,7 @@ void MainWindow::variablesChanged(bool lockedChanged)
 {
     if (lockedChanged) {
         highlightBuildButton(true);
+        engine->clearTextureCache(nullptr);
     }
     bool bso = isChangedUniformInBuffershaderOnly();
     engine->uniformsHaveChanged(bso);

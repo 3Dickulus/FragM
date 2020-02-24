@@ -520,18 +520,16 @@ public:
     }
     QString getChannelValue()
     {
+        QString chv = "";
         if(!channelComboBox->isHidden()) {
-            QString chv = "";
             QMapIterator<QString, Qt::CheckState> it(channelsUsed);
             while (it.hasNext()) {
                 it.next();
                 if(it.value() == Qt::Checked) chv += it.key() + ";";
             }
             chv.remove(chv.length()-1,1);
-            return chv;
         }
-
-        else return "";
+        return chv;
     }
     
     int hasChannel(QString chan);
@@ -557,12 +555,7 @@ public slots:
     void slot_changed(QStandardItem *item)
     {
         channelsUsed[item->text()] = item->checkState();
-//         if(item->checkState() == Qt::Unchecked) {
-//             DBOUT << item->text() << "Unchecked!";
-//         } else if(item->checkState() == Qt::Checked) {
-//             DBOUT << item->text() << "Checked!";
-//         }
-//         channelChanged(item->text());
+        channelChanged(item->text());
     }
 
 signals:
