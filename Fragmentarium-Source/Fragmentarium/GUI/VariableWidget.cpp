@@ -812,7 +812,6 @@ void SamplerWidget::channelChanged(const QString &text)
             }
 //             else DBOUT << channelComboBox->currentIndex();
 
-        }
         if(check) {
             valueChanged();
         }
