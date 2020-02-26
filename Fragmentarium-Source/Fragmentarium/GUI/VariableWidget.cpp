@@ -798,7 +798,7 @@ int SamplerWidget::hasChannel(int channel, QString chan)
 
     return ci;
 }
-    
+
 void SamplerWidget::channelChanged(const QString &text)
 {
     
@@ -812,6 +812,7 @@ void SamplerWidget::channelChanged(const QString &text)
             }
 //             else DBOUT << channelComboBox->currentIndex();
 
+        }
         if(check) {
             valueChanged();
         }
@@ -880,10 +881,13 @@ void SamplerWidget::buttonClicked()
     a << "exr";
 #endif
     a << QImageReader::supportedImageFormats();
+
     foreach(QByteArray s, a) {
         extensions.append(QString(s));
     }
+
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select a Texture"), QString(), tr("Images (") + extensions.join(" *.") + tr(");;All (*.*)"));
+    
     if (!fileName.isEmpty()) {
         comboBox->setEditText(fileName);
     }

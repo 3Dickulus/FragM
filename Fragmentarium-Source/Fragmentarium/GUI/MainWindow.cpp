@@ -1324,15 +1324,15 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     } else // display scaled tiles if tile is same size or smaller than the window
                         if (engine->width() >= tileWidth &&
                                 engine->height() >= tileHeight) {
-                            float wScaleFactor = engine->width() / maxTiles;
-                            float hScaleFactor = engine->height() / maxTiles;
-                            int dx = (tile / maxTiles);
-                            int dy = (maxTiles-1)-(tile % maxTiles);
-                            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                    float wScaleFactor = engine->width() / maxTiles;
+                    float hScaleFactor = engine->height() / maxTiles;
+                    int dx = (tile / maxTiles);
+                    int dy = (maxTiles-1)-(tile % maxTiles);
+                    QRect source ( 0, 0, wScaleFactor, hScaleFactor );
                             QRect target(dx * wScaleFactor, dy * hScaleFactor, wScaleFactor, hScaleFactor);
                             QPainter painter ( engine );
-                            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                            painter.drawImage ( target, im, source );
+                    im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    painter.drawImage ( target, im, source );
                         }
                 } else {
                     stopScript();
@@ -1470,7 +1470,7 @@ retry:
     int tileHeight = od.getTileHeight();
     bufferYSpinBox->setValue(tileHeight);
 
-    if (od.doSaveFragment() || od.doAnimation()) {
+    if ( (od.doSaveFragment() || od.doAnimation()) && !od.preview()) {
         QString fileName = od.getFragmentFileName();
         logger->getListWidget()->clear();
         if (tabBar->currentIndex() == -1) {
