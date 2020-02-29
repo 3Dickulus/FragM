@@ -407,6 +407,16 @@
         </property>
        </widget>
       </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="animationModeCheckBox">
+        <property name="text">
+         <string>Animation update on=continuous off=last set</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

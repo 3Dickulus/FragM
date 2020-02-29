@@ -491,7 +491,7 @@ public slots:
     void documentWasModified();
     void closeTab ( int index );
     void rewind();
-    void play();
+    void play( bool restart = true );
     void stop();
     // for benchmark script
     int getTileAVG()
