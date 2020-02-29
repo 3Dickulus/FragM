@@ -2138,12 +2138,14 @@ void MainWindow::rewind()
     engine->update();
 }
 
-void MainWindow::play()
+void MainWindow::play( bool restart )
 {
 
     playAction->setEnabled(false);
     stopAction->setEnabled(true);
-    lastTime->restart();
+    if (restart) {
+        lastTime->restart();
+    }
     engine->setContinuous(true);
     getTime();
     pausePlay=false;
@@ -2675,7 +2677,7 @@ bool MainWindow::initializeFragment()
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
-        pause ? stop() : play();
+        pause ? stop() : play(! settings.value("animationMode", false).toBool());
 
         hideUnusedVariableWidgets();
 
