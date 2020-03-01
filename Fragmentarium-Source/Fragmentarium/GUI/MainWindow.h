@@ -731,6 +731,7 @@ private:
     bool verbose;
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
+    bool playRestartMode;
 
 #ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;

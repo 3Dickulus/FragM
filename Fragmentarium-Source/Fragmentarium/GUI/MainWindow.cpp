@@ -96,6 +96,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
     includeWithAutoSave = true;
+    playRestartMode = false;
 
     init();
 
@@ -2283,6 +2284,7 @@ void MainWindow::readSettings()
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
     includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
+    playRestartMode = settings.value("playRestartMode", false).toBool();
 
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
@@ -2323,6 +2325,7 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
+    settings.setValue("playRestartMode", playRestartMode );
 
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
@@ -2676,7 +2679,7 @@ bool MainWindow::initializeFragment()
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
-        pause ? stop() : play(! settings.value("animationMode", false).toBool());
+        pause ? stop() : play(!playRestartMode);
 
         hideUnusedVariableWidgets();
 
