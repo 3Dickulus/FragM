@@ -23,8 +23,6 @@ namespace Parser {
 
 using namespace SyntopiaCore::Logging;
 
-enum Provenance { FromUnknown = 0, FromMainShader = 1, FromBufferShader = 2, FromBothShaders = 3 };
-
 enum LockTypeInner { Locked, NotLocked, NotLockable, AlwaysLocked, Unknown } ;
 
 class LockType {
@@ -162,7 +160,6 @@ public:
 protected:
     LockType lockType;
     SliderType sliderType;
-    Provenance provenance;
     QString group;
     QString name;
     QString tooltip;
@@ -183,6 +180,7 @@ public:
     QString getDefaultChannelValue() {
         return defaultChannel;
     }
+
 private:
     QString defaultValue;
     QString defaultChannel;

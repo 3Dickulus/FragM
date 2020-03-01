@@ -938,7 +938,6 @@ void SamplerWidget::setUserUniform(QOpenGLShaderProgram* shaderProgram)
         int l = uniformLocation(shaderProgram);
         if( !(l < 0) ) {
             shaderProgram->setUniformValue(l, texID);
-//  DBOUT << shaderProg->programId() << " TextureCache[" << texID << "] " << name;
         }
     }
 }
@@ -960,7 +959,7 @@ void SamplerWidget::updateTexture(Parser::FragmentSource *fs,
     }
 }
 
-hSamplerWidget::hSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
+iSamplerWidget::iSamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue)
     : SamplerWidget(fileManager, parent, variableEditor, name, defaultValue, defaultChannelValue)
 {
 }

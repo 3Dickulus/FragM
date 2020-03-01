@@ -120,7 +120,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
     bool hasVertexCode = false;
     bool hasIncludes = false;
     bool addedVersionLine = false;
-    
+
     // insert #line directives so the compiler reports accurate error line numbers.
     if (!isCreatingAutoSave) {
 
@@ -208,7 +208,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                     if(vers > 200 && !addedVersionLine) {
                         in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
                     }
-                    else 
+                    else
                     if(vers < 200 && addedVersionLine && isBufferShader) {
                         in.insert(i+1, QString("#line %1 %2").arg(i-2).arg(sf));
                     }
@@ -218,7 +218,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                 }
             }
         }
-        
+
         // make sure we fall back to the default group after including a file.
         in.append("#group default");
     }
@@ -450,7 +450,7 @@ void Preprocessor::parseSampler2DChannel(FragmentSource *fs, int i, QString file
     fs->source[i] = "uniform sampler2D " + name + ";";
     QString fileName;
     QString channelName = sampler2DChannel.cap(3);
-    
+
     try {
         fileName = fileManager->resolveName(sampler2DChannel.cap(2), file);
     } catch (Exception &e) {

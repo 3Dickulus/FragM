@@ -578,11 +578,11 @@ private:
     QStringList defaultChannelValue;
 };
 
-class hSamplerWidget : public SamplerWidget
+class iSamplerWidget : public SamplerWidget
 {
     Q_OBJECT
 public:
-    hSamplerWidget ( FileManager *fileManager, QWidget *parent,
+    iSamplerWidget ( FileManager *fileManager, QWidget *parent,
                     QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
 
 signals:

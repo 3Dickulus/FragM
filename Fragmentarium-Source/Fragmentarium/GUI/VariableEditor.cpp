@@ -274,6 +274,17 @@ void VariableEditor::unlockGroup()
     }
 }
 
+QString VariableEditor::cameraSettings() {
+
+    QString gs;
+    foreach (VariableWidget* variable, variables) {
+        if (variable->getGroup() == "Camera") {
+            gs += variable->getName() + " = " + variable->toSettingsString() + "\n";
+        }
+    }
+    return gs;
+}
+
 void VariableEditor::groupToPreset() {
     QWidget* t = tabWidget->widget(tabWidget->currentIndex());
 

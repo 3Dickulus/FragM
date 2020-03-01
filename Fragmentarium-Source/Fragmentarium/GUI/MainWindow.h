@@ -215,7 +215,7 @@ public:
 
     TextEdit *getTextEdit();
     void createCommandHelpMenu ( QMenu *menu, QWidget *textEdit, MainWindow *mainWindow );
-    VariableEditor *getVariableEditor()
+        VariableEditor *getVariableEditor()
     {
         return variableEditor;
     }
@@ -344,6 +344,7 @@ public slots:
         }
         return s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed();
     };
+
     void setAnimationLength ( int m )
     {
         timeMaxSpinBox->setValue ( m );
@@ -490,7 +491,7 @@ public slots:
     void documentWasModified();
     void closeTab ( int index );
     void rewind();
-    void play();
+    void play( bool restart = true );
     void stop();
     // for benchmark script
     int getTileAVG()
@@ -730,6 +731,7 @@ private:
     bool verbose;
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
+    bool playRestartMode;
 
 #ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;
@@ -743,6 +745,8 @@ private:
 
     QShortcut       *keyF6;           // Entity of F6 hotkey
     QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
+    
+    QPixmap enginePixmap;
 
 };
 }

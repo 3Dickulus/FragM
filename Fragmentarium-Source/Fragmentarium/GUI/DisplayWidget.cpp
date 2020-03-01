@@ -758,13 +758,16 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 }
 
 //
-// Read an RGBA image using class InputFile:
+// Read an RGBA image using class Imf::InputFile
 //
 //    - open the file
 //    - allocate memory for the pixels
 //    - describe the memory layout of the pixels
-//    - determine the channel(s)
+//    - sort the channels to equal GL pixel layout
 //    - read the pixels from the file
+//    - upload data to GPU
+//
+// TODO: handle isampler and usampler and XYZW channels
 //
 
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels)
@@ -777,10 +780,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    int chn = -1;
-    QString chv = "";
-    bool hasZ = false;
-    
     if ( file.isComplete() ) {
 
         int channelCount=0;
@@ -2001,7 +2000,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     }
 
     (*im) = hiresBuffer->toImage();
-
+    tileImage = im;
     subframeCounter=0;
 
     if ( !hiresBuffer->release() ) {
@@ -2169,7 +2168,7 @@ void DisplayWidget::showEvent(QShowEvent *ev)
 
 void DisplayWidget::wheelEvent(QWheelEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2180,13 +2179,13 @@ void DisplayWidget::wheelEvent(QWheelEvent *ev)
 
 void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
-        return;
-    }
 
     mouseXY = ev->pos();
 
     if( buttonDown) {
+        if (drawingState == Tiled) {
+            return;
+        }
         bool redraw = cameraControl->mouseEvent ( ev, width(), height() );
         if ( redraw ) {
             requireRedraw ( clearOnChange );
@@ -2197,7 +2196,7 @@ void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 
 void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2261,7 +2260,7 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 {
     buttonDown=true;
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
     if (ev->button() == Qt::MouseButton::RightButton &&
@@ -2282,7 +2281,7 @@ void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 
 void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2297,7 +2296,7 @@ void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 
 void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
