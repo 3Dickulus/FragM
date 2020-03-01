@@ -96,6 +96,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
     includeWithAutoSave = true;
+    playRestartMode = false;
 
     init();
 
@@ -1529,34 +1530,57 @@ retry:
             subdirName = oDir.filePath(subdirName); // full name
 
             if(od.doSaveFragment()) {
-            QFile fileStream(subdirName + QDir::separator() + fileName);
-            if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
-                return;
-            }
+                QFile fileStream(subdirName + QDir::separator() + fileName);
+                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
+                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
+                    return;
+                }
 
-            QTextStream out(&fileStream);
-            out << final;
-            INFO(tr("Saved fragment + settings as: ") + subdirName +
-                 QDir::separator() + fileName);
+                if(od.doReleaseFiles()) {
+                // if releaseFiles flag copy all textures to frag dir and adjust for local referencing
+                // can't assume that local dist files have not been added or altered by user so copy all
+                // the texture references in currently running FragmentSource are full path names
+                // test if actual reference in final output is full path, truncate to filename only
+                // remap texture file references in final output to local before saving frag
 
-            if(includeWithAutoSave) {
-                // Copy files.
-                QStringList ll = p.getDependencies();
-                foreach (QString from, ll) {
-                    QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
-                        if(QFile::exists(to) && overWrite)
-                        if (!QFile::remove(to)) {
-                            QMessageBox::warning(
-                                this, tr("Fragmentarium"), tr("Could not remove dependency:\n'%1'").arg(from).arg(to));
+                    QMapIterator<QString, QString> it( engine->getFragmentSource()->textures );
+                    
+                    while( it.hasNext() ) {
+                        it.next();
+                        QString localReference = it.value().split(QDir::separator()).last();
+                        // there may be other textures still in the cache so test final for filename
+                        // only copy textures that are actually used
+                        if(final.contains(localReference)) {
+                            // remap full path to local reference
+                            final.replace(it.value(), localReference);
+                            QString newFullName = subdirName + QDir::separator() + localReference;
+                            QFile(it.value()).copy(newFullName);
                         }
-                            
-                    if (!QFile::copy(from,to)) {
-                        QMessageBox::warning(
-                            this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
                     }
                 }
-            }
+                // save fragment source
+                QTextStream out(&fileStream);
+                out << final;
+
+                INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
+
+                if(includeWithAutoSave) {
+                    // Copy files.
+                    QStringList ll = p.getDependencies();
+                    foreach (QString from, ll) {
+                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
+                            if(QFile::exists(to) && overWrite)
+                            if (!QFile::remove(to)) {
+                                QMessageBox::warning(
+                                    this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(from).arg(to));
+                            }
+                                
+                        if (!QFile::copy(from,to)) {
+                            QMessageBox::warning(
+                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
+                        }
+                    }
+                }
             }
         } catch (Exception& e) {
             WARNING(e.getMessage());
@@ -1701,9 +1725,6 @@ retry:
 
         statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
 
-//         QSettings settings;
-//         if( settings.value("enableGLDebug").toBool() ) std::cout << name.toStdString() << std::endl << std::endl;
-        
 #ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
@@ -2143,7 +2164,7 @@ void MainWindow::play( bool restart )
     playAction->setEnabled(false);
     stopAction->setEnabled(true);
     if (restart) {
-        lastTime->restart();
+    lastTime->restart();
     }
     engine->setContinuous(true);
     getTime();
@@ -2283,6 +2304,7 @@ void MainWindow::readSettings()
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
     includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
+    playRestartMode = settings.value("playRestartMode", false).toBool();
 
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
@@ -2323,6 +2345,7 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
+    settings.setValue("playRestartMode", playRestartMode );
 
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
@@ -2676,7 +2699,7 @@ bool MainWindow::initializeFragment()
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
-        pause ? stop() : play(! settings.value("animationMode", false).toBool());
+        pause ? stop() : play(!playRestartMode);
 
         hideUnusedVariableWidgets();
 

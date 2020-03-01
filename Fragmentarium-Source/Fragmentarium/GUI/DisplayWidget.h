@@ -394,7 +394,9 @@ private:
 
     QDateTime tileRenderStart;
     QMap<QString, int> TextureCache;
-
+    // this is used to track channel layout with textureID as key
+    QMap< GLuint, int > TextureChannelFormat;
+    
     bool doClearBackBuffer;
     QTimer* timer;
     int maxSubFrames;

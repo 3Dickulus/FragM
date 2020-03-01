@@ -492,7 +492,7 @@ class SamplerWidget : public VariableWidget
     Q_OBJECT
 public:
     SamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+                    QWidget *variableEditor, QString name, QString defaultValue );
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
@@ -510,29 +510,7 @@ public:
     void reset()
     {
         comboBox->setEditText ( defaultValue );
-        if(!defaultChannelValue.isEmpty()) {
-            channelComboBox->show();
-            int i = channelComboBox->findText(defaultChannelValue);
-            if(i != -1) {
-                channelComboBox->setCurrentIndex(i);
-            }
-        } else channelComboBox->hide();
     }
-    QString getChannelValue()
-    {
-        QString chv = "";
-        if(!channelComboBox->isHidden()) {
-            QMapIterator<QString, Qt::CheckState> it(channelsUsed);
-            while (it.hasNext()) {
-                it.next();
-                if(it.value() == Qt::Checked) chv += it.key() + ";";
-            }
-            chv.remove(chv.length()-1,1);
-        }
-        return chv;
-    }
-    
-    int hasChannel(QString chan);
     
     QString getLockedSubstitution()
     {
@@ -549,14 +527,8 @@ public:
     void setSliderType(SliderType ){};
     
     int texID;
-    QStringList channelList;
 
 public slots:
-    void slot_changed(QStandardItem *item)
-    {
-        channelsUsed[item->text()] = item->checkState();
-        channelChanged(item->text());
-    }
 
 signals:
     void changed();
@@ -564,7 +536,6 @@ signals:
 protected slots:
 
     void textChanged(const QString& text);
-    void channelChanged(const QString& text);
 
     void buttonClicked();
 
@@ -575,16 +546,14 @@ private:
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
-    QString defaultChannelValue;
-    QMap<QString, Qt::CheckState> channelsUsed;
 };
 
-class hSamplerWidget : public SamplerWidget
+class iSamplerWidget : public SamplerWidget
 {
     Q_OBJECT
 public:
-    hSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+    iSamplerWidget ( FileManager *fileManager, QWidget *parent,
+                    QWidget *variableEditor, QString name, QString defaultValue );
 
 signals:
 
@@ -599,7 +568,7 @@ class uSamplerWidget : public SamplerWidget
     Q_OBJECT
 public:
     uSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
+                    QWidget *variableEditor, QString name, QString defaultValue );
 
 signals:
 

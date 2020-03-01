@@ -23,8 +23,6 @@ namespace Parser {
 
 using namespace SyntopiaCore::Logging;
 
-enum Provenance { FromUnknown = 0, FromMainShader = 1, FromBufferShader = 2, FromBothShaders = 3 };
-
 enum LockTypeInner { Locked, NotLocked, NotLockable, AlwaysLocked, Unknown } ;
 
 class LockType {
@@ -162,7 +160,6 @@ public:
 protected:
     LockType lockType;
     SliderType sliderType;
-    Provenance provenance;
     QString group;
     QString name;
     QString tooltip;
@@ -171,8 +168,8 @@ protected:
 
 class SamplerParameter : public GuiParameter {
 public:
-    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue, QString defaultChannel="") :
-        GuiParameter(group, name, tooltip), defaultValue(defaultValue), defaultChannel(defaultChannel) {}
+    SamplerParameter(QString group, QString name,QString tooltip, QString defaultValue) :
+        GuiParameter(group, name, tooltip), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
         return QString("%1:%2:%3:%4").arg(group).arg(getName());
@@ -180,12 +177,9 @@ public:
     QString getDefaultValue() {
         return defaultValue;
     }
-    QString getDefaultChannelValue() {
-        return defaultChannel;
-    }
+
 private:
     QString defaultValue;
-    QString defaultChannel;
 };
 
 class FloatParameter : public GuiParameter {
@@ -417,11 +411,8 @@ public:
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
     
     static QRegExp sampler2D (        "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp sampler2DChannel ( "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
     static QRegExp isampler2D (        "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp isampler2DChannel ( "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
     static QRegExp usampler2D (        "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
-    static QRegExp usampler2DChannel ( "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
 
     static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
@@ -442,7 +433,6 @@ public:
     void parseSpecial(FragmentSource *fs, QString s, int i, bool moveMain );
     void parseReplacement(FragmentSource *fs, QString s, int i);
     void parseSampler2D( FragmentSource* fs, int i, QString file);
-    void parseSampler2DChannel( FragmentSource* fs, int i, QString file);
     void parseSamplerCube( FragmentSource* fs, int i, QString file );
     void parseFloatColorChooser( FragmentSource* fs, int i);
     void parseFloat1Slider( FragmentSource* fs, int i);
