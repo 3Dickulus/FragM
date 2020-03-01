@@ -742,13 +742,16 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 }
 
 //
-// Read an RGBA image using class InputFile:
+// Read an RGBA image using class Imf::InputFile
 //
 //    - open the file
 //    - allocate memory for the pixels
 //    - describe the memory layout of the pixels
-//    - determine the channel(s)
+//    - sort the channels to equal GL pixel layout
 //    - read the pixels from the file
+//    - upload data to GPU
+//
+// TODO: handle isampler and usampler and XYZW channels
 //
 
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
@@ -761,9 +764,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    int chn = -1;
-    QString chv = "";
-    bool hasZ = false;
+    QStringList channelList;
     
     if ( file.isComplete() ) {
 
@@ -774,6 +775,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                 std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
             }
             channelCount++;
+            channelList << i.name();
         }
 
         int w  = dw.max.x - dw.min.x + 1;
@@ -791,27 +793,35 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             WARNING(tr("Exrloader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
             return false;
         }
-        
-        Array2D<RGBAFLOAT>pixels ( w, 1 );
-        
-        if(type == GL_SAMPLER_2D) {
-            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
-            if(sw != nullptr && !sw->getName().isNull()) {
-                chv = sw->getChannelValue(); // channel name(s)
-                if(!chv.contains("Z") && !chv.contains("DEPTH") && !chv.contains("D"))
-                    hasZ = false;
-                else
-                    hasZ = (sw->channelList.contains("Z") || sw->channelList.contains("DEPTH") || sw->channelList.contains("D"));
-                
-                if(chv.contains("All") && sw->channelList.contains("Z")) hasZ = true;
-                
-//                 chn = sw->hasChannel(chv); // channel index
-//                 DBOUT << "Using:" << sw->getName() << sw->getValue() << chv << chn;
-            }
-        } else chv = "All";
 
-        pixels.resizeErase (w, h);
-        
+        // internal textures are RGBA 4 channels max so truncate and emit warning
+        // will use the first 4 as RGBA
+        if(channelCount > 4) {
+            WARNING( tr("Channel count %1! Layers not yet implemented!\nUsing the first 4 channels for %2.rgba from texture %3")
+                .arg(channelCount)
+                .arg(textureUniformName)
+                .arg(texturePath)
+            );
+            channelCount = 4;
+        }
+
+        if(channelCount < 1) return false; // uhoh :(
+
+// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
+// the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
+// TextureChannelFormat 
+
+        bool haveA = false;
+        bool haveZ = false;
+        for (int i=0; i<channelCount; i++) {
+            haveA |= channelList.at(i).toUpper() == "A";
+            haveZ |= channelList.at(i).toUpper() == "Z";
+        }
+        TextureChannelFormat[textureID] = 0; // = bgr or bgrz
+        if(haveA) TextureChannelFormat[textureID] = 1; // = abgr
+
+        Array2D<RGBAFLOAT>pixels ( w, 1 );
+
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
         
@@ -823,13 +833,12 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
             FrameBuffer fb;
 
-            fb.insert ("R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ("G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ("B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            if(!hasZ) // no Z DEPTH or 4th so add an alpha channel and fill with appropriate value
-                fb.insert ("A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-            else // this should allow arbitrary naming of the 4th channel
-                fb.insert ("Z", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
+            // this should allow arbitrary naming of channels and ensure we have a valid RGBA texture
+            // accounts for non-existent channels and names them appropriately
+            fb.insert ((channelCount > 0) ? channelList.at(0).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
+            fb.insert ((channelCount > 1) ? channelList.at(1).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
+            fb.insert ((channelCount > 2) ? channelList.at(2).toLatin1().data() : "B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
+            fb.insert ((channelCount > 3) ? channelList.at(3).toLatin1().data() : "A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
 
             file.setFrameBuffer (fb);
             file.readPixels ( dw.min.y );
@@ -838,10 +847,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (chv.contains("R") || chv.contains("All")) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(chv.contains("G") || chv.contains("All")) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(chv.contains("B") || chv.contains("All")) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(chv.contains("A") || chv.contains("All") || chv.contains("Z") || hasZ) ? pixels[0][i].a : 1.0; // always put 4th channel in alpha slot?
+                cols[indx] = (channelCount > 0) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(channelCount > 1) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(channelCount > 2) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(channelCount > 3) ? pixels[0][i].a : 1.0;
             }
             dw.min.y ++;
         }
@@ -1008,6 +1017,28 @@ void DisplayWidget::initFragmentTextures()
                 }
 
                 if ( loaded ) {
+
+// GL_TEXTURE_SWIZZLE_RGBA core since 3.3
+// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
+// the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
+// this works to sort out the channel order for ABGR, BGRZ and BGR files
+// TODO:test against GL_TEXTURE_CUBE_MAP
+
+                    if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) {
+                        if(TextureChannelFormat[textureID] == 1) { // has alpha
+                            GLint swizzleMask[] = {GL_ALPHA, GL_BLUE, GL_GREEN, GL_RED};
+                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                        }
+                        else { // has Z or no A
+                            GLint swizzleMask[] = {GL_BLUE, GL_GREEN, GL_RED, GL_ALPHA};
+                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                        }
+                    } else {
+                        // normal swizzle mask
+                        GLint swizzleMask[] = {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA};
+                        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                    }
+
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
@@ -1020,6 +1051,7 @@ void DisplayWidget::initFragmentTextures()
                     WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
                 }
                 u++;
+
             } else {
                 WARNING(tr("Unused sampler uniform: ") + textureUniformName);
             }
@@ -1055,6 +1087,7 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
             glDeleteTextures(1, &id);
         }
         TextureCache.clear();
+        TextureChannelFormat.clear();
     }
 }
 
@@ -1972,7 +2005,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     }
 
     (*im) = hiresBuffer->toImage();
-
+    tileImage = im;
     subframeCounter=0;
 
     if ( !hiresBuffer->release() ) {
@@ -2140,7 +2173,7 @@ void DisplayWidget::showEvent(QShowEvent *ev)
 
 void DisplayWidget::wheelEvent(QWheelEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2151,13 +2184,13 @@ void DisplayWidget::wheelEvent(QWheelEvent *ev)
 
 void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
-        return;
-    }
 
     mouseXY = ev->pos();
 
     if( buttonDown) {
+        if (drawingState == Tiled) {
+            return;
+        }
         bool redraw = cameraControl->mouseEvent ( ev, width(), height() );
         if ( redraw ) {
             requireRedraw ( clearOnChange );
@@ -2168,7 +2201,7 @@ void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 
 void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2232,7 +2265,7 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
 void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 {
     buttonDown=true;
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
     if (ev->button() == Qt::MouseButton::RightButton &&
@@ -2253,7 +2286,7 @@ void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 
 void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 
@@ -2268,7 +2301,7 @@ void DisplayWidget::keyPressEvent(QKeyEvent *ev)
 
 void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
 {
-    if (mainWindow->getCameraSettings().isEmpty() || drawingState == Tiled) {
+    if (drawingState == Tiled) {
         return;
     }
 

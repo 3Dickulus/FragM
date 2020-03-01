@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
+    <width>470</width>
     <height>546</height>
    </rect>
   </property>
@@ -401,6 +401,16 @@
        <widget class="QCheckBox" name="ddCameraModeCheckBox">
         <property name="text">
          <string>2D Camera Mode on=traveling off=fixed</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="playRestartModeCheckBox">
+        <property name="text">
+         <string>Animation update on=continuous off=last set</string>
         </property>
         <property name="checked">
          <bool>false</bool>

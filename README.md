@@ -81,9 +81,9 @@ Status
 
    Recommends:  ffmpeg or mencoder for creating videos from a folder full of images using the Video Dialog.
 
-   Pre-depends: OpenEXR (v2.2 linux) (v2.3 OSX) (v2.4 Win) https://github.com/AcademySoftwareFoundation/openexr/releases ( Win version uses static linked OpenEXR lib )
+   Pre-depends: OpenEXR v2.4 https://github.com/AcademySoftwareFoundation/openexr/releases ( Win version uses static linked OpenEXR lib )
 
-   Pre-depends: GLM https://glm.g-truc.net/0.9.9/index.html ( at compile time for all OSs )
+   Pre-depends: GLM https://glm.g-truc.net/ ( at compile time for all OSs )
 
    Depends:     Qt5Core, Qt5Gui, Qt5OpenGL, Qt5Script, Qt5Widgets, Qt5Xml
 
@@ -91,7 +91,7 @@ Status
     1. any new feature must work on the widest range of hardware, ( AMD Intel and nVidia ) all if possible
     2. any changes to existing features must be compatible with the existing fragment base
     3. existing features that only work on specific hardware should be phased out or modified to work on all hardware.
-    4. when adding options or settings they must be in line with the exiting structure for handling options and settings
+    4. when adding options or settings they must be in line with the existing structure for handling options and settings
        (unless you have a better idea that makes the current structure obsolete)
     5. priority should go towards handling more modern GLSL versions and practices
     6. changes and additions must be tested against all other features, animating, timeline management,
@@ -102,7 +102,7 @@ Status
 
 # License
 
-Copyright (C) 2010-2014 Mikael Hvidtfeldt Christensen : 2015-2019 Digilantism by Richard Paquette
+Copyright (C) 2010-2014 Mikael Hvidtfeldt Christensen : 2015-2020 Digilantism by Richard Paquette
 
 Fragmentarium is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 

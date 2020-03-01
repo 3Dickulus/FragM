@@ -98,11 +98,6 @@ install:
     fi
 
 before_script:
-  #- |
-    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    #then
-      #source /opt/qt5*/bin/qt5*-env.sh
-    #fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
@@ -116,6 +111,8 @@ before_script:
 
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source/build
+  - export VERSION_NUMBER=`grep "FRAGM_MAJOR_VERSION " ../CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_MINOR_VERSION " ../CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_REVISION " ../CMakeLists.txt | sed "s/[^0-9]//g"`
+  - export BUILD_NUMBER=`date -u "+%y%m%d"`
 
 script:
   - |
@@ -174,30 +171,22 @@ script:
     then
        cmake -DUSE_OPEN_EXR=ON -DBUILD_LINUX_DEB=OFF -DCMAKE_INSTALL_PREFIX=../../ ..
        make install
-       cd ../../Fragmentarium-2.5.0
-       mv ./Examples ./Fragmentarium-2.5.0.app/Contents/MacOS/Examples
-       mv ./fqScript ./Fragmentarium-2.5.0.app/Contents/MacOS/fqScript
-       mv ./Misc ./Fragmentarium-2.5.0.app/Contents/MacOS/Misc
-       mv ./Languages ./Fragmentarium-2.5.0.app/Contents/MacOS/Languages
-       macdeployqt ./Fragmentarium-2.5.0.app
+       cd ../../Fragmentarium-$VERSION_NUMBER
+       mv ./Examples ./Fragmentarium-$VERSION_NUMBER.app/Contents/MacOS/Examples
+       mv ./fqScript ./Fragmentarium-$VERSION_NUMBER.app/Contents/MacOS/fqScript
+       mv ./Misc ./Fragmentarium-$VERSION_NUMBER.app/Contents/MacOS/Misc
+       mv ./Languages ./Fragmentarium-$VERSION_NUMBER.app/Contents/MacOS/Languages
+       macdeployqt ./Fragmentarium-$VERSION_NUMBER.app
        cd ../
        wget https://raw.githubusercontent.com/arl/macdeployqtfix/master/macdeployqtfix.py
-       python ./macdeployqtfix.py `pwd`/Fragmentarium-2.5.0/Fragmentarium-2.5.0.app/Contents/MacOS/Fragmentarium-2.5.0.app $QTDIR
+       python ./macdeployqtfix.py `pwd`/Fragmentarium-$VERSION_NUMBER/Fragmentarium-$VERSION_NUMBER.app/Contents/MacOS/Fragmentarium-$VERSION_NUMBER.app $QTDIR
     fi
 
 before_deploy:
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      export VERSION_NUMBER=`grep "version =" ../Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.\.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`date -u "+%y%m%d"`
-    fi
-  - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      export VERSION_NUMBER=`grep "version =" ./Fragmentarium-Source/Fragmentarium/GUI/MainWindow.cpp | sed "s/[^0-9,]//g" | sed "s/,/\./g" | sed "s/.\.$//g" | sed "s/.......$//g"`
-      export BUILD_NUMBER=`date -u "+%y%m%d"`
-      ditto -c -k Fragmentarium-2.5.0 ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
+      ditto -c -k Fragmentarium-$VERSION_NUMBER ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
 

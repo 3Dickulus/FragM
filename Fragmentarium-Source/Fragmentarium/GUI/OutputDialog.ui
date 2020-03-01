@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>566</height>
+    <height>594</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -394,6 +394,16 @@
       <widget class="QCheckBox" name="autoSaveCheckBox">
        <property name="text">
         <string>Autosave fragment (as [ImageOutputName].frag)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="releaseFilesCheckBox">
+       <property name="toolTip">
+        <string>Copies all used texture files into the fragment folder.</string>
+       </property>
+       <property name="text">
+        <string>Save texture files</string>
        </property>
       </widget>
      </item>

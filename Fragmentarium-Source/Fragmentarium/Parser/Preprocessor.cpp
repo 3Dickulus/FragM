@@ -444,27 +444,6 @@ void Preprocessor::parseSampler2D(FragmentSource *fs, int i, QString file)
     fs->params.append(sp);
 }
 
-void Preprocessor::parseSampler2DChannel(FragmentSource *fs, int i, QString file)
-{
-    QString name = sampler2DChannel.cap(1);
-    fs->source[i] = "uniform sampler2D " + name + ";";
-    QString fileName;
-    QString channelName = sampler2DChannel.cap(3);
-    
-    try {
-        fileName = fileManager->resolveName(sampler2DChannel.cap(2), file);
-    } catch (Exception &e) {
-        CRITICAL(e.getMessage());
-    }
-    if (QFileInfo(fileName).isFile()) {
-        INFO("Added texture: " + name + " -> " + fileName + " using channel:" + channelName);
-    }
-    fs->textures[name] = fileName;
-    SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName, channelName);
-    setLockType(sp, "alwayslocked");
-    fs->params.append(sp);
-}
-
 void Preprocessor::parseSamplerCube(FragmentSource *fs, int i, QString file)
 {
     QString name = samplerCube.cap(1);
@@ -710,9 +689,7 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
 
         parseSpecial(&fs, s, i, moveMain);
 
-        if (sampler2DChannel.indexIn(s) != -1) {
-            parseSampler2DChannel(&fs, i, file);
-        } else if (sampler2D.indexIn(s) != -1) {
+        if (sampler2D.indexIn(s) != -1) {
             parseSampler2D(&fs, i, file);
         } else if (samplerCube.indexIn(s) != -1) {
             parseSamplerCube(&fs, i, file);
