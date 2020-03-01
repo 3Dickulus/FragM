@@ -1555,6 +1555,16 @@ retry:
                             final.replace(it.value(), localReference);
                             QString newFullName = subdirName + QDir::separator() + localReference;
                             QFile(it.value()).copy(newFullName);
+                            if(QFile::exists(newFullName) && overWrite) {
+                                if (!QFile::remove(newFullName)) {
+                                    QMessageBox::warning(
+                                        this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(newFullName));
+                                }
+                            }
+                            if (!QFile::copy(it.value(),newFullName)) {
+                                QMessageBox::warning(
+                                    this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(it.value()).arg(newFullName));
+                            }
                         }
                     }
                 }
@@ -1569,12 +1579,12 @@ retry:
                     QStringList ll = p.getDependencies();
                     foreach (QString from, ll) {
                         QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
-                            if(QFile::exists(to) && overWrite)
+                        if(QFile::exists(to) && overWrite) {
                             if (!QFile::remove(to)) {
                                 QMessageBox::warning(
-                                    this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(from).arg(to));
+                                    this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(to));
                             }
-                                
+                        }
                         if (!QFile::copy(from,to)) {
                             QMessageBox::warning(
                                 this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
