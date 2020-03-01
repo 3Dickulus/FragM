@@ -186,7 +186,7 @@ before_deploy:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then
-      ditto -c -k Fragmentarium-$VERSION_NUMBER ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
+      ditto -c -k ./Fragmentarium-$VERSION_NUMBER ./Fragmentarium-Source/build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       cd ./Fragmentarium-Source/build
     fi
 
