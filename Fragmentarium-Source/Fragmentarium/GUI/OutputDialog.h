@@ -62,6 +62,10 @@ public slots:
     {
         return m_ui.animCheckBox->isChecked();
     }
+    bool doReleaseFiles(){
+        return m_ui.releaseFilesCheckBox->isChecked();
+    };
+    
     QString getFileName();
     QString getFolderName();
     void updateFileName ( const QString &fn );

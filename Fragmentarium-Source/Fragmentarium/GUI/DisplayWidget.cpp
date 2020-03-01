@@ -742,13 +742,16 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 }
 
 //
-// Read an RGBA image using class InputFile:
+// Read an RGBA image using class Imf::InputFile
 //
 //    - open the file
 //    - allocate memory for the pixels
 //    - describe the memory layout of the pixels
-//    - determine the channel(s)
+//    - sort the channels to equal GL pixel layout
 //    - read the pixels from the file
+//    - upload data to GPU
+//
+// TODO: handle isampler and usampler and XYZW channels
 //
 
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
@@ -761,7 +764,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    QString chv = "";
     QStringList channelList;
     
     if ( file.isComplete() ) {
@@ -791,10 +793,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             WARNING(tr("Exrloader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
             return false;
         }
-        
+
         // internal textures are RGBA 4 channels max so truncate and emit warning
         // will use the first 4 as RGBA
-        // TODO: enable <uniformname[0-n]> to handle channels > 4 ... layers? 3D textures?
         if(channelCount > 4) {
             WARNING( tr("Channel count %1! Layers not yet implemented!\nUsing the first 4 channels for %2.rgba from texture %3")
                 .arg(channelCount)
@@ -806,52 +807,20 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
         if(channelCount < 1) return false; // uhoh :(
 
-        // resort channels, OpenEXR ALWAYS sorts channel names alphabetically when writing to file
-        // the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
-        
-        // temp for channel re-order
-        QStringList chs_tmp;
-        // first check to see if we have FragM standard RGB[A|Z] this assumes allcaps for channel names
-        bool haveR = false;
-        for (int i=0; i<channelCount; i++) { haveR |= channelList.at(i) == "R"; } if(haveR) { chs_tmp << "R"; }
-        bool haveG = false;
-        for (int i=0; i<channelCount; i++) { haveG |= channelList.at(i) == "G"; } if(haveG) { chs_tmp << "G"; }
-        bool haveB = false;
-        for (int i=0; i<channelCount; i++) { haveB |= channelList.at(i) == "B"; } if(haveB) { chs_tmp << "B"; }
+// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
+// the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
+// TextureChannelFormat 
+
         bool haveA = false;
-        for (int i=0; i<channelCount; i++) { haveA |= channelList.at(i) == "A"; } if(haveA) { chs_tmp << "A"; }
         bool haveZ = false;
-        for (int i=0; i<channelCount; i++) { haveZ |= channelList.at(i) == "Z"; } if(haveZ) { chs_tmp << "Z"; }
-        
-        // if not at least RGB then will use the arbitrary channel names and order from the EXR file
-        if(haveR && haveG && haveB && (haveA || haveZ)) channelList = chs_tmp;
-        else // have RGB but channel count is greater than 3
-        if(haveR && haveG && haveB && channelCount == 4) { // figure out the extra channel name possibly D or DEPTH
-            for (int i=0; i<channelCount; i++) {
-                if(!chs_tmp.contains(channelList.at(i))) chs_tmp << channelList.at(i);
-            }
-                channelList = chs_tmp;
+        for (int i=0; i<channelCount; i++) {
+            haveA |= channelList.at(i).toUpper() == "A";
+            haveZ |= channelList.at(i).toUpper() == "Z";
         }
-        else 
-            if(haveR && haveG && haveB && channelCount == 3){
-            // RGB only
-                channelList = chs_tmp;
-        }
-        else {
-                // not RGB not [A|Z|D|DEPTH]   may have more than 4 channels
-            }
-        
+        TextureChannelFormat[textureID] = 0; // = bgr or bgrz
+        if(haveA) TextureChannelFormat[textureID] = 1; // = abgr
+
         Array2D<RGBAFLOAT>pixels ( w, 1 );
-        
-        if(type == GL_SAMPLER_2D) {
-            SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
-            if(sw != nullptr && !sw->getName().isNull()) {
-                chv = sw->getChannelValue(); // currently selected channel name(s) separated by ";"
-                // see if the requested channels are available
-//                 DBOUT << chv;
-//                 DBOUT << channelList;
-            }
-        } else chv = "All";
 
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
@@ -864,7 +833,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
             FrameBuffer fb;
 
-            // this should allow arbitrary naming the channels and ensure we have a valid RGBA texture
+            // this should allow arbitrary naming of channels and ensure we have a valid RGBA texture
             // accounts for non-existent channels and names them appropriately
             fb.insert ((channelCount > 0) ? channelList.at(0).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
             fb.insert ((channelCount > 1) ? channelList.at(1).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
@@ -878,10 +847,10 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             for ( int i = 0; i<w; i++ ) {
                 // convert 3D array to 1D
                 int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (channelCount > 0 && (chv.contains(channelList.at(0)) || chv.contains("All"))) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(channelCount > 1 && (chv.contains(channelList.at(1)) || chv.contains("All"))) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(channelCount > 2 && (chv.contains(channelList.at(2)) || chv.contains("All"))) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(channelCount > 3 && (chv.contains(channelList.at(3)) || chv.contains("All"))) ? pixels[0][i].a : 1.0;
+                cols[indx] = (channelCount > 0) ? pixels[0][i].r : 0.0;
+                cols[indx+1]=(channelCount > 1) ? pixels[0][i].g : 0.0;
+                cols[indx+2]=(channelCount > 2) ? pixels[0][i].b : 0.0;
+                cols[indx+3]=(channelCount > 3) ? pixels[0][i].a : 1.0;
             }
             dw.min.y ++;
         }
@@ -1048,6 +1017,28 @@ void DisplayWidget::initFragmentTextures()
                 }
 
                 if ( loaded ) {
+
+// GL_TEXTURE_SWIZZLE_RGBA core since 3.3
+// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
+// the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
+// this works to sort out the channel order for ABGR, BGRZ and BGR files
+// TODO:test against GL_TEXTURE_CUBE_MAP
+
+                    if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) {
+                        if(TextureChannelFormat[textureID] == 1) { // has alpha
+                            GLint swizzleMask[] = {GL_ALPHA, GL_BLUE, GL_GREEN, GL_RED};
+                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                        }
+                        else { // has Z or no A
+                            GLint swizzleMask[] = {GL_BLUE, GL_GREEN, GL_RED, GL_ALPHA};
+                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                        }
+                    } else {
+                        // normal swizzle mask
+                        GLint swizzleMask[] = {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA};
+                        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+                    }
+
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
@@ -1060,6 +1051,7 @@ void DisplayWidget::initFragmentTextures()
                     WARNING(tr("Not a valid texture: ") + QFileInfo(texturePath).absoluteFilePath());
                 }
                 u++;
+
             } else {
                 WARNING(tr("Unused sampler uniform: ") + textureUniformName);
             }
@@ -1095,6 +1087,7 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
             glDeleteTextures(1, &id);
         }
         TextureCache.clear();
+        TextureChannelFormat.clear();
     }
 }
 
