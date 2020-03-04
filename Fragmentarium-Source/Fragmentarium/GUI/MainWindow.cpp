@@ -1321,10 +1321,14 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     QRect source ( 0, 0, wScaleFactor, hScaleFactor );
                     QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
                     im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    // render scaled tiles into the GL area
+                    QPainter painter1( engine );
+                    painter1.drawImage ( target, im, source );
+                    painter1.end();
                     // render scaled tiles into the overlay pixmap
-                    QPainter painter( &enginePixmap );
-                    painter.drawImage ( target, im, source );
-                    painter.end();
+                    QPainter painter2( &enginePixmap );
+                    painter2.drawImage ( target, im, source );
+                    painter2.end();
                     // update the GL area overlay
                     label->setPixmap(enginePixmap);
                     
@@ -1342,7 +1346,6 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             // cleanup the leftovers?
             delete label;
             delete l;
-            enginePixmap = QPixmap();
 }
 
 #ifdef USE_OPEN_EXR
