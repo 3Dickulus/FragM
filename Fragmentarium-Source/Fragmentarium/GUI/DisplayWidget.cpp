@@ -160,7 +160,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     depthToAlpha = false;
     ZAtMXY=0.0;
     buttonDown = false;
-    updateRefreshRate();
     glDebugEnabled = false;
 }
 
@@ -2121,7 +2120,7 @@ void DisplayWidget::timerSignal()
         if (buttonDown) {
             pendingRedraws = 1;
         }
-        update();
+        render(this);
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
@@ -2136,7 +2135,7 @@ void DisplayWidget::timerSignal()
 
             // render
             pendingRedraws = 1;
-            update();
+            render(this);
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );
             fpsCounter++;
@@ -2169,6 +2168,8 @@ void DisplayWidget::showEvent(QShowEvent *ev)
     Q_UNUSED(ev)
 
     requireRedraw ( true );
+    // starts timer signal when GL widget is shown
+    updateRefreshRate();
 }
 
 void DisplayWidget::wheelEvent(QWheelEvent *ev)
