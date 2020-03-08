@@ -1721,7 +1721,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     QSize s = backBuffer->size();
 
-    if ( !drawLast && !bufferShaderOnly ) {
+    if ( !drawLast ) {
         for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
