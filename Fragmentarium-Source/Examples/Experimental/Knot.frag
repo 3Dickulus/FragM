@@ -23,7 +23,7 @@ void rotate(inout vec2 v, float angle) {
 
 vec3 baseColor(vec3 p, vec3 n) {
 	vec3 pos = p;
-	float mobius = ((a+b)/polyfoldOrder) * atan(p.y,p.x);
+	float mobius = (a+b/polyfoldOrder) * atan(p.y,p.x);
 	p.x = length(p.xy)-R1;
 	rotate(p.xz,mobius);
 	float m = polyfoldOrder/ (2.*PI);
@@ -40,7 +40,7 @@ vec3 baseColor(vec3 p, vec3 n) {
 float maxDim(vec2 a) { return max(a.x,a.y); }
 
 float DE(vec3 p) {
-	float mobius = ((a+b)/polyfoldOrder) * atan(p.y,p.x);
+	float mobius = (a+b/polyfoldOrder) * atan(p.y,p.x);
 	p.x = length(p.xy)-R1;
 	rotate(p.xz,mobius);
 	
