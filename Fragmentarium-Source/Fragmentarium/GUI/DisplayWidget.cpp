@@ -1802,7 +1802,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     if (buffer != nullptr && !buffer->release()) {
         WARNING ( tr("Failed to release target buffer") );
     }
-
 }
 
 /**
@@ -2120,7 +2119,8 @@ void DisplayWidget::timerSignal()
         if (buttonDown) {
             pendingRedraws = 1;
         }
-        render(this);
+        // using update() and render() allows 60 fps when GL is sync'd to 60Hz  monitor
+        update();
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
@@ -2160,6 +2160,12 @@ void DisplayWidget::timerSignal()
                 }
             }
         }
+    }
+    if (bufferShaderProgram == nullptr && pendingRedraws == 0) {
+        // no buffershader program!
+        // primary shader must be using backbuffer sampler
+        // have to update the view manually
+        update();
     }
 }
 
