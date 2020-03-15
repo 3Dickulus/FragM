@@ -64,9 +64,10 @@ ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
 IF(APPLE)
-IF ( USE_OPEN_EXR )
-    ADD_DEFINITIONS ( -DUSE_OPEN_EXR=0 )
+    SET(USE_OPEN_EXR OFF)
 ENDIF ()
+IF ( USE_OPEN_EXR )
+    ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 ENDIF ()
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
