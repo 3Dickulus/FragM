@@ -335,14 +335,113 @@ public slots:
                                       .arg ( z, 0, 'g', DDEC )
                                       .arg ( w, 0, 'g', DDEC ) );
     };
+
+    // returns value as string, arrays with comma separator
     QString getParameter ( QString name )
     {
         QStringList s = getSettings().split ( "\n" );
-        if ( !s.contains ( name ) ) {
+        QString v = s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed();
+        if ( v.isEmpty() ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return "";
         }
-        return s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed();
+        return v;
+    };
+
+    float getParameter1f ( QString name )
+    {
+        bool ok=false;
+        QStringList s = getSettings().split ( "\n" );
+        float v = s.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed().toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return 0.0;
+        }
+        return v;
+    };
+
+    glm::vec2 getParameter2f ( QString name )
+    {
+        bool ok=false;
+        float x,y;
+        QStringList v = getSettings().split ( "\n" );
+        QStringList s = v.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed().split(",");
+
+        x = s.at(0).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec2(0.0,0.0);
+        }
+
+        y = s.at(1).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec2(x,0.0);
+        }
+        
+        return glm::vec2(x,y);
+    };
+
+    glm::vec3 getParameter3f ( QString name )
+    {
+        bool ok=false;
+        float x,y,z;
+        QStringList v = getSettings().split ( "\n" );
+        QStringList s = v.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed().split(",");
+
+        x = s.at(0).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec3(0.0,0.0,0.0);
+        }
+
+        y = s.at(1).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec3(x,0.0,0.0);
+        }
+        
+        z = s.at(2).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec3(x,y,0.0);
+        }
+        
+        return glm::vec3(x,y,z);
+    };
+
+    glm::vec4 getParameter4f ( QString name )
+    {
+        bool ok=false;
+        float x,y,z,w;
+        QStringList v = getSettings().split ( "\n" );
+        QStringList s = v.filter ( name ).at ( 0 ).split ( "=" ).at ( 1 ).trimmed().split(",");
+
+        x = s.at(0).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec4(0.0,0.0,0.0,0.0);
+        }
+
+        y = s.at(1).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec4(x,0.0,0.0,0.0);
+        }
+        
+        z = s.at(2).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec4(x,y,0.0,0.0);
+        }
+        
+        w = s.at(3).toFloat(&ok);
+        if ( !ok ) {
+            WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
+            return glm::vec4(x,y,z,0.0);
+        }
+        
+        return glm::vec4(x,y,z,w);
     };
 
     void setAnimationLength ( int m )
@@ -747,6 +846,8 @@ private:
     QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
     
     QPixmap enginePixmap;
+    QLabel* engineOverlay;
+
 
 };
 }

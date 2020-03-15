@@ -46,6 +46,8 @@
 
 #include "QtSpline.h"
 
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+
 namespace Fragmentarium
 {
 namespace GUI
@@ -59,11 +61,6 @@ static inline void qSetColor(GLfloat colorVec[], const QColor c)
     colorVec[3] = c.alphaF();
 }
 
-void Geometry::loadArrays() const
-{
-    glVertexPointer(3, GL_DOUBLE, 0, vertices.constData());
-}
-
 void Geometry::appendVertex(const glm::dvec3 &a)
 {
     vertices.append(a);
@@ -72,37 +69,6 @@ void Geometry::appendVertex(const glm::dvec3 &a)
 Patch::Patch(Geometry *g) : start(0), count(0), geom(g)
 {
     pointSize = 1;
-}
-
-/// n = number of control points p = the selected control point
-void Patch::draw(int n, int p) const
-{
-
-    glPointSize(pointSize);
-    if (start == 0) { /// drawing control points
-        glDepthMask(GL_TRUE); // Write to depth buffer for control points
-        const glm::dvec3 *v = geom->vertices.constData();
-        for (uint i = 0; i < count; i++) {
-            int objIndex = i + (n * count);
-            if (p == objIndex) {
-                glColor4f(1.0, 1.0, 0.0, 1.0);
-            } else {
-                glColor4fv(color);
-            }
-            glBegin(GL_POINTS);
-            glVertex3d(v[i].x, v[i].y, v[i].z);
-            glEnd();
-        }
-        glDepthMask(GL_FALSE); // no Write to depth buffer for spline points
-
-    } else { /// drawing curve points
-
-        glColor4fv(color);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glDrawArrays(GL_LINE_STRIP, start, count);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
 }
 
 void Patch::addVertex(const glm::dvec3 &a)
@@ -222,23 +188,9 @@ void QtSpline::buildGeometry(int nctrl, int nsegs, glm::dvec3 *cv)
     parts << curve.parts;
 }
 
-void QtSpline::drawControlPoints(int n) const
-{
-    //     prnt->makeCurrent();
-    geom->loadArrays();
-    parts[0]->draw(objectName().toInt(), n);
-}
-
 void QtSpline::setControlColor(QColor c) const
 {
     qSetColor(parts[0]->color, c);
-}
-
-void QtSpline::drawSplinePoints() const
-{
-    //     prnt->makeCurrent();
-    geom->loadArrays();
-    parts[1]->draw();
 }
 
 void QtSpline::setSplineColor(QColor c) const
@@ -246,7 +198,23 @@ void QtSpline::setSplineColor(QColor c) const
     qSetColor(parts[1]->color, c);
 }
 
-glm::dvec3 QtSpline::getControlPoint(int n)
+glm::vec4 QtSpline::controlColor() const
+{
+    return glm::vec4(parts[0]->color[0],
+                     parts[0]->color[1],
+                     parts[0]->color[2],
+                     parts[0]->color[3]);
+}
+
+glm::vec4 QtSpline::splineColor() const
+{
+    return glm::vec4(parts[1]->color[0],
+                     parts[1]->color[1],
+                     parts[1]->color[2],
+                     parts[1]->color[3]);
+}
+
+glm::dvec3 QtSpline::getControlPoint( int n )
 {
     return geom->vertices[n];
 }
