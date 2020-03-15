@@ -56,14 +56,14 @@ namespace GUI
 struct Geometry {
     QVector<glm::dvec3> vertices;
     void appendVertex ( const glm::dvec3 &a );
-    void loadArrays() const;
+//     void loadArrays() const;
 };
 
 class Patch
 {
 public:
     Patch ( Geometry * );
-    void draw ( int n = 0, int p = 0 ) const;
+//     void draw ( int n = 0, int p = 0 ) const;
     void addVertex ( const glm::dvec3 &a );
     GLuint start;
     GLuint count;
@@ -80,9 +80,12 @@ public:
 
     void setSplineColor ( QColor c ) const;
     void setControlColor ( QColor c ) const;
-    void drawControlPoints ( int n = 0 ) const;
-    void drawSplinePoints() const;
+    glm::vec4 splineColor () const;
+    glm::vec4 controlColor () const;
 
+    QVector<glm::dvec3>getControlPoints(){ return parts[0]->geom->vertices; };
+    QVector<glm::dvec3>getSplinePoints(){ return parts[1]->geom->vertices; };
+    
     glm::dvec3 getControlPoint ( int n );
     glm::dvec3 getSplinePoint ( int n );
     void setControlPoint ( int n, glm::dvec3 *p );

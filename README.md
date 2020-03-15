@@ -8,7 +8,7 @@ Status
 [![License][license-image]][license]
 [![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=Development)](https://travis-ci.org/3Dickulus/FragM)
 
-[release-image]: https://img.shields.io/badge/release-2.5.1-green.svg?style=flat
+[release-image]: https://img.shields.io/badge/release-2.5.3-green.svg?style=flat
 [releases]: https://github.com/3Dickulus/FragM/releases
 
 [license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat

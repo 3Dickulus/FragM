@@ -1284,11 +1284,9 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
 
 void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
-            // create an overlay using enginePixmap as background
-            QLabel* label = new QLabel();
             auto *l = new QVBoxLayout;
             l->setMargin(0);
-            l->addWidget(label);
+            l->addWidget(engineOverlay);
             // apply overlay to GL area
             engine->setLayout(l);
             
@@ -1330,7 +1328,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     painter2.drawImage ( target, im, source );
                     painter2.end();
                     // update the GL area overlay
-                    label->setPixmap(enginePixmap);
+                    engineOverlay->setPixmap(enginePixmap);
                     
                 } else {
                     stopScript();
@@ -1344,13 +1342,18 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                 }
             }
             // cleanup the leftovers?
-            delete label;
             delete l;
 }
 
 #ifdef USE_OPEN_EXR
 bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
+            auto *l = new QVBoxLayout;
+            l->setMargin(0);
+            l->addWidget(engineOverlay);
+            // apply overlay to GL area
+            engine->setLayout(l);
+
             //
             // Write a tiled image with one level using a tile-sized framebuffer.
             //
@@ -1414,16 +1417,27 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
 
                     if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
 
-                    out.setFrameBuffer (frameBuffer);
-                    out.writeTile (dx, dy);
+                        out.setFrameBuffer (frameBuffer);
+                        out.writeTile (dx, dy);
 
-                    // display tiles while rendering if the tiles fit the window
-                        if (engine->width() >= im.width() * maxTiles && engine->height() >= im.height() * maxTiles) {
-                        QPainter painter(engine);
-                        QRect target(xoff, yoff, tileWidth, tileHeight);
-                        QRect source(0, 0, tileWidth, tileHeight);
-                        painter.drawImage(target, im, source);
-                    }
+                        // display scaled tiles
+                        float wScaleFactor = engine->width() / maxTiles;
+                        float hScaleFactor = engine->height() / maxTiles;
+                        int dx = (tile / maxTiles);
+                        int dy = (maxTiles-1)-(tile % maxTiles);
+                        QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                        QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+                        im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                        // render scaled tiles into the GL area
+                        QPainter painter1( engine );
+                        painter1.drawImage ( target, im, source );
+                        painter1.end();
+                        // render scaled tiles into the overlay pixmap
+                        QPainter painter2( &enginePixmap );
+                        painter2.drawImage ( target, im, source );
+                        painter2.end();
+                        // update the GL area overlay
+                        engineOverlay->setPixmap(enginePixmap);
                     }
                 } else {
                   stopScript();
@@ -1437,6 +1451,9 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             }
 
             engine->update();
+            
+            // cleanup the leftovers?
+            delete l;
             
             return out.isValidLevel(0,0);
 
@@ -1680,6 +1697,9 @@ retry:
     QTime totalTime;
     totalTime.start();
 
+    // create an overlay using enginePixmap as background
+    engineOverlay = new QLabel();
+
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
 
@@ -1743,6 +1763,7 @@ retry:
             imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
         } else
 #endif
+            
         renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
 
         pause ? stop() : play();
@@ -1818,6 +1839,7 @@ retry:
         }
     }
 
+    delete engineOverlay;
     engine->tilesCount = 0;
     engine->setState(oldState);
     progress.setValue(totalSteps);
@@ -2677,6 +2699,13 @@ bool MainWindow::initializeFragment()
     variableEditor->locksUseDefines(QSettings().value("useDefines", true).toBool());
     int ms = 0;
     FragmentSource fs = p.parse(inputText,filename,moveMain);
+
+    // if the initial GL state is compatibility profile we can switch between
+    // core and compatibility internally, if it is initially core we remain core
+    // everywhere, frags that request core should work in both cases while frags
+    // that rely on legacy code won't run without some editing if the engine
+    // is using core only (like on OSX)
+    engine->useCompat( engine->isCompat() && !fs.source[0].contains("core") );
 
     if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
             addToWatch( QStringList(filename) );

@@ -361,10 +361,6 @@ glm::dvec3 Camera3D::transform(int width, int height)
 {
     this->height = height;
     this->width = width;
-
-    // -- Modelview
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     return {1.0, 1.0, 1.0};
 }
 
@@ -481,8 +477,6 @@ glm::dvec3 Camera2D::transform(int w, int h)
 {
     width = w;
     height = h;
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     return {1.0, 1.0, 1.0};
 }
 

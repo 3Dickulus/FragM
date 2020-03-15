@@ -260,6 +260,8 @@ public:
         verbose = v;
     };
 
+    GLuint spline_program;
+
 public slots:
     void updateBuffers();
     void timerSignal();
@@ -292,6 +294,14 @@ public slots:
         return cameraControl->getID();
     }
     
+    bool isCompat(){ return format().profile() == QSurfaceFormat::CompatibilityProfile; };
+    void useCompat(bool c){ compatibilityProfile = c; };
+
+/// Spline Shaders /////////////////////////////////////////////////////////
+    void delete_buffer_objects();
+    void init_arrays();
+/// Spline Shaders /////////////////////////////////////////////////////////
+
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
@@ -322,7 +332,7 @@ protected:
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
 
 /// Spline Shaders /////////////////////////////////////////////////////////
-    void render_array(int number, double size);
+    void render_array(int number, double psize);
     uint compile_shader( const char* vsource, const char* fsource );
     void init_shader( int h, int w );
     double pixel_scale;
@@ -340,10 +350,18 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
 
+/// for Main Shaders
+	GLuint vbo;
+	GLuint vao;
+/// for Spline Shaders
+    GLuint svbo;
+    GLuint svao;
+
+	GLfloat points[9] = { -1.0f, -1.0f, 0.0f, 3.0f, -1.0f, 0.0f, -1.0f, 3.0f, 0.0f };
+
     void setShaderUniforms ( QOpenGLShaderProgram* shaderProg );
 
     void setGlTexParameter ( QMap<QString, QString> map );
-    void clearBackBuffer();
     void setViewPort ( int w, int h );
     void makeBuffers();
     void setPerspective();
@@ -396,7 +414,7 @@ private:
     QMap<QString, int> TextureCache;
     // this is used to track channel layout with textureID as key
     QMap< GLuint, int > TextureChannelFormat;
-    
+
     bool doClearBackBuffer;
     QTimer* timer;
     int maxSubFrames;
@@ -419,6 +437,79 @@ private:
     bool verbose;
     bool bufferShaderOnly;
     bool glDebugEnabled;
+    bool compatibilityProfile;
+/// Spline Shaders /////////////////////////////////////////////////////////
+// GLSL legacy code works here for now, modern code will require adjustments
+
+#define STRINGIFY(A) #A
+// vertex shader
+const char *vertexShader = STRINGIFY(
+uniform vec3 posEye;
+uniform float FOV;
+uniform float pointRadius;  // point size in world space
+uniform float pointScale;   // scale to calculate size in pixels
+void main()
+{
+    // calculate window-space point size
+    float dist = length(posEye)*FOV;
+    gl_PointSize = pointRadius * (pointScale / dist);
+    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);
+    gl_FrontColor = gl_Color;
+}
+);
+
+const char *spherePixelShader = STRINGIFY(
+void main()
+{
+    const vec3 lightDir = vec3(0.0, 0.0, 1.0);
+
+    // calculate normal
+    vec3 N;
+    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);
+    float mag = dot(N.xy, N.xy);
+    if (mag > 1.0) discard;   // kill pixels outside circle
+    N.z = sqrt(mag);
+    // calculate lighting
+    float diffuse = max(0.0, dot(lightDir, N));
+    gl_FragColor = vec4(gl_Color.rgb, diffuse);
+}
+);
+
+glm::mat4 m_pvmMatrix;
+
+/// GL4
+// STRINGIFY does not allow #version statement
+QString vertexShader4 = QString("#version 410 core\n"
+"layout(location = 0) in vec4 vertex_position;\n"
+"uniform vec4 vertex_colour;\n"
+"out vec4 colour;\n"
+"uniform mat4 pvmMatrix;\n"
+"uniform vec3 posEye;\n"
+"uniform float FOV;\n"
+"uniform float pointRadius;\n"
+"uniform float pointScale;\n"
+"void main() {\n"
+"    float dist = length(posEye)*FOV;\n"
+"    gl_PointSize = pointRadius * (pointScale / dist);\n"
+"    gl_Position = pvmMatrix * vec4(vertex_position.xyz, 1.0);\n"
+"    colour = vertex_colour;\n"
+"}\n");
+
+QString spherePixelShader4 = QString("#version 410 core\n"
+"in vec4 colour;\n"
+"out vec4 frag_colour;\n"
+"void main() {\n"
+"    const vec3 lightDir = vec3(0.0, 0.0, 1.0);\n"
+"    vec3 N;\n"
+"    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);\n"
+"    float mag = dot(N.xy, N.xy);\n"
+"    if (mag > 1.0) discard;\n"
+"    N.z = sqrt(mag);\n"
+"    float diffuse = max(0.0, dot(lightDir, N));\n"
+"    frag_colour = vec4(colour.rgb, diffuse);\n"
+"}\n");
+
+/// Spline Shaders /////////////////////////////////////////////////////////
 
 };
 }
