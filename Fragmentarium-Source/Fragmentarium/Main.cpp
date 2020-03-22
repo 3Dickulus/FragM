@@ -5,7 +5,7 @@
 #include <QSplashScreen>
 #include <QtCore>
 
-#include "Fragmentarium/GUI/MainWindow.h"
+#include "GUI/MainWindow.h"
 
 #ifdef Q_OS_WIN
 // Needed for unicode commandline below.

@@ -388,7 +388,7 @@ void MainWindow::showHelpMessage(const QString title, const QString mess)
     QMessageBox mb(this);
     mb.setText(mess);
     mb.setWindowTitle(title);
-    mb.setIconPixmap(getMiscDir() + QDir::separator() + "Fragmentarium-sm.png");
+    mb.setIconPixmap(getMiscDir() + "/" + "Fragmentarium-sm.png");
     auto *layout = (QGridLayout *)mb.layout();
     layout->setColumnMinimumWidth( 2, 640);
     mb.exec();
@@ -1234,7 +1234,7 @@ void MainWindow::buildExamplesMenu()
             QStringList sl = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
             for (int i = 0; i < sl.size(); i++) {
                 auto *menu = new QMenu(sl[i]);
-                QString absPath = QDir(path + QDir::separator() +  sl[i]).absolutePath();
+                QString absPath = QDir(path + "/" +  sl[i]).absolutePath();
                 menuMap[absPath] = menu;
                 currentMenu->addMenu(menu);
                 menu->setIcon(QIcon(":/Icons/folder.png"));
@@ -1550,7 +1550,7 @@ retry:
             subdirName = oDir.filePath(subdirName); // full name
 
             if(od.doSaveFragment()) {
-                QFile fileStream(subdirName + QDir::separator() + fileName);
+                QFile fileStream(subdirName + "/" + fileName);
                 if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
                     QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
                     return;
@@ -1567,13 +1567,13 @@ retry:
                     
                     while( it.hasNext() ) {
                         it.next();
-                        QString localReference = it.value().split(QDir::separator()).last();
+                        QString localReference = it.value().split("/").last();
                         // there may be other textures still in the cache so test final for filename
                         // only copy textures that are actually used
                         if(final.contains(localReference)) {
                             // remap full path to local reference
                             final.replace(it.value(), localReference);
-                            QString newFullName = subdirName + QDir::separator() + localReference;
+                            QString newFullName = subdirName + "/" + localReference;
                             QFile(it.value()).copy(newFullName);
                             if(QFile::exists(newFullName) && overWrite) {
                                 if (!QFile::remove(newFullName)) {
@@ -1592,7 +1592,7 @@ retry:
                 QTextStream out(&fileStream);
                 out << final;
 
-                INFO(tr("Saved fragment + settings as: ") + subdirName + QDir::separator() + fileName);
+                INFO(tr("Saved fragment + settings as: ") + subdirName + "/" + fileName);
 
                 if(includeWithAutoSave) {
                     // Copy files.
@@ -1740,8 +1740,8 @@ retry:
                 filedir.mkdir ( QFileInfo ( subdirName ).absolutePath() );
               }
 
-            name = ( QFileInfo ( name ).absolutePath() + QDir::separator() +
-                     subdirName + QDir::separator() + ( od.doAnimation() ?"Images/": "" ) +
+            name = ( QFileInfo ( name ).absolutePath() + "/" +
+                     subdirName + "/" + ( od.doAnimation() ?"Images/": "" ) +
                      QFileInfo ( name ).fileName() );
 
             QDir imgdir ( QFileInfo ( name ).absolutePath() );
@@ -2441,7 +2441,7 @@ void MainWindow::reloadFragFile( QString f )
     bool autoLoad = QSettings().value("autoload", false).toBool();
 
     if (!autoLoad && first) {
-        QString s = tr("It looks like the file: %1\n has been changed by another program.\nWould you like to reload it?").arg(f.split(QDir::separator()).last());
+        QString s = tr("It looks like the file: %1\n has been changed by another program.\nWould you like to reload it?").arg(f.split("/").last());
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.addButton(tr("Reload"),QMessageBox::AcceptRole);
@@ -2463,7 +2463,7 @@ void MainWindow::reloadFragFile( QString f )
                 } else {
                     QMessageBox::warning(this, tr("Fragmentarium"),
                              tr("Will not read file %1:\n%2.")
-                             .arg(f.split(QDir::separator()).last())
+                             .arg(f.split("/").last())
                              .arg(tr("Conflict with changes in the editor!")));
                 }
                 break;

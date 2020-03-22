@@ -108,14 +108,17 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
     fmt.setRenderableType(QSurfaceFormat::OpenGL);
 #ifdef USE_OPENGL_4
+#ifndef Q_OS_LINUX
+    fmt.setVersion(4,1);
+#else
     fmt.setVersion(4,5);
     fmt.setDepthBufferSize(32);
+#endif
 #else
     fmt.setVersion(3,2);
 #endif
 
 #ifdef Q_OS_MAC
-    fmt.setVersion(4,1);
     fmt.setProfile(QSurfaceFormat::CoreProfile);
 #endif
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);

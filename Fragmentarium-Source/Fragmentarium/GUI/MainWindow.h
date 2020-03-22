@@ -560,7 +560,7 @@ public slots:
     QString currentFragmentName()
     {
         QStringList parts = tabInfo[tabBar->currentIndex()]
-               .filename.split ( QDir::separator() )
+               .filename.split ( "/" )
                .last()
                .split ( "." );
         parts.removeLast();
