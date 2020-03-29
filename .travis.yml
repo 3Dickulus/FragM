@@ -1,3 +1,6 @@
+# http://docs.travis-ci.com/user/customizing-the-build/#Git-Submodules
+git:
+  submodules: false
 
 language: cpp
 
@@ -32,6 +35,8 @@ compiler:
   - gcc
 
 before_install:
+  # https://github.com/travis-ci/travis-ci/issues/4099
+  - git submodule update --init --remote --recursive
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then
