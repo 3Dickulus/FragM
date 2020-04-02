@@ -9,10 +9,11 @@ FRAGM_MINOR_VERSION=5
 FRAGM_REVISION=3
 FRAGM_VERSION=$$FRAGM_MAJOR_VERSION"."$$FRAGM_MINOR_VERSION"."$$FRAGM_REVISION
 
-PACKAGE_BUILD=meta
+TEMPLATE = app
 
-CONFIG += c++11
-CONFIG += warn_off
+CONFIG += c++11 warn_off
+QT += widgets opengl
+LIBS += -lopengl32
 
 win32 {
 CONFIG += console
@@ -31,8 +32,8 @@ DEFINES += FRAGM_MAJOR_VERSION=$$FRAGM_MAJOR_VERSION \
            FRAGM_REVISION=$$FRAGM_REVISION \
            FRAGM_VERSION=$$FRAGM_VERSION \
            PACKAGE_BUILD=$$PACKAGE_BUILD \
-           USE_OPENGL_4=ON \
-           USE_OPEN_EXR=ON
+           USE_OPENGL_4=1 \
+           USE_OPEN_EXR=1
 
 CONFIG += lrelease
 
@@ -145,7 +146,7 @@ LIBS += -lIlmImf -lHalf -lIex -lIexMath -lImath -lIlmThread
 }
 
 win32:CONFIG(release, debug|release) {
-LIBS += -LC:/Qt/Tools/mingw492_32/i686-w64-mingw32/lib -lz
+LIBS += -LC:\Qt/Qt5.9.9/Tools/mingw530_32/lib -lz
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../OpenEXR/include/OpenEXR
 INCLUDEPATH += $$PWD/../OpenEXR/include
