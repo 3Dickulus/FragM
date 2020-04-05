@@ -12,7 +12,7 @@ language: cpp
 matrix:
     include:
         - os: linux
-          dist: xenial
+          dist: bionic
         - os: osx
           osx_image: xcode10.2
         #- os: windows
