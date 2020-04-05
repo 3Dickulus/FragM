@@ -14,6 +14,14 @@ Status
 [license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat
 [license]: https://github.com/3Dickulus/FragM/blob/master/LICENSE
 
+### FragM now uses submodules for the Examples folder and user contributed subfolders.
+    when cloning the repo use 'git clone --recurse-submodules https://github.com/3Dickulus/FragM.git'
+    when checking out a branch use 'git checkout --recurse-submodules <branchname>'
+    when updating from the online repo 'git submodule update --init --remote --recursive'
+
+    as a result of this the source archive files provided by github are lacking the Example/files
+    so an auxiliary archive will be provided on the release page that has the complete sources.
+
 ----------------------
 
 # Changes since v0.9.5
