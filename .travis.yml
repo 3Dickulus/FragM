@@ -127,7 +127,7 @@ before_script:
   - export VERSION_NUMBER=`grep "FRAGM_MAJOR_VERSION " ./CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_MINOR_VERSION " ./CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_REVISION " ./CMakeLists.txt | sed "s/[^0-9]//g"`
   - export BUILD_NUMBER=`date -u "+%y%m%d"`
   # rename the release archive
-  - mv ../release.zip ./build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip
+  - mv ../release.zip ./build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
   - cd ./build
 
 script:
