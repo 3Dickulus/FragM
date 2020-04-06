@@ -114,16 +114,18 @@ before_script:
       export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
     fi
 
-  # create release archive before build
-  - git archive -o release.zip HEAD
-  # add submodules to archive
-  - git submodule --quiet foreach 'cd $toplevel; zip -ru release.zip $sm_path'
-  - mkdir Fragmentarium-Source/build
-  - mv release.zip build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip
-  - cd Fragmentarium-Source/build
-  - export VERSION_NUMBER=`grep "FRAGM_MAJOR_VERSION " ../CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_MINOR_VERSION " ../CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_REVISION " ../CMakeLists.txt | sed "s/[^0-9]//g"`
+  - cd Fragmentarium-Source
+  - export VERSION_NUMBER=`grep "FRAGM_MAJOR_VERSION " CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_MINOR_VERSION " CMakeLists.txt | sed "s/[^0-9]//g"`.`grep "FRAGM_REVISION " CMakeLists.txt | sed "s/[^0-9]//g"`
   - export BUILD_NUMBER=`date -u "+%y%m%d"`
-  # rename the release archive
+  # create release archive before build
+  - cd ../
+  - git archive -o Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip HEAD
+  # add submodules to archive
+  - git submodule --quiet foreach 'cd $toplevel; zip -ru Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip $sm_path'
+  - cd Fragmentarium-Source
+  - mkdir build
+  - mv ../Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip build/Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip
+  - cd build
 
 script:
   - |
