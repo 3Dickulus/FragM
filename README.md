@@ -50,21 +50,17 @@ Status
       sudo apt-get -qq install libqt5opengl5-dev
       sudo apt-get -qq install libqt5xmlpatterns5-dev
       sudo apt-get -qq install qt5-qmake
-      sudo apt-get -qq install qttools5-dev-tools
+      sudo apt-get -qq install qttools5-dev
       sudo apt-get -qq install qtbase5-dev
-      sudo apt-get -qq install qtbase5-dev-tools
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
-
-#### We need the latest version of GLM
-
-      wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
-      sudo dpkg -i libglm-dev_0.9.9.3-2_all.deb
+      sudo apt-get -qq install libglm-dev
+      sudo apt-get -qq install zlib1g-dev
 
 ## Get the source...
 
-    git clone https://github.com/3Dickulus/FragM.git FragM
+    git clone --recurse-submodules https://github.com/3Dickulus/FragM.git FragM
       
     or download and extract the .zip or .tar.gz source archive from https://github.com/3Dickulus/FragM/releases/
 
@@ -83,7 +79,7 @@ Status
 
 # Pre-built packages
 
-   You can find pre-built packages for Ubuntu 16.0.4 Xenial (deb), SuSE Leap 15.1 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
+   You can find pre-built packages for OSX 10.14.4, Ubuntu 18.0.4 Bionic (deb), SuSE Leap 15.1 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
 
 # Dependencies
 
