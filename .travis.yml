@@ -12,7 +12,7 @@ language: cpp
 matrix:
     include:
         - os: linux
-          dist: xenial
+          dist: bionic
         - os: osx
           osx_image: xcode10.2
         #- os: windows
@@ -21,7 +21,7 @@ sudo: false
 
 branches:
   only:
-  - master
+  - develop
 
 env:
   global:
@@ -37,12 +37,12 @@ compiler:
 before_install:
   # https://github.com/travis-ci/travis-ci/issues/4099
   - git submodule update --init --remote --recursive
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
-      sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
-      sudo apt-get update -qq
-    fi
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
+      #sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
+      #sudo apt-get update -qq
+    #fi
 
 install:
   - |
@@ -60,14 +60,17 @@ install:
       sudo apt-get -qq install libqt5xmlpatterns5-dev
       sudo apt-get -qq install qt5-qmake
       sudo apt-get -qq install qt5-default
-      sudo apt-get -qq install qttools5-dev-tools
+      sudo apt-get -qq install qttools5-dev
+      #sudo apt-get -qq install qttools5-dev-tools
       sudo apt-get -qq install qtbase5-dev
       sudo apt-get -qq install qtbase5-private-dev
-      sudo apt-get -qq install qtbase5-dev-tools
+      #sudo apt-get -qq install qtbase5-dev-tools
       sudo apt-get -qq install qt5-style-plugins
       sudo apt-get -qq install qt5-image-formats-plugins
       sudo apt-get -qq install qtscript5-dev
-      
+      sudo apt-get -qq install zlib1g-dev
+      sudo apt-get -qq install libglm-dev
+
       wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
       sudo dpkg -i libglm-dev_0.9.9.3-2_all.deb
       ## linuxdeployqt needs this
@@ -213,12 +216,12 @@ deploy:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file:
         - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
-        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip
+        - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
         #- Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME-x86_64.AppImage
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: develop
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   # macOS release
@@ -227,11 +230,11 @@ deploy:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
     file: 
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
-      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-archive.zip
+      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: develop
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = osx
 
