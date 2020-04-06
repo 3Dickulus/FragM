@@ -21,7 +21,7 @@ sudo: false
 
 branches:
   only:
-  - master
+  - develop
 
 env:
   global:
@@ -218,7 +218,7 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: develop
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   # macOS release
