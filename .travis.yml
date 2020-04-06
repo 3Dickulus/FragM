@@ -13,15 +13,15 @@ matrix:
     include:
         - os: linux
           dist: bionic
-        - os: osx
-          osx_image: xcode10.2
+        #- os: osx
+          #osx_image: xcode10.2
         #- os: windows
 
 sudo: false
 
 branches:
   only:
-  - master
+  - develop
 
 env:
   global:
@@ -37,12 +37,12 @@ compiler:
 before_install:
   # https://github.com/travis-ci/travis-ci/issues/4099
   - git submodule update --init --remote --recursive
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then
+  #- |
+    #if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    #then
       #sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       #sudo apt-get update -qq
-    fi
+    #fi
 
 install:
   - |
@@ -218,7 +218,7 @@ deploy:
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
-        branch: master
+        branch: develop
         tags: false
         condition: $CONFIG = release && ${TRAVIS_OS_NAME} = linux
   # macOS release
