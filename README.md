@@ -33,9 +33,8 @@ Status
 # Building with Ubuntu Linux
 
 
-## Add the main SDK repository...
+## Update the main repository...
 
-      sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
       sudo apt-get update -qq
 
 ## Ensure these packages are installed...
@@ -62,7 +61,7 @@ Status
 
     git clone --recurse-submodules https://github.com/3Dickulus/FragM.git FragM
       
-    or download and extract the .zip or .tar.gz source archive from https://github.com/3Dickulus/FragM/releases/
+    or download and extract the source.zip archive from https://github.com/3Dickulus/FragM/releases/
 
 ## Build and install
 
@@ -79,11 +78,11 @@ Status
 
 # Pre-built packages
 
-   You can find pre-built packages for OSX 10.14.4, Ubuntu 18.0.4 Bionic (deb), SuSE Leap 15.1 (rpm), Windows (7z) at https://github.com/3Dickulus/FragM/releases/
+   You can find pre-built packages for OSX 10.14.4, Ubuntu 18.0.4 Bionic, SuSE Leap 15.1 and Windows at https://github.com/3Dickulus/FragM/releases/
 
 # Dependencies
 
-   Recommends:  ffmpeg or mencoder for creating videos from a folder full of images using the Video Dialog.
+   Recommends:  ffmpeg or mencoder for creating videos from a folder of images using the Video Dialog.
 
    Pre-depends: OpenEXR v2.4 https://github.com/AcademySoftwareFoundation/openexr/releases ( Win version uses static linked OpenEXR lib )
 
