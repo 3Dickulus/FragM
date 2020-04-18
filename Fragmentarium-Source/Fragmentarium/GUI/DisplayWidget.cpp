@@ -1492,13 +1492,15 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                             }
                             u++;
                         }
-                    } else {
+                    } else { 
                         vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
                         vw[n]->setUserUniform(shaderProg);
                     }
                     break;
                 }
             }
+        } else {
+            vw[i]->setIsDouble(foundDouble);
         } // this takes care of buffershader (Post) sliders :D
 
         // type name and value to console
