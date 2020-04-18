@@ -2340,7 +2340,7 @@ void MainWindow::readSettings()
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
     includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
     playRestartMode = settings.value("playRestartMode", false).toBool();
-
+    useMimetypes = settings.value("useMimetypes", false).toBool();
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
 #endif // USE_OPEN_EXR
@@ -2381,6 +2381,7 @@ void MainWindow::writeSettings()
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
     settings.setValue("playRestartMode", playRestartMode );
+    settings.setValue("useMimetypes", useMimetypes );
 
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
