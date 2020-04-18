@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>546</height>
+    <width>514</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,39 +30,25 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="saveEasingCheckBox">
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+        <property name="toolTip">
+         <string>Some engines use non GL matrices.</string>
+        </property>
         <property name="text">
-         <string>Presets contain easing curve settings</string>
+         <string>Draw spline paths for camera and target</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="loopPlayCheckBox">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="moveMainCheckBox">
+        <property name="toolTip">
+         <string>For compatibility with some GPU's.</string>
+        </property>
         <property name="text">
-         <string>Loop animation</string>
+         <string>Move main() to end</string>
         </property>
        </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="useDefinesCheckBox">
-        <property name="text">
-         <string>Locked uniforms use #define or const</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0" colspan="2">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>328</width>
-          <height>32</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -166,6 +152,23 @@
         </item>
        </layout>
       </item>
+      <item row="7" column="0">
+       <widget class="QCheckBox" name="logToFileCheckBox">
+        <property name="text">
+         <string>Log to File</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="autoRunCheckBox">
+        <property name="toolTip">
+         <string>Disabling this might make debugging easier.</string>
+        </property>
+        <property name="text">
+         <string>Autorun On Load</string>
+        </property>
+       </widget>
+      </item>
       <item row="12" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -189,6 +192,146 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="splineOccCheckBox">
+        <property name="text">
+         <string>Spline Occlusion</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="loopPlayCheckBox">
+        <property name="text">
+         <string>Loop animation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="useDefinesCheckBox">
+        <property name="text">
+         <string>Locked uniforms use #define or const</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="lineNumbersCheckBox">
+        <property name="toolTip">
+         <string>Enabling this might be helpful when debugging.</string>
+        </property>
+        <property name="text">
+         <string>Add line numbers to the editing window.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="jtlowCheckBox">
+        <property name="text">
+         <string>Jump to line on Warn</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="ddCameraModeCheckBox">
+        <property name="text">
+         <string>2D Camera Mode on=traveling off=fixed</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="playRestartModeCheckBox">
+        <property name="text">
+         <string>Animation update on=continuous off=last set</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="includeWithAutoSaveCheckBox">
+        <property name="text">
+         <string>#Include files with AutoSave Fragments</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QCheckBox" name="jtloeCheckBox">
+        <property name="text">
+         <string>Jump to line on Error</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="saveEasingCheckBox">
+        <property name="text">
+         <string>Presets contain easing curve settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>328</width>
+          <height>32</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="16" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="maxRecentFilesLabel">
+          <property name="text">
+           <string>Max Recent Files</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="maxRecentFilesSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="16" column="1">
+       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
+        <property name="text">
+         <string>Full path in recent files menu.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="0" colspan="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>348</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="autoLoadCheckBox">
+        <property name="text">
+         <string>Autoload on change</string>
+        </property>
+       </widget>
       </item>
       <item row="13" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -274,146 +417,13 @@
         </item>
        </layout>
       </item>
-      <item row="16" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLabel" name="maxRecentFilesLabel">
-          <property name="text">
-           <string>Max Recent Files</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="maxRecentFilesSpinBox">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>5</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item row="17" column="0" colspan="2">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>348</width>
-          <height>31</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="16" column="1">
-       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
-        <property name="text">
-         <string>Full path in recent files menu.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QCheckBox" name="logToFileCheckBox">
-        <property name="text">
-         <string>Log to File</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="includeWithAutoSaveCheckBox">
-        <property name="text">
-         <string>#Include files with AutoSave Fragments</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QCheckBox" name="autoLoadCheckBox">
-        <property name="text">
-         <string>Autoload on change</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="moveMainCheckBox">
+       <widget class="QCheckBox" name="useMimetypesCheckBox">
         <property name="toolTip">
-         <string>For compatibility with some GPU's.</string>
+         <string>Texture file dialog uses mimetypes when checked.</string>
         </property>
         <property name="text">
-         <string>Move main() to end</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="drawGLPathsCheckBox">
-        <property name="toolTip">
-         <string>Some engines use non GL matrices.</string>
-        </property>
-        <property name="text">
-         <string>Draw spline paths for camera and target</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="autoRunCheckBox">
-        <property name="toolTip">
-         <string>Disabling this might make debugging easier.</string>
-        </property>
-        <property name="text">
-         <string>Autorun On Load</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="lineNumbersCheckBox">
-        <property name="toolTip">
-         <string>Enabling this might be helpful when debugging.</string>
-        </property>
-        <property name="text">
-         <string>Add line numbers to the editing window.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="splineOccCheckBox">
-        <property name="text">
-         <string>Spline Occlusion</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QCheckBox" name="jtloeCheckBox">
-        <property name="text">
-         <string>Jump to line on Error</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QCheckBox" name="jtlowCheckBox">
-        <property name="text">
-         <string>Jump to line on Warn</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="ddCameraModeCheckBox">
-        <property name="text">
-         <string>2D Camera Mode on=traveling off=fixed</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QCheckBox" name="playRestartModeCheckBox">
-        <property name="text">
-         <string>Animation update on=continuous off=last set</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
+         <string>Texture file dialog lists image files by extension or mimetype</string>
         </property>
        </widget>
       </item>

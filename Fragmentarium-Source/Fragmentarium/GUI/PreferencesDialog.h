@@ -118,6 +118,7 @@ private slots:
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
 #endif // USE_OPEN_EXR
         m_ui.stylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
+        m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
     }
 
     void saveSettings()
@@ -139,17 +140,18 @@ private slots:
         settings.setValue("fps", m_ui.fpsSpinBox->value());
         settings.setValue("maxRecentFiles", m_ui.maxRecentFilesSpinBox->value());
         settings.setValue("includePaths", m_ui.includePathsLineEdit->text());
-        settings.setValue ( "fullPathInRecentFilesList", m_ui.fullPathInRecentFilesListCheckBox->isChecked() );
-        settings.setValue ( "includeWithAutoSave", m_ui.includeWithAutoSaveCheckBox->isChecked() );
-        settings.setValue ( "jumpToLineOnError", m_ui.jtloeCheckBox->isChecked() );
-        settings.setValue ( "jumpToLineOnWarn", m_ui.jtlowCheckBox->isChecked() );
-        settings.setValue ( "ddCameraMode", m_ui.ddCameraModeCheckBox->isChecked() );
-        settings.setValue ( "playRestartMode", m_ui.playRestartModeCheckBox->isChecked() );
-        settings.setValue ( "enableGLDebug", m_ui.enableGLDebugCheckBox->isChecked() );
+        settings.setValue("fullPathInRecentFilesList", m_ui.fullPathInRecentFilesListCheckBox->isChecked() );
+        settings.setValue("includeWithAutoSave", m_ui.includeWithAutoSaveCheckBox->isChecked() );
+        settings.setValue("jumpToLineOnError", m_ui.jtloeCheckBox->isChecked() );
+        settings.setValue("jumpToLineOnWarn", m_ui.jtlowCheckBox->isChecked() );
+        settings.setValue("ddCameraMode", m_ui.ddCameraModeCheckBox->isChecked() );
+        settings.setValue("playRestartMode", m_ui.playRestartModeCheckBox->isChecked() );
+        settings.setValue("enableGLDebug", m_ui.enableGLDebugCheckBox->isChecked() );
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
         settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
+        settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );
         settings.sync();
     }
 
