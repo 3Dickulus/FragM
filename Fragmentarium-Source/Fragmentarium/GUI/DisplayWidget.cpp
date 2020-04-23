@@ -1500,7 +1500,11 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                 }
             }
         } else {
-            vw[i]->setIsDouble(foundDouble);
+            for( int n=0; n < vw.count(); n++) {
+                if(uniformName == vw[n]->getName()) {
+                    vw[n]->setIsDouble(foundDouble);
+                }
+            }
         } // this takes care of buffershader (Post) sliders :D
 
         // type name and value to console

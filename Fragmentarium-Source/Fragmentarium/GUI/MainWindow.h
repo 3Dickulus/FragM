@@ -831,7 +831,8 @@ private:
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
     bool playRestartMode;
-
+    bool useMimetypes;
+    
 #ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;
     QStringList exrBinaryPath;

@@ -773,21 +773,40 @@ void SamplerWidget::textChanged(const QString &text)
 void SamplerWidget::buttonClicked()
 {
     QStringList extensions;
-
-    QList<QByteArray> a;
-    a << "";
-    a << "hdr";
-#ifdef USE_OPEN_EXR
-    a << "exr";
-#endif
-    a << QImageReader::supportedImageFormats();
-
-    foreach(QByteArray s, a) {
-        extensions.append(QString(s));
+    QList<QByteArray> imageFormats;
+    imageFormats << "*"; // will show "*.*"
+    imageFormats << "hdr"; // not supported by Qt, FragM supported
+    imageFormats << QImageReader::supportedImageFormats();
+    foreach(QByteArray s, imageFormats) {
+        extensions.append(QString("*.%1").arg(QString(s)));
     }
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select a Texture"), QString(), tr("Images (") + extensions.join(" *.") + tr(");;All (*.*)"));
-    
+    QStringList types;
+    QList<QByteArray> mimeTypes;
+    mimeTypes << "application/octet-stream"; // will show "All files (*)"
+    mimeTypes << QImageReader::supportedMimeTypes();
+    mimeTypes << "image/vnd.radiance"; //  supported by FragM not supported by Qt
+    foreach(QByteArray s, mimeTypes) {
+        types.append(QString(s));
+    }
+
+    QString fileName;
+
+    QFileDialog dialog(this);
+    QSettings settings;
+    // use mime-types
+    if(settings.value("useMimetypes").toBool()) {
+        dialog.setMimeTypeFilters(types);
+    } else {
+        // use file extensions
+        dialog.setNameFilters(extensions);
+    }
+    // show files with caps extensions on debian linux
+    dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+
+    dialog.exec();
+    fileName = dialog.selectedFiles().at(0);
+
     if (!fileName.isEmpty()) {
         comboBox->setEditText(fileName);
     }
