@@ -71,8 +71,6 @@ install:
       sudo apt-get -qq install zlib1g-dev
       sudo apt-get -qq install libglm-dev
 
-      wget https://launchpad.net/ubuntu/+archive/primary/+files/libglm-dev_0.9.9.3-2_all.deb
-      sudo dpkg -i libglm-dev_0.9.9.3-2_all.deb
       ## linuxdeployqt needs this
       #sudo apt-get -qq install libmtdev1
       #sudo apt-get -qq install libmtdev-dev
