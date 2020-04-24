@@ -205,10 +205,7 @@ before_deploy:
       cd ./Fragmentarium-Source/build
     fi
 
-  #- TIME_STRING=`date -u "+%H%M%S"`
-  - export TRAVIS_TAG=$VERSION_NUMBER"-"$BUILD_NUMBER
-  #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
-  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
+  - export TRAVIS_TAG="v"$VERSION_NUMBER"-"$BUILD_NUMBER
 
 deploy:
   - provider: releases
@@ -234,7 +231,6 @@ deploy:
     overwrite: true
     file:
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
-      - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
     skip_cleanup: true
     on:
         repo: 3Dickulus/FragM
