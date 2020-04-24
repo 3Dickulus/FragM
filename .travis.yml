@@ -81,7 +81,7 @@ install:
       #cd qtstyleplugins
       #/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
       #make -j$(nproc)
-      #sudo make install 
+      #sudo make install
       #cd -
     fi
   # OS X Qt http://braumeister.org/search/qt5
@@ -97,7 +97,7 @@ install:
       brew link --overwrite openexr
       brew unlink ilmbase
       brew link --overwrite ilmbase
-      
+
       #brew unlink cmake
       #brew install cmake
       #brew install extra-cmake-modules
@@ -117,8 +117,8 @@ before_script:
 
   # create release archive before build
   - git archive -o release.zip HEAD
-  # add submodules to archive
-  - git submodule --quiet foreach 'cd $toplevel; zip -ru release.zip $sm_path'
+  # add submodules to archive remove all files that begin with "."
+  - git submodule --quiet foreach 'cd $toplevel; zip -d release.zip "[.]*"; zip -ru release.zip $sm_path; zip -d release.zip "*/[.]*"'
 
   - mkdir Fragmentarium-Source/build
   - cd Fragmentarium-Source
@@ -204,15 +204,17 @@ before_deploy:
       cd ./Fragmentarium-Source/build
     fi
 
-  - TIME_STRING=`date -u "+%H%M%S"`
-  - export GIT_TAG=$BUILD_NUMBER"-"$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
-  - git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
+  #- TIME_STRING=`date -u "+%H%M%S"`
+  - export TRAVIS_TAG=$VERSION_NUMBER"-"$BUILD_NUMBER
+  #- git tag $GIT_TAG -a -m "Generated tag from TravisCI build "$TRAVIS_BUILD_NUMBER"-"$TIME_STRING
+  #- git push -q https://$TAGPERM@github.com/$USERNAME/FragM --tags >/dev/null 2>&1
 
 deploy:
   - provider: releases
     api_key:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
+    draft: true
+    overwrite: true
     file:
         - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-Linux.deb
         - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
@@ -227,7 +229,9 @@ deploy:
   - provider: releases
     api_key:
         secure: W0e1da1X8Oo4i4F5egQ0C3wv7DB72j9+64/E9kd+/CfxWXgdjf0DND7D0JMw8g14xJ4pYeSk27HEjkJs0GNFPv4UHUv6pLNlZsIHuMecESVSRQcVLLRb/XLmP1j2EgXSgFaJZQ56S18t8ulBy0ftkSHPV1H9zP3y8L0nENAUfB0ZTmE+t6LME+PncfWoIhBL0gda0Wx1bHqR1Rsbak8E0t5mp+K8LWkG9Ke42++cRBibgSVBsEePhv1mIUxOioYKF+nONWu/gGnHW5qg1d0zFFeil2qrvSuMOaHnnfiqfZn2L0xHFu5v/SiuKweC/10Yd6AwyVmwdaIvxCoM6/CqzlonQ862I6+rvZcwW01pbPlNpJZOeqAER8FRAyG8P561mdDArwHv+KdUeZTUJHHfB+SQewdeHn+7bTi6aPJEZSE39cZmrZN+vuWPZhKPNuYyntbLz561yATEBibpkj4i+wmTLZvRgHJ4zCHEr2PgxSvA4KTheV3RhKUW4U3vyJ7Oilw5j6RDaYZAgYeHwHxxGkbI999wnsEdkBdBHKdfF5tgXjH+YLnzriRIwvFQkDmZRMTFOvGtCYoJfPLpismCS6O7DE9OWRVCyBTSPvnfAdRkkRvVDzfhgiY/FkoeJ3wYvuINT77VApmBtAuXxj6gxEnTjgrgpHazh3o3+bvbPUg=
-    file: 
+    draft: true
+    overwrite: true
+    file:
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-$TRAVIS_OS_NAME.zip
       - Fragmentarium-$VERSION_NUMBER-$BUILD_NUMBER-source.zip
     skip_cleanup: true
