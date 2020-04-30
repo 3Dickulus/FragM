@@ -444,6 +444,13 @@ public slots:
         return glm::vec4(x,y,z,w);
     };
 
+    void setAutoRun ( bool arun )
+    {
+        QSettings settings;
+        settings.setValue ( "autorun",arun );
+        settings.sync();
+    };
+
     void setAnimationLength ( int m )
     {
         timeMaxSpinBox->setValue ( m );

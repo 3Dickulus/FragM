@@ -118,6 +118,12 @@ int main(int argc, char *argv[])
     //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
     //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
     //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
+    parser.addOption(QCommandLineOption (QString("autorun"),
+                                         app->translate("main", "en/disable auto-compile-run cycle at program start."),
+                                         QString("true"),
+                                         QString("true"))
+                    );
+
     parser.addOption(QCommandLineOption (QString("verbose"),
                                          app->translate("main", "sets reporting of shader variables to console."),
                                          QString(""),
@@ -192,11 +198,13 @@ int main(int argc, char *argv[])
     mainWin = new Fragmentarium::GUI::MainWindow(&splash);
     mainWin->setObjectName("MainWindow");
     app->setApplicationVersion(mainWin->getVersion());
-
+    
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;
 
     mainWin->setVerbose(parser.isSet("verbose"));
+    if(parser.isSet("autorun"))
+        mainWin->setAutoRun(parser.value("autorun") == "true");
 
     mainWin->show();
 
