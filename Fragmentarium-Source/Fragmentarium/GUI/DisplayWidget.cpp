@@ -896,6 +896,10 @@ bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textu
     QImage im;
     bool loaded = im.load(texturePath);
 
+    if( type == GL_SAMPLER_CUBE ) {
+            loaded = (im.height() == im.width()*6);
+    }
+
     if(loaded) {
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
     }
