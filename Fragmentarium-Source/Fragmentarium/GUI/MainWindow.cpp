@@ -2273,6 +2273,7 @@ void MainWindow::renderModeChanged()
     QObject* o = QObject::sender();
     lastStoredTime = getTime();
     if (o == nullptr || o == progressiveButton) {
+        engine->requireRedraw(true);
         engine->setState(DisplayWidget::Progressive);
         getTime();
     } else if (o == animationButton) {
