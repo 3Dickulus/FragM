@@ -2076,8 +2076,8 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeLabel);
 
     timeSlider = new QSlider(Qt::Horizontal, this);
-    timeSlider->setMinimum(1);
-    timeSlider->setValue(1);
+    timeSlider->setMinimum(0);
+    timeSlider->setValue(0);
 
     timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
@@ -2190,6 +2190,7 @@ void MainWindow::rewind()
     lastTime->restart();
     lastStoredTime = 0;
     getTime();
+    engine->requireRedraw(true);
     engine->update();
 }
 
@@ -2201,6 +2202,7 @@ void MainWindow::play( bool restart )
     if (restart) {
     lastTime->restart();
     }
+    engine->requireRedraw(true);
     engine->setContinuous(true);
     getTime();
     pausePlay=false;
