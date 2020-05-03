@@ -770,7 +770,11 @@ bool VariableEditor::setSettings(QString text)
             setEasingCurves(s);
             continue;
         }
-
+        // old easingcurve settings started with ///
+        // for backward compatibility do this after checking for easingcurve settings
+        if (s.startsWith("//")) {
+            continue;
+        }
         if (s.isEmpty()) {
             continue;
         }
