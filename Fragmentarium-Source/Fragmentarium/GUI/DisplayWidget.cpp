@@ -2440,33 +2440,30 @@ void DisplayWidget::drawLookatVector()
     // specify vertex arrays
     glBindVertexArray( svao );
 
-    // test current frame
-    if(currentframe > 1) {
-        int start = mainWindow->getVariableEditor()->getKeyFrameCount() * 2;
-        int count = mainWindow->getFrameMax()-1;
+    int start = mainWindow->getVariableEditor()->getKeyFrameCount() * 2;
+    int count = mainWindow->getFrameMax();
 
-        if(spline_program != 0) {
-            GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+    if(spline_program != 0) {
+        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
 
-            glUseProgram(spline_program);
-            glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), 3 );
+        glUseProgram(spline_program);
+        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), 3 );
 
-            // test if core and set color accordingly
-            if(cloc != -1 && !compatibilityProfile)
-                glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-            else
-                glColor4f ( 1.0, 1.0, 0.0, 1.0 );
-            // highlight the path position
-            glDrawArrays(GL_POINTS, start+currentframe, 1 );
-            // test if core and set color accordingly
-            if(cloc != -1 && !compatibilityProfile)
-                glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-            else
-                glColor4f ( 1.0, 1.0, 0.0, 1.0 );
-            // highlight the path position
-            glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
-            glUseProgram(0);
-        }
+        // test if core and set color accordingly
+        if(cloc != -1 && !compatibilityProfile)
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+        else
+            glColor4f ( 1.0, 1.0, 0.0, 1.0 );
+        // highlight the path position
+        glDrawArrays(GL_POINTS, start+currentframe+1, 1 );
+        // test if core and set color accordingly
+        if(cloc != -1 && !compatibilityProfile)
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+        else
+            glColor4f ( 1.0, 1.0, 0.0, 1.0 );
+        // highlight the path position
+        glDrawArrays(GL_POINTS, start+count+currentframe+1, 1 );
+        glUseProgram(0);
     }
 
     if(compatibilityProfile) {
