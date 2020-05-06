@@ -2079,8 +2079,8 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeLabel);
 
     timeSlider = new QSlider(Qt::Horizontal, this);
-    timeSlider->setMinimum(0);
-    timeSlider->setValue(0);
+    timeSlider->setMinimum(1);
+    timeSlider->setValue(1);
 
     timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
