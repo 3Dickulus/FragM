@@ -2193,8 +2193,8 @@ void DisplayWidget::timerSignal()
     if (bufferShaderProgram == nullptr && pendingRedraws == 0) {
         // no buffershader program!
         // primary shader must be using backbuffer sampler
-        // have to update the view manually
-        repaint();
+        // have to update the view manually when running
+        if(continuous) repaint();
     }
 }
 
