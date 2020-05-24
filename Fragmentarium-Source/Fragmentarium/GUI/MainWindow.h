@@ -161,6 +161,7 @@ public:
             cmdScriptDebugger->~QScriptEngineDebugger();
             cmdScriptDebugger = 0;
         }
+        
     };
 
     double getTime();

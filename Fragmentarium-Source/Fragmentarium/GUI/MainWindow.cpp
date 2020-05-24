@@ -223,7 +223,6 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         ev->accept();
         return;
     }
-    ev->accept();
 
     writeSettings();
 
@@ -233,6 +232,8 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     if (easingMap.count() > 0) {
         easingMap.clear();
     }
+
+    ev->accept();
 
 }
 
@@ -1319,10 +1320,6 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     QRect source ( 0, 0, wScaleFactor, hScaleFactor );
                     QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
                     im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                    // render scaled tiles into the GL area
-                    QPainter painter1( engine );
-                    painter1.drawImage ( target, im, source );
-                    painter1.end();
                     // render scaled tiles into the overlay pixmap
                     QPainter painter2( &enginePixmap );
                     painter2.drawImage ( target, im, source );
@@ -1428,10 +1425,6 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
                         QRect source ( 0, 0, wScaleFactor, hScaleFactor );
                         QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
                         im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                        // render scaled tiles into the GL area
-                        QPainter painter1( engine );
-                        painter1.drawImage ( target, im, source );
-                        painter1.end();
                         // render scaled tiles into the overlay pixmap
                         QPainter painter2( &enginePixmap );
                         painter2.drawImage ( target, im, source );
