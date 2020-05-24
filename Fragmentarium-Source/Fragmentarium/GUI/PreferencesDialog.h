@@ -119,6 +119,7 @@ private slots:
 #endif // USE_OPEN_EXR
         m_ui.stylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
         m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
+        m_ui.logLinesSpinBox->setValue (settings.value ( "maxLogLines", 10 ).toInt() );
     }
 
     void saveSettings()
@@ -152,6 +153,7 @@ private slots:
 #endif // USE_OPEN_EXR
         settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
         settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );
+        settings.setValue("maxLogLines", m_ui.logLinesSpinBox->value());
         settings.sync();
     }
 

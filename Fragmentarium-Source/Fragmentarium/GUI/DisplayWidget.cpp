@@ -168,6 +168,8 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     glDebugEnabled = false;
     spline_program = 0;
     tileImage = nullptr;
+    svao=0;
+    svbo=0;
 }
 
 void DisplayWidget::initializeGL()
@@ -580,6 +582,9 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
 
     LOG ( message, priority );
 
+    QSettings settings;
+    int maxLines = settings.value ( "maxLogLines", 10 ).toInt(); // for log window list widget
+
     foreach ( const QString &str, logList ) {
         QString newStr=str;
 
@@ -597,6 +602,8 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
             errorCount++;
         }
 
+        if(errorCount > maxLines) break;
+        
         // emit a single log widget line for each line in the log
         LOG ( newStr, priority );
 
