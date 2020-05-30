@@ -1654,7 +1654,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
 
-        if(compatibilityProfile) {
+        if( compatibilityProfile || (format().majorVersion() == 2 || format().majorVersion() == 3) ) {
             // only available in GL > 2.0 < 3.2 and compatibility profile
             glLoadIdentity();
             glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
@@ -1776,7 +1776,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
                 return;
             }
 
-            drawFragmentProgram ( s.width(),s.height(), true );
+            drawFragmentProgram ( s.width(),s.height(), hasBufferShader() );
             
             if ( !previewBuffer->release() ) {
               WARNING ( tr("Failed to release FBO") );
