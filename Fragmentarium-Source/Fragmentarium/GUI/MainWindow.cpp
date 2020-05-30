@@ -2198,7 +2198,6 @@ void MainWindow::play( bool restart )
     if (restart) {
     lastTime->restart();
     }
-    engine->requireRedraw(true);
     engine->setContinuous(true);
     getTime();
     pausePlay=false;
