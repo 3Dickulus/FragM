@@ -1978,12 +1978,14 @@ void MainWindow::createToolBars()
     bufferXSpinBox->setRange(0,8000);
     bufferXSpinBox->setValue(10);
     bufferXSpinBox->setSingleStep(1);
+    bufferXSpinBox->setEnabled(false);
     bufferToolBar->addWidget(bufferXSpinBox);
     bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
     bufferYSpinBox->setRange(0,8000);
     bufferYSpinBox->setValue(10);
     bufferYSpinBox->setSingleStep(1);
+    bufferYSpinBox->setEnabled(false);
     connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
     connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
     bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
@@ -2119,6 +2121,8 @@ void MainWindow::setTimeSliderValue(int value)
 void MainWindow::bufferActionChanged(QAction *action)
 {
 
+    bool lockedToWindowSize = true;
+    
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
         bufferSizeMultiplier = 1;
@@ -2128,9 +2132,13 @@ void MainWindow::bufferActionChanged(QAction *action)
         bufferSizeMultiplier = 4;
     } else if (action == bufferAction1_6) {
         bufferSizeMultiplier = 6;
-    } else if (action == bufferActionCustom) {
+    } else if (action == bufferActionCustom) { lockedToWindowSize = false;
         bufferSizeMultiplier = 0;
     }
+
+    bufferYSpinBox->setEnabled(!lockedToWindowSize);
+    bufferXSpinBox->setEnabled(!lockedToWindowSize);
+    
     engine->updateBuffers();
 }
 
