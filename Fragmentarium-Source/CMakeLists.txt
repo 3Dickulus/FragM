@@ -193,6 +193,7 @@ include_directories (
 	ThirdPartyCode)
 
 set ( Fragmentarium_HDRS
+    ThirdPartyCode/ExpSpinBox.h
 	ThirdPartyCode/hdrloader.h
 	ThirdPartyCode/asmbrowser.h
 	ThirdPartyCode/EasingAnimation.h
@@ -213,6 +214,7 @@ set ( Fragmentarium_HDRS
 
 set ( Fragmentarium_SRCS
 	Fragmentarium/Main.cpp
+    ThirdPartyCode/ExpSpinBox.cpp
 	ThirdPartyCode/hdrloader.cpp
 	ThirdPartyCode/asmbrowser.cpp
 	Fragmentarium/GUI/CameraControl.cpp

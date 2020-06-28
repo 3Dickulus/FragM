@@ -17,6 +17,7 @@
 #include <QStandardItemModel>
 #include <QOpenGLShaderProgram>
 
+#include "ExpSpinBox.h"
 #include "../Parser/Preprocessor.h"
 #include "DisplayWidget.h"
 #include "SyntopiaCore/Logging/Logging.h"
@@ -61,7 +62,8 @@ public:
     {
 
         setMinimumSize(160,20);
-        setMaximumSize(1024,20);
+        setMaximumSize(2048,20);
+        setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 
         QHBoxLayout* l = new QHBoxLayout(this);
         l->setSpacing(2);
@@ -86,18 +88,25 @@ public:
         slider->setValue((logarithmic ? std::log(std::abs(defaultValue)) : defaultValue)*scale);
         slider->setSingleStep(scale/1000);
         slider->setPageStep(scale/100);
+        slider->setMinimumSize(160,20);
+        slider->setMaximumSize(2048,20);
         slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
         l->addWidget(slider);
 
-        spinner = new QDoubleSpinBox(this);
+        spinner = new ExpSpinBox(this);
         spinner->setDecimals(FDEC);
         spinner->setMaximum(maximum);
         spinner->setMinimum(minimum);
         spinner->setValue(defaultValue);
         spinner->setKeyboardTracking(false);
+        // Scientific
+        spinner->setScientificFormat(false);
+        spinner->setMinimumSize(FDEC*20,20);
+        spinner->setMaximumSize(2048,20);
+        spinner->setSizePolicy (QSizePolicy ( QSizePolicy::Minimum, QSizePolicy::Minimum ) );
+       
         l->addWidget(spinner);
-
-        setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+        spinner->update();
 
         connect ( spinner, SIGNAL ( valueChanged ( double ) ), this, SLOT ( spinnerChanged ( double ) ) );
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
@@ -108,20 +117,43 @@ public:
         m_framestart = 0;
         m_framefin = 0;
     }
+    void setScientificFormat ( bool f )
+    {
+        spinner->setScientificFormat(f);
+    }
     void setDecimals ( int d )
     {
         spinner->setDecimals ( d );
     }
-    void contextMenuEvent ( QContextMenuEvent * )
+    void contextMenuEvent ( QContextMenuEvent *ev)
     {
 
-        bool ok;
-        int i =
-            QInputDialog::getInt ( this, objectName(), tr ( "Slider Step Multiplier" ), slider->singleStep(), 1, 100000000, 1, &ok );
-        if (ok) {
-            slider->setSingleStep(i);
-            slider->setPageStep(i*10);
+        QMenu contextMenu;
+        QAction editScaleAction ( tr ( "Edit scale" ), &contextMenu );
+        QAction scientificFormatAction ( tr ( "Scientific" ), &contextMenu );
+        QAction standardFormatAction ( tr ( "Standard" ), &contextMenu );
+
+        contextMenu.addAction ( &editScaleAction );
+        contextMenu.addAction ( &scientificFormatAction );
+        contextMenu.addAction ( &standardFormatAction );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+
+        if ( choice == &editScaleAction ) {
+            bool ok;
+            int i = QInputDialog::getInt ( this, objectName(), tr ( "Slider Step Multiplier" ), slider->singleStep(), 1, 100000000, 1, &ok );
+            if (ok) {
+                slider->setSingleStep(i);
+                slider->setPageStep(i*10);
+                spinner->setSingleStep(i);
+            }
+
+        } else if ( choice == &scientificFormatAction ) {
+            spinner->setScientificFormat(true);
+        } else if ( choice == &standardFormatAction ) {
+            spinner->setScientificFormat(false);
         }
+
     }
 
     QPropertyAnimation* m_anim;
@@ -231,7 +263,7 @@ protected slots:
 private:
     QSlider* slider;
     SliderType sliderType;
-    QDoubleSpinBox* spinner;
+    ExpSpinBox* spinner;
     QWidget* variableEditor;
     double defaultValue;
     double minimum;
