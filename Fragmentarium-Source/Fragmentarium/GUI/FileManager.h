@@ -128,8 +128,8 @@ public:
         includePaths = paths;
     }
 
-    QString resolveName(QString fileName);
-    QString resolveName(QString fileName, QString originalFileName);
+    QString resolveName(QString fileName, bool verboseMessages = true);
+    QString resolveName(QString fileName, QString originalFileName, bool verboseMessages = true);
     bool fileExists(QString fileName);
     QStringList getFiles ( QStringList filters );
     QStringList getImageFiles();

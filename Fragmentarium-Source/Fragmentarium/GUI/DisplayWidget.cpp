@@ -622,6 +622,22 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
     }
 }
 
+QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
+{
+    SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
+    if(sw == nullptr || sw->getName().isNull()) {
+        WARNING(tr("getTextureChannels() could not get SamplerWidget for %1!").arg(textureUniformName));
+        return QStringList();
+    }
+    QStringList result;
+    for (int channel = 0; channel < 4; ++channel)
+    {
+        std::cout << sw->getChannelValue(channel).toStdString() << std::endl;
+        result += sw->getChannelValue(channel);
+    }
+    return result;
+}
+
 void DisplayWidget::initFragmentShader()
 {
 
@@ -732,7 +748,7 @@ vec3  backgroundColor(vec3 dir) {
 }
 */
 
-bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID, QString textureUniformName )
+bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
 {
 
     HDRLoaderResult result;
@@ -772,18 +788,16 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 // TODO: handle isampler and usampler and XYZW channels
 //
 
-bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
+bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels)
 {
 
 #ifndef USE_OPEN_EXR
     // Qt loads EXR files
-    return loadQtTexture(texturePath, type, textureID, textureUniformName);
+    return loadQtTexture(texturePath, type, textureID);
 #else
     InputFile file ( texturePath.toLatin1().data() );
     Box2i dw = file.header().dataWindow();
 
-    QStringList channelList;
-    
     if ( file.isComplete() ) {
 
         int channelCount=0;
@@ -793,7 +807,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                 std::cout << "Channel:" << channelCount << " " << i.name() << std::endl;
             }
             channelCount++;
-            channelList << i.name();
         }
 
         int w  = dw.max.x - dw.min.x + 1;
@@ -812,82 +825,85 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             return false;
         }
         
-        // internal textures are RGBA 4 channels max so truncate and emit warning
-        // will use the first 4 as RGBA
-        if(channelCount > 4) {
-            WARNING( tr("Channel count %1! Layers not yet implemented!\nUsing the first 4 channels for %2.rgba from texture %3")
-                .arg(channelCount)
-                .arg(textureUniformName)
-                .arg(texturePath)
-            );
-            channelCount = 4;
+        // OpenEXR doesn't like reading the same channel name into
+        // more than one slice of a single framebuffer, so we need
+        // to keep track and copy the data manually
+        assert(textureChannels.size() == 4);
+        QString sliceChannel[4] = { "", "", "", "" };
+        int sliceCopyFrom[4] = { -1, -1, -1, -1 };
+        for (int channel = 0; channel < 4; ++channel) {
+            sliceChannel[channel] = textureChannels[channel];
+            bool copySlice = false;
+            for (int earlierChannel = 0; earlierChannel < channel; ++ earlierChannel) {
+                if (sliceChannel[earlierChannel] == sliceChannel[channel]) {
+                    sliceCopyFrom[channel] = earlierChannel;
+                    break;
+                }
+            }
         }
 
-        if(channelCount < 1) return false; // uhoh :(
+        // just in case, if these aren't true then bad things will happen
+        assert(sizeof(RGBAFLOAT) == 4 * sizeof(float));
+        assert(offsetof(RGBAFLOAT,r) == 0);
 
-// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
-        // the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
-// TextureChannelFormat 
-        
-        bool haveA = false;
-        bool haveZ = false;
-            for (int i=0; i<channelCount; i++) {
-            haveA |= channelList.at(i).toUpper() == "A";
-            haveZ |= channelList.at(i).toUpper() == "Z";
-            }
-        TextureChannelFormat[textureID] = 0; // = bgr or bgrz
-        if(haveA) TextureChannelFormat[textureID] = 1; // = abgr
-        
-        Array2D<RGBAFLOAT>pixels ( w, 1 );
-        
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
-        
-        auto *cols = new float[w * h * 4];
-        
-        while ( dw.min.y <= dw.max.y ) {
-
-            RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
-
-            FrameBuffer fb;
-
-            // this should allow arbitrary naming of channels and ensure we have a valid RGBA texture
-            // accounts for non-existent channels and names them appropriately
-            fb.insert ((channelCount > 0) ? channelList.at(0).toLatin1().data() : "R", Slice (Imf::FLOAT, (char *) &base[0].r, xs, ys));
-            fb.insert ((channelCount > 1) ? channelList.at(1).toLatin1().data() : "G", Slice (Imf::FLOAT, (char *) &base[0].g, xs, ys));
-            fb.insert ((channelCount > 2) ? channelList.at(2).toLatin1().data() : "B", Slice (Imf::FLOAT, (char *) &base[0].b, xs, ys));
-            fb.insert ((channelCount > 3) ? channelList.at(3).toLatin1().data() : "A", Slice (Imf::FLOAT, (char *) &base[0].a, xs, ys));
-
-            file.setFrameBuffer (fb);
-            file.readPixels ( dw.min.y );
-
-            // process scanline (pixels)
-            for ( int i = 0; i<w; i++ ) {
-                // convert 3D array to 1D
-                int indx = ( dw.min.y*w+i ) *4;
-                cols[indx] = (channelCount > 0) ? pixels[0][i].r : 0.0;
-                cols[indx+1]=(channelCount > 1) ? pixels[0][i].g : 0.0;
-                cols[indx+2]=(channelCount > 2) ? pixels[0][i].b : 0.0;
-                cols[indx+3]=(channelCount > 3) ? pixels[0][i].a : 1.0;
+        Array2D<RGBAFLOAT>pixels ( w, h );
+        RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
+        FrameBuffer fb;
+        int sliceCount = 0;
+        float def = 0.0f/0.0f; // NaN
+        for (int channel = 0; channel < 4; ++channel) {
+            // OpenEXR aborts if the slice channel name is empty
+            if (sliceCopyFrom[channel] == -1 && ! sliceChannel[channel].isEmpty()) {
+                char *ptr = (char *) (&base[0].r + channel);
+                fb.insert(sliceChannel[channel].toStdString(),
+                  Slice(Imf::FLOAT, ptr, xs, ys, 1, 1, def));
+                sliceCount++;
             }
-            dw.min.y ++;
+        }
+        // OpenEXR aborts if there are no slices
+        if (sliceCount > 0) {
+            file.setFrameBuffer (fb);
+            file.readPixels(dw.min.y, dw.max.y);
+        }
+        
+        for (int channel = 0; channel < 4; ++channel) {
+            int earlierChannel = sliceCopyFrom[channel];
+            if (sliceChannel[channel].isEmpty()) {
+                float src_val = def;
+                float *dst_ptr = &base[0].r + channel;
+                for (int y = 0; y < h; ++y) {
+                    for (int x = 0; x < w; ++x) {
+                        size_t k = (x + size_t(w) * y) * 4;
+                        dst_ptr[k] = src_val;
+                    }
+                }
+            } else if (earlierChannel != -1) {
+                float *src_ptr = &base[0].r + earlierChannel;
+                float *dst_ptr = &base[0].r + channel;
+                for (int y = 0; y < h; ++y) {
+                    for (int x = 0; x < w; ++x) {
+                        size_t k = (x + size_t(w) * y) * 4;
+                        dst_ptr[k] = src_ptr[k];
+                    }
+                }
+            }
         }
 
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
 
         if(type == GL_SAMPLER_CUBE) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 0));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 1));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 2));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 3));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 4));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, w, w, 0, GL_RGBA, GL_FLOAT, cols + ((w * w * 4) * 5));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 0));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 1));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 2));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5));
         } else {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, cols);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, base);
         }
 
-        delete [] cols;
-        cols = nullptr;
     } else {
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
@@ -897,7 +913,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 }
 
 // Qt format image, Qt 5+ loads EXR format on linux
-bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID, QString textureUniformName)
+bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textureID)
 {
 
     QImage im;
@@ -964,9 +980,17 @@ void DisplayWidget::initFragmentTextures()
         return; // something went wrong so do not try to setup textures
     }
 
-    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
-    QMap<QString, bool> textureCacheUsed;
+    // unbind all textures so texture memory of deleted textures can be reclaimed
+    for (int u = 0; u < TextureUnitCache.size(); ++u) {
+      glActiveTexture(GL_TEXTURE0 + 1 + u);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+    // clear cache of texture units, it will be regenerated below
+    TextureUnitCache = QMap<QString, int>();
 
+    GLuint u = 1; // the backbuffer is always 0 while textures from uniforms start at 1
+    QMap<QPair<QString, QStringList>, bool> textureCacheUsed;
     QMapIterator<QString, QString> it( fragmentSource.textures );
     while( it.hasNext() ) {
         it.next();
@@ -1004,64 +1028,45 @@ void DisplayWidget::initFragmentTextures()
 
                 if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
                     // check cache first
-                    if ( !TextureCache.contains ( texturePath ) ) {
+                    QStringList textureChannels = getTextureChannels(textureUniformName);
+                    QPair<QString, QStringList> textureCacheKey(texturePath, textureChannels);
+                    if ( !TextureCache.contains ( textureCacheKey ) ) {
                         // if not in cache then create one and try to load and add to cache
                         glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
                         // allocate a texture id
                         glGenTextures ( 1, &textureID );
 
                         if (verbose) {
-                            qDebug() << QString("Allocating texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                            qDebug() << QString("Allocating texture (ID: %1) %2 %3").arg(textureID).arg(texturePath).arg(textureChannels.join(";"));
                         }
 
                         if (texturePath.endsWith(".hdr", Qt::CaseInsensitive)) { // is HDR format image ?
                             loaded = loadHDRTexture(texturePath, type, textureID);
                         }
                         else if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) { // is EXR format image ?
-                            loaded = loadEXRTexture(texturePath, type, textureID, textureUniformName);
+                            loaded = loadEXRTexture(texturePath, type, textureID, textureChannels);
                         }
                         else {
                             loaded = loadQtTexture(texturePath, type, textureID);
                         }
                         if ( loaded ) {
                             // add to cache
-                            TextureCache[texturePath] = textureID;
-                            textureCacheUsed[texturePath] = true;
+                            TextureCache[textureCacheKey] = textureID;
+                            textureCacheUsed[textureCacheKey] = true;
                         }
                     } else { // use cache
-                        textureID = TextureCache[texturePath];
-                        textureCacheUsed[texturePath] = true;
+                        textureID = TextureCache[textureCacheKey];
+                        textureCacheUsed[textureCacheKey] = true;
                         loaded = true;
                         if (verbose) {
-                            qDebug() << QString("Using cached texture (ID: %1) %2").arg(textureID).arg(texturePath);
+                            qDebug() << QString("Using cached texture (ID: %1) %2 %3").arg(textureID).arg(texturePath).arg(textureChannels.join(";"));
                         }
                     }
                 }
 
                 if ( loaded ) {
-
-// GL_TEXTURE_SWIZZLE_RGBA core since 3.3
-// OpenEXR ALWAYS sorts channel names alphabetically when writing to file
-// the order we want is rgb[a|z] while the order in the file is [a]bgr[z]
-// this works to sort out the channel order for ABGR, BGRZ and BGR files
-// TODO:test against GL_TEXTURE_CUBE_MAP
-
-                    if (texturePath.endsWith(".exr", Qt::CaseInsensitive)) {
-                        if(TextureChannelFormat[textureID] == 1) { // has alpha
-                            GLint swizzleMask[] = {GL_ALPHA, GL_BLUE, GL_GREEN, GL_RED};
-                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
-                        }
-                        else { // has Z or no A
-                            GLint swizzleMask[] = {GL_BLUE, GL_GREEN, GL_RED, GL_ALPHA};
-                            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
-                        }
-                    } else {
-                        // normal swizzle mask
-                        GLint swizzleMask[] = {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA};
-                        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
-                    }
-
                     glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+                    TextureUnitCache[textureUniformName] = u;
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
 //                         if(verbose && subframeCounter == 1) {
@@ -1081,19 +1086,18 @@ void DisplayWidget::initFragmentTextures()
 
     // Check for unused textures
     clearTextureCache(&textureCacheUsed);
-
 }
 
-void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
+void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *textureCacheUsed)
 {
 
     // Check for unused textures
     if (textureCacheUsed != nullptr) {
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while ( i.hasNext() ) {
             i.next();
             if (!textureCacheUsed->contains(i.key())) {
-                INFO("Removing texture from cache: " +i.key());
+                INFO(QString("Removing texture from cache: %1 %2").arg(i.key().first).arg(i.key().second.join(";")));
                 GLuint id = i.value();
                 glDeleteTextures(1, &id);
                 i.remove();
@@ -1101,14 +1105,13 @@ void DisplayWidget::clearTextureCache(QMap<QString, bool> *textureCacheUsed)
 
         }
     } else { // clear cache and textures
-        QMutableMapIterator<QString, int> i(TextureCache);
+        QMutableMapIterator<QPair<QString, QStringList>, int> i(TextureCache);
         while (i.hasNext()) {
             i.next();
             GLuint id = i.value();
             glDeleteTextures(1, &id);
         }
         TextureCache.clear();
-        TextureChannelFormat.clear();
     }
 }
 
@@ -1492,17 +1495,10 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                 if(uniformName == vw[n]->getName()) {
                     auto *sw = dynamic_cast<SamplerWidget *>(vw[n]);
                     if (sw != nullptr) {
-                        QMapIterator<QString, QString> it( fragmentSource.textures );
-                        int u=1; // sampler textures start at 1
-                        while( it.hasNext() ) {
-                            it.next();
-                            if(it.value().contains(sw->getValue())) { // the cached value is GLAPI texID, glsl wants indexOf!
-                                sw->texID = u;//TextureCache[it.value()];
-                                sw->setUserUniform(shaderProg);
-//                                 DBOUT << "Sampler:" << uniformName << " FragMtexID:" << sw->texID << " CacheID:" << TextureCache[it.value()];
-                            }
-                            u++;
-                        }
+                        if (TextureUnitCache.contains(uniformName)) {
+                            sw->texID = TextureUnitCache[uniformName];
+                            sw->setUserUniform(shaderProg);
+                         }
                     } else { 
                         vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
                         vw[n]->setUserUniform(shaderProg);
