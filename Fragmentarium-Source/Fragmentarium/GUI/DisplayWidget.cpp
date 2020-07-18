@@ -851,7 +851,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
         FrameBuffer fb;
         int sliceCount = 0;
-        float def = 0.0f/0.0f; // NaN
+        float def = 1.0; // 0.0f/0.0f; // NaN
         for (int channel = 0; channel < 4; ++channel) {
             // OpenEXR aborts if the slice channel name is empty
             if (sliceCopyFrom[channel] == -1 && ! sliceChannel[channel].isEmpty()) {
