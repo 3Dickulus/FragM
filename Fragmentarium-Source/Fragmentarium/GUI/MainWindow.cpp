@@ -2500,17 +2500,16 @@ void MainWindow::loadFragFile(const QString &fileName)
         stop();
 
         if (QSettings().value("autorun", true).toBool()) {
-            variableEditor->resetUniforms(false); // set all values but do not initialize fragment
-            rebuildRequired = initializeFragment();// once to initialize presets and check locked vars
-            bool requiresRecompile = variableEditor->setDefault(); // set vars with default preset and check locked vars
-            if (requiresRecompile || rebuildRequired) {
-                INFO(tr("Rebuilding to update locked uniforms..."));
-                rebuildRequired = initializeFragment();
-                variableEditor->setDefault();
+            variableEditor->resetUniforms(true); // set all values and initialize fragment
+            bool requiresRecompile = variableEditor->setDefault(); // set vars with default preset and check state
+            if (requiresRecompile) {
+                INFO(tr("Rebuilding to update uniform state..."));
+                needRebuild( initializeFragment() );
             }
             processGuiEvents();
         }
-update();
+
+        update();
 
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
