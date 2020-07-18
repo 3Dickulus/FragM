@@ -632,7 +632,6 @@ QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
     QStringList result;
     for (int channel = 0; channel < 4; ++channel)
     {
-        std::cout << sw->getChannelValue(channel).toStdString() << std::endl;
         result += sw->getChannelValue(channel);
     }
     return result;
