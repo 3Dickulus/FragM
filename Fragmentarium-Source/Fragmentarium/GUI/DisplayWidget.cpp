@@ -1084,7 +1084,9 @@ void DisplayWidget::initFragmentTextures()
     }
 
     // Check for unused textures
-    clearTextureCache(&textureCacheUsed);
+    if(!TextureCache.isEmpty()) {
+        clearTextureCache(&textureCacheUsed);
+    }
 }
 
 void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *textureCacheUsed)
