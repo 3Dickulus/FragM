@@ -889,7 +889,7 @@ void SamplerWidget::buttonClicked()
         types.append(QString(s));
     }
 
-    QString fileName;
+    QString fileName = "";
 
     QFileDialog dialog(this);
     QSettings settings;
@@ -903,8 +903,9 @@ void SamplerWidget::buttonClicked()
     // show files with caps extensions on debian linux
     dialog.setOption(QFileDialog::DontUseNativeDialog, true);
 
-    dialog.exec();
-    fileName = dialog.selectedFiles().at(0);
+    if(dialog.exec() == 1) { // test for accept
+        fileName = dialog.selectedFiles().at(0);
+    }
 
     if (!fileName.isEmpty()) {
         comboBox->setEditText(fileName);
