@@ -17,7 +17,7 @@ QStringList FileManager::getImageFiles()
     QStringList extensions;
     QList<QByteArray> a;
     a << "hdr";
-#ifdef USE_OPEN_EXR
+#if defined(Q_OS_WIN) || defined(USE_OPEN_EXR)
     a << "exr";
 #endif
     a << QImageReader::supportedImageFormats();
@@ -78,12 +78,12 @@ bool FileManager::fileExists(QString fileName)
     return false;
 }
 
-QString FileManager::resolveName(QString fileName)
+QString FileManager::resolveName(QString fileName, bool verboseMessages)
 {
-    return resolveName(fileName, originalFileName);
+    return resolveName(fileName, originalFileName, verboseMessages);
 }
 
-QString FileManager::resolveName(QString fileName, QString originalFileName)
+QString FileManager::resolveName(QString fileName, QString originalFileName, bool verboseMessages)
 {
 
         // First check absolute filenames
@@ -113,8 +113,10 @@ QString FileManager::resolveName(QString fileName, QString originalFileName)
         }
 
         // We failed.
-        foreach (QString s, pathsTried) {
-          INFO(QCoreApplication::translate("FileManager","Tried path: ") + s);
+        if (verboseMessages) {
+            foreach (QString s, pathsTried) {
+              INFO(QCoreApplication::translate("FileManager","Tried path: ") + s);
+            }
         }
     throw Exception(QCoreApplication::translate("FileManager", "Could not resolve path for file: ") + fileName);
 }

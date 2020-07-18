@@ -524,7 +524,7 @@ class SamplerWidget : public VariableWidget
     Q_OBJECT
 public:
     SamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue );
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
     virtual QString toString();
     virtual bool fromString(QString string);
     virtual void setUserUniform ( QOpenGLShaderProgram* shaderProgram );
@@ -541,8 +541,35 @@ public:
     }
     void reset()
     {
+        // updates channel combo box list from file, showing them (if EXR)
         comboBox->setEditText ( defaultValue );
+        for (int channel = 0; channel < 4; ++channel)
+        {
+            // this test should always be true for EXR
+            if(channel < defaultChannelValue.size() && ! defaultChannelValue[channel].isEmpty()) {
+                channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
+            }
+        }
     }
+    QString getChannelValue(int channel)
+    {
+        if(!channelComboBox[channel]->isHidden())
+            return channelComboBox[channel]->currentText();
+        else return "";
+    }
+    QString getChannelValue()
+    {
+        QStringList l = QStringList();
+        for (int channel = 0; channel < 4; ++channel) {
+            QString c = getChannelValue(channel);
+            if (! c.isEmpty()) {
+                l += c;
+            }
+        }
+        return l.join(";");
+    }
+    
+    int hasChannel(int channel, QString chan);
     
     QString getLockedSubstitution()
     {
@@ -559,6 +586,7 @@ public:
     void setSliderType(SliderType ){};
     
     int texID;
+    QStringList channelList;
 
 public slots:
 
@@ -568,16 +596,18 @@ signals:
 protected slots:
 
     void textChanged(const QString& text);
+    void channelChanged(const QString& text);
 
     void buttonClicked();
 
 private:
 
     QComboBox* comboBox;
-    QComboBox* channelComboBox;
+    QComboBox* channelComboBox[4];
     QPushButton* pushButton;
     FileManager* fileManager;
     QString defaultValue;
+    QStringList defaultChannelValue;
 };
 
 class iSamplerWidget : public SamplerWidget
@@ -585,7 +615,7 @@ class iSamplerWidget : public SamplerWidget
     Q_OBJECT
 public:
     iSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue );
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
 
 signals:
 
@@ -600,7 +630,7 @@ class uSamplerWidget : public SamplerWidget
     Q_OBJECT
 public:
     uSamplerWidget ( FileManager *fileManager, QWidget *parent,
-                    QWidget *variableEditor, QString name, QString defaultValue );
+                    QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValue="" );
 
 signals:
 

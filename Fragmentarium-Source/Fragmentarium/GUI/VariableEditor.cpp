@@ -607,7 +607,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     } else if (dynamic_cast<Parser::SamplerParameter *>(p) != nullptr) {
         auto *sp = dynamic_cast<Parser::SamplerParameter *>(p);
         QString name = sp->getName();
-        SamplerWidget *sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue());
+        SamplerWidget *sw = new SamplerWidget(mainWindow->getFileManager(), currentWidget, this, name, sp->getDefaultValue(), sp->getDefaultChannelValue());
         sw->setToolTip(sp->getTooltip());
 //                 sw->setStatusTip(sp->getTooltip());
         sw->setGroup(sp->getGroup());
