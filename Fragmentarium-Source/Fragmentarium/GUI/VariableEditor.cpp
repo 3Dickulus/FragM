@@ -611,7 +611,7 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         sw->setToolTip(sp->getTooltip());
 //                 sw->setStatusTip(sp->getTooltip());
         sw->setGroup(sp->getGroup());
-        sw->setDefaultLockType(Parser::AlwaysLocked);
+        sw->setDefaultLockType(sp->getLockType());
         sw->setUpdated(true);
         variables.append(sw);
         currentWidget->layout()->addWidget(sw);
