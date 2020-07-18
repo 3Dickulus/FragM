@@ -764,11 +764,11 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
         connect(channelComboBox[channel], SIGNAL(currentTextChanged(const QString &)), this, SLOT(channelChanged(const QString &)));
     }
 
-    pushButton = new QPushButton("...", parent);
-    l->addWidget(pushButton);
-    pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    toolButton = new QToolButton(parent);
+    toolButton->setText("...");
+    l->addWidget(toolButton);
+    connect(toolButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
     connect(comboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(textChanged(const QString &)));
-    connect(pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
     textChanged(defaultValue); // updates channel combo boxes list of items (and visibility) from EXR file contents
 
     // select channel combo box items from widget specification

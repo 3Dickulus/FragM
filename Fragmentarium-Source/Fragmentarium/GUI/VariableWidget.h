@@ -604,7 +604,7 @@ private:
 
     QComboBox* comboBox;
     QComboBox* channelComboBox[4];
-    QPushButton* pushButton;
+    QToolButton* toolButton;
     FileManager* fileManager;
     QString defaultValue;
     QStringList defaultChannelValue;
