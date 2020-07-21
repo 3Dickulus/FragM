@@ -845,6 +845,7 @@ void SamplerWidget::textChanged(const QString &text)
             // maybe the file disappeared between resolving and opening?
             // ignore? no, emit warning and return
             WARNING(tr("Read channel list from %1 FAILED!").arg(fileName));
+            return;
         }
 
         if(channelList.size() != 4) {            // file does not have 4 channels
