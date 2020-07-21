@@ -808,6 +808,8 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             channelCount++;
         }
 
+        if(channelCount == 0) return false; // uhoh :(
+
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
@@ -832,7 +834,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         int sliceCopyFrom[4] = { -1, -1, -1, -1 };
         for (int channel = 0; channel < 4; ++channel) {
             sliceChannel[channel] = textureChannels[channel];
-            bool copySlice = false;
             for (int earlierChannel = 0; earlierChannel < channel; ++ earlierChannel) {
                 if (sliceChannel[earlierChannel] == sliceChannel[channel]) {
                     sliceCopyFrom[channel] = earlierChannel;
@@ -847,17 +848,19 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
 
         size_t xs = 1 * sizeof (RGBAFLOAT);
         size_t ys = w * sizeof (RGBAFLOAT);
+
         Array2D<RGBAFLOAT>pixels ( w, h );
         RGBAFLOAT *base = &pixels[0][0] - dw.min.x - dw.min.y * w;
         FrameBuffer fb;
+
         int sliceCount = 0;
-        float def = 1.0; // 0.0f/0.0f; // NaN
+
         for (int channel = 0; channel < 4; ++channel) {
             // OpenEXR aborts if the slice channel name is empty
             if (sliceCopyFrom[channel] == -1 && ! sliceChannel[channel].isEmpty()) {
                 char *ptr = (char *) (&base[0].r + channel);
                 fb.insert(sliceChannel[channel].toStdString(),
-                  Slice(Imf::FLOAT, ptr, xs, ys, 1, 1, def));
+                  Slice(Imf::FLOAT, ptr, xs, ys, 1, 1, channel < 3 ? 0 : 1));
                 sliceCount++;
             }
         }
@@ -868,9 +871,8 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         }
         
         for (int channel = 0; channel < 4; ++channel) {
-            int earlierChannel = sliceCopyFrom[channel];
             if (sliceChannel[channel].isEmpty()) {
-                float src_val = def;
+                float src_val = channel < 3 ? 0 : 1;
                 float *dst_ptr = &base[0].r + channel;
                 for (int y = 0; y < h; ++y) {
                     for (int x = 0; x < w; ++x) {
@@ -878,8 +880,8 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
                         dst_ptr[k] = src_val;
                     }
                 }
-            } else if (earlierChannel != -1) {
-                float *src_ptr = &base[0].r + earlierChannel;
+            } else if (sliceCopyFrom[channel] != -1) {
+                float *src_ptr = &base[0].r + sliceCopyFrom[channel];
                 float *dst_ptr = &base[0].r + channel;
                 for (int y = 0; y < h; ++y) {
                     for (int x = 0; x < w; ++x) {

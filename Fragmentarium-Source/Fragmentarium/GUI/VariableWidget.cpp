@@ -721,20 +721,9 @@ void IntWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
 SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget *variableEditor, QString name, QString defaultValue, QString defaultChannelValueString)
     : VariableWidget(parent, variableEditor, name), fileManager(fileManager), defaultValue(defaultValue)
 {
-    // process EXR channel list as set in .frag source widget specification
-    QStringList defaultDefaultChannelValues = QString("R;G;B;A").split(";");
-    QStringList samplerDefaultChannelValues = defaultChannelValueString.split(";");
-    defaultChannelValue = QStringList();
-    for (int channel = 0; channel < 4; ++channel) {
-        if (channel < samplerDefaultChannelValues.size() && ! samplerDefaultChannelValues[channel].isEmpty()) {
-            defaultChannelValue += samplerDefaultChannelValues[channel];
-        } else {
-            defaultChannelValue += defaultDefaultChannelValues[channel];
-        }
-    }
-    // better to crash now knowing why than in later code unpredictably
-    // but if the code above is correct the assertion should never fail
-    assert(defaultChannelValue.size() == 4);
+    defaultChannelValue = defaultChannelValueString.split(";");
+
+    // hard coded for 4 channels so no adjustments required just setup the buttons here
 
     auto *l = new QHBoxLayout(widget);
     l->setSpacing(2);
@@ -768,15 +757,18 @@ SamplerWidget::SamplerWidget(FileManager *fileManager, QWidget *parent, QWidget 
     toolButton->setText("...");
     l->addWidget(toolButton);
     connect(toolButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
+
     connect(comboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(textChanged(const QString &)));
-    textChanged(defaultValue); // updates channel combo boxes list of items (and visibility) from EXR file contents
 
-    // select channel combo box items from widget specification
-    for (int channel = 0; channel < 4; ++channel) {
-        channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
-    }
-
+    // new widget has no ID until texture file is loaded re: SamplerWidget::setUserUniform()
+    // internal texture ID 0 is reserved for the backbuffer
     texID=0;
+
+    // updates channel combo boxes list of items (and visibility) from EXR file contents
+    // the use of connect() causes a call to textChanged() as soon as the filename gets set
+    // will adjust the default channel list and setting if defaultChannelValue is empty
+    // this all happens before the file is loaded and bound to a texture
+   textChanged(defaultValue);
 }
 
 int SamplerWidget::hasChannel(int channel, QString chan)
@@ -804,15 +796,10 @@ void SamplerWidget::channelChanged(const QString &text)
     
     if(getValue().endsWith(".exr") && !text.isEmpty()) {
         
-        bool check = true;
-        
-            if(!channelList.contains(text)) {
-                check=false;
-                WARNING("Channel " + text + " not found!");
-            }
-//             else DBOUT << channelComboBox->currentIndex();
-
-        if(check) {
+        if(!channelList.contains(text)) {
+            WARNING("Channel " + text + " not found!");
+        } else {
+            // DBOUT << channelComboBox->currentIndex();
             valueChanged();
         }
     }
@@ -836,7 +823,7 @@ void SamplerWidget::textChanged(const QString &text)
     } catch (SyntopiaCore::Exceptions::Exception &) {
         // ignore (an empty fileName is fine as it does not end in .exr)
     }
-
+    // hide all channel boxes
     for (int channel = 0; channel < 4; ++channel) {
         channelComboBox[channel]->clear();
         channelComboBox[channel]->setHidden(true);
@@ -851,21 +838,39 @@ void SamplerWidget::textChanged(const QString &text)
                 const ChannelList &channels = file.header().channels();
                 for (ChannelList::ConstIterator i = channels.begin(); i != channels.end(); ++i)
                 {
-                    channelList += i.name();
-                }
-                for (int channel = 0; channel < 4; ++channel) {
-                    channelComboBox[channel]->addItems(channelList);
-                    channelComboBox[channel]->setCurrentText(defaultChannelValue[channel]);
-                    channelComboBox[channel]->setHidden(false);
+                    channelList << i.name();
                 }
             }
         } catch (...) {
             // maybe the file disappeared between resolving and opening?
-            // ignore
+            // ignore? no, emit warning and return
+            WARNING(tr("Read channel list from %1 FAILED!").arg(fileName));
+        }
+
+        if(channelList.size() != 4) {            // file does not have 4 channels
+            // this could also check for some "known" file layouts and set default channels accordingly
+            // Y[U|V] RGB[A]|[Z|D|DEPTH]
+            if(channelList.size() == 1) {
+                channelList << "";
+            }
+            if(channelList.size() == 2) {
+                channelList << "";
+            }
+            if(channelList.size() == 3) {
+                channelList << "";
+            }
+            // now channelList.size() == 4 some are blanks
+        }
+        
+        // reveal the channel boxes
+        for (int channel = 0; channel < 4; ++channel) {
+            channelComboBox[channel]->addItems(channelList);
+            channelComboBox[channel]->setCurrentText(channelList[channel]);
+            channelComboBox[channel]->setHidden(false);
         }
     }
 #endif
-    //emit changed();
+
     valueChanged();
 }
 

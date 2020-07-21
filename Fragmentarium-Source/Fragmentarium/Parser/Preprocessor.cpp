@@ -457,7 +457,7 @@ void Preprocessor::parseSampler2DChannel(FragmentSource *fs, int i, QString file
         CRITICAL(e.getMessage());
     }
     if (QFileInfo(fileName).isFile()) {
-        INFO("Added texture: " + name + " -> " + fileName + " using channel:" + channelName);
+        INFO("Added texture: " + name + " -> " + fileName + " using channels: " + channelName);
     }
     fs->textures[name] = fileName;
     SamplerParameter *sp = new SamplerParameter(currentGroup, name, lastComment, fileName, channelName);
