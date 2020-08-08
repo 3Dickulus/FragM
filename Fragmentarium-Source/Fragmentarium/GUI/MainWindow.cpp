@@ -1666,7 +1666,7 @@ retry:
         timeSteps = endTime;
     }
 
-    int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
+    int totalSteps= (endTime-startTime)*maxTiles*maxTiles*maxSubframes;
     int steps = startTime*maxTiles*maxTiles*maxSubframes;
 
     engine->tileAVG = 0;
