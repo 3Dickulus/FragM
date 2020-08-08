@@ -259,13 +259,17 @@ void EasingWindow::overshootChanged(double value)
 void EasingWindow::startChanged(double v)
 {
     startVal = v;
+    m_ui.valueRangeSlider->blockSignals(true);
     m_ui.valueRangeSlider->setRange(QPair<double, double>(startVal, finishVal));
+    m_ui.valueRangeSlider->blockSignals(false);
 }
 
 void EasingWindow::finishChanged(double v)
 {
     finishVal = v;
+    m_ui.valueRangeSlider->blockSignals(true);
     m_ui.valueRangeSlider->setRange(QPair<double, double>(startVal, finishVal));
+    m_ui.valueRangeSlider->blockSignals(false);
 }
 
 void EasingWindow::firstChanged(int f)
