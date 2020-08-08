@@ -808,8 +808,11 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             channelCount++;
         }
 
-        if(channelCount == 0) return false; // uhoh :(
-
+        if(channelCount == 0) { 
+            WARNING(tr("Exrloader found no channels in EXR image: %1").arg(texturePath));
+            return false; // uhoh :(
+        }
+        
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
