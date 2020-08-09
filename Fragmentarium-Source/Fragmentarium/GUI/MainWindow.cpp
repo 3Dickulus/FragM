@@ -1770,8 +1770,8 @@ retry:
             engine->renderAVG += frametime.elapsed();
         }
         // fix for sub-set ETA
-        if(isFirst && startTime > 1) {
-            totalTime = totalTime.addMSecs( -(startTime-1)*1000 );
+        if(isFirst) {
+            totalTime = totalTime.addMSecs( -(startTime*frametime.elapsed()) );
             isFirst = false;
         }
         // Now assemble image
