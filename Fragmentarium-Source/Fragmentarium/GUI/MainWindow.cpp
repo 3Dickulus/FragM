@@ -1657,7 +1657,7 @@ retry:
         }
     }
 
-    if(startTime == endTime) {timeSteps = 1; } endTime += 1;
+    if(startTime == endTime) {timeSteps = 1; endTime += 1; }
 
     if (timeSteps==0) {
         startTime = getFrame();
@@ -1666,7 +1666,7 @@ retry:
         timeSteps = endTime;
     }
 
-    int totalSteps= (endTime-startTime)*maxTiles*maxTiles*maxSubframes;
+    int totalSteps= timeSteps*maxTiles*maxTiles*maxSubframes;
     int steps = startTime*maxTiles*maxTiles*maxSubframes;
 
     engine->tileAVG = 0;
@@ -1692,6 +1692,8 @@ retry:
 
     // create an overlay using enginePixmap as background
     engineOverlay = new QLabel();
+
+    bool isFirst = true;
 
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
@@ -1767,7 +1769,11 @@ retry:
         } else {
             engine->renderAVG += frametime.elapsed();
         }
-
+        // fix for sub-set ETA
+        if(isFirst && startTime > 1) {
+            totalTime = totalTime.addMSecs( -(startTime-1)*1000 );
+            isFirst = false;
+        }
         // Now assemble image
         if (!progress.wasCanceled() && (!exrMode || (preview && tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769))) {
             int w = cachedTileImages[0].width();

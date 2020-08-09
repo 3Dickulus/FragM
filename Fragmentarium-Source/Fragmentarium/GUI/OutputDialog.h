@@ -28,7 +28,7 @@ public:
         return m_ui.fpsSpinBox->value();
     }
     void setMaxTime(double f);
-    int getMaxTime()
+    double getMaxTime()
     {
         return m_ui.animCheckBox->isChecked() ? m_ui.endTimeSpinBox->value() : 0;
     }
