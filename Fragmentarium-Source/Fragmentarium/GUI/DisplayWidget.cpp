@@ -79,8 +79,6 @@ MessageCallback( GLenum source,
 
     std::cout << std::endl;
 }
-#endif
-#endif
 
 GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
 {
@@ -89,7 +87,7 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
     if( glDebugEnabled ) {
         while ((errorCode = glGetError()) != GL_NO_ERROR)
         {
-            std::cout << "-> " << func << "() @ line " << line << std::endl;
+            std::cout << file << " -> " << func << "() @ line " << line << std::endl;
         }
     }
     return errorCode;
@@ -97,30 +95,32 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 
 // used immediately after glFunctions() to get line numbers with gl debug output
 #define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
+#endif
+#endif
 
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     : QOpenGLWidget(parent), mainWindow(mainWin)
 {
-
     QSurfaceFormat fmt;
     fmt.setSwapInterval(0);
     fmt.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+#ifdef Q_OS_WIN
     fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
-    fmt.setRenderableType(QSurfaceFormat::OpenGL);
-#ifdef USE_OPENGL_4
-#ifndef Q_OS_LINUX
-    fmt.setVersion(4,1);
 #else
-    fmt.setVersion(4,5);
-    fmt.setDepthBufferSize(32);
-#endif
-#else
-    fmt.setVersion(3,2);
-#endif
-
-#ifdef Q_OS_MAC
     fmt.setProfile(QSurfaceFormat::CoreProfile);
 #endif
+    fmt.setRenderableType(QSurfaceFormat::OpenGL);
+#ifdef USE_OPENGL_4
+    #ifndef Q_OS_LINUX
+        fmt.setVersion(4,1); // windows and mac
+    #else
+        fmt.setVersion(4,5); // linux
+        fmt.setDepthBufferSize(32);
+    #endif
+#else
+     fmt.setVersion(3,3);
+#endif
+
     fmt.setOption(QSurfaceFormat::DeprecatedFunctions,true);
 
     setFormat(fmt);
@@ -166,7 +166,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     buttonDown = false;
     updateRefreshRate();
     glDebugEnabled = false;
-    spline_program = 0;
+    spline_program = nullptr;
     tileImage = nullptr;
     svao=0;
     svbo=0;
@@ -183,22 +183,63 @@ void DisplayWidget::initializeGL()
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
+    float ver = QString("%1.%2").arg(format().majorVersion()).arg(format().minorVersion()).toFloat();
+
 #ifdef Q_OS_LINUX
 #ifdef USE_OPENGL_4
+#ifdef GL_DEBUG_OUTPUT
     // Enable debug output
     QSettings settings;
     if( settings.value("enableGLDebug").toBool() ) {
         glDebugEnabled = true;
         glEnable ( GL_DEBUG_OUTPUT );
         glEnable ( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-        glDebugMessageCallback( MessageCallback, nullptr );
+        if(ver >= 4.5) {
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+            glDebugMessageCallback( MessageCallback, nullptr );
+        }
     }
 #endif
 #endif
+#endif
     compatibilityProfile = format().profile() == QSurfaceFormat::CompatibilityProfile;
-}
 
+    glslvers.clear();
+
+#ifdef USE_OPENGL_4
+    if(ver >= 4.3) { // query the GL to figure it out 
+        int max = 0;
+        glGetIntegerv(GL_NUM_SHADING_LANGUAGE_VERSIONS, &max);
+
+        while(max--){
+            QString v = (char *)glGetStringi(GL_SHADING_LANGUAGE_VERSION, max);
+            if(v.contains("compatibility")) {
+                max--;
+                v = (char *)glGetStringi(GL_SHADING_LANGUAGE_VERSION, max);
+            }
+            if(v.contains("core")) v.chop(5);
+            glslvers << v;
+        }
+        glslvers.removeFirst(); // it's empty
+    } else
+#endif
+    { // figure it out from the GL version ??
+        glslvers << "100";
+        if(ver >= 2.0) glslvers << "110";
+        if(ver >= 2.1) glslvers << "120";
+        if(ver >= 3.0) glslvers << "130";
+        if(ver >= 3.1) glslvers << "140";
+        if(ver >= 3.2) glslvers << "150";
+        if(ver >= 3.29) glslvers << "300 es" << "310 es" << "320 es" << "330";
+        if(ver >= 4.0) glslvers << "400";
+        if(ver >= 4.1) glslvers << "410";
+        if(ver >= 4.2) glslvers << "420";
+        if(ver >= 4.3) glslvers << "430";
+        if(ver >= 4.4) glslvers << "440";
+        if(ver >= 4.5) glslvers << "450";
+        if(ver == 4.6) glslvers << "460";
+    }
+}
 void DisplayWidget::updateRefreshRate()
 {
 
@@ -650,8 +691,19 @@ void DisplayWidget::initFragmentShader()
 
     makeCurrent();
 
-    shaderProgram = new QOpenGLShaderProgram ( context() );
+    shaderProgram = new QOpenGLShaderProgram ( this );
+    
+    if(settings.value ( "compatPatch", true ).toBool()) {
+        // patch
+        if(!(fragmentSource.vertexSource[1].contains("compatibility patch"))) {
+                fragmentSource.vertexSource.insert(1,fvSourcePatch);
+        }
 
+        if(!(fragmentSource.source[1].contains("compatibility patch"))) {
+                fragmentSource.source.insert(1,fsSourcePatch);
+        }
+    }
+    
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
     if ( fragmentSource.vertexSource.count() == 0 ) {
@@ -690,7 +742,7 @@ void DisplayWidget::initFragmentShader()
     s = shaderProgram->link();
 
     if ( !s ) {
-        WARNING ( tr("Could not link buffershader: ") );
+        WARNING ( tr("Could not link shader: ") );
         CRITICAL ( shaderProgram->log() );
         delete ( shaderProgram );
         shaderProgram = nullptr;
@@ -709,10 +761,9 @@ void DisplayWidget::initFragmentShader()
         return;
     }
     
-    if(!compatibilityProfile) {
-        glm::mat4 identityMatrix = glm::mat4(1);
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
-    }
+    
+    glm::mat4 identityMatrix = glm::mat4(1);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
@@ -726,7 +777,7 @@ void DisplayWidget::initFragmentShader()
               if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
-              shaderProgram->setUniformValue ( l, ( GLuint ) 0 );
+              shaderProgram->setUniformValue ( l, 0 );
         }
     } else {
         WARNING ( tr("Trying to use a backbuffer, but no bufferType set.") );
@@ -736,6 +787,10 @@ void DisplayWidget::initFragmentShader()
     if (fragmentSource.textures.count() != 0) {
         initFragmentTextures();
     }
+    shaderProgram->release();
+    // and should initialize spline shader just in case GLSL version has changed
+    if(!mainWindow->scriptRunning() && hasKeyFrames) init_spline_shader();
+    
 }
 
 /*
@@ -751,7 +806,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 {
 
     HDRLoaderResult result;
-    bool loaded = HDRLoader::load ( texturePath.toStdString().c_str(), result );
+    bool loaded = HDRLoader::load ( texturePath.toLocal8Bit().data(), result );
 
     if ( loaded ) {
         glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
@@ -794,7 +849,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
     // Qt loads EXR files
     return loadQtTexture(texturePath, type, textureID);
 #else
-    InputFile file ( texturePath.toLatin1().data() );
+    InputFile file ( texturePath.toLocal8Bit().data() );
     Box2i dw = file.header().dataWindow();
 
     if ( file.isComplete() ) {
@@ -1022,7 +1077,7 @@ void DisplayWidget::initFragmentTextures()
                 // bugfix for textures by claude #104 index vs location
                 GLuint idx;
                 // get a pointer to the char array in QString
-                GLchar *oneName = textureUniformName.toLatin1().data();
+                GLchar *oneName = textureUniformName.toLocal8Bit().data();
                 // returns index of "oneName" in idx;
                 glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx);
                 // use idx to acquire more info about this uniform
@@ -1133,8 +1188,21 @@ void DisplayWidget::initBufferShader()
     if (fragmentSource.bufferShaderSource == nullptr) {
         return;
     }
+    
+    QSettings settings;
 
     bufferShaderProgram = new QOpenGLShaderProgram ( this );
+
+    if(settings.value ( "compatPatch", true ).toBool()) {
+        // patch
+        if(!(fragmentSource.bufferShaderSource->vertexSource[1].contains("compatibility patch"))) {
+            fragmentSource.bufferShaderSource->vertexSource.insert(1,fvSourcePatch);
+        }
+        
+        if(!(fragmentSource.bufferShaderSource->source[1].contains("compatibility patch"))) {
+            fragmentSource.bufferShaderSource->source.insert(1, fsSourcePatch);
+        }
+    }
 
     // Vertex shader
     bool s = bufferShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.bufferShaderSource->vertexSource.join("\n"));
@@ -1191,10 +1259,8 @@ void DisplayWidget::initBufferShader()
         return;
     }
     
-    if(!compatibilityProfile) {
-        glm::mat4 identityMatrix = glm::mat4(1);
-        glUniformMatrix4fv(glGetUniformLocation(bufferShaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
-    }
+    glm::mat4 identityMatrix = glm::mat4(1);
+    glUniformMatrix4fv(glGetUniformLocation(bufferShaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     bufferUniformsHaveChanged = false;
 }
@@ -1650,23 +1716,16 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // The projection mode as used here
     // allow us to render only a region of the viewport.
     // This allows us to perform tile based rendering.
-    if(compatibilityProfile) glMatrixMode ( GL_PROJECTION );
+    // before releasing the program set the projection matrix back to identity
+    glm::mat4 identityMatrix = glm::mat4(1);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     if ( getState() == DisplayWidget::Tiled ) {
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
-
-        if( compatibilityProfile || (format().majorVersion() == 2 || format().majorVersion() == 3) ) {
-            // only available in GL > 2.0 < 3.2 and compatibility profile
-            glLoadIdentity();
-            glTranslated ( x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0 );
-            glScaled ( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles,1.0 );
-        } else {
-            glm::mat4 transmatrix = glm::translate(glm::mat4(1.0), glm::vec3(x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0) );
-            glm::mat4 scalematrix = glm::scale(transmatrix, glm::vec3( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles, 1.0) );
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
-        }
-
+        glm::mat4 transmatrix = glm::translate(glm::mat4(1.0), glm::vec3(x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0) );
+        glm::mat4 scalematrix = glm::scale(transmatrix, glm::vec3( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles, 1.0) );
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -1679,9 +1738,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         setShaderUniforms(shaderProgram);
     }
 
-    // save current state
-    if(compatibilityProfile) glPushAttrib ( GL_ALL_ATTRIB_BITS );
-
     glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
     glEnable ( GL_DEPTH_TEST );  // enable depth testing
     glDepthMask ( GL_TRUE );     // enable depth buffer writing
@@ -1692,15 +1748,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 	glDrawArrays( GL_TRIANGLES, 0, 3 ); // shader draws on this surface
 
-    // restore state
-    if(compatibilityProfile) glPopAttrib();
     glFinish(); // wait for GPU to return control
-
-    // before releasing the program set the projection matrix back to identity
-    if(!compatibilityProfile) {
-        glm::mat4 identityMatrix = glm::mat4(1);
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
-    }
 
     // finished with the shader
     shaderProgram->release();
@@ -1806,14 +1854,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else shaderProgram->bind();
 
-    if(compatibilityProfile) {
-        glPushAttrib ( GL_ALL_ATTRIB_BITS );
-        glMatrixMode ( GL_PROJECTION );
-        glLoadIdentity();
-        glMatrixMode ( GL_MODELVIEW );
-        glLoadIdentity();
-    }
-    
     setViewPort ( pixelWidth(),pixelHeight() );
 
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
@@ -1821,8 +1861,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-    if(compatibilityProfile) glEnable ( GL_TEXTURE_2D );
 
     glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
     glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
@@ -1833,7 +1871,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
 
-    if(compatibilityProfile) glPopAttrib();
     glFinish(); // wait for GPU to return control
 
     if (bufferShaderProgram != nullptr) {
@@ -2453,35 +2490,18 @@ void DisplayWidget::drawLookatVector()
     int start = mainWindow->getVariableEditor()->getKeyFrameCount() * 2;
     int count = mainWindow->getFrameMax();
 
-    if(spline_program != 0) {
-        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+    if(spline_program != nullptr) {
+        spline_program->bind();
+        GLint cloc = glGetUniformLocation(spline_program->programId(), "vertex_colour");
+        glUniform1f(glGetUniformLocation(spline_program->programId(), "pointRadius"), 3 );
 
-        glUseProgram(spline_program);
-        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), 3 );
-
-        // test if core and set color accordingly
-        if(cloc != -1 && !compatibilityProfile)
-            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-        else
-            glColor4f ( 1.0, 1.0, 0.0, 1.0 );
-        // highlight the path position
+        if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+        // highlight the source position
         glDrawArrays(GL_POINTS, start+currentframe+1, 1 );
-        // test if core and set color accordingly
-        if(cloc != -1 && !compatibilityProfile)
-            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-        else
-            glColor4f ( 1.0, 1.0, 0.0, 1.0 );
-        // highlight the path position
+        if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+        // highlight the target position
         glDrawArrays(GL_POINTS, start+count+currentframe+1, 1 );
-        glUseProgram(0);
-    }
-
-    if(compatibilityProfile) {
-        glColor4f ( 1.0,1.0,0.0,1.0 );
-        glBegin ( GL_LINE_STRIP );
-        glVertex3f ( ec.x,ec.y,ec.z );
-        glVertex3f ( tc.x,tc.y,tc.z );
-        glEnd();
+        spline_program->release();
     }
 }
 
@@ -2508,9 +2528,6 @@ void DisplayWidget::setPerspective()
     glm::mat4 modelMatrix = glm::mat4(1); // identity
     m_pvmMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
-    if(compatibilityProfile) {
-        glLoadMatrixf ( glm::value_ptr(m_pvmMatrix) );
-    }
 }
 
 QStringList DisplayWidget::getCurveSettings()
@@ -2536,8 +2553,8 @@ void DisplayWidget::drawSplines()
         glDepthFunc ( GL_LESS );  // closer to eye passes test
     }
 
-    render_array(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
-    render_array(mainWindow->getFrameMax(), 1.0);
+    render_splines(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
+    render_splines(mainWindow->getFrameMax(), 1.0);
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
@@ -2562,7 +2579,6 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
             targetSpline->setSplineColor( QColor("blue"));
             targetSpline->setControlColor( QColor("green"));
             
-            init_shader(pixelHeight(),pixelWidth());
             init_arrays();
         }
     }
@@ -2629,10 +2645,10 @@ void DisplayWidget::init_arrays()
 
 // XYZ vectors @ control points aligned to upSpline vector
 // option to show vectors for all points vs controlpoints (keyframes) only
-void DisplayWidget::render_array(int number, double psize)
+void DisplayWidget::render_splines(int number, double psize)
 {
-    if(spline_program!=0) {
-
+    if(spline_program != nullptr) {
+        
         // create the VAO.
         glGenVertexArrays( 1, &svao );
         glBindVertexArray( svao );
@@ -2640,7 +2656,7 @@ void DisplayWidget::render_array(int number, double psize)
         glEnableVertexAttribArray( 0 );
         glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
 
-        GLint cloc = glGetUniformLocation(spline_program, "vertex_colour");
+        GLint cloc = glGetUniformLocation(spline_program->programId(), "vertex_colour");
             
         // control point to highlight = currently selected preset keyframe
         int p = mainWindow->getCurrentCtrlPoint()-1;
@@ -2664,27 +2680,25 @@ void DisplayWidget::render_array(int number, double psize)
         
         glPointSize(psize);
 
-        glUseProgram(spline_program);
-        glUniform1f(glGetUniformLocation(spline_program, "pointScale"), pixel_scale);
-        glUniform1f(glGetUniformLocation(spline_program, "pointRadius"), psize );
+        spline_program->bind();
+
+        glUniform1f(spline_program->uniformLocation("pointScale"), pixel_scale);
+        glUniform1f(spline_program->uniformLocation("pointRadius"), psize );
 
         glm::vec3 eye = mainWindow->getParameter3f("Eye");
-        glUniform3f(glGetUniformLocation(spline_program, "posEye"), eye.x, eye.y, eye.z );
+        glUniform3f(spline_program->uniformLocation("posEye"), eye.x, eye.y, eye.z );
         float fov = mainWindow->getParameter1f("FOV");
-        glUniform1f(glGetUniformLocation(spline_program, "FOV"), fov );
+        glUniform1f(spline_program->uniformLocation("FOV"), fov );
 
-        if(!compatibilityProfile) {
-            glUniformMatrix4fv(glGetUniformLocation(spline_program, "pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix));
-        }
+        glUniformMatrix4fv(spline_program->uniformLocation("pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix));
 
         // specify vertex arrays
         glBindVertexArray( svao );
-
         
         if(number == start ) {
             count = start; 
-            start=0;}
-
+            start=0;
+        }
 
         if(start == 0) { // drawing control points one at a time
 
@@ -2693,16 +2707,10 @@ void DisplayWidget::render_array(int number, double psize)
             for(int i=0;i<count;++i) {
                 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    if(cloc != -1 && !compatibilityProfile)
-                        glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-                    else
-                        glColor4f ( 1.0, 1.0, 0.0, 1.0 );
+                    if(cloc != -1 ) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
                 }
                 else {
-                   if(cloc != -1 && !compatibilityProfile)
-                        glUniform4f(cloc, c.x, c.y, c.z, 1.0);
-                    else
-                        glColor4f ( c.x, c.y, c.z, 1.0 );
+                   if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
                 }
                 
                 glDrawArrays(GL_POINTS, i, 1 );
@@ -2714,16 +2722,10 @@ void DisplayWidget::render_array(int number, double psize)
             for(int i=0;i<count;++i) {
 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    if(cloc != -1 && !compatibilityProfile)
-                        glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-                    else
-                        glColor4f ( 1.0, 1.0, 0.0, 1.0  );
+                    if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
                 }
                 else {
-                    if(cloc != -1 && !compatibilityProfile)
-                        glUniform4f(cloc, c.x, c.y, c.z, 1.0);
-                    else
-                        glColor4f ( c.x, c.y, c.z, 1.0  );
+                    if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
                 }
 
                 glDrawArrays(GL_POINTS, start+i, 1 );
@@ -2734,22 +2736,15 @@ void DisplayWidget::render_array(int number, double psize)
             start *= 2;
             // get the spline color
             glm::vec4 c = eyeSpline->splineColor();
-            // test if core and set color accordingly
-            if(cloc != -1 && !compatibilityProfile)
-                glUniform4f(cloc, c.x, c.y, c.z, 1.0);
-            else
-                glColor4f ( c.x, c.y, c.z, 1.0  );
+
+            if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             // render the camera path
             glDrawArrays(GL_POINTS, start, count );
             // skip the control points and camera path points
             start = start+count; 
             // get the spline color
             c = targetSpline->splineColor();
-            // test if core and set color accordingly
-            if(cloc != -1 && !compatibilityProfile)
-                glUniform4f(cloc, c.x, c.y, c.z, 1.0);
-            else
-                glColor4f ( c.x, c.y, c.z, 1.0  );
+            if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             // render the target path
             glDrawArrays(GL_POINTS, start, count );
             
@@ -2757,88 +2752,113 @@ void DisplayWidget::render_array(int number, double psize)
         // disable arrays
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        glUseProgram(0);
+        spline_program->release();
     }
 }
 
-uint DisplayWidget::compile_shader(const char *vsource, const char *fsource)
+uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsource)
 {
-
-    GLuint program = glCreateProgram();
-
-    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource( vShader, 1, &vsource, 0);
-    glCompileShader( vShader );
-	// check for compile errors
-	int params = -1;
-	glGetShaderiv( vShader, GL_COMPILE_STATUS, &params );
-	if ( GL_TRUE != params ) {
-		std::cerr << "ERROR: Spline vshader index " << vShader << " did not compile!" << std::endl;
-        {
-            int max_length = 2048;
-            int actual_length = 0;
-            char log[2048];
-            glGetShaderInfoLog( vShader, max_length, &actual_length, log );
-            std::cerr << "shader info log for GL index " << vShader << std::endl << log << std::endl;
-        }
-        return 0;
-	}
-    glAttachShader(program, vShader );
+    if (spline_program != nullptr) {
+        spline_program->release();
+        delete ( spline_program );
+        spline_program = nullptr;
+    }
     
-    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource( fShader, 1, &fsource, 0);
-    glCompileShader( fShader );
-	// check for compile errors
-	params = -1;
-	glGetShaderiv( fShader, GL_COMPILE_STATUS, &params );
-	if ( GL_TRUE != params ) {
-		std::cerr << "ERROR: Spline fshader index " << fShader << " did not compile!" << std::endl;
-        {
-            int max_length = 2048;
-            int actual_length = 0;
-            char log[2048];
-            glGetShaderInfoLog( fShader, max_length, &actual_length, log );
-            std::cerr << "shader info log for GL index " << fShader << std::endl << log << std::endl;
-        }
-        return 0;
-	}
-    glAttachShader(program, fShader );
-
-    glLinkProgram(program);
-
-    // check if program linked
-    GLint success = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-
-    if (!success)
-    {
-        char temp[512];
-        glGetProgramInfoLog(program, 512, 0, temp);
-        std::cerr << "Failed to link spline shader program:" << temp << std::endl;
-        glDeleteProgram(program);
+    makeCurrent();
+    
+    spline_program = new QOpenGLShaderProgram ( this );
+    
+    // Vertex shader
+    bool s = spline_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vsource);
+    if ( fragmentSource.vertexSource.count() == 0 ) {
+        WARNING ( tr("No vertex shader found!") );
+        s = false;
+    }
+    
+    if ( !s ) {
+        createErrorLineLog( tr("Could not create vertex shader: "), spline_program->log(), WarningLevel, false );
+        delete ( spline_program );
+        spline_program = nullptr;
         return 0;
     }
-
-    return program;
+    if (!spline_program->log().isEmpty()) {
+        createErrorLineLog( tr("Vertex shader compiled with warnings: "), spline_program->log(), InfoLevel ,false );
+    }
+    
+    // Fragment shader
+    s = spline_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fsource);
+    
+    if (s) { // Requests the shader program's id to be created immediately.
+        s = spline_program->create();
+    }
+    
+    if ( !s ) {
+        createErrorLineLog( tr("Could not create fragment shader: "), spline_program->log(), WarningLevel, false );
+        delete ( spline_program );
+        spline_program = nullptr;
+        return 0;
+    }
+    
+    if (!spline_program->log().isEmpty()) {
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), spline_program->log(), InfoLevel, false );
+    }
+    
+    s = spline_program->link();
+    
+    if ( !s ) {
+        WARNING ( tr("Could not link shader: ") );
+        CRITICAL ( spline_program->log() );
+        delete ( spline_program );
+        spline_program = nullptr;
+        return 0;
+    }
+    
+    if (!spline_program->log().isEmpty()) {
+        createErrorLineLog( tr("Fragment shader compiled with warnings: "), spline_program->log(), InfoLevel, false );
+    }
+    
+    s = spline_program->bind();
+    if ( !s ) {
+        WARNING ( tr("Could not bind shaders: ") + spline_program->log() );
+        delete ( spline_program );
+        spline_program = nullptr;
+        return 0;
+    }
+    return spline_program->programId();
 }
 
-void DisplayWidget::init_shader( int h, int w )
+void DisplayWidget::init_spline_shader()
 {
-    // only need to do this once?
     pixel_scale = 10;
-    const char *vs, *ps;
-    if(compatibilityProfile) {   // use legacy shader
-        vs = vertexShader;
-        ps = spherePixelShader;
-    } else {                    // use modern shader
-            if(fragmentSource.source[0].contains("#version")) {
-                vertexShader4.replace(QString("#version 450 core"),fragmentSource.source[0]);
-                spherePixelShader4.replace(QString("#version 450 core"),fragmentSource.source[0]);
-            }
-        vs = vertexShader4.toLatin1();
-        ps = spherePixelShader4.toLatin1();
+    // if user specifies GLSL version add it to spline shaders
+    if(fragmentSource.source[0].startsWith("#version")) {
+        int vers = fragmentSource.source[0].split(" ").at(1).toInt();
+        
+        QStringList tmp = vertexShader4.split("\n");
+        if(vers > 120) { // sync version statement
+            tmp[0] = fragmentSource.source[0];
+        }
+        vertexShader4 = tmp.join("\n");
+        
+        tmp = spherePixelShader4.split("\n");
+        if(vers > 120) { // sync version statement
+            tmp[0] = fragmentSource.source[0];
+        }
+        spherePixelShader4 = tmp.join("\n");
     }
-    spline_program = compile_shader(vs, ps);
+    else
+    {
+        QStringList tmp = vertexShader4.split("\n");
+        tmp[0]=QString("#version 120");
+        vertexShader4 = tmp.join('\n');
+
+        tmp = spherePixelShader4.split("\n");
+        tmp[0]=QString("#version 120");
+        spherePixelShader4 = tmp.join("\n");
+    }
+    
+    if(compile_shader(vertexShader4, spherePixelShader4) == 0) WARNING(tr("Spline pixel shader failed!"));
+    
 }
 
 } // namespace GUI

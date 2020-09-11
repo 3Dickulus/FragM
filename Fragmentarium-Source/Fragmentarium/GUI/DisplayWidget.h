@@ -15,6 +15,7 @@
 #include <QOpenGLFunctions_1_3>
 #include <QOpenGLFunctions_1_4>
 #include <QOpenGLFunctions_1_5>
+
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_2_1>
 
@@ -103,11 +104,15 @@ class CameraControl;
 #ifdef Q_OS_MAC
 class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions
 #else
-#ifdef USE_OPENGL_4
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility
-#else
-class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Compatibility
-#endif
+    #ifdef USE_OPENGL_4
+        #ifdef Q_OS_WIN
+        class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Compatibility
+        #else
+        class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Core
+        #endif
+    #else
+    class DisplayWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
+    #endif
 #endif
 {
     Q_OBJECT
@@ -239,6 +244,7 @@ public:
     QString vendor;
     QString renderer;
     QString glvers;
+    QStringList glslvers;
 
     QString renderETA;
     int renderAVG;
@@ -260,8 +266,6 @@ public:
     {
         verbose = v;
     };
-
-    GLuint spline_program;
 
 public slots:
     void updateBuffers();
@@ -295,8 +299,11 @@ public slots:
         return cameraControl->getID();
     }
     
-    bool isCompat(){ return format().profile() == QSurfaceFormat::CompatibilityProfile; };
-    void useCompat(bool c){ compatibilityProfile = c; };
+    bool isCompat(){ return compatibilityProfile; };
+    void useCompat(bool c) {
+        if( format().profile() == QSurfaceFormat::CompatibilityProfile ) compatibilityProfile = c;
+        else compatibilityProfile = false;
+    };
 
 /// Spline Shaders /////////////////////////////////////////////////////////
     void delete_buffer_objects();
@@ -333,9 +340,9 @@ protected:
     void wheelEvent ( QWheelEvent *ev ) Q_DECL_OVERRIDE;
 
 /// Spline Shaders /////////////////////////////////////////////////////////
-    void render_array(int number, double psize);
-    uint compile_shader( const char* vsource, const char* fsource );
-    void init_shader( int h, int w );
+    void render_splines(int number, double psize);
+    uint compile_shader( const QString &vsource, const QString &fsource );
+    void init_spline_shader();
     double pixel_scale;
 /// Spline Shaders /////////////////////////////////////////////////////////
 
@@ -350,7 +357,8 @@ private:
     bool disableRedraw;
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
-
+    QOpenGLShaderProgram* spline_program;
+    
 /// for Main Shaders
 	GLuint vbo;
 	GLuint vao;
@@ -438,52 +446,37 @@ private:
     bool bufferShaderOnly;
     bool glDebugEnabled;
     bool compatibilityProfile;
-/// Spline Shaders /////////////////////////////////////////////////////////
-// GLSL legacy code works here for now, modern code will require adjustments
-
-#define STRINGIFY(A) #A
-// vertex shader
-const char *vertexShader = STRINGIFY(
-uniform vec3 posEye;
-uniform float FOV;
-uniform float pointRadius;  // point size in world space
-uniform float pointScale;   // scale to calculate size in pixels
-void main()
-{
-    // calculate window-space point size
-    float dist = length(posEye)*FOV;
-    gl_PointSize = pointRadius * (pointScale / dist);
-    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);
-    gl_FrontColor = gl_Color;
-}
-);
-
-const char *spherePixelShader = STRINGIFY(
-void main()
-{
-    const vec3 lightDir = vec3(0.0, 0.0, 1.0);
-
-    // calculate normal
-    vec3 N;
-    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);
-    float mag = dot(N.xy, N.xy);
-    if (mag > 1.0) discard;   // kill pixels outside circle
-    N.z = sqrt(mag);
-    // calculate lighting
-    float diffuse = max(0.0, dot(lightDir, N));
-    gl_FragColor = vec4(gl_Color.rgb, diffuse);
-}
-);
 
 glm::mat4 m_pvmMatrix;
 
-/// GL4
-// STRINGIFY does not allow #version statement
+/// Spline Shaders /////////////////////////////////////////////////////////
 QString vertexShader4 = QString("#version 410 core\n"
+"#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
+"#ifdef highp\n"
+"#undef highp\n"
+"#define highp highp\n"
+"#endif\n"
+"precision highp float;\n"
+"#endif\n"
+"#if __VERSION__ >= 330\n"
 "layout(location = 0) in vec4 vertex_position;\n"
-"uniform vec4 vertex_colour;\n"
-"out vec4 colour;\n"
+"#else\n"
+"#if __VERSION__ < 330 && __VERSION__ > 120 || GL_es_profile == 1\n"
+"in vec4 vertex_position;\n"
+"#endif\n"
+"#endif\n"
+"#if __VERSION__ <= 120 && GL_es_profile != 1\n"
+"#define vertex_position gl_Vertex\n"
+"#define pvmMatrix gl_ProjectionMatrix\n"
+"#endif\n"
+"#if __VERSION__ > 120 || GL_es_profile == 1\n"
 "uniform mat4 pvmMatrix;\n"
+"#endif\n"
+"#if __VERSION__ > 120 || GL_es_profile != 1\n"
+"#define varying out\n"
+"#endif\n"
+"varying vec4 colour;\n"
+"uniform vec4 vertex_colour;\n"
 "uniform vec3 posEye;\n"
 "uniform float FOV;\n"
 "uniform float pointRadius;\n"
@@ -496,20 +489,97 @@ QString vertexShader4 = QString("#version 410 core\n"
 "}\n");
 
 QString spherePixelShader4 = QString("#version 410 core\n"
-"in vec4 colour;\n"
-"out vec4 frag_colour;\n"
+"#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
+"#ifdef highp\n"
+"#undef highp\n"
+"#define highp highp\n"
+"#endif\n"
+"precision highp float;\n"
+"#endif\n"
+"#if __VERSION__ > 120 || GL_es_profile != 1\n"
+"#define varying in\n"
+"#endif\n"
+"#if __VERSION__ > 120\n"
+"out vec4 frag_Colour;\n"
+"#define gl_FragColor frag_Colour\n"
+"#endif\n"
+"varying vec4 colour;\n"
 "void main() {\n"
 "    const vec3 lightDir = vec3(0.0, 0.0, 1.0);\n"
 "    vec3 N;\n"
 "    N.xy = gl_PointCoord.xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);\n"
 "    float mag = dot(N.xy, N.xy);\n"
 "    if (mag > 1.0) discard;\n"
-"    N.z = sqrt(mag);\n"
-"    float diffuse = max(0.0, dot(lightDir, N));\n"
-"    frag_colour = vec4(colour.rgb, diffuse);\n"
+"    else {\n"
+"       N.z = sqrt(mag);\n"
+"       float diffuse = max(0.0, dot(lightDir, N));\n"
+"       gl_FragColor = vec4(colour.rgb, diffuse);\n"
+"    }\n"
 "}\n");
 
-/// Spline Shaders /////////////////////////////////////////////////////////
+/// End Spline Shaders ///////////////////////////////////////////////////////
+
+
+/// Shader patches /////////////////////////////////////////////////////////
+// This is some code that aims to allow the support files to be compatible
+// with all desktop GL versions and profiles.
+// Injecting this at the beginning of vertex and fragment source before
+// compile will allow the legacy frags to run under ES and CORE as well as
+// COMPATIBILITY profiles with out having to edit any existing files.
+
+// Vertex shader
+QString fvSourcePatch = "// compatibility patch\n"
+"#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
+"#ifdef highp\n"
+"#undef highp\n"
+"#define highp highp\n"
+"#endif\n"
+"precision highp float;\n"
+"#endif\n"
+"\n"
+"#if __VERSION__ >= 330\n"
+"layout(location = 0) in vec4 vertex_position;\n"
+"#else\n"
+"#if __VERSION__ < 330 && __VERSION__ > 120 || GL_es_profile == 1\n"
+"in vec4 vertex_position;\n"
+"#endif\n"
+"#endif\n"
+"\n"
+"#if __VERSION__ > 120 || GL_es_profile == 1\n"
+"#define gl_Vertex vertex_position\n"
+"uniform mat4 projectionMatrix;\n"
+"#define gl_ProjectionMatrix projectionMatrix\n"
+"#endif\n"
+"\n"
+"#if __VERSION__ > 120 || GL_es_profile != 1\n"
+"#ifdef varying\n"
+"#undef varying\n"
+"#endif\n"
+"#define varying out\n"
+"#endif\n";
+
+// Fragment shader
+QString fsSourcePatch = "// compatibility patch\n"
+"#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
+"#ifdef highp\n"
+"#undef highp\n"
+"#define highp highp\n"
+"#endif\n"
+"precision highp float;\n"
+"#endif\n"
+"\n"
+"#if __VERSION__ > 120 || GL_es_profile != 1\n"
+"#ifdef varying\n"
+"#undef varying\n"
+"#endif\n"
+"#define varying in\n"
+"#endif\n"
+"\n"
+"#if __VERSION__ > 120\n"
+"#define texture2D texture\n"
+"out vec4 fragColor;\n"
+"#define gl_FragColor fragColor\n"
+"#endif\n";
 
 };
 }

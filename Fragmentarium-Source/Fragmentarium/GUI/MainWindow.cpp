@@ -310,7 +310,6 @@ void MainWindow::open()
 void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 {
 
-
     if (ev->key() == Qt::Key_Escape) {
         toggleFullScreen();
     } else if (ev->key() == Qt::Key_Space) {
@@ -338,7 +337,7 @@ void MainWindow::bufferSpinBoxChanged(int value)
 {
     Q_UNUSED(value)
 
-    QToolTip::showText(bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
+    QToolTip::showText(pos()+bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
 }
 
 
@@ -865,7 +864,7 @@ void MainWindow::showWelcomeNote()
     QString s =
         tr("This is your first run of Fragmentarium.\nPlease read this:\n\n"
         "(1) Fragmentarium requires a decent GPU, preferably a NVIDIA or ATI discrete graphics card with recent drivers.\n\n"
-        "(2) On Windows Vista and 7, there is a built-in GPU watchdog, requiring each frame to render in less than 2 seconds. Some fragments may exceed this limit, especially on low-end graphics cards. It is possible to circumvent this, see the Fragmentarium FAQ (in the Help menu) for more information.\n\n"
+        "(2) On Windows there is a built-in GPU watchdog, requiring each frame to render in less than 2 seconds. Some fragments may exceed this limit, especially on low-end graphics cards. It is possible to circumvent this, see the Fragmentarium FAQ (in the Help menu) for more information.\n\n"
         "(3) Many examples in Fragmentarium use progressive rendering, which requires Fragmentarium to run in Continuous mode. When running in this mode, Fragmentarium uses 100% GPU power (but you may use the 'Subframe : Max' spinbox to limit the number of frames rendered. A value of zero means there is no maximum count.)\n\n");
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Information);
@@ -1409,8 +1408,6 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
 
                     int dx = (tile / maxTiles);
                     int dy = (maxTiles-1)-(tile % maxTiles);
-                    int xoff = dx*tileWidth;
-                    int yoff = dy*tileHeight;
 
                     if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
 
@@ -2514,7 +2511,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             }
             processGuiEvents();
         }
-
+    
         update();
 
         QSettings().setValue("isStarting", false);
@@ -2656,11 +2653,10 @@ bool MainWindow::initializeFragment()
 
     // Show info first...
     INFO("Vendor: " + engine->vendor + "\nRenderer: " + engine->renderer + "\nGL Driver: " + engine->glvers);
-
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();
     if (prof == 1 || prof == 2) {
-        INFO(QString("Using GL %1.%2 %3 profile").arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+        INFO(QString("Display using GL %1.%2 %3 profile").arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
     } else if (prof == 0) {
         INFO( "No GL profile." );
 //         return false;
@@ -2669,7 +2665,8 @@ bool MainWindow::initializeFragment()
         return false;
     }
 
-    INFO("");
+    INFO("\nGLSL versions: " + engine->glslvers.join(", "));
+    INFO("Shaders that do not include a #version directive will be treated as targeting GLSL version 110\n");
 
     QStringList imgFileExtensions;
 
@@ -2681,9 +2678,6 @@ bool MainWindow::initializeFragment()
         imgFileExtensions.append ( QString ( s ) );
     }
 
-    INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
-    INFO("");
-
     DisplayWidget::DrawingState oldState = engine->getState();
     bool pause = pausePlay;
     engine->setState(DisplayWidget::Progressive);
@@ -2694,6 +2688,16 @@ bool MainWindow::initializeFragment()
         INFO(tr("Not a runnable fragment."));
         return false;
     }
+    QString versionProfileLine = inputText.split("\n").at(0);
+    if ( versionProfileLine.contains("#version"))
+        INFO("Requested GLSL " + versionProfileLine.split(" ").at(1));
+    else
+        INFO("Requested GLSL 110");
+        
+    INFO("");
+    INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
+    INFO("");
+    
     QString filename = tabInfo[tabBar->currentIndex()].filename;
     QSettings settings;
     bool moveMain = settings.value("moveMain", true).toBool();
@@ -2717,7 +2721,7 @@ bool MainWindow::initializeFragment()
     // everywhere, frags that request core should work in both cases while frags
     // that rely on legacy code won't run without some editing if the engine
     // is using core only (like on OSX)
-    engine->useCompat( engine->isCompat() && !fs.source[0].contains("core") );
+    engine->useCompat( !fs.source[0].contains("core") );
 
     if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
             addToWatch( QStringList(filename) );
@@ -2729,7 +2733,7 @@ bool MainWindow::initializeFragment()
     variableEditor->substituteLockedVariables(&fs);
 
     if (fs.bufferShaderSource != nullptr) {
-            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+        variableEditor->substituteLockedVariables(fs.bufferShaderSource);
     }
 
     try {

@@ -114,6 +114,7 @@ private slots:
         m_ui.ddCameraModeCheckBox->setChecked (settings.value ( "ddCameraMode", false ).toBool() );
         m_ui.playRestartModeCheckBox->setChecked (settings.value ( "playRestartMode", false ).toBool() );
         m_ui.enableGLDebugCheckBox->setChecked (settings.value ( "enableGLDebug", false ).toBool() );
+        m_ui.compatPatchCheckBox->setChecked (settings.value ( "compatPatch", true ).toBool() );
 #ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
 #endif // USE_OPEN_EXR
@@ -148,6 +149,7 @@ private slots:
         settings.setValue("ddCameraMode", m_ui.ddCameraModeCheckBox->isChecked() );
         settings.setValue("playRestartMode", m_ui.playRestartModeCheckBox->isChecked() );
         settings.setValue("enableGLDebug", m_ui.enableGLDebugCheckBox->isChecked() );
+        settings.setValue("compatPatch", m_ui.compatPatchCheckBox->isChecked() );
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR

@@ -438,6 +438,13 @@
         </property>
        </spacer>
       </item>
+      <item row="7" column="0">
+       <widget class="QCheckBox" name="compatPatchCheckBox">
+        <property name="text">
+         <string>Apply compatibility patches</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
