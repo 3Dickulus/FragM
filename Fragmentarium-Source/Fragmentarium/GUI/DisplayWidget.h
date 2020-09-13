@@ -526,6 +526,7 @@ QString spherePixelShader4 = QString("#version 410 core\n"
 // Injecting this at the beginning of vertex and fragment source before
 // compile will allow the legacy frags to run under ES and CORE as well as
 // COMPATIBILITY profiles with out having to edit any existing files.
+// This can be dis/enabled in the Edit->Preferences dialog.
 
 // Vertex shader
 QString fvSourcePatch = "// compatibility patch\n"
@@ -547,9 +548,10 @@ QString fvSourcePatch = "// compatibility patch\n"
 "\n"
 "#if __VERSION__ > 120 || GL_es_profile == 1\n"
 "#define gl_Vertex vertex_position\n"
+"#endif\n"
+"\n"
 "uniform mat4 projectionMatrix;\n"
 "#define gl_ProjectionMatrix projectionMatrix\n"
-"#endif\n"
 "\n"
 "#if __VERSION__ > 120 || GL_es_profile != 1\n"
 "#ifdef varying\n"

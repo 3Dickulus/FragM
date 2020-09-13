@@ -1,0 +1,78 @@
+// AnotherTileSizeBenchmark.fqs by Claude, 2018-11-21
+// inspired by:
+// TileSizeBenchmark.fqs by 3Dickulus, 2018-10-24
+// usage:
+// ./Fragmentarium-2.5.0 -s ./fqScript/AnotherTileSizeBenchmark.fqs input.frag
+// warning:
+// quits FragM when it's done, unless you edit the last line
+
+
+
+// {{{ configuration {{{
+preset     = "Octobulb"
+outputDir  = "."
+extension  = "png"
+width      = 64;
+height     = 36;
+multiplier = 60;
+subframes  = 3;
+// }}} configuration }}}
+
+// initialize app settings
+app.setAutoSave(false);
+app.setUniqueID(false);
+app.setPreview(false);
+app.setAnimation(false);
+app.setStartFrame(0);
+app.setEndFrame(0);
+
+// build shader, in case autorun is disabled in preferences
+if(!app.applyPresetByName(preset))
+    app.initializeFragment();
+// again, in case preset changed things that need rebuilding
+if(!app.applyPresetByName(preset))
+    app.initializeFragment();
+
+
+// pretty print milliseconds
+function ms(x) { return (x/1000).toFixed(9); }
+
+// print header for timings table
+print("# Width\tHeight\tTiling\tSubframe\tTile\t\tFrame");
+
+// loop through all factors of multiplier
+factor = 0;
+while (factor < multiplier)
+{
+  // increment before continuing if not a real factor to avoid loop
+  factor += 1;
+  if (! app.scriptRunning()) break;
+  if (multiplier % factor != 0) continue;
+  // calculate tiling parameters
+  tw = width * factor;
+  th = height * factor;
+  tm = Math.round(multiplier / factor);
+  // set tiling parameters
+  app.setTileWidth(tw);
+  app.setTileHeight(th);
+  app.setTileMax(tm);
+  app.setSubFrames(subframes);
+  // set filename
+  app.setOutputBaseFileName
+    ( outputDir + "/" + app.currentFragmentName() + "-"
+    + tw + "x" + th + "x" + tm + "x" + tm + "x" + subframes
+    + "." + extension
+    );
+  // render image
+  app.tileBasedRender();
+  // print timings
+  print
+    ( tw + "\t" + th + "\t" + tm + "\t"
+    + ms(app.getTileAVG() / subframes) + "\t"
+    + ms(app.getTileAVG()) + "\t"
+    + ms(app.getRenderAVG())
+    );
+}
+
+// quit when done: comment this if running from the GUI
+app.scriptExitProgram();

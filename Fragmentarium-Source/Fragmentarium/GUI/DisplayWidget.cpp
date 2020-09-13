@@ -695,13 +695,22 @@ void DisplayWidget::initFragmentShader()
     
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
-        if(!(fragmentSource.vertexSource[1].contains("compatibility patch"))) {
+        if(!fragmentSource.vertexSource.isEmpty() && !(fragmentSource.vertexSource[1].startsWith("// compatibility patch"))) {
                 fragmentSource.vertexSource.insert(1,fvSourcePatch);
         }
 
-        if(!(fragmentSource.source[1].contains("compatibility patch"))) {
+        if(!fragmentSource.source.isEmpty() && !(fragmentSource.source[1].startsWith("// compatibility patch"))) {
                 fragmentSource.source.insert(1,fsSourcePatch);
         }
+    } else { //:-P a bit of fudge but it seems to work ???
+            // projectionMatrix is always passed in as a uniform for all versions
+            // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
+            fragmentSource.vertexSource.insert(1,
+                                        QString ("\n"
+                                        "uniform mat4 projectionMatrix;\n"
+                                        "#define gl_ProjectionMatrix projectionMatrix\n"
+                                        "\n")
+                                            );
     }
     
     // Vertex shader
@@ -722,7 +731,7 @@ void DisplayWidget::initFragmentShader()
     }
 
     // Fragment shader
-    s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentSource.getText());
+    s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentSource.source.join("\n"));
 
     if (s) { // Requests the shader program's id to be created immediately.
         s = shaderProgram->create();
@@ -763,7 +772,7 @@ void DisplayWidget::initFragmentShader()
     
     
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
@@ -1195,13 +1204,22 @@ void DisplayWidget::initBufferShader()
 
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
-        if(!(fragmentSource.bufferShaderSource->vertexSource[1].contains("compatibility patch"))) {
-            fragmentSource.bufferShaderSource->vertexSource.insert(1,fvSourcePatch);
+        if(!fragmentSource.bufferShaderSource->vertexSource.isEmpty() && !(fragmentSource.bufferShaderSource->vertexSource[1].startsWith("// compatibility patch"))) {
+                fragmentSource.bufferShaderSource->vertexSource.insert(1,fvSourcePatch);
         }
-        
-        if(!(fragmentSource.bufferShaderSource->source[1].contains("compatibility patch"))) {
-            fragmentSource.bufferShaderSource->source.insert(1, fsSourcePatch);
+
+        if(!fragmentSource.bufferShaderSource->source.isEmpty() && !(fragmentSource.bufferShaderSource->source[1].startsWith("// compatibility patch"))) {
+                fragmentSource.bufferShaderSource->source.insert(1,fsSourcePatch);
         }
+    } else { //:-P a bit of fudge but it seems to work ???
+            // projectionMatrix is always passed in as a uniform for all versions
+            // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
+            fragmentSource.vertexSource.insert(1,
+                                        QString ("\n"
+                                        "uniform mat4 projectionMatrix;\n"
+                                        "#define gl_ProjectionMatrix projectionMatrix\n"
+                                        "\n")
+                                            );
     }
 
     // Vertex shader
@@ -1260,7 +1278,7 @@ void DisplayWidget::initBufferShader()
     }
     
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(glGetUniformLocation(bufferShaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(bufferShaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     bufferUniformsHaveChanged = false;
 }
@@ -1382,6 +1400,7 @@ bool DisplayWidget::checkShaderProg(GLuint programID)
 void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformValue)
 {
 
+    if(!uniformName.isEmpty()) {
         if (uniformName.startsWith("gl_")) { uniformValue = "OpenGL variable"; }
         if (uniformName == "pixelSize") { uniformValue = "Special variable"; }
         if (uniformName == "globalPixelSize") { uniformValue = "Special variable"; }
@@ -1389,6 +1408,7 @@ void DisplayWidget::checkForSpecialCase(QString uniformName, QString &uniformVal
         if (uniformName == "frontbuffer") { uniformValue = "Special variable"; }
         if (uniformName == "backbuffer") { uniformValue = "Special variable"; }
         if (uniformName == "time") { uniformValue = "Special variable"; }
+    }
 }
 
 // returns text name of type -> tp
@@ -1718,14 +1738,14 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // This allows us to perform tile based rendering.
     // before releasing the program set the projection matrix back to identity
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
 
     if ( getState() == DisplayWidget::Tiled ) {
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
         glm::mat4 transmatrix = glm::translate(glm::mat4(1.0), glm::vec3(x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0) );
         glm::mat4 scalematrix = glm::scale(transmatrix, glm::vec3( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles, 1.0) );
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->programId(), "projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
+        glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -2492,8 +2512,8 @@ void DisplayWidget::drawLookatVector()
 
     if(spline_program != nullptr) {
         spline_program->bind();
-        GLint cloc = glGetUniformLocation(spline_program->programId(), "vertex_colour");
-        glUniform1f(glGetUniformLocation(spline_program->programId(), "pointRadius"), 3 );
+        GLint cloc = spline_program->uniformLocation( "vertex_colour");
+        glUniform1f(spline_program->uniformLocation("pointRadius"), 3 );
 
         if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
         // highlight the source position
@@ -2656,7 +2676,7 @@ void DisplayWidget::render_splines(int number, double psize)
         glEnableVertexAttribArray( 0 );
         glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
 
-        GLint cloc = glGetUniformLocation(spline_program->programId(), "vertex_colour");
+        GLint cloc = spline_program->uniformLocation("vertex_colour");
             
         // control point to highlight = currently selected preset keyframe
         int p = mainWindow->getCurrentCtrlPoint()-1;
@@ -2831,7 +2851,7 @@ void DisplayWidget::init_spline_shader()
 {
     pixel_scale = 10;
     // if user specifies GLSL version add it to spline shaders
-    if(fragmentSource.source[0].startsWith("#version")) {
+    if(!fragmentSource.source.isEmpty() && fragmentSource.source[0].startsWith("#version")) {
         int vers = fragmentSource.source[0].split(" ").at(1).toInt();
         
         QStringList tmp = vertexShader4.split("\n");

@@ -2736,14 +2736,18 @@ bool MainWindow::initializeFragment()
         variableEditor->substituteLockedVariables(fs.bufferShaderSource);
     }
 
-    try {
-        QTime start = QTime::currentTime();
-        engine->setFragmentShader(fs);
-        ms = start.msecsTo(QTime::currentTime());
-    } catch (Exception& e) {
-        WARNING(e.getMessage());
-        highlightBuildButton(true);
-    }
+    static int lastTime;
+    QTime start = QTime::currentTime();
+    if(requiresRebuild()) {
+        try {
+            engine->setFragmentShader(fs);
+            ms = start.msecsTo(QTime::currentTime());
+            lastTime = ms;
+        } catch (Exception& e) {
+            WARNING(e.getMessage());
+            highlightBuildButton(true);
+        }
+    } else ms = lastTime;
 
     if (engine->hasShader()) {
         // BUG Fixs Up vector
@@ -2768,6 +2772,8 @@ bool MainWindow::initializeFragment()
         return false; // does not need rebuild
     }
     WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
+
+    highlightBuildButton(true); 
 
     return true;
 }
@@ -3019,7 +3025,7 @@ void MainWindow::tabChanged(int index)
         if (!te->lastSettings().isEmpty()) {
             variableEditor->setSettings(te->lastSettings());
         }
-        initializeFragment();
+        if(requiresRebuild()) initializeFragment();
     }
 }
 

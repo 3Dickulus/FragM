@@ -1,0 +1,211 @@
+// Fragmentarium qscript
+// testing Examples render
+// 3Dickulus 180101
+// requires ./test2/ folder
+
+function renderFrag(value) {
+    print("Rendering: "+value);
+    // close the default or initial tab
+    app.closeTab(0);
+
+    // loading a frag creates a new tab
+    app.loadFragFile(value);
+
+    // set the output png file name    
+    app.setOutputBaseFileName( "./test2/" + app.currentFragmentName() + ".png" );
+
+    // clear the event Q
+    app.processGuiEvents();
+
+    app.tileBasedRender();
+
+};
+
+// used to calculate range frames and/or total frames
+app.setFps(25);
+// this number should be => EasingCurve max frame / fps
+app.setAnimationLength( 10 );
+
+// not saving frag files
+app.setAutoSave(false);
+// not using unique ID in file name
+app.setUniqueID(false);
+
+// false = save images
+// true = open a preview window for EACH image (be careful)
+app.setPreview(false);
+
+// false = no control from frag
+// true = control from frag
+app.setAnimation(false);
+
+// begin
+app.setFrame(0);
+app.setStartFrame(0);
+app.setEndFrame(0);
+
+// set the tile buffer size
+app.setTileWidth(320);
+app.setTileHeight(180);
+// set tile multiplier
+app.setTileMax(2);
+// how many frames to accumulate
+app.setSubFrames(10);
+
+// make list of fragment names
+var list = [ "Examples/2D Systems/BurningShip.frag",
+"Examples/2D Systems/DomainDistortion2.frag",
+"Examples/2D Systems/Droste.frag",
+"Examples/2D Systems/DrosteGrid.frag",
+"Examples/2D Systems/Ducks.frag",
+"Examples/2D Systems/Game of Life.frag",
+"Examples/2D Systems/GraphPlotter.frag",
+"Examples/2D Systems/Kali.frag",
+"Examples/2D Systems/Mandelbrot-AverageColoring.frag",
+"Examples/2D Systems/Mandelbrot-DE.frag",
+"Examples/2D Systems/Mandelbrot.frag",
+"Examples/2D Systems/MandelbrotCheckers.frag",
+"Examples/2D Systems/MandelbrotOrbitTrap.frag",
+"Examples/2D Systems/Metabrot.frag",
+"Examples/2D Systems/Metaship1.frag",
+"Examples/2D Systems/PenroseTiles.frag",
+"Examples/2D Systems/Reaction-Diffusion.frag",
+"Examples/2D Systems/Thorn.frag",
+"Examples/2D Systems/mandel_mobius.frag",
+"Examples/2D Systems/mandelexOptimised.frag",
+"Examples/Benesi/BenesiPineFoldDE.frag",
+"Examples/Benesi/MengerSmooth.frag",
+"Examples/Benesi/MengerSmoothforWeb.frag",
+"Examples/Benesi/MengerWorkOnHeightmap.frag",
+"Examples/Benesi/MengerWorkOnStella.frag",
+"Examples/Benesi/MengersmoothPolyhedra.frag",
+"Examples/Benesi/MengersmoothnoDE.frag",
+"Examples/Benesi/PineV322.frag",
+"Examples/Benesi/mengermultisampleKN2.frag",
+"Examples/Benesi/pinewithgoodcolor.frag",
+"Examples/Benesi/pinewithoptionsDE.frag",
+"Examples/Benesi/pinewithoptionsoriginalBruteRaytracer.frag",
+"Examples/DarkBeam/BioCube.frag",
+"Examples/DarkBeam/FoldcutToy.frag",
+"Examples/Experimental/3DMandel.frag",
+"Examples/Experimental/BenesiFoldedMandelbulb.frag",
+"Examples/Experimental/BurningShirp.frag",
+"Examples/Experimental/DoubleTest.frag",
+"Examples/Experimental/IFS.frag",
+"Examples/Experimental/Knot.frag",
+"Examples/Experimental/LiftedDomainColoring.frag",
+"Examples/Experimental/LogisticBulb.frag",
+"Examples/Experimental/Mandelbrot-Progressive.frag",
+"Examples/Experimental/Mixed.frag",
+"Examples/Experimental/Mobius.frag",
+"Examples/Experimental/Moebiusbulb.frag",
+"Examples/Experimental/Noise.frag",
+"Examples/Experimental/OctahedronOT.frag",
+"Examples/Experimental/PseudoKleinian-Progressive-DOF.frag",
+"Examples/Experimental/QuaternionMandelbrot4D.frag",
+"Examples/Experimental/Raytracingtestfrag.frag",
+"Examples/Experimental/SphereSponge.frag",
+"Examples/Experimental/Spudsville2.frag",
+"Examples/Experimental/Stereographic4DJulia.frag",
+"Examples/Experimental/StereographicQuaternionJulia.frag",
+"Examples/Experimental/Terrain.frag",
+"Examples/Experimental/Tetrahedron-Alternative.frag",
+"Examples/Experimental/TextureTest.frag",
+"Examples/Experimental/TriPlanarTexturing.frag",
+"Examples/Experimental/iqPath4fragmentarium.frag",
+"Examples/Historical 3D Fractals/Mandelbox.frag",
+"Examples/Historical 3D Fractals/Mandelbulb.frag",
+"Examples/Historical 3D Fractals/QuaternionJulia.frag",
+"Examples/Kaleidoscopic IFS/Dodecahedron.frag",
+"Examples/Kaleidoscopic IFS/Icosahedron.frag",
+"Examples/Kaleidoscopic IFS/Menger.frag",
+"Examples/Kaleidoscopic IFS/NewMenger.frag",
+"Examples/Kaleidoscopic IFS/Octahedron.frag",
+"Examples/Kaleidoscopic IFS/Tetrahedron.frag",
+"Examples/Knighty Collection/Baird-Delta.frag",
+"Examples/Knighty Collection/Doyle-Spirals.frag",
+"Examples/Knighty Collection/Fold and Cut Polyhedra - Original.frag",
+"Examples/Knighty Collection/Fold and Cut Polyhedra.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/Icosahedral_polyhedra02.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/Icosahedral_polyhedra_iterated_10.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/Icosahedral_polyhedra_iterated_11.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/Icosahedral_polyhedra_iterated_20.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/menger_iterated_20.frag",
+"Examples/Knighty Collection/Fold_and_cut_polyhedra_examples/octahedral_polyhedra02.frag",
+"Examples/Knighty Collection/Hyperbolic-tesselations-named/hyperbolic-tesselation-3-5-3-colored-named-00.frag",
+"Examples/Knighty Collection/Hyperbolic-tesselations-named/hyperbolic-tesselation-5-3-n-colored-named-00.frag",
+"Examples/Knighty Collection/Hyperbolic-tesselations-named/hyperbolic-tesselation-bifurcating-5-3-3-colored-named-00.frag",
+"Examples/Knighty Collection/Hyperbolic-tesselations-named/hyperbolic-tesselation-cyclic-m-3-n-3-colored-named-00.frag",
+"Examples/Knighty Collection/Icosahedral_polyhedra_iterated_11.frag",
+"Examples/Knighty Collection/Icosahedral_polyhedra_iterated_20.frag",
+"Examples/Knighty Collection/Knot.frag",
+"Examples/Knighty Collection/Koch01.frag",
+"Examples/Knighty Collection/Mandalabeth-generic-with-jacobian/Mandalabeth-M3-jacobian.frag",
+"Examples/Knighty Collection/Mandalabeth-generic-with-jacobian/Mandalabeth-M4-jacobian.frag",
+"Examples/Knighty Collection/Mandalabeth-generic-with-jacobian/Mandalabeth-M5-jacobian.frag",
+"Examples/Knighty Collection/MandalayBox.frag",
+"Examples/Knighty Collection/MandelbrotHeightfield.frag",
+"Examples/Knighty Collection/Menger_Sphere.frag",
+"Examples/Knighty Collection/Menger_iterated_20.frag",
+"Examples/Knighty Collection/NewtonHeightfield.frag",
+"Examples/Knighty Collection/Pseudo-MandalayBox.frag",
+"Examples/Knighty Collection/PseudoKleinian.frag",
+"Examples/Knighty Collection/PseudoKleinianMenger.frag",
+"Examples/Knighty Collection/PseudoKleinian_4D_Quaternion_Julia.frag",
+"Examples/Knighty Collection/Quadray/quadray01-07.frag",
+"Examples/Knighty Collection/Quadray/quadray01-jacobian-02.frag",
+"Examples/Knighty Collection/Quadray/quadray04-03forV0.8.frag",
+"Examples/Knighty Collection/algebraic07.frag",
+"Examples/Knighty Collection/hyperbolic-tesselation-2Din3D-colored-02.frag",
+"Examples/Knighty Collection/mdifs.frag",
+"Examples/Knighty Collection/poincare-disc30-circle_limit_6.frag",
+"Examples/Knighty Collection/polychora-special.frag",
+"Examples/Knighty Collection/polychora-special02.frag",
+"Examples/Knighty Collection/polychora03.frag",
+"Examples/Knighty Collection/polychora06.frag",
+"Examples/Knighty Collection/triangle-tess-ess-01.frag",
+"Examples/Theory/Convolution.frag",
+"Examples/Theory/Mandelbox - Dual Numbers DE - Slicer.frag",
+"Examples/Theory/Mandelbox - Dual Numbers DE.frag",
+"Examples/Theory/Mandelbrot - Emulated Doubles.frag",
+"Examples/Theory/Mandelbulb-Slicer.frag",
+"Examples/Tutorials/00 - Simple 2D system.frag",
+"Examples/Tutorials/01 - Simple 2D Escape Time Fractal.frag",
+"Examples/Tutorials/02 - User Variables and Presets.frag",
+"Examples/Tutorials/03 - Dynamic Systems.frag",
+"Examples/Tutorials/04 - Textures.frag",
+"Examples/Tutorials/10 - Simple Distance Estimated 3D system.frag",
+"Examples/Tutorials/11 - Simple Distance Estimated 3D fractal.frag",
+"Examples/Tutorials/12 - Faster raytracing of 3D fractals.frag",
+"Examples/Tutorials/20 - Progressive 2D.frag",
+"Examples/Tutorials/21 - Progressive 2D Escape Time Fractal.frag",
+"Examples/Tutorials/22 - Progressive 3D Rendering.frag",
+"Examples/Tutorials/23 - Working with the back buffer.frag",
+"Examples/Tutorials/24 - Pure 3D.frag",
+"Examples/Tutorials/25 - Image Based Lighting.frag",
+"Examples/Tutorials/26 - 3D fractals without a DE.frag",
+"Examples/Tutorials/30 - Simple Keyframe Animation.frag",
+"Examples/Tutorials/31 - Simple Focal Plane Tracking Target.frag",
+"Examples/Tutorials/32 - Simple Multi-Parameter Easing Animation.frag",
+"Examples/Tutorials/33 - Simple Skybox.frag",
+"Examples/eiffieGI2/AnimatedModVinz_EiffieGi2.frag",
+"Examples/eiffieGI2/Eiffies-SoC-DE.frag",
+"Examples/eiffieGI2/Kisocahedron - EiffieGi2.frag",
+"Examples/eiffieGI2/MagGlass.frag",
+"Examples/eiffieGI2/eiffieGI.frag",
+"Examples/eiffieGI2/iqPath4fragmentarium.frag",
+"Examples/eiffieGI2/testSoC.frag",
+"Examples/Kali's Creations/Kalibox.frag",
+"Examples/Kali's Creations/KboxExpSmooth.frag",
+"Examples/Kali's Creations/LivingKIFS.frag",
+"Examples/Kali's Creations/RotJulia.frag",
+"Examples/Kali's Creations/Treebroccoli.frag",
+"Examples/Kali's Creations/Xray_skifs.frag"];
+
+list.forEach(renderFrag);
+
+print("Done!" );
+print("" );
+    
+app.scriptExitProgram();
+

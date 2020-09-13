@@ -1,0 +1,48 @@
+// Fragmentarium qscript
+// testing Examples render
+// 3Dickulus 180101
+// requires ./test/ folder
+
+// used to calculate range frames and/or total frames
+app.setFps(25);
+// this number should be => EasingCurve max frame / fps
+app.setAnimationLength( 10 );
+
+// not saving frag files
+app.setAutoSave(false);
+// not using unique ID in file name
+app.setUniqueID(false);
+
+// false = save images
+// true = open a preview window for EACH image (be careful)
+app.setPreview(false);
+
+// false = no control from frag
+// true = control from frag
+app.setAnimation(false);
+
+// begin
+app.setFrame(0);
+app.setStartFrame(0);
+app.setEndFrame(0);
+
+// set the tile buffer size
+app.setTileWidth(320);
+app.setTileHeight(180);
+// set tile multiplier
+app.setTileMax(2);
+// how many frames to accumulate
+app.setSubFrames(10);
+
+// we need a png filename
+imagefilename = "./test1/" + app.currentFragmentName() + ".png";
+
+app.setOutputBaseFileName( imagefilename );
+print("Rendering: " + app.currentFragmentName() + ".frag");
+
+// clear the event Q
+app.processGuiEvents();
+
+app.tileBasedRender();
+    
+app.scriptExitProgram();

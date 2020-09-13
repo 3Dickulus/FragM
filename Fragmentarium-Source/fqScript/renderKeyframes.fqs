@@ -8,7 +8,7 @@ var multiplier=2; // 10=10x10=100 tiles
 var subframes=128;
 
 // set subfolder must end with "/"
-var subFolder = "thumbs/";
+var subFolder = "keyframes/";
 
 // frame specs
 function setFrameSpec(w,h,m,s) {
@@ -41,8 +41,8 @@ function init(){
   app.setStartFrame(0);
   app.setEndFrame(0);
 
-  // size of tiled/frame to render , comment out the following line to use the GUI values instead
-//   setFrameSpec(width,height,multiplier,subframes);
+  // size of tiled/frame to render
+  setFrameSpec(width,height,multiplier,subframes);
 
   print("");
   print("Fragmentarium " + app.getVersion() + " script engine.");
@@ -63,7 +63,7 @@ var fname = subFolder+frag+"_"+value+".png";
   // if the user wants to stop rendering break before next image
   if(app.scriptRunning()) {
 
-    //if(!app.applyPresetByName(value))   // if not then rebuild is required
+    if(!app.applyPresetByName(value))   // if not then rebuild is required
         app.initializeFragment();       // some uniforms were locked
         
    if(app.applyPresetByName(value))       // set them for render
@@ -81,7 +81,7 @@ init();
 
 // false = presets
 // true = keyframes
-var names = app.getPresetNames(false);
+var names = app.getPresetNames(true);
 
 // make list of preset names
 var list = names.split(";");
@@ -90,3 +90,4 @@ list.forEach(renderPreset);
 
 print("Done!" );
 print("" );
+
