@@ -289,7 +289,9 @@ void MainWindow::insertPreset()
         }
 
         needRebuild(ok);
-        initializeFragment(); // once to initialize any textures
+        if (rebuildRequired) {
+            needRebuild(initializeFragment());
+        } // once to initialize any textures
         variableEditor->setPreset(newPresetName); // apply the settings
 
         INFO(tr("Added %1").arg(newPresetName));
@@ -2512,8 +2514,6 @@ void MainWindow::loadFragFile(const QString &fileName)
             processGuiEvents();
         }
     
-        update();
-
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
         pp?stop():play();
@@ -3019,13 +3019,14 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    initializeFragment(); // this bit of fudge resets the tab to its last settings
+    needRebuild(initializeFragment());
+    // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
-            variableEditor->setSettings(te->lastSettings());
+            rebuildRequired = variableEditor->setSettings(te->lastSettings());
         }
-        if(requiresRebuild()) initializeFragment();
+        if(rebuildRequired) initializeFragment();
     }
 }
 
@@ -3072,8 +3073,11 @@ void MainWindow::closeTab(int index)
         return;
     }    // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
-    if (variableEditor->setSettings(te->lastSettings())) {
-        initializeFragment();
+    
+    needRebuild(variableEditor->setSettings(te->lastSettings()));
+    
+    if (rebuildRequired) {
+        needRebuild(initializeFragment());
     } // this bit of fudge preserves textures ???
 }
 
@@ -3801,6 +3805,8 @@ void MainWindow::executeScript()
 
     QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
 
+    runningScript=false;
+
     if (result.isError()) {
         QString err = result.toString();
         cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
@@ -3814,7 +3820,6 @@ void MainWindow::executeScript()
             tc.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor,1);
             e->setTextCursor(tc);
         }
-        runningScript=false;
         if (sender() != nullptr) {
             cmdScriptDebugger->attachTo(&scriptEngine);
         }
@@ -3836,7 +3841,6 @@ void MainWindow::executeScript()
         settings.setValue("filename", name);
     }
     // finished script so...
-    runningScript=false;
 }
 
 void MainWindow::setupScriptEngine()
