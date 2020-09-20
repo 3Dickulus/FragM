@@ -341,14 +341,14 @@
       <item row="14" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QLabel" name="stylesheetLabel">
+         <widget class="QLabel" name="editorStylesheetLabel">
           <property name="text">
            <string>Editor stylesheet:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="stylesheetLineEdit">
+         <widget class="QLineEdit" name="editorStylesheetLineEdit">
           <property name="text">
            <string>font: 9pt Courier;</string>
           </property>
@@ -358,7 +358,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="stylesheetToolButton">
+         <widget class="QToolButton" name="editorStylesheetToolButton">
           <property name="text">
            <string>...</string>
           </property>

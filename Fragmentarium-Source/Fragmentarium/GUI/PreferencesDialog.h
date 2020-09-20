@@ -25,7 +25,7 @@ public:
         connect(m_ui.logFilePathToolButton, SIGNAL(released()), this, SLOT(getLogFilename()));
         connect(m_ui.includePathsToolButton, SIGNAL(released()), this, SLOT(getIncludePaths()));
         connect(m_ui.exrBinPathsToolButton, SIGNAL(released()), this, SLOT(getExrBinPaths()));
-        connect(m_ui.stylesheetToolButton, SIGNAL(released()), this, SLOT(getEditorStylesheet()));
+        connect(m_ui.editorStylesheetToolButton, SIGNAL(released()), this, SLOT(getEditorStylesheet()));
     };
     ~PreferencesDialog() {};
 
@@ -75,7 +75,7 @@ public slots:
         if (dialog.exec())
             fileName = dialog.selectedFiles().first();
         if (!fileName.isEmpty()) {
-            m_ui.stylesheetLineEdit->setText(fileName);
+            m_ui.editorStylesheetLineEdit->setText(fileName);
         }
     }
 
@@ -118,7 +118,7 @@ private slots:
 #ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
 #endif // USE_OPEN_EXR
-        m_ui.stylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
+        m_ui.editorStylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
         m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
         m_ui.logLinesSpinBox->setValue (settings.value ( "maxLogLines", 10 ).toInt() );
     }
@@ -153,7 +153,7 @@ private slots:
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
-        settings.setValue("editorStylesheet", m_ui.stylesheetLineEdit->text());
+        settings.setValue("editorStylesheet", m_ui.editorStylesheetLineEdit->text());
         settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );
         settings.setValue("maxLogLines", m_ui.logLinesSpinBox->value());
         settings.sync();

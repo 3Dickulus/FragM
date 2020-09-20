@@ -17,9 +17,10 @@
 **  along with this program.  If not, see http://www.gnu.org/licenses/.   **
 **                                                                        **
 ****************************************************************************
-**           Author: Richard Paquette                                     **
-**  Website/Contact: http://www.digilanti.org/ 3dickulus@gmail.com        **
-**             Date: 12.16.13                                             **
+**  Author: Richard Paquette                                              **
+**  Website: https://www.digilanti.org/fragmentarium                      **
+**  Email:  3dickulus@gmail.com                                           **
+**  Date: 12.16.13                                                        **
 **                                                                        **
 ** See these links for more information...                                **
 ** 3Dickulus http://www.fractalforums.com/index.php?topic=16405.0         **
@@ -253,7 +254,6 @@ protected:
 
         myformat.setForeground ( Qt::darkBlue );
         myformat.setFontWeight ( QFont::Normal );
-        myformat.setFontItalic ( true );
         textFormat.insert ( "MultiComment", myformat );
 
         /// comments functions numbers and quotes

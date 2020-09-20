@@ -2222,28 +2222,32 @@
 		</contexts>
 		
 		
-		<!-- ################################################################################################################ 
-		     ####################################################################################################### coloring 
+		<!-- ################################################################################################################
+		     ####################################################################################################### coloring
+		     // color                use Qt::Color names like "black" "blue" darkBlue" or rgb values "#334455" etc...
+		     // italic               true,false = 1,0
+		     // bold                 true,false = 1,0
+		     // underline            true,false = 1,0
+		     // strikeout            true,false = 1,0
 		     ################################################################################################################ -->
 		<itemDatas>
 			<!-- coloring definition -->
-			<itemData name="Normaltext"                    defStyleNum="dsNormal"/>
-			<itemData name="Keyword"                       defStyleNum="dsKeyword"  bold="1"/>
-			<itemData name="Keywordstypes"                 defStyleNum="dsKeyword"/>
-			<itemData name="Reserved"                      defStyleNum="dsKeyword"  bold="1" strikeout="1"/>
-			<itemData name="Buildinvariables"              defStyleNum="dsDataType" bold="0"/>
-			<itemData name="Buildconstants"                defStyleNum="dsDataType" bold="0"/>
-			<itemData name="Buildinfunctions"              defStyleNum="dsKeyword"  bold="1"/>
-			
-			<itemData name="Float"          defStyleNum="dsFloat"/>
-			<itemData name="Octal"          defStyleNum="dsBaseN"/>
-			<itemData name="Hex"            defStyleNum="dsBaseN"/>
-			<itemData name="Decimal"        defStyleNum="dsDecVal"/>
-			
+			<itemData name="Normaltext"       defStyleNum="dsNormal"                            color="black"/>
+			<itemData name="Keyword"          defStyleNum="dsKeyword"  bold="1"                 color="darkMagenta"/>
+			<itemData name="Keywordstypes"    defStyleNum="dsKeyword"  bold="1"                 color="darkBlue"/>
+			<itemData name="Reserved"         defStyleNum="dsKeyword"  bold="1" strikeout="1"   color="black"/>
+			<itemData name="Buildinvariables" defStyleNum="dsDataType"                          color="darkYellow"/>
+			<itemData name="Buildconstants"   defStyleNum="dsDataType"                          color="darkMagenta"/>
+			<itemData name="Buildinfunctions" defStyleNum="dsKeyword"  bold="1"                 color="#886600"/>
+
+			<itemData name="Float"          defStyleNum="dsFloat"        color="#888800"/>
+			<itemData name="Octal"          defStyleNum="dsBaseN"        color="#888800"/>
+			<itemData name="Hex"            defStyleNum="dsBaseN"        color="#888800"/>
+			<itemData name="Decimal"        defStyleNum="dsDecVal"       color="#888800"/>
+
+			<itemData name="Preprocessor"   defStyleNum="dsDataType" bold="1"   color="blue"/>
+			<itemData name="Comment"        defStyleNum="dsComment"  italic="1" color="darkGreen"/>
 			<itemData name="Identifier"     defStyleNum="dsNormal"/>
-			
-			<itemData name="Preprocessor"   defStyleNum="dsDataType" bold="1"/>
-			<itemData name="Comment"        defStyleNum="dsComment"/>
 		</itemDatas>
 	</highlighting>
 	

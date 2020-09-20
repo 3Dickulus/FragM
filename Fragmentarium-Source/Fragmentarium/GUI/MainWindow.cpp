@@ -2616,18 +2616,11 @@ void MainWindow::highlightBuildButton(bool value)
 
     QWidget* w = buildLabel->parentWidget();
     if (value) {
-        QPalette pal = buildLabel->palette();
-        pal.setColor(buildLabel->backgroundRole(), Qt::yellow);
-        buildLabel->setPalette(pal);
-        buildLabel->setAutoFillBackground(true);
-        w->setPalette(pal);
-        w->setAutoFillBackground(true);
+        w->setStyleSheet("background-color: #ffb100;");
     } else {
-        buildLabel->setPalette(QApplication::palette(buildLabel));
-        buildLabel->setAutoFillBackground(false);
-        w->setPalette(QApplication::palette(w));
-        w->setAutoFillBackground(false);
+        w->setStyleSheet("");
     }
+
     needRebuild(value);
 }
 
@@ -2716,11 +2709,6 @@ bool MainWindow::initializeFragment()
     int ms = 0;
     FragmentSource fs = p.parse(inputText,filename,moveMain);
 
-    // if the initial GL state is compatibility profile we can switch between
-    // core and compatibility internally, if it is initially core we remain core
-    // everywhere, frags that request core should work in both cases while frags
-    // that rely on legacy code won't run without some editing if the engine
-    // is using core only (like on OSX)
     engine->useCompat( !fs.source[0].contains("core") );
 
     if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
@@ -3024,10 +3012,11 @@ void MainWindow::tabChanged(int index)
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
-            rebuildRequired = variableEditor->setSettings(te->lastSettings());
+            needRebuild( variableEditor->setSettings(te->lastSettings()) );
         }
-        if(rebuildRequired) initializeFragment();
+        needRebuild(initializeFragment());
     }
+    needRebuild(initializeFragment());
 }
 
 void MainWindow::closeTab()

@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-    qApp->setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
+//    qApp->setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
 
     /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
     /// replaced with "_" fixed preferences settings not loading...
@@ -93,20 +93,8 @@ int main(int argc, char *argv[])
     qtTranslator.load(QString("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app->installTranslator(&qtTranslator);
 
-// QFile f("Misc/style.qss");
-// if (!f.exists())
-// {
-//     printf("Unable to set stylesheet, file not found\n");
-// }
-// else
-// {
-//     f.open(QFile::ReadOnly | QFile::Text);
-//     QTextStream ts(&f);
-//     app->setStyleSheet(ts.readAll());
-// }
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
-
 
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -118,24 +106,28 @@ int main(int argc, char *argv[])
     //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
     //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
     //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
-    parser.addOption(QCommandLineOption (QString("autorun"),
-                                         app->translate("main", "en/disable auto-compile-run cycle at program start."),
-                                         QString("true"),
+    parser.addOption(QCommandLineOption (QStringList() << QString("V") << QString("verbose"),
+                                         app->translate("main", "Sets reporting of shader variables and other things to console."),
+                                         QString(""),
                                          QString("true"))
                     );
 
-    parser.addOption(QCommandLineOption (QString("verbose"),
-                                         app->translate("main", "sets reporting of shader variables to console."),
+    parser.addOption(QCommandLineOption (QStringList() << QString("a") << QString("autorun"),
+                                         app->translate("main", "Execute auto-compile-run cycle at program start."),
                                          QString(""),
-                                         QString(""))
+                                         QString("true"))
                     );
 
     parser.addOption(QCommandLineOption (QString("style"),
-                                         app->translate("main", "sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
-                                         QString("style"),
+                                         app->translate("main", "Sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
+                                         QString("stylename"),
                                          QString("Fusion"))
                     );
-//     parser.addOption(QCommandLineOption("stylesheet","stylesheet, sets the application styleSheet. The value must be a path to a file that contains the Style Sheet."));
+    parser.addOption(QCommandLineOption("stylesheet",
+                                        app->translate("main", "Sets the application styleSheet. The value must be a path to a file that contains the Style Sheet."),
+                                         QString("filename"),
+                                         QString(""))
+                    );
 //     parser.addOption(QCommandLineOption("session","restores the application from an earlier session."));
 //     parser.addOption(QCommandLineOption("widgetcount","prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time"));
 //     parser.addOption(QCommandLineOption("reverse","sets the application's layout direction to Qt::RightToLeft"));
@@ -164,47 +156,97 @@ int main(int argc, char *argv[])
 
     parser.addOption(QCommandLineOption( (QStringList() << QString("s") << QString("script")),
                                          app->translate("main", "Fragmentarium script file to load. Must be \".fqs\" filename extention."),
-                                         QString("script"),
+                                         QString("filename"),
                                          QString(""))
                     );
 
-    // Process the actual command line arguments given by the user
+    parser.addOption(QCommandLineOption (QStringList() << QString("c") << QString("compatpatch"),
+                                         app->translate("main", "Apply internal shader compatibility patch. Attempts to allow legacy shaders to run under modern core profile."),
+                                         QString(""),
+                                         QString("true"))
+                    );
+
+    parser.parse( app->arguments() );
+
+    // before creating main window record the last run state
+    bool last_run_state = QSettings().value("isStarting").toBool();
+
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin->setObjectName("MainWindow");
+    // The qApp built in "version" cmdline option exits
+    // before parser.process() returns, so set version here.
+    qApp->setApplicationVersion(mainWin->getVersion());
+
+// bool: autorun verbose compatpatch version help
+// file: stylesheet language script
+// builtin: style
+
+    if( parser.isSet(QString("stylesheet")) ) {
+        if(!parser.value(QString("stylesheet")).isEmpty()) {
+            QString ssfilename = parser.value(QString("stylesheet"));
+            if(ssfilename.isEmpty()) {
+                QFile f(ssfilename);
+                if (!f.exists())
+                {
+                    QString msg = "Unable to set stylesheet, " + parser.value(QString("stylesheet")) + " file not found\n";
+                    printf( "%s", msg.toLocal8Bit().constData() );
+                }
+                else
+                {
+                    app->setStyleSheet(ssfilename);
+                }
+            }
+        } else QSettings().setValue("isStarting", last_run_state);
+    }
+
+    if( parser.isSet(QString("compatpatch")) ) {
+        if(!parser.value(QString("compatpatch")).isEmpty()) {
+        QSettings().setValue("compatPatch", parser.value("compatpatch") == "true" );
+        } else QSettings().setValue("compatPatch", true );
+    }
+
+    if(parser.isSet(QString("version")) || parser.isSet(QString("help"))) {
+        // Not actually running just reporting to cmdline.
+        QSettings().setValue("isStarting", last_run_state);
+    }
+
+// Process the actual command line arguments given by the user
+// In addition to parsing the options (like parse()), this function also handles the builtin options and handles errors.
+// The builtin options are --version if addVersionOption was called and --help if addHelpOption was called.
+// When invoking one of these options, or when an error happens (for instance an unknown option was passed),
+// the current process will then stop, using the exit() function.
+// As a result passing an empty value (error) or "version" or "help" will exit before "isStarting" gets set properly
+// so the next run FragM will think it crashed last time and ask erroneously if "Enable Autorun" is required.
+// The test above takes care of "version" and "help" but the rest of the options need to be tested for valid input
+// after parsing arguments and before handing them to the process( arguments ) function.
+
     parser.process( app->arguments() );
 
     QString langArg = QString("en");
 
     QTranslator myappTranslator;
     if(parser.isSet(QString("language"))) {
-        langArg = parser.value(QString("language"));
+        if( !parser.value(QString("language")).isEmpty()) langArg = parser.value(QString("language"));
         if( langArg != QString("en") ) {
             if (myappTranslator.load(QString("Languages/Fragmentarium_") + langArg)) {
                 app->installTranslator(&myappTranslator);
             } else {
-                qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
-            }
-        }
-    } else {
-        langArg = QLocale::system().name().split("_").at(0);
-        if( langArg != QString("en") ) {
-            if (myappTranslator.load(QString("Languages/Fragmentarium_") + langArg)) {
-                app->installTranslator(&myappTranslator);
-            } else {
-                qDebug() << QString("Can't find Fragmentarium_%1.qm !!!").arg(langArg);
+                qDebug() << QString("Fragmentarium_%1.qm failed!!!").arg(langArg);
             }
         }
     }
-
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
-    mainWin->setObjectName("MainWindow");
-    app->setApplicationVersion(mainWin->getVersion());
-    
-    mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
     mainWin->langID = langArg;
 
+    mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
+
     mainWin->setVerbose(parser.isSet("verbose"));
-    if(parser.isSet("autorun"))
-        mainWin->setAutoRun(parser.value("autorun") == "true");
+
+    if( parser.isSet(QString("autorun")) ) {
+        if(!parser.value(QString("autorun")).isEmpty()) {
+        QSettings().setValue("autorun", parser.value("autorun") == "true" );
+        } else QSettings().setValue("autorun", true );
+    }
 
     mainWin->show();
 

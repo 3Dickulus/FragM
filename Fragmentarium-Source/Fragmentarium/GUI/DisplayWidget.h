@@ -530,6 +530,7 @@ QString spherePixelShader4 = QString("#version 410 core\n"
 
 // Vertex shader
 QString fvSourcePatch = "// compatibility patch\n"
+"#define FRAGMPATCHED 1\n"
 "#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
 "#ifdef highp\n"
 "#undef highp\n"
@@ -558,10 +559,12 @@ QString fvSourcePatch = "// compatibility patch\n"
 "#undef varying\n"
 "#endif\n"
 "#define varying out\n"
-"#endif\n";
+"#endif\n"
+"// end compatibility patch\n";
 
 // Fragment shader
 QString fsSourcePatch = "// compatibility patch\n"
+"#define FRAGMPATCHED 1\n"
 "#if __VERSION__ == 100 || (__VERSION__ >= 300 && __VERSION__ < 330)\n"
 "#ifdef highp\n"
 "#undef highp\n"
@@ -581,7 +584,8 @@ QString fsSourcePatch = "// compatibility patch\n"
 "#define texture2D texture\n"
 "out vec4 fragColor;\n"
 "#define gl_FragColor fragColor\n"
-"#endif\n";
+"#endif\n"
+"// end compatibility patch\n";
 
 };
 }
