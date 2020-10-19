@@ -292,7 +292,7 @@ void EasingWindow::loopChanged(int loop)
 {
     loopCount = loop;
     if (loop > 0) {
-        m_ui.totalLoopFrames->setText(QString("%1").arg(loop * (lastFrame - firstFrame)));
+        m_ui.totalLoopFrames->setText(QString("%1").arg(loop * (lastFrame - (firstFrame-1))));
     }
 
     if (loop != 0 && loop != 1) {

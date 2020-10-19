@@ -56,6 +56,7 @@ protected slots:
     virtual void mousePressEvent ( QMouseEvent *ev );
 
 private slots:
+    void addSceneText(QString text, qreal x, qreal y, qreal size);
     void selectionChange();
     void readTimeLineSettings();
     void saveTimeLineSettings();
@@ -70,6 +71,7 @@ private:
     QBrush greenBrush;
     QBrush grayBrush;
     QBrush redBrush;
+    QColor textColor;
     QPen outlinePen;
     int frames;
     int keyframeCount;

@@ -824,6 +824,7 @@ private:
     QAction *bufferActionCustom;
     QAction *clearTexturesAction;
 
+    QString guiStylesheet;
     QString editorStylesheet;
     QLabel *subframeLabel;
 
@@ -834,6 +835,7 @@ private:
     QAction *scriptAction;
     int cmdScriptLineNumber;
 
+    int editorTheme;
     bool exrMode;
     bool verbose;
     bool fullPathInRecentFilesList;

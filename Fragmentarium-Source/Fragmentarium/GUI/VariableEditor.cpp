@@ -46,8 +46,9 @@ VariableEditor::VariableEditor(QWidget *parent, MainWindow *mainWin)
     QLabel* l = new QLabel(tr("Preset:"), tw);
     topLayout->addWidget(l);
     presetComboBox = new QComboBox(tw);
+    presetComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    presetComboBox->setMaxVisibleItems(10);
     connect(presetComboBox, SIGNAL(activated(QString)), this, SLOT(presetSelected(QString)));
-    presetComboBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     topLayout->addWidget(presetComboBox);
     QPushButton* pb2 = new QPushButton(tr("Apply"), tw);
     connect(pb2, SIGNAL(clicked()), this, SLOT(applyPreset()));
@@ -87,6 +88,8 @@ VariableEditor::VariableEditor(QWidget *parent, MainWindow *mainWin)
     keyFramesEnabled = false;
     saveEasing = false;
     verbose = false;
+    
+    installEventFilter(this);
 }
 
 void VariableEditor::presetSelected(QString presetName)
@@ -131,7 +134,7 @@ void VariableEditor::focusChanged(QWidget *oldWidget, QWidget *newWidget)
         }
 
         QPalette pal = newFloat->palette();
-        pal.setColor(newFloat->backgroundRole(), Qt::gray);
+        pal.setColor(newFloat->backgroundRole(), mainWindow->palette().color(QPalette::Window).darker(125));
         newFloat->setPalette(pal);
         newFloat->setAutoFillBackground(true);
         currentComboSlider = newFloat;
@@ -145,9 +148,14 @@ void VariableEditor::setPresets(QMap<QString, QString> presets)
 {
     QString pi = presetComboBox->currentText();
     presetComboBox->clear();
+    int wide = 120;
+    int charSize = fontInfo().pixelSize() / 2;
     foreach (QString preset, presets.keys()) {
         presetComboBox->addItem(preset);
+        if(preset.length()*charSize > wide){wide = preset.length()*charSize;}
     }
+    presetComboBox->setMinimumWidth(wide-15); // minus the width of subcontrol?
+
     this->presets = presets;
 
     if (!pi.isEmpty()) {
@@ -1155,7 +1163,7 @@ int VariableEditor::getCurrentKeyFrame()
 
     QRegExp rx = QRegExp("KeyFrame\\.([0-9]{3,9})");
     if(rx.indexIn(presetComboBox->currentText()) != -1) {
-        return rx.cap(1).toInt();
+        return rx.cap(1).toInt()-1;
     }
 
     return -1;

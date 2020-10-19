@@ -20,12 +20,13 @@ class PreferencesDialog : public QDialog
 public:
     PreferencesDialog ( QWidget * )
     {
+        setObjectName("PreferencesDialog");
         m_ui.setupUi(this);
         readSettings();
         connect(m_ui.logFilePathToolButton, SIGNAL(released()), this, SLOT(getLogFilename()));
         connect(m_ui.includePathsToolButton, SIGNAL(released()), this, SLOT(getIncludePaths()));
         connect(m_ui.exrBinPathsToolButton, SIGNAL(released()), this, SLOT(getExrBinPaths()));
-        connect(m_ui.editorStylesheetToolButton, SIGNAL(released()), this, SLOT(getEditorStylesheet()));
+        connect(m_ui.guiStylesheetToolButton, SIGNAL(released()), this, SLOT(getGuiStylesheet()));
     };
     ~PreferencesDialog() {};
 
@@ -79,6 +80,18 @@ public slots:
         }
     }
 
+    void getGuiStylesheet() {
+        QString fileName;
+        QString filter = tr("Stylesheet (*.qss);;All Files (*.*)");
+        QFileDialog dialog(this, QString("Select a file."), QString("./Misc/qss"),filter);
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        if (dialog.exec())
+            fileName = dialog.selectedFiles().first();
+        if (!fileName.isEmpty()) {
+            m_ui.guiStylesheetLineEdit->setText(fileName);
+        }
+    }
+
 
 private slots:
 
@@ -121,6 +134,8 @@ private slots:
         m_ui.editorStylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
         m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
         m_ui.logLinesSpinBox->setValue (settings.value ( "maxLogLines", 10 ).toInt() );
+        m_ui.editorThemeComboBox->setCurrentIndex( settings.value ( "editorTheme", 0 ).toInt() );
+        m_ui.guiStylesheetLineEdit->setText (settings.value ( "guiStylesheet", "" ).toString() );
     }
 
     void saveSettings()
@@ -156,6 +171,8 @@ private slots:
         settings.setValue("editorStylesheet", m_ui.editorStylesheetLineEdit->text());
         settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );
         settings.setValue("maxLogLines", m_ui.logLinesSpinBox->value());
+        settings.setValue("editorTheme",  m_ui.editorThemeComboBox->currentIndex());
+        settings.setValue("guiStylesheet", m_ui.guiStylesheetLineEdit->text());
         settings.sync();
     }
 

@@ -37,15 +37,17 @@ TimeLineDialog::TimeLineDialog(MainWindow *parent) : mainWin(parent)
     m_ui.setupUi(this);
 
     scene = new QGraphicsScene(this);
+    scene->setPalette(mainWin->palette());
 
     m_ui.graphicsView->setScene(scene);
 
     greenBrush = QBrush(Qt::green);
     grayBrush = QBrush(Qt::lightGray);
     redBrush = QBrush(Qt::red);
+    textColor = mainWin->palette().color(QPalette::ButtonText);
     outlinePen = QColor(Qt::gray);
     outlinePen.setWidth(1);
-
+    
     readTimeLineSettings();
 
     renderKeyframeMap();
@@ -70,6 +72,16 @@ TimeLineDialog::TimeLineDialog(MainWindow *parent) : mainWin(parent)
 }
 
 TimeLineDialog::~TimeLineDialog() = default;
+
+void TimeLineDialog::addSceneText(QString text, qreal x, qreal y, qreal size)
+{
+        QGraphicsTextItem* msg = new QGraphicsTextItem();
+        msg->setFont(QFont("Arial", size));
+        msg->setPlainText(text);
+        msg->setPos(x, y);
+        msg->setDefaultTextColor(textColor);
+        scene->addItem(msg);
+}
 
 // feeds this timeline editor all the required info, keyframes, easingcurves, total frames, FPS
 void TimeLineDialog::readTimeLineSettings()
@@ -98,7 +110,12 @@ void TimeLineDialog::readTimeLineSettings()
         }
 
     } else {
-        scene->addText(tr(R"(No Keyframes. Use "F8" key while in "Progressive" mode.)"), QFont("Arial", 10))->setPos(1, -30);
+        QGraphicsTextItem* msg = new QGraphicsTextItem();
+        msg->setFont(QFont("Arial", 10));
+        msg->setPlainText(tr(R"(No Keyframes. Use "F8" key while in "Progressive" mode.)"));
+        msg->setPos(1, -30);
+        msg->setDefaultTextColor(textColor);
+        scene->addItem(msg);
     }
 
     yOff = 20;
@@ -110,22 +127,21 @@ void TimeLineDialog::readTimeLineSettings()
         for (int i = 0; i < uSettings.count(); i++) {
             easingMap.insert(i, new EasingInfo(uSettings[i]));
             // render uniform names down the left side
-            scene->addText(easingMap.value(i)->slidername, QFont("Arial", 6))->setPos(-100, (i * yOff));
+            addSceneText(easingMap.value(i)->slidername, -100, (i * yOff), 6);
         }
 
     } else {
-        scene->addText(tr("No easing curves. \"Apply\" a preset that contains easing curve settings.\nOr create them with \"F7\" hotkey for the selected float slider."), QFont("Arial", 10))->setPos(1, -60);
+        QString txt = tr("No easing curves. \"Apply\" a preset that contains easing curve settings.\nOr create them with \"F7\" hotkey for the selected float slider."); 
+        addSceneText(txt, 1, -60, 10);
     }
 
     vCount = easingMap.count() == 0 ? 10 : uSettings.count();
 
-    scene
-    ->addText(QString("%1 FR / %2 FPS = %3 SEC")
+    QString txt = QString("%1 FR / %2 FPS = %3 SEC")
               .arg(frames)
               .arg(renderFPS)
-              .arg(float(frames) / float(renderFPS)),
-              QFont("Arial", 6))
-    ->setPos(-100, (yOff * vCount) + 5);
+              .arg(float(frames) / float(renderFPS));
+    addSceneText(txt, -100, (yOff * vCount) + 5, 6);
 }
 
 void TimeLineDialog::saveTimeLineSettings()
@@ -220,7 +236,10 @@ void TimeLineDialog::renderKeyframeMap()
 
                 rectMap.value(r.key())->setToolTip(QString("Key Frame: %1\nTime: %2").arg(kfr + 1).arg(float(r.key()) / renderFPS, -2, 'g', 2, '0'));
                 int xPos = (r.key() * 3);
-                scene->addText(QString("%1").arg(kfr + 1), QFont("Arial", 10))->setPos(xPos - (r.key() < 10 ? 8 : 12), -20);
+                
+                QString txt = QString("%1").arg(kfr + 1);
+                addSceneText( txt, xPos - (r.key() < 10 ? 8 : 12), -20, 10);
+                
                 rectMap.value(r.key())->setFlag(QGraphicsItem::ItemIsSelectable);
                 rectMap.value(r.key())->setZValue(1000);
 
@@ -232,7 +251,10 @@ void TimeLineDialog::renderKeyframeMap()
         rectMap.insert(frames, scene->addRect((frames * 3), 0, -3, yOff * vCount, outlinePen, greenBrush));
         rectMap.value(frames)->setToolTip(QString("Key Frame: %1\nTime: %2").arg(keyframeMap.count()).arg(float(frames) / renderFPS, -2, 'g', 2, '0'));
         rectMap.value(frames)->setFlag(QGraphicsItem::ItemIsSelectable);
-        scene->addText(QString("%1").arg(keyframeMap.count()), QFont("Arial", 10))->setPos((frames * 3) - 8, -20);
+        
+        QString txt = QString("%1").arg(keyframeMap.count());
+        addSceneText(txt, (frames * 3) - 8, -20, 10);
+
     } else {
         rectMap.insert(0, scene->addRect(0, 0, frames * 3, yOff * vCount, outlinePen, grayBrush));
     }

@@ -50,6 +50,11 @@ struct ParenthesisInfo {
     int position;
 };
 
+struct BracketInfo {
+    QChar character;
+    int position;
+};
+
 class TextBlockData : public QTextBlockUserData
 {
 public:
@@ -59,8 +64,12 @@ public:
     void insert ( ParenthesisInfo *info );
     void append ( ParenthesisInfo *info );
 
+    QVector<BracketInfo *> brackets();
+    void insert ( BracketInfo *info );
+    void append ( BracketInfo *info );
 private:
     QVector<ParenthesisInfo *> m_parentheses;
+    QVector<BracketInfo *> m_brackets;
 };
 
 class FragmentHighlighter : public QSyntaxHighlighter
@@ -68,6 +77,16 @@ class FragmentHighlighter : public QSyntaxHighlighter
 public:
     FragmentHighlighter ( QTextDocument *parent ) : QSyntaxHighlighter ( parent )
     {
+        setUp();
+    }
+
+    bool glslVersionChanged = false;
+    bool changeGLSLVersion()
+    {
+        return glslVersionChanged;
+    };
+    
+    void setUp() {
         setupFragmentariumDefaults();
         QString fileName ( "./Misc/glsl.xml" );
         QFile file ( fileName );
@@ -87,11 +106,31 @@ public:
         domDocument.clear();
     }
 
-    bool glslVersionChanged = false;
-    bool changeGLSLVersion()
-    {
-        return glslVersionChanged;
-    };
+    void setTheme( QMap<QString, QColor> &theme) {
+        QMapIterator<QString, QColor> i ( theme );
+        while ( i.hasNext() ) {
+            i.next();
+            setTokenColor(i.key(),i.value());
+        }
+    }
+
+    void setTheme(QString themeName) {
+        if(themeName == "SolarizedDark") setTheme(solarizedDarkColors);
+        else
+        if(themeName == "SolarizedLight") setTheme(solarizedLightColors);
+        else
+        if(themeName == "Retta") setTheme(rettaColors);
+        else
+        if(themeName == "Default") {
+            /* reset and use theme from glsl.xml file, user can also customize 
+             * the highlight styles and colors in the "itemDatas coloring definition"
+             * section at the end of the glsl.xml file */
+            highlightingRules.clear();
+            setUp();            
+        }
+        else return;
+        rehighlight();
+    }
 
 protected:
     virtual void highlightBlock ( const QString &text )
@@ -121,6 +160,8 @@ protected:
             myversion = GLSL_MIN_VERSION;
         }
 
+        // fix for stylesheets: first set all blocks to normal then apply highlighting.
+        setFormat ( 0, text.length(), textFormat.value ( "Normaltext" ) );
         foreach ( const HighlightingRule &rule, highlightingRules ) {
             QRegExp expression ( rule.pattern );
             int index = text.indexOf ( expression );
@@ -173,6 +214,10 @@ protected:
             if ( state != InsideMultiLineComment && currentBlockState() != 0 ) {
                 if ( text.at ( i ) == '{' || text.at ( i ) == '}' ) {
                     setFormat ( i, 1, textFormat.value ( "Preprocessor" ) );
+                    BracketInfo *info = new BracketInfo;
+                    info->character = text.at ( i );
+                    info->position = i;
+                    data->insert ( info );
                 } else if ( text.at ( i ) == '(' || text.at ( i ) == ')' ) {
                     setFormat ( i, 1, textFormat.value ( "UserFunction" ) );
                     ParenthesisInfo *info = new ParenthesisInfo;
@@ -225,6 +270,11 @@ protected:
     {
         HighlightingRule rule;
         QTextCharFormat myformat;
+
+        myformat.setForeground ( QBrush ( Qt::black ) );
+        myformat.setFontWeight ( QFont::Normal );
+        myformat.setFontItalic ( false );
+        textFormat.insert ( "Normaltext", myformat );
 
         myformat.setForeground ( QBrush ( Qt::black ) );
         myformat.setFontWeight ( QFont::DemiBold );
@@ -394,6 +444,8 @@ protected:
                         myformat.setForeground ( Qt::blue );
                     } else if ( name == "Comment" ) {
                         myformat.setForeground ( Qt::darkGreen );
+                    } else if ( name == "MultiComment" ) {
+                        myformat.setForeground ( Qt::darkBlue );
                     }
                 }
                 textFormat.insert ( name, myformat );
@@ -481,6 +533,64 @@ private:
     QVector<HighlightingRule> highlightingRules;
     QMap<QString, QTextCharFormat> textFormat;
     QMap<QString, QMap<QString, QString>> contextRules;
+
+    void setTokenColor(QString token, const QColor& color) {
+        QTextCharFormat format = textFormat[token];
+        format.setForeground(color);
+        textFormat[token] = format;
+    }
+
+    QMap<QString, QColor> solarizedDarkColors = {
+        {"Normaltext", QColor(131, 148, 150)},
+        {"Comment", QColor(88, 110, 117)},
+        {"MultiComment", QColor(88, 110, 117)},
+        {"Keyword", QColor(133, 153, 0)},
+        {"Keywordstypes", QColor(181, 137, 0)},
+        {"Buildinfunctions", QColor(38, 139, 210)},
+        {"Buildconstants", QColor(42, 161, 152)},
+        {"Buildinvariables", QColor(42, 161, 152)},
+        {"Reserved", QColor(203, 75, 22)},
+        {"Numbers", QColor(108, 113, 196)},
+        {"Preprocessor", QColor(133, 153, 0)},
+        {"UserFunction", QColor(133, 153, 0)},
+        {"Identifier", QColor(83, 153, 50)},
+        {"Fragmentarium", QColor(133, 53, 0)}
+    };
+
+    QMap<QString, QColor> solarizedLightColors = {
+        {"Normaltext", QColor(101, 123, 131)},
+        {"Comment", QColor(147, 161, 161)},
+        {"MultiComment", QColor(147, 161, 161)},
+        {"Keyword", QColor(133, 153, 0)},
+        {"Keywordstypes", QColor(181, 137, 0)},
+        {"Buildinfunctions", QColor(38, 139, 210)},
+        {"Buildconstants", QColor(42, 161, 152)},
+        {"Buildinvariables", QColor(42, 161, 152)},
+        {"Reserved", QColor(203, 75, 22)},
+        {"Numbers", QColor(108, 113, 196)},
+        {"Preprocessor", QColor(133, 153, 0)},
+        {"UserFunction", QColor(133, 153, 0)},
+        {"Identifier", QColor(83, 153, 50)},
+        {"Fragmentarium", QColor(133, 53, 0)}
+    };
+
+    QMap<QString, QColor> rettaColors = {
+        {"Normaltext", QColor(248, 225, 170)},
+        {"Comment", QColor(131, 120, 110)},
+        {"MultiComment", QColor(131, 120, 110)},
+        {"Keyword", QColor(231, 158, 60)},
+        {"Keywordstypes", QColor(222, 101, 70)},
+        {"Buildinfunctions", QColor(164, 176, 192)},
+        {"Buildconstants", QColor(82, 125, 39)},
+        {"Buildinvariables", QColor(82, 125, 39)},
+        {"Reserved", QColor(164, 176, 192)},
+        {"Numbers", QColor(214, 194, 72)},
+        {"Preprocessor", QColor(214, 194, 72)},
+        {"UserFunction", QColor(214, 194, 72)},
+        {"Identifier", QColor(114, 194, 92)},
+        {"Fragmentarium", QColor(214, 94, 32)}
+    };
+
     QDomDocument domDocument;
 };
 

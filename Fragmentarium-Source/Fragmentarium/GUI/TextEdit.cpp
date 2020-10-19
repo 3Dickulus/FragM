@@ -31,6 +31,11 @@ QVector<ParenthesisInfo *> TextBlockData::parentheses()
     return m_parentheses;
 }
 
+QVector<BracketInfo *> TextBlockData::brackets()
+{
+    return m_brackets;
+}
+
 
 void TextBlockData::insert(ParenthesisInfo *info)
 {
@@ -45,6 +50,21 @@ void TextBlockData::insert(ParenthesisInfo *info)
 void TextBlockData::append(ParenthesisInfo *info)
 {
     m_parentheses.append(info);
+}
+
+void TextBlockData::insert(BracketInfo *info)
+{
+    int i = 0;
+    while (i < m_brackets.size() && info->position > m_brackets.at(i)->position) {
+        ++i;
+    }
+
+    m_brackets.insert(i, info);
+}
+
+void TextBlockData::append(BracketInfo *info)
+{
+    m_brackets.append(info);
 }
 
 TextEdit::TextEdit(MainWindow *parent) : QPlainTextEdit(parent), mainWindow(parent)
@@ -126,11 +146,8 @@ void TextEdit::highlightCurrentLine()
     if (!isReadOnly() && !lineNumberArea->isHidden() ) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::lightGray).lighter(125);
-
-        if (!mainWindow->wantLineNumbers) {
-            lineColor = QColor(Qt::white);
-        }
+        QColor lineColor = mainWindow->palette().color(QPalette::Button);
+        // QColor(Qt::lightGray).lighter(125); //palette().color(QPalette::Background).lighter(125);
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -141,6 +158,7 @@ void TextEdit::highlightCurrentLine()
 
     setExtraSelections(extraSelections);
 
+    matchBrackets();
     matchParentheses();
 
 }
@@ -149,7 +167,7 @@ void TextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 
     QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    painter.fillRect(event->rect(), mainWindow->palette().color(QPalette::Button));
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -161,7 +179,7 @@ void TextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
         if (block.isVisible() && bottom >= event->rect().top()) {
 
             QString number = QString::number(blockNumber);
-            painter.setPen(Qt::black);
+            painter.setPen(palette().color(QPalette::ButtonText));
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(), Qt::AlignRight, number);
         }
 
@@ -207,8 +225,7 @@ bool TextEdit::matchLeftParenthesis(QTextBlock currentBlock, int i, int numLeftP
         if (info->character == '(') {
             ++numLeftParentheses;
             continue;
-        }
-        if ( (info->character == ')')  && numLeftParentheses == 0) {
+        } else if ( (info->character == ')')  && numLeftParentheses == 0) {
             createParenthesisSelection(docPos + info->position);
             return true;
         }
@@ -235,8 +252,7 @@ bool TextEdit::matchRightParenthesis(QTextBlock currentBlock, int i, int numRigh
             if (info->character == ')') {
                 ++numRightParentheses;
                 continue;
-            }
-            if ( (info->character == '(') && numRightParentheses == 0) {
+            } else if ( (info->character == '(') && numRightParentheses == 0) {
                 createParenthesisSelection(docPos + info->position);
                 return true;
             }
@@ -252,6 +268,103 @@ bool TextEdit::matchRightParenthesis(QTextBlock currentBlock, int i, int numRigh
 }
 
 void TextEdit::createParenthesisSelection(int pos)
+{
+    QList<QTextEdit::ExtraSelection> selections = extraSelections();
+
+    QTextEdit::ExtraSelection selection;
+    QTextCharFormat format = selection.format;
+    format.setBackground(Qt::yellow);
+    selection.format = format;
+
+    QTextCursor cursor = textCursor();
+    cursor.setPosition(pos);
+    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+    selection.cursor = cursor;
+
+    selections.append(selection);
+
+    setExtraSelections(selections);
+}
+
+void TextEdit::matchBrackets()
+{
+    TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
+
+    if (data != nullptr) {
+        QVector<BracketInfo *> infos = data->brackets();
+
+        int pos = textCursor().block().position();
+        for (int i = 0; i < infos.size(); ++i) {
+            BracketInfo *info = infos.at(i);
+
+            int curPos = textCursor().position() - textCursor().block().position();
+            if (info->position == curPos - 1 && (info->character == '{')) {
+                if (matchBra(textCursor().block(), i + 1, 0)) {
+                    createBracketSelection(pos + info->position);
+                }
+            } else if (info->position == curPos - 1 && (info->character == '}')) {
+                if (matchKet(textCursor().block(), i - 1, 0)) {
+                    createBracketSelection(pos + info->position);
+                }
+            }
+        }
+    }
+}
+
+bool TextEdit::matchBra(QTextBlock currentBlock, int i, int numBras)
+{
+    auto *data = static_cast<TextBlockData *>(currentBlock.userData());
+    QVector<BracketInfo *> infos = data->brackets();
+
+    int docPos = currentBlock.position();
+    for (; i < infos.size(); ++i) {
+        BracketInfo *info = infos.at(i);
+        if (info->character == '{') {
+            ++numBras;
+            continue;
+        } else if ( (info->character == '}')  && numBras == 0) {
+            createBracketSelection(docPos + info->position);
+            return true;
+        }
+        --numBras;
+    }
+
+    currentBlock = currentBlock.next();
+    if (currentBlock.isValid()) {
+        return matchBra(currentBlock, 0, numBras);
+    }
+
+    return false;
+}
+
+bool TextEdit::matchKet(QTextBlock currentBlock, int i, int numKets)
+{
+    auto *data = static_cast<TextBlockData *>(currentBlock.userData());
+    QVector<BracketInfo *> infos = data->brackets();
+
+    int docPos = currentBlock.position();
+    if (!infos.isEmpty()) {
+        for (; i > -1; --i) {
+            BracketInfo *info = infos.at(i);
+            if (info->character == '}') {
+                ++numKets;
+                continue;
+            } else if ( (info->character == '{') && numKets == 0) {
+                createBracketSelection(docPos + info->position);
+                return true;
+            }
+            --numKets;
+        }
+    }
+    currentBlock = currentBlock.previous();
+    if (currentBlock.isValid()) {
+        return matchKet(currentBlock, 0, numKets);
+    }
+
+    return false;
+}
+
+void TextEdit::createBracketSelection(int pos)
 {
     QList<QTextEdit::ExtraSelection> selections = extraSelections();
 

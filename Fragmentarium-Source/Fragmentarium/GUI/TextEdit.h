@@ -61,14 +61,41 @@ public:
 public slots:
     void insertText();
 
+    void setTheme() { // from context menu
+        QString themeName = ((QAction*)sender())->text();
+        fh->setTheme(themeName);
+    }
+    
+    void setTheme(int et) {
+        QString tn = "Default";
+        switch(et) {
+            case 1: tn="SolarizedDark"; break;
+            case 2: tn="SolarizedLight"; break;
+            case 3: tn="Retta"; break;
+            default: tn="Default";
+        }
+        setTheme(tn);
+        fh->rehighlight();
+    }
+
+    void setTheme(QString themeName) {
+        fh->setTheme(themeName);
+    }
+
+    void setTheme( QMap<QString, QColor> &theme) {
+        fh->setTheme( theme );
+    }
+
+    void highlightCurrentLine();
+
 protected:
     void resizeEvent ( QResizeEvent *ev );
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
-    void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
     void matchParentheses();
+    void matchBrackets();
 
 private:
     MainWindow* mainWindow;
@@ -77,6 +104,9 @@ private:
     bool matchLeftParenthesis ( QTextBlock currentBlock, int i, int numLeftParentheses );
     bool matchRightParenthesis ( QTextBlock currentBlock, int i, int numRightParentheses );
     void createParenthesisSelection(int pos);
+    bool matchBra ( QTextBlock currentBlock, int i, int numBras );
+    bool matchKet ( QTextBlock currentBlock, int i, int numKets );
+    void createBracketSelection(int pos);
 };
 
 

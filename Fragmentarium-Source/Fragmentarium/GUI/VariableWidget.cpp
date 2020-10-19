@@ -37,8 +37,9 @@ VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString
     vl->setContentsMargins (0,0,0,0);
     setObjectName(name);
     lockButton = new QPushButton(this);
+    lockButton->setObjectName("lockbutton");
     lockButton->setFlat(true);
-    lockButton->setStyleSheet("QPushButton {border: none; outline: none;}");
+    lockButton->setStyleSheet("* {background: none; border: none; outline: none;}");
     lockButton->setIcon(QIcon(":/Icons/padlockb.png"));
     lockButton->setFixedSize(12,18);
     lockButton->setCheckable(true);
@@ -62,16 +63,29 @@ bool VariableWidget::isLocked()
 
 void VariableWidget::valueChanged()
 {
-    if (lockType == Locked || lockType == AlwaysLocked || oldLockType != lockType) {
-        QPalette pal = palette();
-        pal.setColor(backgroundRole(), Qt::yellow);
-        setPalette(pal);
-        setAutoFillBackground(true);
-        emit(changed(true));
+
+    if(qApp->styleSheet().isEmpty()) {
+
+        if (isLocked() || oldLockType != lockType) {
+            QPalette pal = palette();
+            pal.setColor(backgroundRole(), Qt::yellow);
+            setPalette(pal);
+            setAutoFillBackground(true);
+            emit(changed(true));
+        } else {
+            emit(changed(false));
+        }
+
     } else {
-        emit(changed(false));
+
+        if (isLocked() || oldLockType != lockType) {
+            label->setStyleSheet("* {border: none; color: black; background: QRadialGradient(cx:0.5, cy:0.5, radius: 0.6, fx:0.5, fy:0.5, stop:0 rgb(255,255,0,100%), stop:1 rgb(255,255,0,0%));}");
+            emit(changed(true));
+        } else {
+            label->setStyleSheet("* {;}");
+            emit(changed(false));
+        }
     }
-        
     oldLockType = lockType;
 }
 

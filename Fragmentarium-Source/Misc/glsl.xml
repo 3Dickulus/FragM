@@ -2232,22 +2232,23 @@
 		     ################################################################################################################ -->
 		<itemDatas>
 			<!-- coloring definition -->
-			<itemData name="Normaltext"       defStyleNum="dsNormal"                            color="black"/>
-			<itemData name="Keyword"          defStyleNum="dsKeyword"  bold="1"                 color="darkMagenta"/>
-			<itemData name="Keywordstypes"    defStyleNum="dsKeyword"  bold="1"                 color="darkBlue"/>
-			<itemData name="Reserved"         defStyleNum="dsKeyword"  bold="1" strikeout="1"   color="black"/>
-			<itemData name="Buildinvariables" defStyleNum="dsDataType"                          color="darkYellow"/>
-			<itemData name="Buildconstants"   defStyleNum="dsDataType"                          color="darkMagenta"/>
-			<itemData name="Buildinfunctions" defStyleNum="dsKeyword"  bold="1"                 color="#886600"/>
+			<itemData name="Normaltext"       style="Normal"                            color="black"/>
+			<itemData name="Keyword"          style="Keyword"  bold="1"                 color="darkMagenta"/>
+			<itemData name="Keywordstypes"    style="Keyword"  bold="1"                 color="darkBlue"/>
+			<itemData name="Reserved"         style="Keyword"  bold="1" strikeout="1"   color="black"/>
+			<itemData name="Buildinvariables" style="DataType"                          color="darkYellow"/>
+			<itemData name="Buildconstants"   style="DataType"                          color="darkMagenta"/>
+			<itemData name="Buildinfunctions" style="Keyword"  bold="1"                 color="#886600"/>
 
-			<itemData name="Float"          defStyleNum="dsFloat"        color="#888800"/>
-			<itemData name="Octal"          defStyleNum="dsBaseN"        color="#888800"/>
-			<itemData name="Hex"            defStyleNum="dsBaseN"        color="#888800"/>
-			<itemData name="Decimal"        defStyleNum="dsDecVal"       color="#888800"/>
+			<itemData name="Float"          style="Float"        color="#888800"/>
+			<itemData name="Octal"          style="BaseN"        color="#888800"/>
+			<itemData name="Hex"            style="BaseN"        color="#888800"/>
+			<itemData name="Decimal"        style="DecVal"       color="#888800"/>
 
-			<itemData name="Preprocessor"   defStyleNum="dsDataType" bold="1"   color="blue"/>
-			<itemData name="Comment"        defStyleNum="dsComment"  italic="1" color="darkGreen"/>
-			<itemData name="Identifier"     defStyleNum="dsNormal"/>
+			<itemData name="Preprocessor"   style="DataType" bold="1"   color="blue"/>
+            <itemData name="Comment"        style="Comment"  italic="1" color="darkGreen"/>
+            <itemData name="MultiComment"   style="Comment"  italic="1" color="darkBlue"/>
+            <itemData name="Identifier"     style="Normal"/>
 		</itemDatas>
 	</highlighting>
 	

@@ -142,9 +142,7 @@ public slots:
     void presetSelected(QString presetName);
     void dockChanged ( bool t )
     {
-        if ( width() > height() ) {
-            t = true;
-        }
+        t = ( width() > height() );
         tabWidget->setTabPosition ( t ? ( QTabWidget::North ) : ( QTabWidget::East ) ); // 05/22/17 Sabine ;)
     }
     void hideUnusedTabs();

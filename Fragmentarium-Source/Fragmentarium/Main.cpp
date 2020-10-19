@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
                                          QString("Fusion"))
                     );
     parser.addOption(QCommandLineOption("stylesheet",
-                                        app->translate("main", "Sets the application styleSheet. The value must be a path to a file that contains the Style Sheet."),
+                                        app->translate("main", "Sets the application styleSheet. The value must be a path to a valid .qss file."),
                                          QString("filename"),
                                          QString(""))
                     );
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     }
 
 // Process the actual command line arguments given by the user
-// In addition to parsing the options (like parse()), this function also handles the builtin options and handles errors.
+// In addition to parsing the options (like parse()), the process() function also handles the builtin options and handles errors.
 // The builtin options are --version if addVersionOption was called and --help if addHelpOption was called.
 // When invoking one of these options, or when an error happens (for instance an unknown option was passed),
 // the current process will then stop, using the exit() function.
@@ -249,7 +249,6 @@ int main(int argc, char *argv[])
     }
 
     mainWin->show();
-
 
     splash.setMask(pixmap.mask());
     QStringList openFiles = QSettings().value("openFiles").toStringList();

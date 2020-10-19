@@ -99,6 +99,7 @@ public:
         spinner->setMinimum(minimum);
         spinner->setValue(defaultValue);
         spinner->setKeyboardTracking(false);
+        spinner->setGroupSeparatorShown(false);
         // Scientific
         spinner->setScientificFormat(false);
         spinner->setMinimumSize(FDEC*20,20);
@@ -281,19 +282,29 @@ public:
     {
         setLayout(new QHBoxLayout(this));
         setColor(defaultValue);
+        setAutoFillBackground( true );
         setFrameStyle(QFrame::Panel | QFrame::Plain);
         setLineWidth(1);
     }
 
 public slots:
+// BUG palette gets inherited when using an application level stylesheet loaded
+// via the cmdline option --stylesheet=filename.qss this widget no longer responds
+// to setting the palette backgroundrole color
+// FIX: use stylesheet internally/manually to set colors instead of palette
     void setColor ( glm::dvec3 v )
     {
         QPalette p = palette();
         QColor c;
         c.setRgbF(v.x,v.y,v.z);
-        p.setColor(backgroundRole(), c);
-        setAutoFillBackground( true );
-        setPalette(p);
+        setStyleSheet(QString(
+            "* {background: %1;"
+            "border-color: %2;"
+            "border-width: 1px;"
+            "border-style: solid;"
+            "border-radius: 3px;}"
+            ).arg(c.name(QColor::HexRgb)).arg(p.color(QPalette::Dark).name(QColor::HexRgb))
+        );
         value = v;
     }
 
@@ -343,6 +354,10 @@ public:
         : QWidget ( parent ), defaultValue ( defaultValue ), min ( minimum ), max ( maximum )
     {
 
+        setMinimumSize(160,20);
+        setMaximumSize(2048,20);
+        setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+
         QHBoxLayout* l = new QHBoxLayout(this);
         l->setSpacing(2);
         l->setContentsMargins(0,0,0,0);
@@ -350,6 +365,9 @@ public:
         slider = new QSlider(Qt::Horizontal,this);
         slider->setRange(minimum,maximum);
         slider->setValue(defaultValue);
+        slider->setMinimumSize(160,20);
+        slider->setMaximumSize(2048,20);
+        slider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
         l->addWidget(slider);
 
         spinner = new QSpinBox(this);
@@ -435,10 +453,10 @@ public:
     void setLabelStyle(bool prov=false)
     {
        if (prov) {
-            QColor c = label->palette().color(QPalette::Inactive, QPalette::Mid);
-            label->setStyleSheet("border-style: outset; border-width: 1px; border-color: " + c.name() + ";");
+            QColor c = label->palette().color(QPalette::Dark);
+            label->setStyleSheet("* {border-style: outset; border-width: 1px; border-color: " + c.name() + "; border-radius: 2px;}");
         } else {
-            label->setStyleSheet("border: none;");
+            label->setStyleSheet("* {border: none;}");
         }
     }
     bool isUpdated() const

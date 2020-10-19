@@ -5,12 +5,15 @@
 ExpSpinBox::ExpSpinBox(QWidget * parent)
     : QDoubleSpinBox(parent)
 {
-	setDecimals(1000);
-	QDoubleSpinBox::setDecimals(1000);
+	setDecimals(__DBL_MAX_10_EXP__ + __DBL_DIG__);
+	QDoubleSpinBox::setDecimals(__DBL_MAX_10_EXP__ + __DBL_DIG__);
 	
 	// set Range to maximum possible values
 	double doubleMax = std::numeric_limits<double>::max();
 	setRange(-doubleMax, doubleMax);
+	QDoubleSpinBox::setRange(-doubleMax, doubleMax);
+    setGroupSeparatorShown(false);
+    QDoubleSpinBox::setGroupSeparatorShown(false);
 }
 
 int ExpSpinBox::decimals() const

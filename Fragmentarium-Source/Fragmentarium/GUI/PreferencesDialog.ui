@@ -6,57 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>628</height>
+    <width>787</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <widget class="QGroupBox" name="mainGroupBox">
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="2" rowspan="2">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string/>
+      <string>GUI:</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="moveMainCheckBox">
-        <property name="toolTip">
-         <string>For compatibility with some GPU's.</string>
-        </property>
+       <widget class="QCheckBox" name="autoLoadCheckBox">
         <property name="text">
-         <string>Move main() to end</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="drawGLPathsCheckBox">
-        <property name="toolTip">
-         <string>Some engines use non GL matrices.</string>
-        </property>
-        <property name="text">
-         <string>Draw spline paths for camera and target</string>
+         <string>Autoload on change</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QCheckBox" name="autoRunCheckBox">
-        <property name="toolTip">
-         <string>Disabling this might make debugging easier.</string>
-        </property>
+       <widget class="QCheckBox" name="loopPlayCheckBox">
         <property name="text">
-         <string>Autorun On Load</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="lineNumbersCheckBox">
-        <property name="toolTip">
-         <string>Enabling this might be helpful when debugging.</string>
-        </property>
-        <property name="text">
-         <string>Add line numbers to the editing window.</string>
+         <string>Loop animation</string>
         </property>
        </widget>
       </item>
@@ -67,63 +41,24 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="saveEasingCheckBox">
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
         <property name="text">
-         <string>Presets contain easing curve settings</string>
+         <string>Full path in recent files menu.</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="loopPlayCheckBox">
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+        <property name="toolTip">
+         <string>Some engines use non GL matrices.</string>
+        </property>
         <property name="text">
-         <string>Loop animation</string>
+         <string>Draw spline paths for camera and target</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="useDefinesCheckBox">
-        <property name="text">
-         <string>Locked uniforms use #define or const</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QCheckBox" name="autoLoadCheckBox">
-        <property name="text">
-         <string>Autoload on change</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="includeWithAutoSaveCheckBox">
-        <property name="text">
-         <string>#Include files with AutoSave Fragments</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QCheckBox" name="jtloeCheckBox">
-        <property name="text">
-         <string>Jump to line on Error</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="jtlowCheckBox">
-        <property name="text">
-         <string>Jump to line on Warn</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QCheckBox" name="logToFileCheckBox">
-        <property name="text">
-         <string>Log to File</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
+      <item row="5" column="0" colspan="2">
        <widget class="QCheckBox" name="ddCameraModeCheckBox">
         <property name="text">
          <string>2D Camera Mode on=traveling off=fixed</string>
@@ -133,7 +68,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="6" column="0" colspan="2">
        <widget class="QCheckBox" name="playRestartModeCheckBox">
         <property name="text">
          <string>Animation update on=continuous off=last set</string>
@@ -143,20 +78,124 @@
         </property>
        </widget>
       </item>
+      <item row="7" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <item>
+         <widget class="QLabel" name="guiStylesheetLabel">
+          <property name="text">
+           <string>GUI Stylesheet:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="guiStylesheetLineEdit">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="guiStylesheetToolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="8" column="0" colspan="2">
-       <spacer name="verticalSpacer_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="maxRecentFilesLabel">
+          <property name="text">
+           <string>Max Recent Files</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="maxRecentFilesSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="logLinesLabel">
+          <property name="text">
+           <string>Log Window Max Lines</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="logLinesSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <spacer name="verticalSpacer_5">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>328</width>
-          <height>32</height>
+          <width>320</width>
+          <height>3</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item row="9" column="0" colspan="2">
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Application</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="exrBinPathsLabel">
+          <property name="text">
+           <string>EXR binaries paths:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="exrBinPathsLineEdit">
+          <property name="text">
+           <string>bin;</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="exrBinPathsToolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -227,7 +266,17 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="useMimetypesCheckBox">
+        <property name="toolTip">
+         <string>Texture file dialog uses mimetypes when checked.</string>
+        </property>
+        <property name="text">
+         <string>Texture file dialog lists image files by extension or mimetype</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="refreshRateLabel">
@@ -258,31 +307,7 @@
         </item>
        </layout>
       </item>
-      <item row="11" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="animFrameRateLabel">
-          <property name="text">
-           <string>Animation frame rate (in frames per second)</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="fpsSpinBox">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>120</number>
-          </property>
-          <property name="value">
-           <number>25</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="12" column="0" colspan="2">
+      <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="includePathsLabel">
@@ -310,40 +335,106 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item row="6" column="0">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>348</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="logToFileCheckBox">
+        <property name="text">
+         <string>Log to File</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Editor:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0" rowspan="2" colspan="2">
+       <widget class="QCheckBox" name="jtlowCheckBox">
+        <property name="text">
+         <string>Jump to line on Warn</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
-         <widget class="QLabel" name="exrBinPathsLabel">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>EXR binaries paths:</string>
+           <string>Editor Schema: </string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="exrBinPathsLineEdit">
-          <property name="text">
-           <string>bin;</string>
+         <widget class="QComboBox" name="editorThemeComboBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="exrBinPathsToolButton">
-          <property name="text">
-           <string>...</string>
-          </property>
+          <item>
+           <property name="text">
+            <string>Default</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Solarized Dark</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Solarized Light</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Retta</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="14" column="0" colspan="2">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="jtloeCheckBox">
+        <property name="text">
+         <string>Jump to line on Error</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="editorStylesheetLabel">
           <property name="text">
-           <string>Editor stylesheet:</string>
+           <string>Editor Text:</string>
           </property>
          </widget>
         </item>
@@ -357,105 +448,126 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QToolButton" name="editorStylesheetToolButton">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
-      <item row="15" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLabel" name="maxRecentFilesLabel">
-          <property name="text">
-           <string>Max Recent Files</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="maxRecentFilesSpinBox">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="value">
-           <number>5</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="15" column="1">
-       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
-        <property name="text">
-         <string>Full path in recent files menu.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="16" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_10">
-        <item>
-         <widget class="QLabel" name="logLinesLabel">
-          <property name="text">
-           <string>Log window max lines</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="logLinesSpinBox">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>999999</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="17" column="0" colspan="2">
-       <widget class="QCheckBox" name="useMimetypesCheckBox">
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="lineNumbersCheckBox">
         <property name="toolTip">
-         <string>Texture file dialog uses mimetypes when checked.</string>
+         <string>Enabling this might be helpful when debugging.</string>
         </property>
         <property name="text">
-         <string>Texture file dialog lists image files by extension or mimetype</string>
+         <string>Add line numbers to the editing window.</string>
         </property>
        </widget>
       </item>
-      <item row="18" column="0" colspan="2">
-       <spacer name="verticalSpacer">
+      <item row="6" column="0">
+       <spacer name="verticalSpacer_4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>348</width>
-          <height>31</height>
+          <width>20</width>
+          <height>40</height>
          </size>
         </property>
        </spacer>
       </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="glslGroupBox">
+     <property name="title">
+      <string>GLSL:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
       <item row="7" column="0">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>328</width>
+          <height>32</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="moveMainCheckBox">
+        <property name="toolTip">
+         <string>For compatibility with some GPU's.</string>
+        </property>
+        <property name="text">
+         <string>Move main() to end</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="animFrameRateLabel">
+          <property name="text">
+           <string>Animation frame rate (in frames per second)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="fpsSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>120</number>
+          </property>
+          <property name="value">
+           <number>25</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
        <widget class="QCheckBox" name="compatPatchCheckBox">
         <property name="text">
          <string>Apply compatibility patches</string>
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="includeWithAutoSaveCheckBox">
+        <property name="text">
+         <string>#Include files with AutoSave Fragments</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="saveEasingCheckBox">
+        <property name="text">
+         <string>Presets contain easing curve settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="useDefinesCheckBox">
+        <property name="text">
+         <string>Locked uniforms use #define or const</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="autoRunCheckBox">
+        <property name="toolTip">
+         <string>Disabling this might make debugging easier.</string>
+        </property>
+        <property name="text">
+         <string>Autorun On Load</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>
@@ -469,8 +581,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>537</y>
+     <x>273</x>
+     <y>841</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -485,8 +597,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>333</x>
-     <y>537</y>
+     <x>341</x>
+     <y>841</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -501,12 +613,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>201</y>
+     <x>98</x>
+     <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>90</x>
-     <y>270</y>
+     <x>89</x>
+     <y>334</y>
     </hint>
    </hints>
   </connection>
@@ -517,12 +629,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>201</y>
+     <x>98</x>
+     <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>162</x>
-     <y>269</y>
+     <x>158</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
@@ -533,12 +645,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>201</y>
+     <x>98</x>
+     <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>241</x>
-     <y>270</y>
+     <x>237</x>
+     <y>334</y>
     </hint>
    </hints>
   </connection>
@@ -549,12 +661,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>201</y>
+     <x>98</x>
+     <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>394</x>
-     <y>270</y>
+     <x>515</x>
+     <y>334</y>
     </hint>
    </hints>
   </connection>
@@ -565,12 +677,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>55</x>
-     <y>192</y>
+     <x>73</x>
+     <y>310</y>
     </hint>
     <hint type="destinationlabel">
-     <x>415</x>
-     <y>256</y>
+     <x>543</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>

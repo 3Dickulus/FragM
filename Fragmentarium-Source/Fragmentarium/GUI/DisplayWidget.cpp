@@ -230,7 +230,7 @@ void DisplayWidget::initializeGL()
         if(ver >= 3.0) glslvers << "130";
         if(ver >= 3.1) glslvers << "140";
         if(ver >= 3.2) glslvers << "150";
-        if(ver >= 3.29) glslvers << "300 es" << "310 es" << "320 es" << "330";
+        if(ver >= 3.3) glslvers << "300 es" << "310 es" << "320 es" << "330";
         if(ver >= 4.0) glslvers << "400";
         if(ver >= 4.1) glslvers << "410";
         if(ver >= 4.2) glslvers << "420";

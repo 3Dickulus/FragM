@@ -6,7 +6,6 @@ Status
 ----------------------
 [![Release][release-image]][releases]
 [![License][license-image]][license]
-[![Build Status](https://travis-ci.org/3Dickulus/FragM.svg?branch=master)](https://travis-ci.org/3Dickulus/FragM)
 
 [release-image]: https://img.shields.io/badge/release-2.5.3-green.svg?style=flat
 [releases]: https://github.com/3Dickulus/FragM/releases
@@ -91,14 +90,11 @@ Status
    Depends:     Qt5Core, Qt5Gui, Qt5OpenGL, Qt5Script, Qt5Widgets, Qt5Xml
 
 # Guidelines for contributing
-    1. any new feature must work on the widest range of hardware, ( AMD Intel and nVidia ) all if possible
+    1. any new feature should work on the widest range of hardware, ( AMD Intel and nVidia ) all if possible
     2. any changes to existing features must be compatible with the existing fragment base
-    3. existing features that only work on specific hardware should be phased out or modified to work on all hardware.
-    4. when adding options or settings they must be in line with the existing structure for handling options and settings
-       (unless you have a better idea that makes the current structure obsolete)
-    5. priority should go towards handling more modern GLSL versions and practices
-    6. changes and additions must be tested against all other features, animating, timeline management,
-       easing curve controls etc... and render the base frags properly before merging will be considered.
+    3. priority should go towards handling more modern GLSL versions and practices
+    4. changes and additions must be tested against all other features, animating, timeline management,
+       easing curve controls etc... and render the base frags properly.
 
 ...of course none of this is carved in stone and I'm always open for discussing ideas.
 

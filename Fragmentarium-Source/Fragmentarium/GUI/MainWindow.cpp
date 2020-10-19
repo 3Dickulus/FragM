@@ -72,6 +72,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
 #endif
 
     maxRecentFiles = 5;
+    editorTheme = 0;
 
     lastStoredTime = 0;
     engine = nullptr;
@@ -629,12 +630,12 @@ void MainWindow::init()
     stackedTextEdits = new QStackedWidget(splitter);
 
     engine = new DisplayWidget(this, splitter);
-    engine->setObjectName("DisplayWidget");
+    engine->setObjectName(QString::fromUtf8("DisplayWidget"));
 
     engine->show();
 
     tabBar = new QTabBar(this);
-    tabBar->setObjectName("TabBar");
+    tabBar->setObjectName(QString::fromUtf8("TabBar"));
     tabBar->setMovable(true);
     tabBar->setTabsClosable(true);
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
@@ -660,6 +661,8 @@ void MainWindow::init()
     dockLog->setWindowTitle(tr("Log"));
     dockLog->setObjectName(QString::fromUtf8("dockWidget"));
     dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
+    dockLog->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
     auto *vboxLayout1 = new QVBoxLayout(dockLogContents);
@@ -679,6 +682,7 @@ void MainWindow::init()
     editorDockWidget->setWindowTitle(tr("Variable Editor (uniforms)"));
     editorDockWidget->setObjectName(QString::fromUtf8("editorDockWidget"));
     editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    editorDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
     auto *vboxLayout2 = new QVBoxLayout(editorLogContents);
@@ -686,7 +690,7 @@ void MainWindow::init()
     vboxLayout2->setContentsMargins(0, 0, 0, 0);
 
     variableEditor = new VariableEditor(editorDockWidget, this);
-    variableEditor->setObjectName("VariableEditor");
+    variableEditor->setObjectName(QString::fromUtf8("VariableEditor"));
     variableEditor->setMinimumWidth(320);
     vboxLayout2->addWidget(variableEditor);
     editorDockWidget->setWidget(editorLogContents);
@@ -758,6 +762,9 @@ initTools();
     setupScriptEngine();
     play();
     veDockChanged(true);
+    QString styleSheetFile = "file:///"+guiStylesheet;
+    if(guiStylesheet.isEmpty()) styleSheetFile = guiStylesheet;
+    qApp->setStyleSheet(styleSheetFile);
 }
 
 #ifdef USE_OPEN_EXR
@@ -963,7 +970,7 @@ void MainWindow::createActions()
     openAction->setStatusTip(tr("Open an existing file"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
-    reloadAction = new QAction(QIcon(":/Icons/open.png"), tr("&Reload..."), this);
+    reloadAction = new QAction(QIcon(":/Icons/view-refresh.png"), tr("&Reload..."), this);
     reloadAction->setShortcut(tr("Ctrl+R"));
     reloadAction->setStatusTip(tr("Reload file in current tab"));
     connect(reloadAction, SIGNAL(triggered()), this, SLOT(reloadFrag()));
@@ -1018,12 +1025,12 @@ void MainWindow::createActions()
     scriptAction->setStatusTip(tr("Edit the currently loaded script"));
     connect(scriptAction, SIGNAL(triggered()), this, SLOT(editScript()));
 
-    renderAction = new QAction(QIcon(":/Icons/render.png"), tr("&Build System"), this);
+    renderAction = new QAction(QIcon(":/Icons/render.png"), tr("Compile &GLSL"), this);
     renderAction->setShortcut(tr("F5"));
     renderAction->setStatusTip(tr("Render the current ruleset"));
     connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
 
-    videoEncoderAction = new QAction(QIcon(":/Icons/render.png"), tr("&Video Encoding"), this);
+    videoEncoderAction = new QAction(QIcon(":/Icons/player_eject.png"), tr("&Video Encoding"), this);
     videoEncoderAction->setStatusTip(tr("Encode rendered frames to video"));
     connect(videoEncoderAction, SIGNAL(triggered()), this, SLOT(videoEncoderRequest()));
 
@@ -1040,22 +1047,22 @@ void MainWindow::createActions()
 
     scriptingGeneralAction = new QAction(QIcon(":/Icons/documentinfo.png"), tr("&Scripting General Help"), this);
     scriptingGeneralAction->setStatusTip(tr("Shows information about how to control Fragmentarium via Script"));
-    scriptingGeneralAction->setObjectName("scriptingGeneralAction");
+    scriptingGeneralAction->setObjectName(QString::fromUtf8("scriptingGeneralAction"));
     connect(scriptingGeneralAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
     scriptingParameterAction = new QAction(QIcon(":/Icons/documentinfo.png"), tr("&Scripting Parameter Help"), this);
     scriptingParameterAction->setStatusTip(tr("Shows information about how to control Fragmentarium via Script"));
-    scriptingParameterAction->setObjectName("scriptingParameterAction");
+    scriptingParameterAction->setObjectName(QString::fromUtf8("scriptingParameterAction"));
     connect(scriptingParameterAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
     scriptingHiresAction = new QAction(QIcon(":/Icons/documentinfo.png"), tr("&Scripting Image Anim Dialog Help"), this);
     scriptingHiresAction->setStatusTip(tr("Shows information about how to control Fragmentarium via Script"));
-    scriptingHiresAction->setObjectName("scriptingHiresAction");
+    scriptingHiresAction->setObjectName(QString::fromUtf8("scriptingHiresAction"));
     connect(scriptingHiresAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
     scriptingControlAction = new QAction(QIcon(":/Icons/documentinfo.png"), tr("&Scripting Control Help"), this);
     scriptingControlAction->setStatusTip(tr("Shows information about how to control Fragmentarium via Script"));
-    scriptingControlAction->setObjectName("scriptingControlAction");
+    scriptingControlAction->setObjectName(QString::fromUtf8("scriptingControlAction"));
     connect(scriptingControlAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
     clearTexturesAction = new QAction(tr("Clear Texture Cache"), this);
@@ -1801,12 +1808,12 @@ retry:
                     qd->~QDialog();
                 }
                 qd = new QDialog(this);
-                qd->setObjectName("PREVIEW");
+                qd->setObjectName(QString::fromUtf8("PREVIEW"));
 
                 auto *l = new QVBoxLayout;
 
                 QLabel* label = new QLabel();
-                label->setObjectName("previewImage");
+                label->setObjectName(QString::fromUtf8("previewImage"));
                 label->setPixmap(QPixmap::fromImage(finalImage));
 
                 auto *scrollArea = new QScrollArea;
@@ -1962,7 +1969,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(saveAction);
     fileToolBar->addAction(saveAsAction);
-    fileToolBar->setObjectName("FileToolbar");
+    fileToolBar->setObjectName(QString::fromUtf8("FileToolbar"));
 //     fileToolBar->hide();
     QSettings settings;
     settings.value("showFileToolbar").toBool() ? fileToolBar->show() : fileToolBar->hide();
@@ -1971,7 +1978,7 @@ void MainWindow::createToolBars()
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
-    editToolBar->setObjectName("EditToolbar");
+    editToolBar->setObjectName(QString::fromUtf8("EditToolbar"));
 //     editToolBar->hide();
     settings.value("showEditToolbar").toBool() ? editToolBar->show() : editToolBar->hide();
 
@@ -2007,18 +2014,15 @@ void MainWindow::createToolBars()
 
     bufferToolBar->addWidget(bufferYSpinBox);
     bufferToolBar->addWidget(bufferSizeControl);
-    bufferToolBar->setObjectName("BufferDimensions");
-
+    bufferToolBar->setObjectName(QString::fromUtf8("BufferDimensions"));
 
     renderToolBar = addToolBar(tr("Render Toolbar"));
     renderToolBar->addAction(renderAction);
-    buildLabel = new QLabel(tr("Build"), this);
+    buildLabel = new QLabel(tr("Build"), renderToolBar);
     renderToolBar->addWidget(buildLabel);
-    renderToolBar->setObjectName("RenderToolbar");
+    renderToolBar->setObjectName(QString::fromUtf8("RenderToolbar"));
 
     renderModeToolBar = addToolBar(tr("Rendering Mode"));
-
-//     renderModeToolBar->addWidget(new QLabel("Render mode:", this));
 
     progressiveButton = new QPushButton( tr("Progressive"),renderModeToolBar);
     progressiveButton->setCheckable(true);
@@ -2069,7 +2073,7 @@ void MainWindow::createToolBars()
 
     frameLabel = new QLabel(tr(" 0 rendered."), renderModeToolBar);
     renderModeToolBar->addWidget(frameLabel);
-    renderModeToolBar->setObjectName("RenderingMode");
+    renderModeToolBar->setObjectName(QString::fromUtf8("RenderingMode"));
 
     addToolBarBreak();
     timeToolBar = addToolBar(tr("Time"));
@@ -2081,6 +2085,9 @@ void MainWindow::createToolBars()
     timeSlider = new QSlider(Qt::Horizontal, this);
     timeSlider->setMinimum(1);
     timeSlider->setValue(1);
+    timeSlider->setMinimumSize(160,20);
+    timeSlider->setMaximumSize(2048,20);
+    timeSlider->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 
     timeSlider->setMaximum( 10 * renderFPS); // seconds * frames per second = length of anim
     connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
@@ -2094,7 +2101,7 @@ void MainWindow::createToolBars()
     timeMaxSpinBox->setValue(timeMax);
     connect(timeMaxSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeMaxChanged(int)));
     timeToolBar->addWidget(timeMaxSpinBox);
-    timeToolBar->setObjectName("Time");
+    timeToolBar->setObjectName(QString::fromUtf8("Time"));
 
     timeMaxChanged(timeMaxSpinBox->value()); // call when timeMax changes to setup
     // the time slider for frame accuracy
@@ -2355,6 +2362,8 @@ void MainWindow::readSettings()
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
 #endif // USE_OPEN_EXR
+    editorTheme = settings.value("editorTheme", 0).toInt();
+    guiStylesheet = settings.value("guiStylesheet", "").toString();
 }
 
 void MainWindow::writeSettings()
@@ -2393,6 +2402,8 @@ void MainWindow::writeSettings()
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
     settings.setValue("playRestartMode", playRestartMode );
     settings.setValue("useMimetypes", useMimetypes );
+    settings.setValue("editorTheme", editorTheme);
+    settings.setValue("guiStylesheet", guiStylesheet);
 
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
@@ -2495,7 +2506,9 @@ void MainWindow::loadFragFile(const QString &fileName)
     // frag but non-existent passing bogus name to insertTabPage() will cause it
     // to load the minimum default GLSL source so initializeFragment() gets valid
     // code later on
-    insertTabPage(fileName);
+    TextEdit *te = insertTabPage(fileName);
+    if(editorTheme) te->setTheme(editorTheme);
+    te->highlightCurrentLine();
     processGuiEvents(); // make sure the widgets are there
 
     if (fileName.toLower().endsWith(".frag") && QFile(fileName).exists()) {
@@ -2613,14 +2626,28 @@ void MainWindow::showPreprocessedScript()
 
 void MainWindow::highlightBuildButton(bool value)
 {
-
-    QWidget* w = buildLabel->parentWidget();
-    if (value) {
-        w->setStyleSheet("background-color: #ffb100;");
+    if(qApp->styleSheet().isEmpty()) {
+        QWidget* w = buildLabel->parentWidget();
+        if (value) {
+            QPalette pal = buildLabel->palette();
+            pal.setColor(buildLabel->backgroundRole(), Qt::yellow);
+            buildLabel->setPalette(pal);
+            buildLabel->setAutoFillBackground(true);
+            w->setPalette(pal);
+            w->setAutoFillBackground(true);
+        } else {
+            buildLabel->setPalette(QApplication::palette(buildLabel));
+            buildLabel->setAutoFillBackground(false);
+            w->setPalette(QApplication::palette(w));
+            w->setAutoFillBackground(false);
+        }
     } else {
-        w->setStyleSheet("");
+        if (value) {
+            buildLabel->setStyleSheet("* {border: none; color: black; background: QRadialGradient(cx:0.5, cy:0.5, radius: 0.6, fx:0.5, fy:0.5, stop:0 rgb(255,255,0,100%), stop:1 rgb(255,255,0,0%)); }");
+        } else {
+            buildLabel->setStyleSheet("* {;}");
+        }
     }
-
     needRebuild(value);
 }
 
@@ -2683,9 +2710,9 @@ bool MainWindow::initializeFragment()
     }
     QString versionProfileLine = inputText.split("\n").at(0);
     if ( versionProfileLine.contains("#version"))
-        INFO("Requested GLSL " + versionProfileLine.split(" ").at(1));
+        INFO("Current target: GLSL " + versionProfileLine.split(" ").at(1));
     else
-        INFO("Requested GLSL 110");
+        INFO("Current target: GLSL 110");
         
     INFO("");
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
@@ -2719,7 +2746,8 @@ bool MainWindow::initializeFragment()
     variableEditor->updateFromFragmentSource(&fs);
     variableEditor->updateTextures(&fs, &fileManager);
     variableEditor->substituteLockedVariables(&fs);
-
+    variableEditor->updateCamera(engine->getCameraControl());
+    
     if (fs.bufferShaderSource != nullptr) {
         variableEditor->substituteLockedVariables(fs.bufferShaderSource);
     }
@@ -2733,7 +2761,6 @@ bool MainWindow::initializeFragment()
             lastTime = ms;
         } catch (Exception& e) {
             WARNING(e.getMessage());
-            highlightBuildButton(true);
         }
     } else ms = lastTime;
 
@@ -2743,7 +2770,6 @@ bool MainWindow::initializeFragment()
             variableEditor->setSettings(camSet);
         }
         editorDockWidget->setHidden( variableEditor->getWidgetCount() == 0 );
-        variableEditor->updateCamera(engine->getCameraControl());
         engine->requireRedraw(true);
         engine->resetTime();
 
@@ -2761,7 +2787,7 @@ bool MainWindow::initializeFragment()
     }
     WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
 
-    highlightBuildButton(true); 
+    highlightBuildButton(true);
 
     return true;
 }
@@ -2875,6 +2901,7 @@ void MainWindow::cursorPositionChanged()
     }
     if (ex.count() != 0) {
         x = tr(" Line in preprocessed script: ") + ex.join(",");
+
     } else {
         x = tr(" (Not part of current script) ");
     }
@@ -2886,7 +2913,8 @@ TextEdit *MainWindow::insertTabPage(QString filename)
 {
 
     auto *textEdit = new TextEdit(this);
-    textEdit->setStyleSheet(editorStylesheet);
+    if(editorStylesheet.isEmpty()) textEdit->setStyleSheet("* {font: 9pt Courier;}");
+    else textEdit->setStyleSheet("* {" + editorStylesheet + "}");
 
     connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
 
@@ -3375,12 +3403,17 @@ void MainWindow::preferences()
     PreferencesDialog pd(this);
     pd.exec();
     readSettings();
+    QString styleSheetFile = "file:///"+guiStylesheet;
+    if(guiStylesheet.isEmpty()) styleSheetFile = "";
+    qApp->setStyleSheet(styleSheetFile);
     engine->updateRefreshRate();
 
     setRecentFile("");
 
     if (tabBar->currentIndex() != -1) {
-      getTextEdit()->setStyleSheet(editorStylesheet);
+      getTextEdit()->setStyleSheet("* {" + editorStylesheet + "}");
+      getTextEdit()->setTheme(editorTheme);
+      getTextEdit()->highlightCurrentLine();
     }
 
 #ifdef USE_OPEN_EXR
@@ -3725,8 +3758,8 @@ void MainWindow::editScript()
     QTextEdit *t;
     t = new QTextEdit();
     // name these objects
-    d->setObjectName("cmdScriptDialog");
-    t->setObjectName("cmdScriptEditor");
+    d->setObjectName(QString::fromUtf8("cmdScriptDialog"));
+    t->setObjectName(QString::fromUtf8("cmdScriptEditor"));
     // setup some buttons
     QPushButton *saveButton = new QPushButton(tr("&Save"));
     QPushButton *loadButton = new QPushButton(tr("&Load"));
