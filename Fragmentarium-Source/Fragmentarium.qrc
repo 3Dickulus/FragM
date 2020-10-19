@@ -21,7 +21,15 @@
   <file>Icons/FragM-32.png</file>
    <file>Icons/player_rew.png</file>
     <file>Icons/player_play.png</file>
-	 <file>Icons/player_stop.png</file>
-	 <file>Misc/icon.jpg</file>
+	<file>Icons/player_stop.png</file>
+    <file>Icons/player_eject.png</file>
+    <file>Icons/player_pause.png</file>
+    <file>Icons/go-down.png</file>
+    <file>Icons/go-next.png</file>
+    <file>Icons/go-previous.png</file>
+    <file>Icons/go-up.png</file>
+    <file>Icons/view-refresh.png</file>
+    <file>Icons/dialog-ok.png</file>
+    <file>Misc/icon.jpg</file>
 </qresource>
 </RCC>
