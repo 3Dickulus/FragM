@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <QShortcut>
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -36,6 +35,7 @@
 #include <QtScriptTools/QScriptEngineDebugger>
 
 
+#include "omp.h"
 #include <glm/glm.hpp>
 
 #include "MainWindow.h"
@@ -78,7 +78,7 @@ MainWindow::MainWindow(QSplashScreen *splashWidget)
     engine = nullptr;
     setAcceptDrops(true);
 
-    needRebuild(true);
+    setRebuildStatus(true);
 
     setFocusPolicy(Qt::WheelFocus);
 
@@ -272,6 +272,7 @@ void MainWindow::insertPreset()
     QString newPresetName = QInputDialog::getText(this, tr("Add Preset"),
                             tr("Change the name for Preset, KeyFrame or Range"),
                             QLineEdit::Normal, newPreset.toLatin1(), &ok);
+    setRebuildStatus(ok);
 
     if (ok && !newPresetName.isEmpty()) {
 
@@ -289,9 +290,8 @@ void MainWindow::insertPreset()
             getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getSettings() + "\n#endpreset\n");
         }
 
-        needRebuild(ok);
         if (rebuildRequired) {
-            needRebuild(initializeFragment());
+            setRebuildStatus(initializeFragment());
         } // once to initialize any textures
         variableEditor->setPreset(newPresetName); // apply the settings
 
@@ -596,8 +596,10 @@ void MainWindow::documentWasModified()
     // when all is undone
     if (tabInfo[tabBar->currentIndex()].textEdit->document()->availableUndoSteps() == 0) {
         tabInfo[tabBar->currentIndex()].unsaved = false;
+        highlightBuildButton(false);
     } else {
         tabInfo[tabBar->currentIndex()].unsaved = true;
+        highlightBuildButton(true);
     }
 
     if (tabBar->currentIndex() > tabInfo.size()) {
@@ -609,8 +611,6 @@ void MainWindow::documentWasModified()
     setWindowTitle(QString("%1 - %2").arg(tabTitle).arg("Fragmentarium"));
     stackedTextEdits->setCurrentWidget(t.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
-
-    highlightBuildButton(tabInfo[tabBar->currentIndex()].unsaved);
 
     if(tabInfo[tabBar->currentIndex()].textEdit->fh->changeGLSLVersion()) {
         tabInfo[tabBar->currentIndex()].textEdit->fh->rehighlight();
@@ -1298,12 +1298,13 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             l->addWidget(engineOverlay);
             // apply overlay to GL area
             engine->setLayout(l);
-            
+
             for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
                 QTime tiletime;
                 tiletime.start();
 
                 if (!progress.wasCanceled()) {
+
                     QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
                     im.fill(Qt::black);
                     engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
@@ -1317,9 +1318,8 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     }
 
                     if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
+                        cachedTileImages.insert(tile,im);
                     }
-
                     // display scaled tiles
                     float wScaleFactor = engine->width() / maxTiles;
                     float hScaleFactor = engine->height() / maxTiles;
@@ -1332,6 +1332,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     QPainter painter2( &enginePixmap );
                     painter2.drawImage ( target, im, source );
                     painter2.end();
+
                     // update the GL area overlay
                     engineOverlay->setPixmap(enginePixmap);
                     
@@ -1698,6 +1699,7 @@ retry:
 
     // create an overlay using enginePixmap as background
     engineOverlay = new QLabel();
+    engineOverlay->setPixmap(enginePixmap);
 
     bool isFirst = true;
 
@@ -2158,7 +2160,8 @@ void MainWindow::timeLineRequest(QPoint p)
 {
 
     Q_UNUSED(p)
-    auto *timeDialog = new TimeLineDialog(this);
+    
+    auto *timeDialog = new TimeLineDialog(this, keyframeMap);
     timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
     timeDialog->exec();
 
@@ -2522,7 +2525,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             bool requiresRecompile = variableEditor->setDefault(); // set vars with default preset and check state
             if (requiresRecompile) {
                 INFO(tr("Rebuilding to update uniform state..."));
-                needRebuild( initializeFragment() );
+                setRebuildStatus( initializeFragment() );
             }
             processGuiEvents();
         }
@@ -2648,7 +2651,7 @@ void MainWindow::highlightBuildButton(bool value)
             buildLabel->setStyleSheet("* {;}");
         }
     }
-    needRebuild(value);
+    setRebuildStatus(value);
 }
 
 void MainWindow::addToWatch(QStringList fileList)
@@ -2681,7 +2684,7 @@ bool MainWindow::initializeFragment()
         INFO( "No GL profile." );
 //         return false;
     } else {
-        INFO( "Something went wrong!!!" );
+        WARNING( "Something went wrong!!!" );
         return false;
     }
 
@@ -2754,7 +2757,7 @@ bool MainWindow::initializeFragment()
 
     static int lastTime;
     QTime start = QTime::currentTime();
-    if(requiresRebuild()) {
+    if(rebuildRequired) {
         try {
             engine->setFragmentShader(fs);
             ms = start.msecsTo(QTime::currentTime());
@@ -3026,7 +3029,7 @@ void MainWindow::tabChanged(int index)
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
 
     clearKeyFrames();
-    needRebuild(true);
+    setRebuildStatus(true);
 
     if (!(QSettings().value("autorun", true).toBool())) {
         WARNING(tr("Auto run is disabled! You must select \"Build\" and apply a preset."));
@@ -3035,16 +3038,16 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    needRebuild(initializeFragment());
+    setRebuildStatus(initializeFragment());
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
-            needRebuild( variableEditor->setSettings(te->lastSettings()) );
+            setRebuildStatus( variableEditor->setSettings(te->lastSettings()) );
         }
-        needRebuild(initializeFragment());
+        setRebuildStatus(initializeFragment());
     }
-    needRebuild(initializeFragment());
+    setRebuildStatus(initializeFragment());
 }
 
 void MainWindow::closeTab()
@@ -3091,10 +3094,10 @@ void MainWindow::closeTab(int index)
     }    // this bit of fudge resets the tab to its last settings
     TextEdit *te = getTextEdit();
     
-    needRebuild(variableEditor->setSettings(te->lastSettings()));
+    setRebuildStatus(variableEditor->setSettings(te->lastSettings()));
     
     if (rebuildRequired) {
-        needRebuild(initializeFragment());
+        setRebuildStatus(initializeFragment());
     } // this bit of fudge preserves textures ???
 }
 
@@ -3627,11 +3630,11 @@ void MainWindow::addKeyFrame(QStringList kfps)
 
     /// for each key frame add ctrl point to the list
     if(engine->cameraID() == "3D" ) {
-        KeyFrameInfo kf(kfps);
-        keyframeMap.insert(kf.index, &kf);
+        KeyFrameInfo *kf = new KeyFrameInfo(kfps);
+        keyframeMap.insert(kf->index, kf);
         // TODO: control points in the engine need to be an indexed array
         // in case they are not generated in order ie: editing a point in the middle
-        engine->addControlPoint(kf.eye,kf.target,kf.up);
+        engine->addControlPoint(kf->eye,kf->target,kf->up);
     }
 
 }

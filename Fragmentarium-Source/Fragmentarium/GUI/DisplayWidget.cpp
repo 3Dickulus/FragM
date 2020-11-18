@@ -2784,7 +2784,7 @@ uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsourc
         spline_program = nullptr;
     }
     
-    makeCurrent();
+//     makeCurrent();
     
     spline_program = new QOpenGLShaderProgram ( this );
     

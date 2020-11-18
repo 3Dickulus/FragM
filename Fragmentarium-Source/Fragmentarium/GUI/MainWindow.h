@@ -87,8 +87,7 @@ struct KeyFrameInfo {
              .split ( "=" )
              .at ( 1 )
              .split ( "," );
-        target =
-            glm::dvec3 ( cv.at ( 0 ).toFloat(), cv.at ( 1 ).toFloat(), cv.at ( 2 ).toFloat() );
+        target = glm::dvec3 ( cv.at ( 0 ).toFloat(), cv.at ( 1 ).toFloat(), cv.at ( 2 ).toFloat() );
         cv = settings.filter ( "Up", Qt::CaseInsensitive )
              .at ( 0 )
              .split ( "=" )
@@ -240,14 +239,11 @@ public:
     bool wantLineNumbers;
     int maxRecentFiles;
 
-    void needRebuild ( bool r )
+    void setRebuildStatus ( bool r )
     {
         rebuildRequired = r;
     };
-    bool requiresRebuild()
-    {
-        return rebuildRequired;
-    };
+
     bool wantSplineOcc()
     {
         return wantSplineOcclusion;

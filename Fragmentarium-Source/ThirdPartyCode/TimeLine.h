@@ -46,7 +46,7 @@ class TimeLineDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TimeLineDialog ( Fragmentarium::GUI::MainWindow *parent );
+    TimeLineDialog ( Fragmentarium::GUI::MainWindow *parent, QMap<int, Fragmentarium::GUI::KeyFrameInfo *> keyframemap = QMap<int, Fragmentarium::GUI::KeyFrameInfo *>());
     ~TimeLineDialog();
 public slots:
 

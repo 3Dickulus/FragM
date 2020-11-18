@@ -31,7 +31,7 @@ namespace Fragmentarium
 namespace GUI
 {
 
-TimeLineDialog::TimeLineDialog(MainWindow *parent) : mainWin(parent)
+TimeLineDialog::TimeLineDialog(MainWindow *parent, QMap<int, Fragmentarium::GUI::KeyFrameInfo *> keyframemap) : mainWin(parent), keyframeMap(keyframemap)
 {
 
     m_ui.setupUi(this);
@@ -94,16 +94,15 @@ void TimeLineDialog::readTimeLineSettings()
         // get a copy the currently listed keyframes from the variable editor
         // (presets)
         keyframeCount = mainWin->getVariableEditor()->getKeyFrameCount();
-        // make a map
-        for (int x = 0; x < keyframeCount; x++) {
-            QString pName;
-
-            pName.sprintf("Keyframe.%.3d", x + 1);
-            // only gets the settings for a keyframe so we add the name
-            QStringList p;
-            p << pName << mainWin->getVariableEditor()->getPresetByName(pName);
-            keyframeMap.insert(x, new KeyFrameInfo(p));
-        }
+//         // make a map
+//         for (int x = 0; x < keyframeCount; x++) {
+//             // only gets the settings for a keyframe so we add the name
+//             QString pName;
+//             pName = QString("Keyframe.%1").arg(x + 1);
+//             QStringList p;
+//             p << pName << mainWin->getVariableEditor()->getPresetByName(pName);
+//             keyframeMap.insert(x, new KeyFrameInfo(p));
+//         }
         // initialize an empty map
         for (int x = 0; x < frames; x++) {
             rectMap[x];
@@ -142,6 +141,7 @@ void TimeLineDialog::readTimeLineSettings()
               .arg(renderFPS)
               .arg(float(frames) / float(renderFPS));
     addSceneText(txt, -100, (yOff * vCount) + 5, 6);
+
 }
 
 void TimeLineDialog::saveTimeLineSettings()
@@ -348,8 +348,8 @@ void TimeLineDialog::selectionChange()
         while (kf.hasNext()) {
             kf.next();
 
-            auto kfr = int(kf.key() / o);
-            bool myFrame = ((kfr == double(kf.key()) / double(o)) || (kf.key() == frames));
+            auto kfr = int(kf.key() / o)+1;
+            bool myFrame = ((kfr == (double(kf.key()) / double(o))+1) || (kf.key() == frames));
             if (myFrame) {
                 kf.value()->setBrush(greenBrush);
             }
@@ -357,7 +357,7 @@ void TimeLineDialog::selectionChange()
             if (kf.value()->isSelected()) {
                 //                 DBOUT << keyframeMap.value(kfr)->name;
                 if (kf.key() + 1 > frames) {
-                    kfr = keyframeMap.count() - 1;
+                    kfr = keyframeMap.count();
                 } // last frame
                 // apply the selected keyframe in the engine
                 mainWin->applyPresetByName(keyframeMap.value(kfr)->name);
