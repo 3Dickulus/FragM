@@ -7,7 +7,6 @@ cmake_minimum_required( VERSION 2.8 )
 cmake_policy(SET CMP0048 NEW)
 ENDIF ()
 
-
 set(FRAGM_MAJOR_VERSION "2")
 set(FRAGM_MINOR_VERSION "5")
 set(FRAGM_REVISION "4")
@@ -279,7 +278,7 @@ IF(Qt5LinguistTools_FOUND)
         add_custom_command(
             OUTPUT "${_ts_file}"
             DEPENDS ${Fragmentarium_HDRS} ${Fragmentarium_SRCS} ${UIS}
-            COMMAND ${Qt5_LUPDATE_EXECUTABLE} -no-ui-lines -locations relative -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file}
+            COMMAND ${Qt5_LUPDATE_EXECUTABLE} -no-obsolete -no-ui-lines -locations relative -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file}
         )
 
         # create a target that depends on the generated files

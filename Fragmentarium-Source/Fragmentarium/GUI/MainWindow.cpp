@@ -34,8 +34,6 @@
 #include <QPushButton>
 #include <QtScriptTools/QScriptEngineDebugger>
 
-
-#include "omp.h"
 #include <glm/glm.hpp>
 
 #include "MainWindow.h"

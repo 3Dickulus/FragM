@@ -48,6 +48,171 @@ void segv_handler(int s)
 
 #endif
 
+enum CommandLineParseResult
+{
+        CommandLineOk,
+        CommandLineError,
+        CommandLineVersionRequested,
+        CommandLineHelpRequested
+};
+
+bool last_run_state;
+
+CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString *errorMessage)
+{
+    const QCommandLineOption helpOption = parser.addHelpOption();
+    const QCommandLineOption versionOption = parser.addVersionOption();
+
+///////////////////////////////////////  other qt options
+//     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
+//     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
+//     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
+//     parser.addOption(QCommandLineOption("session","restores the application from an earlier session."));
+//     parser.addOption(QCommandLineOption("widgetcount","prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time"));
+//     parser.addOption(QCommandLineOption("reverse","sets the application's layout direction to Qt::RightToLeft"));
+//     parser.addOption(QCommandLineOption("graphicssystem","sets the backend to be used for on-screen widgets and QPixmaps. Available options are raster and opengl."));
+//     parser.addOption(QCommandLineOption("qmljsdebugger","activates the QML/JS debugger with a specified port. The value must be of format port:1234[,block], where block is optional and will make the application wait until a debugger connects to it."));
+//     parser.addOption(QCommandLineOption("display","sets the X display (default is $DISPLAY)."));
+//     parser.addOption(QCommandLineOption("geometry","sets the client geometry of the first window that is shown."));
+//     parser.addOption(QCommandLineOption("font","defines the application font. The font should be specified using an X logical font description. Note that this option is ignored when Qt is built with fontconfig support enabled."));
+//     parser.addOption(QCommandLineOption("background","sets the default background color and an application palette (light and dark shades are calculated)."));
+//     parser.addOption(QCommandLineOption("foreground","sets the default foreground color."));
+//     parser.addOption(QCommandLineOption("button"," sets the default button color."));
+//     parser.addOption(QCommandLineOption("name","sets the application name."));
+//     parser.addOption(QCommandLineOption("title","sets the application title."));
+//     parser.addOption(QCommandLineOption("visual","TrueColor, forces the application to use a TrueColor visual on an 8-bit display."));
+//     parser.addOption(QCommandLineOption("ncols","limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."));
+//     parser.addOption(QCommandLineOption("cmap","causes the application to install a private color map on an 8-bit display."));
+//     parser.addOption(QCommandLineOption("im","sets the input method server (equivalent to setting the XMODIFIERS environment variable)"));
+//     parser.addOption(QCommandLineOption("inputstyle","defines how the input is inserted into the given widget, e.g., onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."));
+
+    parser.addPositionalArgument("filename.frag", qApp->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]"));
+
+    const QCommandLineOption verboseOption (QStringList() << QString("V") << QString("verbose"),
+                                         qApp->translate("main", "Sets reporting of shader variables and other things to console."),
+                                         QString("bool"),
+                                         QString("true"));
+    parser.addOption(verboseOption);
+
+    const QCommandLineOption autorunOption (QStringList() << QString("a") << QString("autorun"),
+                                         qApp->translate("main", "Execute auto-compile-run cycle at program start."),
+                                         QString("bool"),
+                                         QString("true"));
+    parser.addOption(autorunOption);
+
+    const QCommandLineOption styleOption (QString("style"),
+                                         qApp->translate("main", "Sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
+                                         QString("stylename"),
+                                         QString("Fusion"));
+    parser.addOption(styleOption);
+
+    const QCommandLineOption stylesheetOption ("qstylesheet",
+                                         qApp->translate("main", "Sets the application stylesheet. The value must be a path to a valid .qss file."),
+                                         QString("qss filename"),
+                                         QString(""));
+    parser.addOption(stylesheetOption);
+
+    const QCommandLineOption editorthemeOption ("editortheme",
+                                         qApp->translate("main", "Sets the colour theme for the text editor. Possible values are Default, Dark, Light, Retta"),
+                                         QString("theme"),
+                                         QString("Default"));
+    parser.addOption(editorthemeOption);
+
+    const QCommandLineOption languageOption ( (QStringList() << QString("l") << QString("language")),
+                                         qApp->translate("main", "sets the application language.\nPossible values are 'en','de','ru','nl'."),
+                                         QString("language"),
+                                         QString("en"));
+    parser.addOption(languageOption);
+
+    const QCommandLineOption scriptOption ( (QStringList() << QString("s") << QString("script")),
+                                         qApp->translate("main", "Fragmentarium script file to load. Must be \".fqs\" filename extention."),
+                                         QString("fqs filename"),
+                                         QString(""));
+    parser.addOption(scriptOption);
+
+    const QCommandLineOption compatpatchOption (QStringList() << QString("c") << QString("compatpatch"),
+                                         qApp->translate("main", "Attempt to allow legacy shaders to run under modern GL core profile."),
+                                         QString("bool"),
+                                         QString("true"));
+    parser.addOption(compatpatchOption);
+
+    if (!parser.parse(QApplication::arguments())) {
+        *errorMessage = parser.errorText();
+        return CommandLineError;
+    }
+
+    if(parser.isSet(helpOption)) return CommandLineHelpRequested;
+    if(parser.isSet(versionOption)) return CommandLineVersionRequested;
+
+    if( parser.isSet(QString("autorun")) ) {
+        printf( "%s", qPrintable(qApp->translate("main", "Automatically compile and run GLSL is ")) );
+        if(parser.value(QString("autorun")) == "false") {
+            QSettings().setValue("autorun", false );
+            printf( "%s\n", qPrintable(qApp->translate("main", "disabled.")) );
+        } else {
+            QSettings().setValue("autorun", true );
+            printf( "%s\n", qPrintable(qApp->translate("main", "enabled.")) );
+        }
+    }
+    
+    if( parser.isSet(QString("compatpatch")) ) {
+        printf( "%s", qPrintable(qApp->translate("main", "Compatibility patch ")) );
+        if(parser.value(QString("compatpatch")) == "false") {
+            QSettings().setValue("compatPatch", false );
+            printf( "%s\n", qPrintable(qApp->translate("main", "disabled.")) );
+        } else {
+            QSettings().setValue("compatPatch", true );
+            printf( "%s\n", qPrintable(qApp->translate("main", "enabled.")) );
+        }
+    }
+
+    if( parser.isSet(QString("qstylesheet")) ) {
+        if(!parser.value(QString("qstylesheet")).isEmpty()) {
+            QString ssfilename = parser.value(QString("qstylesheet"));
+            if(!ssfilename.isEmpty()) {
+                QFile f(ssfilename);
+                if (!f.exists())
+                {
+                    printf("%s\n", qPrintable(qApp->translate("main", "Unable to set stylesheet ") + ssfilename + qApp->translate("main", " file not found!")));
+                }
+                else
+                {
+                    printf("%s\n", qPrintable(qApp->translate("main", "Stylesheet set to ") + ssfilename));
+                    qApp->setStyleSheet("file:///"+ssfilename);
+                    QSettings().setValue("guiStylesheet", ssfilename );
+                }
+            }
+        } else {
+            QSettings().setValue("isStarting", last_run_state);
+            qApp->setStyleSheet("");
+            printf("%s\n", qPrintable(qApp->translate("main", "Stylesheet unset.")));
+        }
+    }
+
+    if( parser.isSet(QString("editortheme")) ) {
+        int theme = 0;
+        QString themeName = parser.value(QString("editortheme"));
+        if(themeName==qApp->translate("main", "Default")) theme = 0;
+        if(themeName==qApp->translate("main", "Dark")) theme = 1;
+        if(themeName==qApp->translate("main", "Light")) theme = 2;
+        if(themeName==qApp->translate("main", "Retta")) theme = 3;
+        QSettings().setValue("editorTheme", theme );
+
+        printf("%s\n", qPrintable(qApp->translate("main", "Frag editor theme set to ") + themeName));
+    }
+    
+    const QStringList positionalArguments = parser.positionalArguments();
+    if (positionalArguments.isEmpty()) {
+        *errorMessage = qApp->translate("main", "Argument 'filename' missing.");
+        return CommandLineOk;
+    } else if (positionalArguments.size() > 1) {
+        *errorMessage = qApp->translate("main", "Too many arguments specified.");
+        return CommandLineError;
+    }
+
+    return CommandLineOk;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -59,7 +224,7 @@ int main(int argc, char *argv[])
     qApp->addLibraryPath("imageformats");
     qApp->addLibraryPath("platforms");
 #else
-    // install signal handler to catch segmentation fault
+    // install signal handler to catch segmentation faults if not windows
     signal(SIGSEGV, segv_handler);
 #endif
 
@@ -77,178 +242,76 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-//    qApp->setStyle(QStyleFactory::create(QString("Fusion"))); // default gui style
-
-    /// space in the name seemed to cause problems with reading and writing ~/.config/Syntopia Software/
-    /// replaced with "_" fixed preferences settings not loading...
-    /// was saved in "~/.config/Syntopia Software/" tried to load from "~/.config/Syntopia/"
     qApp->setOrganizationName(QString("Syntopia_Software"));
     qApp->setApplicationName(QString("Fragmentarium"));
+    qApp->setOrganizationDomain(QString("fractalforums.org"));
 
-    auto *app = new QApplication(argc, argv);
+    QScopedPointer<QApplication> app(new QApplication(argc, argv));
     app->setObjectName("Application");
-
-// this should translate all of the generic default widget texts to local language
-    QTranslator qtTranslator;
-    qtTranslator.load(QString("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
 
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
-    QCommandLineParser parser;
-    parser.addHelpOption();
-    parser.addVersionOption();
-    parser.setApplicationDescription(QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics."));
-
-    parser.addPositionalArgument(QString("filename.frag"), app->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]"));
-
-    //     parser.addOption(QCommandLineOption("nograb","tells Qt that it must never grab the mouse or the keyboard."));
-    //     parser.addOption(QCommandLineOption("dograb","(only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override."));
-    //     parser.addOption(QCommandLineOption("sync","(only under X11), switches to synchronous mode for debugging."));
-    parser.addOption(QCommandLineOption (QStringList() << QString("V") << QString("verbose"),
-                                         app->translate("main", "Sets reporting of shader variables and other things to console."),
-                                         QString(""),
-                                         QString("true"))
-                    );
-
-    parser.addOption(QCommandLineOption (QStringList() << QString("a") << QString("autorun"),
-                                         app->translate("main", "Execute auto-compile-run cycle at program start."),
-                                         QString(""),
-                                         QString("true"))
-                    );
-
-    parser.addOption(QCommandLineOption (QString("style"),
-                                         app->translate("main", "Sets the application GUI style.\nPossible values are '")+QStyleFactory::keys().join("','")+"'.",
-                                         QString("stylename"),
-                                         QString("Fusion"))
-                    );
-    parser.addOption(QCommandLineOption("stylesheet",
-                                        app->translate("main", "Sets the application styleSheet. The value must be a path to a valid .qss file."),
-                                         QString("filename"),
-                                         QString(""))
-                    );
-//     parser.addOption(QCommandLineOption("session","restores the application from an earlier session."));
-//     parser.addOption(QCommandLineOption("widgetcount","prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time"));
-//     parser.addOption(QCommandLineOption("reverse","sets the application's layout direction to Qt::RightToLeft"));
-//     parser.addOption(QCommandLineOption("graphicssystem","sets the backend to be used for on-screen widgets and QPixmaps. Available options are raster and opengl."));
-//     parser.addOption(QCommandLineOption("qmljsdebugger","activates the QML/JS debugger with a specified port. The value must be of format port:1234[,block], where block is optional and will make the application wait until a debugger connects to it."));
-
-//     parser.addOption(QCommandLineOption("display","sets the X display (default is $DISPLAY)."));
-//     parser.addOption(QCommandLineOption("geometry","sets the client geometry of the first window that is shown."));
-//     parser.addOption(QCommandLineOption("font","defines the application font. The font should be specified using an X logical font description. Note that this option is ignored when Qt is built with fontconfig support enabled."));
-//     parser.addOption(QCommandLineOption("background","sets the default background color and an application palette (light and dark shades are calculated)."));
-//     parser.addOption(QCommandLineOption("foreground","sets the default foreground color."));
-//     parser.addOption(QCommandLineOption("button"," sets the default button color."));
-//     parser.addOption(QCommandLineOption("name","sets the application name."));
-//     parser.addOption(QCommandLineOption("title","sets the application title."));
-//     parser.addOption(QCommandLineOption("visual","TrueColor, forces the application to use a TrueColor visual on an 8-bit display."));
-//     parser.addOption(QCommandLineOption("ncols","limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."));
-//     parser.addOption(QCommandLineOption("cmap","causes the application to install a private color map on an 8-bit display."));
-//     parser.addOption(QCommandLineOption("im","sets the input method server (equivalent to setting the XMODIFIERS environment variable)"));
-//     parser.addOption(QCommandLineOption("inputstyle","defines how the input is inserted into the given widget, e.g., onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."));
-
-    parser.addOption(QCommandLineOption( (QStringList() << QString("l") << QString("language")),
-                                         app->translate("main", "sets the application language.\nPossible values are 'en','de','ru','nl'."),
-                                         QString("language"),
-                                         QString("en"))
-                    );
-
-    parser.addOption(QCommandLineOption( (QStringList() << QString("s") << QString("script")),
-                                         app->translate("main", "Fragmentarium script file to load. Must be \".fqs\" filename extention."),
-                                         QString("filename"),
-                                         QString(""))
-                    );
-
-    parser.addOption(QCommandLineOption (QStringList() << QString("c") << QString("compatpatch"),
-                                         app->translate("main", "Apply internal shader compatibility patch. Attempts to allow legacy shaders to run under modern core profile."),
-                                         QString(""),
-                                         QString("true"))
-                    );
-
-    parser.parse( app->arguments() );
-
     // before creating main window record the last run state
-    bool last_run_state = QSettings().value("isStarting").toBool();
+    last_run_state = QSettings().value("isStarting").toBool();
 
     Fragmentarium::GUI::MainWindow *mainWin;
     mainWin = new Fragmentarium::GUI::MainWindow(&splash);
     mainWin->setObjectName("MainWindow");
-    // The qApp built in "version" cmdline option exits
-    // before parser.process() returns, so set version here.
-    qApp->setApplicationVersion(mainWin->getVersion());
 
-// bool: autorun verbose compatpatch version help
-// file: stylesheet language script
-// builtin: style
+    app->setApplicationVersion(mainWin->getVersion());
 
-    if( parser.isSet(QString("stylesheet")) ) {
-        if(!parser.value(QString("stylesheet")).isEmpty()) {
-            QString ssfilename = parser.value(QString("stylesheet"));
-            if(ssfilename.isEmpty()) {
-                QFile f(ssfilename);
-                if (!f.exists())
-                {
-                    QString msg = "Unable to set stylesheet, " + parser.value(QString("stylesheet")) + " file not found\n";
-                    printf( "%s", msg.toLocal8Bit().constData() );
-                }
-                else
-                {
-                    app->setStyleSheet(ssfilename);
-                }
-            }
-        } else QSettings().setValue("isStarting", last_run_state);
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics."));
+
+    // this checks the commandline options for proper format and flags, shows help text and error message then exits if anything is wrong
+    QString errorMessage;
+    switch(parseCommandLine(parser, &errorMessage)) {
+       case CommandLineOk: break;
+       case CommandLineError:
+            QSettings().setValue("isStarting", last_run_state);
+            fputs("\n\n", stderr);
+            fputs(qPrintable(errorMessage), stderr);
+            fputs("\n\n", stderr);
+            fputs(qPrintable(parser.helpText()), stderr);
+            return 1;
+        case CommandLineVersionRequested:
+            QSettings().setValue("isStarting", last_run_state);
+            printf("%s %s\n", qPrintable(QCoreApplication::applicationName()),
+                    qPrintable(QCoreApplication::applicationVersion()));
+            return 0;
+        case CommandLineHelpRequested:
+            QSettings().setValue("isStarting", last_run_state);
+            parser.showHelp();
+            // exits in showHelp function and never returns here
+            Q_UNREACHABLE();
     }
-
-    if( parser.isSet(QString("compatpatch")) ) {
-        if(!parser.value(QString("compatpatch")).isEmpty()) {
-        QSettings().setValue("compatPatch", parser.value("compatpatch") == "true" );
-        } else QSettings().setValue("compatPatch", true );
-    }
-
-    if(parser.isSet(QString("version")) || parser.isSet(QString("help"))) {
-        // Not actually running just reporting to cmdline.
-        QSettings().setValue("isStarting", last_run_state);
-    }
-
-// Process the actual command line arguments given by the user
-// In addition to parsing the options (like parse()), the process() function also handles the builtin options and handles errors.
-// The builtin options are --version if addVersionOption was called and --help if addHelpOption was called.
-// When invoking one of these options, or when an error happens (for instance an unknown option was passed),
-// the current process will then stop, using the exit() function.
-// As a result passing an empty value (error) or "version" or "help" will exit before "isStarting" gets set properly
-// so the next run FragM will think it crashed last time and ask erroneously if "Enable Autorun" is required.
-// The test above takes care of "version" and "help" but the rest of the options need to be tested for valid input
-// after parsing arguments and before handing them to the process( arguments ) function.
-
-    parser.process( app->arguments() );
-
-    QString langArg = QString("en");
-
+    
+    QString langArg = QString("en"); // default english
     QTranslator myappTranslator;
     if(parser.isSet(QString("language"))) {
         if( !parser.value(QString("language")).isEmpty()) langArg = parser.value(QString("language"));
         if( langArg != QString("en") ) {
             if (myappTranslator.load(QString("Languages/Fragmentarium_") + langArg)) {
                 app->installTranslator(&myappTranslator);
+                printf("%s\n",qPrintable(app->translate("main", "Using ") + langArg + app->translate("main", " language file.")));
             } else {
-                qDebug() << QString("Fragmentarium_%1.qm failed!!!").arg(langArg);
+                printf("%s\n",qPrintable(app->translate("main", "Language ") + langArg + app->translate("main", " failed!!!")));
             }
         }
     }
-    mainWin->langID = langArg;
+
+    mainWin->setLanguage(langArg);
 
     mainWin->setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks);
 
     mainWin->setVerbose(parser.isSet("verbose"));
 
-    if( parser.isSet(QString("autorun")) ) {
-        if(!parser.value(QString("autorun")).isEmpty()) {
-        QSettings().setValue("autorun", parser.value("autorun") == "true" );
-        } else QSettings().setValue("autorun", true );
-    }
-
     mainWin->show();
+
+    mainWin->readSettings();
+    
+    app->setActiveWindow(mainWin);
 
     splash.setMask(pixmap.mask());
     QStringList openFiles = QSettings().value("openFiles").toStringList();
@@ -259,7 +322,7 @@ int main(int argc, char *argv[])
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
-    /// load a single frag from comandline or load the default bulb
+    /// load a single frag from comandline
     if( !fragFile.isEmpty() ) {
         mainWin->loadFragFile( app->arguments().last() );
     } else if (openFiles.count() > 0 && !parser.isSet("script")) {
@@ -269,13 +332,12 @@ int main(int argc, char *argv[])
             mainWin->loadFragFile(openFiles.first());
             openFiles.removeFirst();
         }
-    } else {
+    } else { // load the default bulb
         mainWin->loadFragFile(QDir(mainWin->getExamplesDir()).absoluteFilePath("Historical 3D Fractals/Mandelbulb.frag"));
     }
 
     // needs here on windows or script control gets priority over gui refresh
     app->processEvents();
-    app->flush();
 
     if(parser.isSet("script")) {
         QString filename = parser.value("script");
@@ -291,18 +353,18 @@ int main(int argc, char *argv[])
                     file.close();
                     // The sync function will first empty Qts events by calling QCoreApplication::processEvents(),
                     // then the platform plugin will sync up with the windowsystem,
-                    // and finally Qts events will be delivered by another call to QCoreApplication::processEvents();
+                    // and finally Qt events will be delivered by another call to QCoreApplication::processEvents();
                     app->sync();
                     // everything is now in place and ready for script control
                     mainWin->runScript( text );
                 } else {
-                    qDebug() << "Script file " << filename << " open failed!";
+                    printf("%s",qPrintable(app->translate("main","Script file ") + filename + app->translate("main"," open failed!\n")));
                 }
             } else {
-                qDebug() << "Script file " << filename << " does not exist!";
+                printf("%s",qPrintable(app->translate("main","Script file ") + filename + app->translate("main"," does not exist!\n")));
             }
         } else {
-            qDebug() << "Script file requires .fqs extention!";
+            printf("%s",qPrintable(app->translate("main","Script file requires .fqs extention!\n")));
         }
     } else {
         mainWin->setSplashWidgetTimeout(&splash);

@@ -268,10 +268,9 @@ public:
         getEngine()->setVerbose ( v );
         getVariableEditor()->setVerbose ( v );
     };
-
     bool isChangedUniformInBuffershaderOnly();
+    void setLanguage( QString lang ) { langID = lang; };
     
-    QString langID;
 
 protected:
     void dragEnterEvent ( QDragEnterEvent *ev );
@@ -617,6 +616,7 @@ public slots:
 
     QString getPresetNames ( bool keyframesORpresets = false );
 
+    void readSettings();
 
 private slots:
 #ifdef USE_OPEN_EXR
@@ -708,6 +708,7 @@ private slots:
 
 private:
 
+    QString langID;
     QSplashScreen *splashWidget;
     QScriptEngineDebugger *cmdScriptDebugger;
     QSpinBox *timeMaxSpinBox;
@@ -726,7 +727,6 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void readSettings();
     void writeSettings();
     bool saveFile ( const QString &fileName );
     QString strippedName ( const QString &fullFileName );
