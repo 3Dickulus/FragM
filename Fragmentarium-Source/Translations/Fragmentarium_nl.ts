@@ -355,7 +355,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan TexParameter-waarde niet parsen: </translation>
     </message>
     <message>
-        <location line="+219"/>
+        <location line="+170"/>
+        <source>Could not get SamplerWidget for %1!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+49"/>
         <location line="+2075"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
@@ -387,9 +392,24 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-974"/>
-        <source>Failed to bind hires buffer</source>
+        <location line="-1961"/>
+        <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Loader found EXR image: %1 x %2 is too large! max %3x%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Loader found EXR image: %1 x %2 is not a cube map!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+971"/>
+        <source>Failed to bind hires buffer</source>
+        <translation>Kon hiresBuffer niet verbinden</translation>
     </message>
     <message>
         <location line="+191"/>
@@ -409,15 +429,10 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-2172"/>
-        <source>getTextureChannels() could not get SamplerWidget for %1!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+84"/>
+        <location line="-2088"/>
         <location line="+2075"/>
         <source>Could not link shader: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan shader niet linken: </translation>
     </message>
     <message>
         <location line="-2037"/>
@@ -430,22 +445,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Gebruik de buffer-define, b.v.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+83"/>
-        <source>Exrloader found no channels in EXR image: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Exrloader found EXR image: %1 x %2 is too large! max %3x%3</source>
-        <translation>Exrloader heeft EXR-afbeelding gevonden: %1 x %2 is te groot! max %3x%3</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Exrloader found EXR image: %1 x %2 is not a cube map!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+84"/>
+        <location line="+183"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
@@ -815,15 +815,7 @@ Moet minder zijn dan 32769x32769</translation>
 </translation>
     </message>
     <message>
-        <location line="+123"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+300"/>
+        <location line="+423"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
@@ -1019,23 +1011,7 @@ and save before closing!</source>
         <translation>2D-textuuropties</translation>
     </message>
     <message>
-        <location line="+73"/>
-        <location line="+2857"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2856"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+222"/>
+        <location line="+296"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1408,7 +1384,23 @@ and save to file before closing.
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-736"/>
+        <location line="-1397"/>
+        <location line="+2857"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2856"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+660"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1503,12 +1495,12 @@ Please read this:
     <message>
         <location line="-30"/>
         <source>// Generated by: </source>
-        <translation type="unfinished"></translation>
+        <translation>// Output gegenereerd van bestand: </translation>
     </message>
     <message>
         <location line="+1"/>
         <source>// Created on: </source>
-        <translation type="unfinished"></translation>
+        <translation>// Aangemaakt: </translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1772,7 +1764,15 @@ Wil je het opnieuw laden?</translation>
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <location line="+930"/>
+        <location line="+36"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+894"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Cmd Script (*.fqs);;Alle bestanden (*.*)</translation>
     </message>
@@ -2062,12 +2062,12 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <message>
         <location line="+96"/>
         <source>Created </source>
-        <translation type="unfinished"></translation>
+        <translation>Aangemaakt </translation>
     </message>
     <message>
         <location line="+0"/>
         <source> Preset.</source>
-        <translation type="unfinished"></translation>
+        <translation> Preset.</translation>
     </message>
     <message>
         <location line="+53"/>

@@ -667,7 +667,7 @@ QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
 {
     SamplerWidget *sw = dynamic_cast<SamplerWidget *>(mainWindow->getVariableEditor()->getWidgetFromName(textureUniformName));
     if(sw == nullptr || sw->getName().isNull()) {
-        WARNING(tr("getTextureChannels() could not get SamplerWidget for %1!").arg(textureUniformName));
+        WARNING(tr("Could not get SamplerWidget for %1!").arg(textureUniformName));
         return QStringList();
     }
     QStringList result;
@@ -873,7 +873,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         }
 
         if(channelCount == 0) { 
-            WARNING(tr("Exrloader found no channels in EXR image: %1").arg(texturePath));
+            WARNING(tr("Loader found no channels in EXR image: %1").arg(texturePath));
             return false; // uhoh :(
         }
         
@@ -884,12 +884,12 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
 
         if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
-            WARNING(tr("Exrloader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
+            WARNING(tr("Loader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
             return false;
         }
 
         if(type == GL_SAMPLER_CUBE && (w>s || h != 6*w)){
-            WARNING(tr("Exrloader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
+            WARNING(tr("Loader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
             return false;
         }
         
