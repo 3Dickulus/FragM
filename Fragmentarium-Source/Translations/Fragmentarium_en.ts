@@ -277,7 +277,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+79"/>
         <source>Clamping</source>
         <translation type="unfinished"></translation>
     </message>
@@ -358,38 +358,38 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2075"/>
+        <location line="+2074"/>
         <source>No vertex shader found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2070"/>
-        <location line="+2075"/>
+        <location line="-2069"/>
+        <location line="+2074"/>
         <source>Could not create vertex shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2075"/>
+        <location line="-2068"/>
+        <location line="+2074"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2064"/>
-        <location line="+2075"/>
+        <location line="-2063"/>
+        <location line="+2074"/>
         <source>Could not create fragment shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2068"/>
+        <location line="-2067"/>
         <location line="+14"/>
-        <location line="+2061"/>
+        <location line="+2060"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1961"/>
+        <location line="-1960"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -404,7 +404,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+971"/>
+        <location line="+970"/>
         <source>Failed to bind hires buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -419,20 +419,20 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1319"/>
+        <location line="-1318"/>
         <location line="+507"/>
-        <location line="+1568"/>
+        <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2088"/>
-        <location line="+2075"/>
+        <location line="-2087"/>
+        <location line="+2074"/>
         <source>Could not link shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2037"/>
+        <location line="-2036"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -483,7 +483,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+431"/>
+        <location line="+430"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -518,12 +518,12 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1190"/>
+        <location line="-1189"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+211"/>
+        <location line="+210"/>
         <source>Failed to release target buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -541,7 +541,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-959"/>
+        <location line="-958"/>
         <source>Unused sampler uniform: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -551,7 +551,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+737"/>
+        <location line="+736"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation type="unfinished"></translation>
@@ -612,12 +612,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2858"/>
+        <location line="+2860"/>
         <source>Unsaved changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2802"/>
+        <location line="-2805"/>
         <source>Add Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -662,7 +662,7 @@ Initialized as GL_RGBA8</source>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1126"/>
-        <location line="+1051"/>
+        <location line="+1054"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+386"/>
@@ -670,20 +670,20 @@ Initialized as GL_RGBA8</source>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
-        <location line="+138"/>
+        <location line="+139"/>
         <location line="+83"/>
         <source>No open tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3102"/>
+        <location line="-3106"/>
         <location line="+1531"/>
-        <location line="+1793"/>
+        <location line="+1797"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3294"/>
+        <location line="-3298"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -788,7 +788,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+104"/>
+        <location line="+107"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -805,12 +805,12 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+423"/>
+        <location line="+424"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2415"/>
+        <location line="-2419"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -851,12 +851,12 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2789"/>
+        <location line="+2793"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2788"/>
+        <location line="-2792"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -996,12 +996,12 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-834"/>
+        <location line="-833"/>
         <source>2D Texture Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+296"/>
+        <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1286,13 +1286,13 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1007"/>
-        <location line="+2858"/>
+        <location line="-1006"/>
+        <location line="+2860"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2665"/>
+        <location line="-2668"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1336,14 +1336,14 @@ Must be less than 32769x32769</source>
         <location line="+312"/>
         <location line="+22"/>
         <location line="+546"/>
-        <location line="+65"/>
-        <location line="+1152"/>
+        <location line="+68"/>
+        <location line="+1153"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2182"/>
+        <location line="-2186"/>
         <source>Could not create directory %1:
 .</source>
         <translation type="unfinished"></translation>
@@ -1351,13 +1351,13 @@ Must be less than 32769x32769</source>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+634"/>
+        <location line="+637"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-961"/>
+        <location line="-964"/>
         <source>Saved fragment + settings as: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1370,15 +1370,15 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1397"/>
-        <location line="+2857"/>
+        <location line="-1396"/>
+        <location line="+2859"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2856"/>
+        <location line="-2858"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1386,7 +1386,7 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+660"/>
+        <location line="+659"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1496,14 +1496,14 @@ Please read this:
     <message>
         <location line="+13"/>
         <location line="+505"/>
-        <location line="+1281"/>
+        <location line="+1285"/>
         <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1978"/>
+        <location line="-1982"/>
         <source>Settings loaded from file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1686,12 +1686,12 @@ Would you like to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+59"/>
         <source>Rebuilding to update uniform state...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+47"/>
         <source>File saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1727,12 +1727,12 @@ Would you like to reload it?</source>
     </message>
     <message>
         <location line="+43"/>
-        <location line="+980"/>
+        <location line="+981"/>
         <source>Loaded file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-972"/>
+        <location line="-973"/>
         <source>Unnamed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1755,7 +1755,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+894"/>
+        <location line="+895"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1765,8 +1765,8 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3752"/>
-        <location line="+2858"/>
+        <location line="-3755"/>
+        <location line="+2860"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1826,12 +1826,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+17"/>
-        <location line="+37"/>
+        <location line="+38"/>
         <source>Cannot accept MIME object: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-26"/>
+        <location line="-27"/>
         <source>Loading: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1841,7 +1841,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Must be a .frag or .fragparams file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2734,7 +2734,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1103"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1104"/>
         <source>Could not locate directory in: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3007,7 +3007,7 @@ Possible values are &apos;en&apos;,&apos;de&apos;,&apos;ru&apos;,&apos;nl&apos;.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+60"/>
         <location line="+3"/>
         <source>Script file </source>
         <translation type="unfinished"></translation>
