@@ -255,12 +255,6 @@ int main(int argc, char *argv[])
     // before creating main window record the last run state
     last_run_state = QSettings().value("isStarting").toBool();
 
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
-    mainWin->setObjectName("MainWindow");
-
-    app->setApplicationVersion(mainWin->getVersion());
-
     QCommandLineParser parser;
     parser.setApplicationDescription(QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics."));
 
@@ -300,6 +294,12 @@ int main(int argc, char *argv[])
             }
         }
     }
+
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin->setObjectName("MainWindow");
+
+    app->setApplicationVersion(mainWin->getVersion());
 
     mainWin->setLanguage(langArg);
 
