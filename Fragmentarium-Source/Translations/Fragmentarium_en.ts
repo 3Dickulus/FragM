@@ -2858,12 +2858,12 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>main</name>
     <message>
-        <location filename="../Fragmentarium/Main.cpp" line="+265"/>
+        <location filename="../Fragmentarium/Main.cpp" line="+259"/>
         <source>Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-170"/>
         <source>initial fragment to open.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2987,7 +2987,7 @@ Possible values are &apos;en&apos;,&apos;de&apos;,&apos;ru&apos;,&apos;nl&apos;.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+82"/>
         <source>Using </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3007,7 +3007,7 @@ Possible values are &apos;en&apos;,&apos;de&apos;,&apos;ru&apos;,&apos;nl&apos;.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+66"/>
         <location line="+3"/>
         <source>Script file </source>
         <translation type="unfinished"></translation>

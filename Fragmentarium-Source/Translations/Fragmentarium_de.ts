@@ -2889,12 +2889,12 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>main</name>
     <message>
-        <location filename="../Fragmentarium/Main.cpp" line="+265"/>
+        <location filename="../Fragmentarium/Main.cpp" line="+259"/>
         <source>Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.</source>
         <translation>Fragmentarium ist ein cross-platform IDE um Pixelbasierte GPU-graphics zu erkunden.</translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-170"/>
         <source>initial fragment to open.</source>
         <translation>AnfangsFragment.</translation>
     </message>
@@ -3022,7 +3022,7 @@ Mögliche Werte sind &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;.</translation>
         <translation>Zu viele Argumente aufgegeben.</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+82"/>
         <source>Using </source>
         <translation>Verwendet </translation>
     </message>
@@ -3042,7 +3042,7 @@ Mögliche Werte sind &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;.</translation>
         <translation> gescheitert!!!</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+66"/>
         <location line="+3"/>
         <source>Script file </source>
         <translation>Skriptdatei </translation>

@@ -2887,12 +2887,12 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>main</name>
     <message>
-        <location filename="../Fragmentarium/Main.cpp" line="+265"/>
+        <location filename="../Fragmentarium/Main.cpp" line="+259"/>
         <source>Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.</source>
         <translation>Fragmentarium is een cross-platform-IDE voor het verkennen van pixel-gebaseerde GPU-graphics.</translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-170"/>
         <source>initial fragment to open.</source>
         <translation>initiëel fragment openen.</translation>
     </message>
@@ -3020,7 +3020,7 @@ Mogelijke waarden zijn &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;,&apos;nl&apo
         <translation>Teveel argumenten opgegeven.</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+82"/>
         <source>Using </source>
         <translation>Gebruikt </translation>
     </message>
@@ -3040,7 +3040,7 @@ Mogelijke waarden zijn &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;,&apos;nl&apo
         <translation> mislukt!!!</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+66"/>
         <location line="+3"/>
         <source>Script file </source>
         <translation>Script-bestand </translation>
