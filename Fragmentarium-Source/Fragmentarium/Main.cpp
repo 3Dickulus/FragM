@@ -88,7 +88,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString *err
 
     parser.addPositionalArgument("filename.frag", qApp->translate("main", "initial fragment to open.") + QString("\n"), QString("[filename.frag]"));
 
-    const QCommandLineOption verboseOption (QStringList() << QString("V") << QString("verbose"),
+    const QCommandLineOption verboseOption (QString("verbose"),
                                          qApp->translate("main", "Sets reporting of shader variables and other things to console."),
                                          QString("bool"),
                                          QString("true"));
@@ -311,8 +311,6 @@ int main(int argc, char *argv[])
 
     mainWin->readSettings();
     
-    app->setActiveWindow(mainWin);
-
     splash.setMask(pixmap.mask());
     QStringList openFiles = QSettings().value("openFiles").toStringList();
 
@@ -324,7 +322,7 @@ int main(int argc, char *argv[])
     QString fragFile = args.isEmpty() ? QString() : args.last();
     /// load a single frag from comandline
     if( !fragFile.isEmpty() ) {
-        mainWin->loadFragFile( app->arguments().last() );
+        mainWin->loadFragFile( fragFile );
     } else if (openFiles.count() > 0 && !parser.isSet("script")) {
 
         splash.finish(mainWin);
