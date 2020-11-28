@@ -157,11 +157,6 @@ public:
 
     }
 
-    QPropertyAnimation* m_anim;
-    int m_framestart, m_framefin; // firstframe lastframe
-    int m_loops;
-    int m_pong;
-
     double getMin()
     {
         return minimum;
@@ -186,6 +181,38 @@ public:
     int getPong()
     {
         return m_pong;
+    }
+    QPropertyAnimation* propertyAnimation()
+    {
+        return m_anim;
+    }
+    int getFrameStart()
+    {
+        return m_framestart;
+    }
+    int getFrameFin()
+    {
+        return m_framefin;
+    }
+    int getLoopDuration()
+    {
+        return m_framefin-m_framestart;
+    }
+    void setFrameStart( int s )
+    {
+        m_framestart=s;
+    }
+    void setFrameFin( int f )
+    {
+        m_framefin=f;
+    }
+    void setLoops( int l )
+    {
+        m_loops=l;
+    }
+    void setPong( int p )
+    {
+        m_pong = p;
     }
 
 public slots:
@@ -271,6 +298,11 @@ private:
     double maximum;
     bool logarithmic;
     double scale;
+    QPropertyAnimation* m_anim;
+    int m_framestart, m_framefin; // firstframe lastframe
+    int m_loops;
+    int m_pong;
+
 };
 
 class ColorChooser : public QFrame
