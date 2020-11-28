@@ -257,7 +257,6 @@ void MainWindow::insertPreset()
         newPreset=tmp.at( tmp.indexOf( QRegExp("^#[Pp]reset.*$") ) );
         tmp = newPreset.split(" ");
         newPreset=tmp.at(1);
-        ok = true;
     } else { /// no block marked or not a preset so move to the end of script to add a new one
         tc.movePosition(QTextCursor::End);
         getTextEdit()->setTextCursor(tc);
@@ -2501,6 +2500,8 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
+    int sfmax = getSubFrameMax();
+    setSubframeMax(1);
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
@@ -2534,6 +2535,7 @@ void MainWindow::loadFragFile(const QString &fileName)
     } else if(scriptRunning()) {
         stopScript();    // file failed to load or doesn't exist
     }
+    setSubframeMax(sfmax);
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -2705,7 +2707,7 @@ bool MainWindow::initializeFragment()
     stop();
 
     QString inputText = getTextEdit()->toPlainText();
-    if (inputText.startsWith("#donotrun")) {
+    if (inputText.contains("#donotrun")) {
         INFO(tr("Not a runnable fragment."));
         return false;
     }
@@ -3036,16 +3038,16 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    setRebuildStatus(initializeFragment());
+    if(rebuildRequired) setRebuildStatus(initializeFragment());
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
             setRebuildStatus( variableEditor->setSettings(te->lastSettings()) );
         }
-        setRebuildStatus(initializeFragment());
+        if(rebuildRequired) setRebuildStatus(initializeFragment());
     }
-    setRebuildStatus(initializeFragment());
+    if(rebuildRequired) setRebuildStatus(initializeFragment());
 }
 
 void MainWindow::closeTab()
@@ -3314,6 +3316,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
                 } else {
                     // use the params found in png
                     variableEditor->setSettings(fromPNG);
+                    qApp->clipboard()->setText(fromPNG);
                 }
             } else {
                 INFO(tr("Must be a .frag or .fragparams file."));
