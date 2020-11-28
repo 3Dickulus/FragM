@@ -1694,7 +1694,6 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 
 void DisplayWidget::draw3DHints()
 {
-
     if(!hasKeyFrames) return;
 
     if ( mainWindow->wantPaths()  && !isContinuous()) {
@@ -2433,15 +2432,15 @@ void DisplayWidget::updateEasingCurves(int currentframe)
         wName = wName.left ( wName.length()-1 );
         ComboSlider *cs = (ComboSlider *)(mainWindow->getVariableEditor()->findChild<ComboSlider *>(QString("%1%2").arg(wName).arg(wNum)));
 
-        if (cs->m_anim != nullptr) {
+        if (cs->propertyAnimation() != nullptr) {
             cs->blockSignals ( true );
-            int animframe = currentframe-cs->m_framestart;
-            int loopduration = cs->m_framefin-cs->m_framestart;
+            int animframe = currentframe-cs->getFrameStart();
+            int loopduration = cs->getLoopDuration();
             int singleframe = ( 1.0/renderFPS ) *1000; // in msecs
             auto maxttime = (int)(mainWindow->getTimeMax() * renderFPS);
-            int endframe = cs->m_framefin;
-            if (cs->m_loops > 0) {
-                endframe *= cs->m_loops;
+            int endframe = cs->getFrameFin();
+            if (cs->getLoops() > 0) {
+                endframe *= cs->getLoops();
             }
 
             // test end frame against maxTime warn and stop if greater
@@ -2461,7 +2460,7 @@ void DisplayWidget::updateEasingCurves(int currentframe)
                     .arg(maxttime)
                     .arg(gr)
                     .arg(wName)
-                    .arg((int)((cs->m_framestart + endframe) / renderFPS));
+                    .arg((int)((cs->getFrameStart() + endframe) / renderFPS));
                 QMessageBox::warning(this, tr("Easing Curve Error"), mess);
 
               mainWindow->setTimeSliderValue ( currentframe );
@@ -2469,27 +2468,27 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
               return;
             }
-            if ( currentframe < cs->m_framestart ) {
-                cs->m_anim->setCurrentTime(1); // preserve the startvalue for prior frames
-            } else if (currentframe < cs->m_framestart + (loopduration * cs->m_loops)) { // active!
+            if ( currentframe < cs->getFrameStart() ) {
+                cs->propertyAnimation()->setCurrentTime(1); // preserve the startvalue for prior frames
+            } else if (currentframe < cs->getFrameStart() + (loopduration * cs->getLoops())) { // active!
 
-                if (cs->m_pong == 1) { // pingpong = 1 loop per so 4 loops = ping pong ping pong
+                if (cs->getPong() == 1) { // pingpong = 1 loop per so 4 loops = ping pong ping pong
 
                     int test = ( animframe/loopduration ); // for even or odd loop
 
                     if ( ( int ) ( test*0.5 ) *2 == test ) {
-                        cs->m_anim->setCurrentTime ( ( animframe*singleframe ) +1 );
+                        cs->propertyAnimation()->setCurrentTime ( ( animframe*singleframe ) +1 );
                     } else {
-                        cs->m_anim->setCurrentTime((((loopduration * cs->m_loops) - animframe) * singleframe) - 1);
+                        cs->propertyAnimation()->setCurrentTime((((loopduration * cs->getLoops()) - animframe) * singleframe) - 1);
                     }
                 } else {
-                    cs->m_anim->setCurrentTime((animframe * singleframe) - 1);
+                    cs->propertyAnimation()->setCurrentTime((animframe * singleframe) - 1);
                 }
             } else { // preserve the end value for remaining frames
-                if (cs->m_pong == 1 && (int)(cs->m_loops * 0.5) * 2 == cs->m_loops) { // even or odd loop
-                  cs->m_anim->setCurrentTime ( 1 );
+                if (cs->getPong() == 1 && (int)(cs->getLoops() * 0.5) * 2 == cs->getLoops()) { // even or odd loop
+                  cs->propertyAnimation()->setCurrentTime ( 1 );
                 } else {
-                  cs->m_anim->setCurrentTime ( cs->m_anim->duration()-1 );
+                  cs->propertyAnimation()->setCurrentTime ( cs->propertyAnimation()->duration()-1 );
                 }
             }
             cs->blockSignals ( false );
@@ -2784,7 +2783,7 @@ uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsourc
         spline_program = nullptr;
     }
     
-//     makeCurrent();
+    makeCurrent();
     
     spline_program = new QOpenGLShaderProgram ( this );
     
