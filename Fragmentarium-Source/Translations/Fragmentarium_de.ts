@@ -260,17 +260,17 @@
     <message>
         <location filename="../Fragmentarium/GUI/VariableWidget.h" line="+133"/>
         <source>Edit scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Faktor anpassen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Scientific</source>
-        <translation type="unfinished"></translation>
+        <translation>Wissenschaftlich</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+10"/>
@@ -278,7 +278,7 @@
         <translation>Slider-Step-Multiplikator</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+79"/>
         <source>Clamping</source>
         <translation>klemmen</translation>
     </message>
@@ -357,57 +357,57 @@ Initialisiert als GL_RGBA8</translation>
     <message>
         <location line="+170"/>
         <source>Could not get SamplerWidget for %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte kein SamplerWidget bekommen für %1!</translation>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2075"/>
+        <location line="+2074"/>
         <source>No vertex shader found!</source>
         <translation>Kein VertexShader gefunden!</translation>
     </message>
     <message>
-        <location line="-2070"/>
-        <location line="+2075"/>
+        <location line="-2069"/>
+        <location line="+2074"/>
         <source>Could not create vertex shader: </source>
         <translation>Konnte nicht erstellen: VertexShader: </translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2075"/>
+        <location line="-2068"/>
+        <location line="+2074"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>VertexShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-2064"/>
-        <location line="+2075"/>
+        <location line="-2063"/>
+        <location line="+2074"/>
         <source>Could not create fragment shader: </source>
         <translation>Konnte nicht erstellen: FragmentShader: </translation>
     </message>
     <message>
-        <location line="-2068"/>
+        <location line="-2067"/>
         <location line="+14"/>
-        <location line="+2061"/>
+        <location line="+2060"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-1961"/>
+        <location line="-1960"/>
         <source>Loader found no channels in EXR image: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lader fand keine Kanäle im EXR-Bild: %1</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Loader found EXR image: %1 x %2 is too large! max %3x%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Lader fand EXR-abbildung: %1 x %2 ist zu gross! Max. Gr. %3 x %3</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Loader found EXR image: %1 x %2 is not a cube map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lader fand EXR-abbildung: %1 x %2 ist keine kubus-map!</translation>
     </message>
     <message>
-        <location line="+971"/>
+        <location line="+970"/>
         <source>Failed to bind hires buffer</source>
         <translation>Konnte hiresBuffer nicht binden</translation>
     </message>
@@ -422,20 +422,20 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1319"/>
+        <location line="-1318"/>
         <location line="+507"/>
-        <location line="+1568"/>
+        <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
     </message>
     <message>
-        <location line="-2088"/>
-        <location line="+2075"/>
+        <location line="-2087"/>
+        <location line="+2074"/>
         <source>Could not link shader: </source>
         <translation>Shader konnte nicht verlinkt werden: </translation>
     </message>
     <message>
-        <location line="-2037"/>
+        <location line="-2036"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Versuche Backbuffer zu gebrauchen, aber kein BufferTyp eingestellt.</translation>
     </message>
@@ -486,7 +486,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>FBO Incomplete Fehler!!</translation>
     </message>
     <message>
-        <location line="+431"/>
+        <location line="+430"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ungültiger FBO - previewBuffer</translation>
     </message>
@@ -518,15 +518,15 @@ Initialisiert als GL_RGBA8</translation>
     <message>
         <location line="+1028"/>
         <source>Spline pixel shader failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline-pixelshader gescheitert!</translation>
     </message>
     <message>
-        <location line="-1190"/>
+        <location line="-1189"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Kein Frontbuffersampler gefunden in BufferShader. Das ergibt keinen Sinn.</translation>
     </message>
     <message>
-        <location line="+211"/>
+        <location line="+210"/>
         <source>Failed to release target buffer</source>
         <translation>Konnte TargetBuffer nicht freigeben</translation>
     </message>
@@ -544,7 +544,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-959"/>
+        <location line="-958"/>
         <source>Unused sampler uniform: </source>
         <translation>Unbenutzte Probenehmeruniform: </translation>
     </message>
@@ -554,7 +554,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+737"/>
+        <location line="+736"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -615,12 +615,12 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2858"/>
+        <location line="+2860"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2802"/>
+        <location line="-2805"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -665,7 +665,7 @@ Initialisiert als GL_RGBA8</translation>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1126"/>
-        <location line="+1051"/>
+        <location line="+1054"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+386"/>
@@ -673,20 +673,20 @@ Initialisiert als GL_RGBA8</translation>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
-        <location line="+138"/>
+        <location line="+139"/>
         <location line="+83"/>
         <source>No open tab</source>
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-3102"/>
+        <location line="-3106"/>
         <location line="+1531"/>
-        <location line="+1793"/>
+        <location line="+1797"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3294"/>
+        <location line="-3298"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -703,64 +703,17 @@ Initialisiert als GL_RGBA8</translation>
     <message>
         <location line="+11"/>
         <source>&lt;h2&gt;General commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Returns the current frame number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Opens a new editor tab, loads the named fragment file, initializes default preset,&lt;br&gt;initializes keyframes and easing curves if the file contains these settings.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Returns success or fail.&lt;br&gt;Must be called after altering a locked variable before rendering an image.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Allgemeine Kommandos&lt;/h2&gt;
-&lt;p&gt;
-&lt;ul&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;
-    Stellt die aktuelle Framenummer ein.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;
-    Liefert die aktuelle framenummer.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;
-    Öffnet einen neuen Editortab, lädt die genannte Fragmentdatei, initialisiert das Default-Preset,&lt;br&gt;
-    initialisiert Keyframes und Übergangskurven (easing curves), wenn die Datei diesse Einstellungen enthält.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;
-    Liefert Erfolg oder Scheitern.&lt;br&gt;
-    Muss aufgerufen werden nach dem Ändern einer gesperrten Variable, vor dem Rendern eines Bildes.&lt;/p&gt;
-&lt;/ul&gt;
-&lt;/p&gt;</translation>
+        <translation>&lt;h2&gt;Allgemeine Kommandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFrame(int);&lt;/b&gt;&lt;/li&gt;Stellt die aktuelle Framenummer ein.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;int getFrame();&lt;/b&gt;&lt;/li&gt;Liefert die aktuelle framenummer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void loadFragFile(String);&lt;/b&gt;&lt;/li&gt;Öffnet einen neuen Editortab, lädt die genannte Fragmentdatei, initialisiert das Default-Preset,&lt;br&gt;initialisiert Keyframes und Übergangskurven (easing curves), wenn die Datei diesse Einstellungen enthält.&lt;/p&gt;    &lt;p&gt;&lt;li&gt;&lt;b&gt;bool initializeFragment();&lt;/b&gt;&lt;/li&gt;Liefert Erfolg oder Scheitern.&lt;br&gt;Muss aufgerufen werden nach dem Ändern einer gesperrten Variable, vor dem Rendern eines Bildes.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>&lt;h2&gt;Parameter commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String);&lt;/b&gt;&lt;/li&gt;Set a parameter from String in the form of &quot;parameter = value&quot; also accepts parameter file formated string.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, bool);&lt;/b&gt;&lt;/li&gt;Sets a boolean parameter where String is the parameter name and bool is TRUE or FALSE&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, int);&lt;/b&gt;&lt;/li&gt;Sets an integer parameter where String is the parameter name and int is any integer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x);&lt;/b&gt;&lt;/li&gt;Sets a float parameter where String is the parameter name and x is any floating point number.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y);&lt;/b&gt;&lt;/li&gt;Sets a float2 parameter where String is the parameter name and x,y are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z);&lt;/b&gt;&lt;/li&gt;Sets a float3 parameter where String is the parameter name and x,y,z are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z, w);&lt;/b&gt;&lt;/li&gt;Sets a float4 parameter where String is the parameter name and x,y,z,w are any floating point numbers.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;String getParameter(String);&lt;/b&gt;&lt;/li&gt;Returns a string representing the value(s) for the named parameter, user must parse this into usable values.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void applyPresetByName(String);&lt;/b&gt;&lt;/li&gt;Applies the named preset.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Parameterkommandos&lt;/h2&gt;
-&lt;p&gt;
-&lt;ul&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen Parameter ein aus String entsprechend &quot;parameter = value&quot;, akzeptiert auch einen String, der durch eine Parameterdatei formatiert wurde.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, bool);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen boolean-Parameter ein, wobei String der Parameternamea ist und bool is TRUE oder FALSE ist.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, int);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen integer-Parameter ein, wobei String der Parametername ist und int ein jeglicher Integer.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen float-Parameter ein, wobei String der Parametername ist und x eine jegliche floating point-Zahl.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen float2-Parameter ein, wobei String der Parametername ist und  x,y jegliche floating point-Zahlen.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen float3-Parameter ein, wobei String der Parametername ist und  x,y,z jegliche floating point-Zahlen.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z, w);&lt;/b&gt;&lt;/li&gt;
-    Stellt einen float4-Parameter ein, wobei String der Parametername ist und x,y,z,w jegliche floating point-Zahlen.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;String getParameter(String);&lt;/b&gt;&lt;/li&gt;
-    Liefert einen String, der den/die Wert(e) für den genannten Parameter repräsentieren, der Benutzer muss diesen in brauchbare Werte parsen.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void applyPresetByName(String);&lt;/b&gt;&lt;/li&gt;
-    Wendet das genannte Preset an.&lt;/p&gt;
-&lt;/ul&gt;
-&lt;/p&gt;</translation>
+        <translation>&lt;h2&gt;Parameterkommandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String);&lt;/b&gt;&lt;/li&gt;Stellt einen Parameter ein aus String entsprechend &quot;parameter = value&quot;, akzeptiert auch einen String, der durch eine Parameterdatei formatiert wurde.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, bool);&lt;/b&gt;&lt;/li&gt;Stellt einen boolean-Parameter ein, wobei String der Parameternamea ist und bool is TRUE oder FALSE ist.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, int);&lt;/b&gt;&lt;/li&gt;Stellt einen integer-Parameter ein, wobei String der Parametername ist und int ein jeglicher Integer.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x);&lt;/b&gt;&lt;/li&gt;    Stellt einen float-Parameter ein, wobei String der Parametername ist und x eine jegliche floating point-Zahl.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y);&lt;/b&gt;&lt;/li&gt;Stellt einen float2-Parameter ein, wobei String der Parametername ist und  x,y jegliche floating point-Zahlen.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z);&lt;/b&gt;&lt;/li&gt; Stellt einen float3-Parameter ein, wobei String der Parametername ist und  x,y,z jegliche floating point-Zahlen.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setParameter(String, x, y, z, w);&lt;/b&gt;&lt;/li&gt;Stellt einen float4-Parameter ein, wobei String der Parametername ist und x,y,z,w jegliche floating point-Zahlen.&lt;/p&gt;    &lt;p&gt;&lt;li&gt;&lt;b&gt;String getParameter(String);&lt;/b&gt;&lt;/li&gt;Liefert einen String, der den/die Wert(e) für den genannten Parameter repräsentieren, der Benutzer muss diesen in brauchbare Werte parsen.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void applyPresetByName(String);&lt;/b&gt;&lt;/li&gt;Wendet das genannte Preset an.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>&lt;h2&gt;Control commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool scriptRunning();&lt;/b&gt;&lt;/li&gt;Returns FALSE when the user selects the [Stop] button in the script editor.For user implemented test in script to break out of the script control loop.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void stopScript();&lt;/b&gt;&lt;/li&gt;For user implemented test in script to break out of the script control loop or error like file not found, initialization fail etc.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void tileBasedRender();&lt;/b&gt;&lt;/li&gt;Begins rendering the current frame or range of frames applying the current state for keyframes and active easing settings.&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Steuerkommandos&lt;/h2&gt;
-&lt;p&gt;
-&lt;ul&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;bool scriptRunning();&lt;/b&gt;&lt;/li&gt;
-    Liefert FALSE wenn der Benutzer den [Stop]-Knopf wählt im Script-Editor.
-    Test, implementiert um aus der Scriptsteuerungsloop ausbrechen zu können.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void stopScript();&lt;/b&gt;&lt;/li&gt;
-    Test, implementiert um aus der Scriptsteuerungsloop ausbrechen zu können oder bei Fehlern wie &quot;Datei nicht gefunden&quot;, &quot;Initialisieren gescheitert&quot;, etc.&lt;/p&gt;
-    &lt;p&gt;&lt;li&gt;&lt;b&gt;void tileBasedRender();&lt;/b&gt;&lt;/li&gt;
-    Beginnt das Rendern des aktuellen Frames oder des Framebereichs unter Benutzung der aktuellen Einstellungen für Keyframes und Übergangskurven (easing curves).&lt;/p&gt;
-&lt;/ul&gt;
-&lt;/p&gt;</translation>
+        <translation>&lt;h2&gt;Steuerkommandos&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;bool scriptRunning();&lt;/b&gt;&lt;/li&gt;Liefert FALSE wenn der Benutzer den [Stop]-Knopf wählt im Script-Editor.Test, implementiert um aus der Scriptsteuerungsloop ausbrechen zu können.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void stopScript();&lt;/b&gt;&lt;/li&gt;Test, implementiert um aus der Scriptsteuerungsloop ausbrechen zu können oder bei Fehlern wie &quot;Datei nicht gefunden&quot;, &quot;Initialisieren gescheitert&quot;, etc.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void tileBasedRender();&lt;/b&gt;&lt;/li&gt;Beginnt das Rendern des aktuellen Frames oder des Framebereichs unter Benutzung der aktuellen Einstellungen für Keyframes und Übergangskurven (easing curves).&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -794,6 +747,7 @@ Initialisiert als GL_RGBA8</translation>
 To prevent repeated crashes, you may choose to disable &apos;Autorun on Load&apos;.
 This option may be re-enabled through Preferences</source>
         <translation>Es sieht aus, alsob Fragmentarium beim letzten Start abgestürzt ist.
+
 Um wiederholtes Abstürzen zu vermeiden, ist es ratsam &apos;Autorun on Load&apos; zu deaktivieren.
 Diese Option ist wieder einzuschalten in Einstellungen</translation>
     </message>
@@ -842,7 +796,7 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Konflikt mit Änderungen im Editor!</translation>
     </message>
     <message>
-        <location line="+104"/>
+        <location line="+107"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Vorverarbeitete Ausgabe in neuen Registerkarten anzeigen</translation>
     </message>
@@ -861,12 +815,12 @@ Muß kleiner sein als 32769x32769</translation>
 </translation>
     </message>
     <message>
-        <location line="+423"/>
+        <location line="+424"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2415"/>
+        <location line="-2419"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Vollbildanzeige (mit ESC umschalten)</translation>
     </message>
@@ -907,12 +861,12 @@ Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2789"/>
+        <location line="+2793"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2788"/>
+        <location line="-2792"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1052,19 +1006,19 @@ Muß kleiner sein als 32769x32769</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="-834"/>
+        <location line="-833"/>
         <source>2D Texture Options</source>
         <translation>2D-Texturoptionen</translation>
     </message>
     <message>
-        <location line="+296"/>
+        <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Hinweis: Die 3D-Ansicht muss den Tastaturfokus haben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linke Maustaste: Mitte übersetzen. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: zoom. &lt;/li&gt; &lt;li&gt; Rad: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; B / S: hoch / runter &lt;/li&gt; &lt;li&gt; Q/E : Vergrößern/Verkleinern &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Umschalt + Rechte Maustaste: Zeigt Menüs im Vollbildmodus an. &lt;/li &gt; &lt;li&gt; Linke Maustaste: Kamerarichtung ändern. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: Kamera in Bildschirmebene bewegen. &lt;/li&gt; &lt;li&gt; Linke + rechte Maustaste: Zoomen. &lt;/li&gt; &lt;li &gt; Umschalt + linke Maustaste: Objekt drehen (um Ursprung). &lt;/Li&gt; &lt;li&gt; Umschalt + Alt + linke Maustaste: Objekt drehen (um Ziel). &lt;/Li&gt; &lt;li&gt; Umschalt + Tilde (~) wird zurückgesetzt Die Ansicht, um durch den Ursprung zu schauen (0,0,0) &lt;/li&gt; &lt;li&gt; Rad: Vorwärts/Rückwärts bewegen &lt;/li&gt; &lt;li&gt; W / S: Vorwärts / Rückwärts bewegen. &lt;/li&gt; &lt;li&gt; A/D: nach links/rechts bewegen. &lt;/Li&gt; &lt;li&gt; Q/E: rollen &lt;/li&gt; &lt;li&gt; 1/3: Schrittweite erhöhen/verringern x2 &lt;/li&gt; &lt;li&gt; 2: Schrittweite erhöhen / verringern Größe x10 &lt;/li&gt; &lt;li&gt; Umschalt + Rad: Schrittgröße ändern &lt;/li&gt; &lt;li&gt; T/G: Auf/Ab bewegen. &lt;/li&gt; &lt;li&gt; R/F: Gieren &lt;/li&gt; &lt;li &gt; Y/H: Tonhöhe &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Schieberegler &lt;/h2&gt; &lt;p&gt; Wenn ein (Gleit-) Schieberegler eine rechte Maustaste erhält, wird ein Eingabedialog zum Festlegen der Schrittgröße geöffnet. &lt;br&gt; &lt;b&gt; F7-Taste &lt;/b&gt; öffnet die Beschleunigungskurve Editor für den aktuell ausgewählten Schieberegler. &lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>&lt;h2&gt;Hires image and animation dialog commands&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimationLength(int);&lt;/b&gt;&lt;/li&gt;Sets the total animation duration in seconds.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileWidth(int);&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;void setTileHeight(int);&lt;/b&gt;&lt;/li&gt;Sets the tile width and height.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setTileMax(int);&lt;/b&gt;&lt;/li&gt;Sets the number of row and column tiles, this value squared = total tiles.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setSubFrames(int);&lt;/b&gt;&lt;/li&gt;Sets the number of frames to accumulate.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setOutputBaseFileName(String);&lt;/b&gt;&lt;/li&gt;Sets the filename for saved image,&lt;br&gt;if script has total control this must be set by the script for every frame,&lt;br&gt;if animation is using frag file settings, keyframes etc., then this only needs to be set once to basename and Fragmentarium will add an index padded to 5 digits.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setFps(int);&lt;/b&gt;&lt;/li&gt;Sets the frames per second for rendering.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setStartFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the start frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setEndFrame(int);&lt;/b&gt;&lt;/li&gt;Sets the end frame number for rendering a range of frames.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAnimation(bool);&lt;/b&gt;&lt;/li&gt;FALSE sets animation to script control exclusively.&lt;br&gt;TRUE enables control from keyframes and easing curves.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setPreview(bool);&lt;/b&gt;&lt;/li&gt;TRUE will preview frames in a window on the desktop instead of saving image files.&lt;br&gt;WARNING!!! this will open a window FOR EACH FRAME and close it when the next one is ready for display.&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setAutoSave(bool);&lt;/b&gt;&lt;/li&gt;TRUE will save files in subfolder.&lt;br&gt;FALSE will use the path set by setOutputBaseFileName(String)&lt;/p&gt;&lt;p&gt;&lt;li&gt;&lt;b&gt;void setUniqueID(bool);&lt;/b&gt;&lt;/li&gt;Does the same thing as &quot;Add unique ID to filename&quot; in the HiResolution and Animation Dialog.&lt;br&gt;&lt;/p&gt;&lt;/ul&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt; Stellt Befehle für Bild- und Animationsdialogfelder ein &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt; &lt;/li&gt; Legt die Gesamtdauer der Animation in Sekunden fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; Legt die Kachel fest width and height. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der Zeilen- und Spaltenkacheln fest. Dieser Wert ist ein Quadrat = Gesamtkacheln. &lt;/p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der zu akkumulierenden Frames fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Legt den Dateinamen für das gespeicherte Bild fest. Wenn das Skript die vollständige Kontrolle hat, muss dies für jeden Frame vom Skript festgelegt werden. Wenn die Animation Frag-Dateieinstellungen, Keyframes usw. verwendet. dann muss dies nur einmal auf basename gesetzt werden und Fragmentarium fügt einen mit 5 Ziffern aufgefüllten Index hinzu. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Setzt den Bilder pro Sekunde für das Rendern. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die Startbildnummer für das Rendern einer Reihe von Bildern fest. &lt;/p&gt; &lt; p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die End-Frame-Nummer für das Rendern eines Framebereichs fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE setzt die Animation ausschließlich auf Skriptsteuerung. &lt;br&gt; TRUE aktiviert die Steuerung über Keyframes und Beschleunigungskurven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE zeigt eine Vorschau der Bilder in einem Fenster auf dem Desktop an, anstatt die Bilddateien zu speichern. &lt;br&gt; WARNUNG !!! Dies öffnet ein Fenster für jeden Frame und schließt es, wenn der nächste zur Anzeige bereit ist. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE wird gespeichert Dateien im Unterordner. &lt;br&gt; FALSE verwendet den von setOutputBaseFileName (String) festgelegten Pfad. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; Das Gleiche wie &quot;Eindeutige ID zum Dateinamen hinzufügen&quot; im HiResolution- und Animationsdialog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
+        <translation>&lt;h2&gt; Stellt Befehle für Bild- und Animationsdialogfelder ein &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt;&lt;/li&gt; Legt die Gesamtdauer der Animation in Sekunden fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; Legt die Kachel fest width and height. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der Zeilen- und Spaltenkacheln fest. Dieser Wert ist ein Quadrat = Gesamtkacheln. &lt;/p &gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Legt die Anzahl der zu akkumulierenden Frames fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Legt den Dateinamen für das gespeicherte Bild fest. Wenn das Skript die vollständige Kontrolle hat, muss dies für jeden Frame vom Skript festgelegt werden. Wenn die Animation Frag-Dateieinstellungen, Keyframes usw. verwendet. dann muss dies nur einmal auf basename gesetzt werden und Fragmentarium fügt einen mit 5 Ziffern aufgefüllten Index hinzu. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Setzt den Bilder pro Sekunde für das Rendern. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die Startbildnummer für das Rendern einer Reihe von Bildern fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Legt die End-Frame-Nummer für das Rendern eines Framebereichs fest. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE setzt die Animation ausschließlich auf Skriptsteuerung. &lt;br&gt; TRUE aktiviert die Steuerung über Keyframes und Beschleunigungskurven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE zeigt eine Vorschau der Bilder in einem Fenster auf dem Desktop an, anstatt die Bilddateien zu speichern. &lt;br&gt; WARNUNG !!! Dies öffnet ein Fenster für jeden Frame und schließt es, wenn der nächste zur Anzeige bereit ist. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE wird gespeichert Dateien im Unterordner. &lt;br&gt; FALSE verwendet den von setOutputBaseFileName (String) festgelegten Pfad. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; Das Gleiche wie &quot;Eindeutige ID zum Dateinamen hinzufügen&quot; im HiResolution- und Animationsdialog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+243"/>
@@ -1342,29 +1296,15 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Unfindbar: </translation>
     </message>
     <message>
-        <location line="-1007"/>
-        <location line="+2858"/>
+        <location line="-1006"/>
+        <location line="+2860"/>
         <source>Continue</source>
-        <translation>Fortsetzen</translation>
+        <translation>Weiter</translation>
     </message>
     <message>
-        <location line="-2665"/>
+        <location line="-2668"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;
-&lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;
-&lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.
-&lt;h1&gt;Anerkennung&lt;/h1&gt;
-&lt;p&gt;Viele der Inspirationen und Formeln kamen von &lt;a href=&quot;http://www.fractalforums.com&quot;&gt;Fractal Forums&lt;/a&gt;, unter anderen von Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi und Jesse. Ein besonderer Dank gilt Knighty und Kali for ihre großartigen Fragmente und claude für all seine Hilfe bei Verbesserungen. Alle Fragmente sollten Information über ihren Ursprung enthalten - Bitte melden Sie mir, wenn ich mich in dieser Hinsicht irgenwo geirrt habe.&lt;/p&gt;
-&lt;p&gt;Die gebrauchten Icons sind Teil des &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt;-Projekts. &lt;/p&gt;
-&lt;p&gt;Fragmentarium is erstellt unter Nutzung des &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt plattformübergreifenden GUI Frameworks&lt;/a&gt;. &lt;/p&gt;
-
-&lt;p&gt;
-&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Übersetzungen durch FractalForums.com-Benutzer&lt;/th&gt;
-&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Deutsche&lt;/td&gt;&lt;td align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;&lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.&lt;h1&gt;Anerkennung&lt;/h1&gt;&lt;p&gt;Viele der Inspirationen und Formeln kamen von &lt;a href=&quot;http://www.fractalforums.com&quot;&gt;Fractal Forums&lt;/a&gt;, unter anderen von Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi und Jesse. Ein besonderer Dank gilt Knighty und Kali for ihre großartigen Fragmente und claude für all seine Hilfe bei Verbesserungen. Alle Fragmente sollten Information über ihren Ursprung enthalten - Bitte melden Sie mir, wenn ich mich in dieser Hinsicht irgenwo geirrt habe.&lt;/p&gt;&lt;p&gt;Die gebrauchten Icons sind Teil des &lt;ahref=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt;-Projekts. &lt;/p&gt;&lt;p&gt;Fragmentarium is erstellt unter Nutzung des &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt plattformübergreifenden GUI Frameworks&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;table&gt; cellspacing=20&gt;&lt;th&gt; colspan=2 align=left&gt;Übersetzungen durch FractalForums.com-Benutzer&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Deutsch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Niederländisch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+773"/>
@@ -1406,14 +1346,14 @@ Muß kleiner sein als 32769x32769</translation>
         <location line="+312"/>
         <location line="+22"/>
         <location line="+546"/>
-        <location line="+65"/>
-        <location line="+1152"/>
+        <location line="+68"/>
+        <location line="+1153"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-2182"/>
+        <location line="-2186"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Konnte Verzeichnis nicht erstellen: %1:
@@ -1422,14 +1362,14 @@ Muß kleiner sein als 32769x32769</translation>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+634"/>
+        <location line="+637"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Konnte Datei nicht erstellen: %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-961"/>
+        <location line="-964"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment und Einstellungen gespeichert als: </translation>
     </message>
@@ -1447,15 +1387,15 @@ Muß kleiner sein als 32769x32769</translation>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-1397"/>
-        <location line="+2857"/>
+        <location line="-1396"/>
+        <location line="+2859"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2856"/>
+        <location line="-2858"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1463,7 +1403,7 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+660"/>
+        <location line="+659"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1474,34 +1414,42 @@ Please read this:
 (3) Many examples in Fragmentarium use progressive rendering, which requires Fragmentarium to run in Continuous mode. When running in this mode, Fragmentarium uses 100% GPU power (but you may use the &apos;Subframe : Max&apos; spinbox to limit the number of frames rendered. A value of zero means there is no maximum count.)
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist das erste Mal, daß du Fragmentarium startest.
+Bitte, lese unterstehendes:
+
+(1) Fragmentarium benötigt einen anständigen GPU, vorzugsweise eine separate (also nicht Teil des Motherboards) NVIDIA oder ATI Grafikkarte mit den neuesten Treibern.
+(2) In Windows erfordert ein eingebauter GPU-Wächter, daß Frames innerhalb von 2 Sekunden gerendert werden. Manche Fragmente könnten diese Zeit überschreiten, besonders auf einfacheren Grafikkarten. Es ist möglich, diese Beschränkung zu umgehen. Siehe hierzu den Fragmentarium FAQ (im Hilfemenü).
+(3) Viele Beispiele in Fragmentarium verwenden progressives Rendern, welches erfordert, daß Fragmentarium im Continuous-Modus läuft. In diesem Modus beansprucht Fragmentarium 100% der GPU-Leistung (aber man kann die Anzahl der zu renderen Frames beschränken durch Gebrauch der &amp;apos;Subframe : Max&amp;apos;-Spinbox. Ein Nullwert bedeutet: keine Begrenzung)
+
+</translation>
     </message>
     <message>
         <location line="+154"/>
         <source>Compile &amp;GLSL</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompilieren &amp;GLSL</translation>
     </message>
     <message>
         <location line="+117"/>
         <source>Select Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Preset wählen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Timeline Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeline-Editor</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Group to preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe ins Preset</translation>
     </message>
     <message>
         <location line="+411"/>
         <location line="+24"/>
         <source>Could not remove existing:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte existierendes: &apos;%1&apos; 
+nicht entfernen</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -1573,7 +1521,7 @@ Please read this:
     <message>
         <location line="+13"/>
         <location line="+505"/>
-        <location line="+1281"/>
+        <location line="+1285"/>
         <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
@@ -1581,7 +1529,7 @@ Please read this:
 %2.</translation>
     </message>
     <message>
-        <location line="-1978"/>
+        <location line="-1982"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
@@ -1766,12 +1714,12 @@ wurde von einem anderen Programm geändert.
 Möchten Sie es neu laden?</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+59"/>
         <source>Rebuilding to update uniform state...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wieder aufbauen um den Uniform-Zustand zu erneuern...</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+47"/>
         <source>File saved</source>
         <translation>Datei gespeichert</translation>
     </message>
@@ -1807,12 +1755,12 @@ Möchten Sie es neu laden?</translation>
     </message>
     <message>
         <location line="+43"/>
-        <location line="+980"/>
+        <location line="+981"/>
         <source>Loaded file: %1</source>
         <translation>Geladene Datei: %1</translation>
     </message>
     <message>
-        <location line="-972"/>
+        <location line="-973"/>
         <source>Unnamed</source>
         <translation>Unbenannt</translation>
     </message>
@@ -1835,7 +1783,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+894"/>
+        <location line="+895"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>CmdScript (*.fqs);;Alle Dateien (*.*)</translation>
     </message>
@@ -1845,8 +1793,8 @@ and save before closing!</source>
         <translation>Binden Sie das Befehlsskript an die Taste F6</translation>
     </message>
     <message>
-        <location line="-3752"/>
-        <location line="+2858"/>
+        <location line="-3755"/>
+        <location line="+2860"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1906,12 +1854,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+17"/>
-        <location line="+37"/>
+        <location line="+38"/>
         <source>Cannot accept MIME object: </source>
         <translation>Kann MIME-Objekt nicht akzeptieren: </translation>
     </message>
     <message>
-        <location line="-26"/>
+        <location line="-27"/>
         <source>Loading: </source>
         <translation>Lädt: </translation>
     </message>
@@ -1921,7 +1869,7 @@ and save before closing!</source>
         <translation>Keine Parameter in Datei gefunden.</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Must be a .frag or .fragparams file.</source>
         <translation>Muß eine .frag- oder .fragparams-Datei sein.</translation>
     </message>
@@ -2052,7 +2000,7 @@ and save before closing!</source>
     <message>
         <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+861"/>
         <source>Read channel list from %1 FAILED!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanalliste lesen von %1 GESCHEITERT!</translation>
     </message>
     <message>
         <location line="+135"/>
@@ -2481,13 +2429,13 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <location/>
         <location filename="../build/ui_OutputDialog.h" line="+10"/>
         <source>Copies all used texture files into the fragment folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiert alle gebrauchten Texturdateien in den Fragment-Dateiordner.</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>Save texture files</source>
-        <translation type="unfinished"></translation>
+        <translation>Texturdateien speichern</translation>
     </message>
 </context>
 <context>
@@ -2697,103 +2645,103 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
         <source>GUI:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
         <source>Animation update on=continuous off=last set</source>
-        <translation type="unfinished"></translation>
+        <translation>Animations-Aktualisierung on(an)=kontinuierlich off(aus)=letztbenutzter Zustand</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>GUI Stylesheet:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Log Window Max Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Logfenster Max. Anzahl Zeilen</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwendung</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
         <source>Texture file dialog uses mimetypes when checked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Dialogfenster &quot;Texturdatei&quot; verwendet Mimetypen, wenn diese Option aktiviert ist.</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Texture file dialog lists image files by extension or mimetype</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Dialogfenster &quot;Texturdatei&quot; werden Bilddateien nach Erweiterung oder Mimetyp aufgelistet</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Enable GL debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviere GL-debug</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+5"/>
         <source>Editor:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Editor Schema: </source>
-        <translation type="unfinished"></translation>
+        <translation>Editor-Farbthema: </translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Solarized Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Solarisiertes Dunkel</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Solarized Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Solarisiertes Hell</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Retta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Editor Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor-Text:</translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>GLSL:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Apply compatibility patches</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompatibilitäts-Patches anwenden</translation>
     </message>
 </context>
 <context>
@@ -2817,7 +2765,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1103"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1104"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>
@@ -2953,28 +2901,29 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     <message>
         <location line="+3"/>
         <source>Sets reporting of shader variables and other things to console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Legt die Berichterstellung für u. a. Shader-Variablen für die Konsole fest.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Execute auto-compile-run cycle at program start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Führe beim Programmstart den Zyklus zum automatischen Kompilieren und Ausführen aus.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Sets the application GUI style.
 Possible values are &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Legt den GUI-Stil der Anwendung fest.
+Mögliche Werte sind &apos;</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Sets the application stylesheet. The value must be a path to a valid .qss file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Legt das Anwendungsstylesheet fest. Der Wert muss ein Pfad zu einer gültigen .qss-Datei sein.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Sets the colour theme for the text editor. Possible values are Default, Dark, Light, Retta</source>
-        <translation type="unfinished"></translation>
+        <translation>Legt das Farbthema für den Texteditor fest. Mögliche Werte sind Standard, Dunkel, Hell, Retta</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2993,128 +2942,131 @@ Mögliche Werte sind &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;.</translation>
     <message>
         <location line="+6"/>
         <source>Attempt to allow legacy shaders to run under modern GL core profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Versuch um Legacy-Shadern die Ausführung unter einem modernen GL-Kernprofil zu ermöglichen.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Automatically compile and run GLSL is </source>
-        <translation type="unfinished"></translation>
+        <translation>GLSL automatisch kompilieren und ausführen ist </translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+11"/>
         <source>disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>ausgeschaltet.</translation>
     </message>
     <message>
         <location line="-8"/>
         <location line="+11"/>
         <source>enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>eingeschaltet.</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Compatibility patch </source>
-        <translation type="unfinished"></translation>
+        <translation>Kompatibilitäts-Patch </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Unable to set stylesheet </source>
-        <translation type="unfinished"></translation>
+        <translation>Stylesheet kann nicht eingestellt werden </translation>
     </message>
     <message>
         <location line="+0"/>
         <source> file not found!</source>
-        <translation type="unfinished"></translation>
+        <translation> datei nicht gefunden!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Stylesheet set to </source>
-        <translation type="unfinished"></translation>
+        <translation>Stylesheet eingestellt auf </translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stylesheet unset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stylesheet nicht mehr eingestellt.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Dunkel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Hell</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Retta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Frag editor theme set to </source>
-        <translation type="unfinished"></translation>
+        <translation>FragEditor-Thema eingestellt auf </translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Argument &apos;filename&apos; missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument “Dateiname” fehlt.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Too many arguments specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu viele Argumente aufgegeben.</translation>
     </message>
     <message>
         <location line="+88"/>
         <source>Using </source>
-        <translation type="unfinished"></translation>
+        <translation>Verwendet </translation>
     </message>
     <message>
         <location line="+0"/>
         <source> language file.</source>
-        <translation type="unfinished"></translation>
+        <translation> Sprachdatei.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Language </source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache </translation>
     </message>
     <message>
         <location line="+0"/>
         <source> failed!!!</source>
-        <translation type="unfinished"></translation>
+        <translation> gescheitert!!!</translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+60"/>
         <location line="+3"/>
         <source>Script file </source>
-        <translation type="unfinished"></translation>
+        <translation>Skriptdatei </translation>
     </message>
     <message>
         <location line="-3"/>
         <source> open failed!
 </source>
-        <translation type="unfinished"></translation>
+        <translation> öffnen fehlgeschlagen!
+</translation>
     </message>
     <message>
         <location line="+3"/>
         <source> does not exist!
 </source>
-        <translation type="unfinished"></translation>
+        <translation> ist nicht vorhanden!
+</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Script file requires .fqs extention!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Skriptdatei erfordert .fqs-Erweiterung!
+</translation>
     </message>
 </context>
 </TS>
