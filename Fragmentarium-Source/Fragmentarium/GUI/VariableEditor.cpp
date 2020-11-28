@@ -1091,29 +1091,29 @@ void VariableEditor::setEasingCurves(QString ecset)
             bool isOverShoot = curveType >= QEasingCurve::InBack && curveType <= QEasingCurve::OutInBack;
 
             // set the animation attributes for this ComboSlider
-            cs->m_anim->setEasingCurve( curveType );
+            cs->propertyAnimation()->setEasingCurve( curveType );
 
             if (isElastic) {
-                cs->m_anim->easingCurve().setPeriod(p);
+                cs->propertyAnimation()->easingCurve().setPeriod(p);
             }
             if (isElastic || isBounce) {
-                cs->m_anim->easingCurve().setAmplitude(a);
+                cs->propertyAnimation()->easingCurve().setAmplitude(a);
             }
             if (isOverShoot) {
-                cs->m_anim->easingCurve().setOvershoot(o);
+                cs->propertyAnimation()->easingCurve().setOvershoot(o);
             }
 
-            cs->m_framestart = ff;
-            cs->m_framefin = lf;
-            cs->m_loops = l;
-            cs->m_pong = pp;
+            cs->setFrameStart(ff);
+            cs->setFrameFin(lf);
+            cs->setLoops(l);
+            cs->setPong(pp);
 
-            cs->m_anim->setStartValue(s);
-            cs->m_anim->setEndValue(f);
-            cs->m_anim->setDuration((lf - ff) * ((1.0 / mainWindow->renderFPS) * 1000));
-            cs->m_anim->setLoopCount(l);
-            cs->m_anim->start();
-            cs->m_anim->setPaused(true);
+            cs->propertyAnimation()->setStartValue(s);
+            cs->propertyAnimation()->setEndValue(f);
+            cs->propertyAnimation()->setDuration((lf - ff) * ((1.0 / mainWindow->renderFPS) * 1000));
+            cs->propertyAnimation()->setLoopCount(l);
+            cs->propertyAnimation()->start();
+            cs->propertyAnimation()->setPaused(true);
 
             mainWindow->getEngine()->setCurveSettings(curveSettings);
 
