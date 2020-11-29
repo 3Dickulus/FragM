@@ -185,9 +185,9 @@ public:
     void saveImage ( QImage image );
     void resetCamera ( bool fullReset );
     QString getCameraSettings();
-    QString getSettings()
+    QString getSettings( bool p = true )
     {
-        return variableEditor->getSettings();
+        return variableEditor->getSettings(p);
     };
     void disableAllExcept ( QWidget *w );
     void setSplashWidgetTimeout ( QSplashScreen *w );
@@ -558,6 +558,7 @@ public slots:
 
     QString currentFileName()
     {
+        if(tabBar->currentIndex() == -1) return "";
         return tabInfo[tabBar->currentIndex()].filename;
     };
     QString currentFragmentName()

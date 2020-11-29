@@ -43,7 +43,7 @@ public:
     {
         return variables;
     };
-    QString getSettings();
+    QString getSettings( bool p = true );
     bool setSettings(QString text);
     void createGroup(QString g);
     VariableWidget* getWidgetFromName(QString name);
