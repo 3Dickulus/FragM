@@ -401,7 +401,8 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
 // thanks to M Benesi and FractalForums.com :D
 glm::dvec3 Camera3D::screenTo3D(int sx, int sy, double sz)
 {
-
+    if(eye == nullptr || target == nullptr || up == nullptr) return glm::dvec3(0,0,0);
+    
     glm::dvec3 eye2 = eye->getValue(), target2 = target->getValue(),
               up2 = up->getValue();
     double coordX =
