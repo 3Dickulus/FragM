@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Camera: Klik in het 2D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-479"/>
+        <location line="-480"/>
         <source>Could not find Eye interface widget</source>
         <translation>Kan het Eye-interfacewidget niet vinden</translation>
     </message>
@@ -664,8 +664,8 @@ Geïnitialiseerd als GL_RGBA8</translation>
     <message>
         <location line="-1637"/>
         <location line="+16"/>
-        <location line="+1126"/>
-        <location line="+1054"/>
+        <location line="+1128"/>
+        <location line="+1052"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+386"/>
@@ -680,8 +680,8 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="-3106"/>
-        <location line="+1531"/>
-        <location line="+1797"/>
+        <location line="+1533"/>
+        <location line="+1795"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
@@ -762,14 +762,14 @@ Deze optie kan weer worden ingeschakeld in Voorkeuren</translation>
         <translation>Autorun inschakelen</translation>
     </message>
     <message>
-        <location line="+920"/>
+        <location line="+922"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>is te groot!
 Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
-        <location line="+807"/>
+        <location line="+805"/>
         <source>Reloaded file: %1</source>
         <translation>Reloaded-bestand: %1</translation>
     </message>
@@ -820,7 +820,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2419"/>
+        <location line="-2417"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Volledig scherm (aan-/uitschakelen met ESC-toets)</translation>
     </message>
@@ -861,12 +861,12 @@ Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2793"/>
+        <location line="+2791"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2792"/>
+        <location line="-2790"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1006,12 +1006,28 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location line="-833"/>
+        <location line="-835"/>
         <source>2D Texture Options</source>
         <translation>2D-textuuropties</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+73"/>
+        <location line="+2859"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2858"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+221"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1031,7 +1047,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Kon geen OpenEXR binaries vinden !!!</translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+168"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Verversen...</translation>
     </message>
@@ -1290,13 +1306,13 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>&amp;Voorbeelden</translation>
     </message>
     <message>
-        <location line="-389"/>
-        <location line="+435"/>
+        <location line="-391"/>
+        <location line="+437"/>
         <source>Unable to locate: </source>
         <translation>Kan niet vinden: </translation>
     </message>
     <message>
-        <location line="-1006"/>
+        <location line="-1008"/>
         <location line="+2860"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
@@ -1307,7 +1323,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments en claude voor al zijn hulp bij verbeteringen.. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+773"/>
+        <location line="+775"/>
         <source>Windows</source>
         <translation>ramen</translation>
     </message>
@@ -1344,7 +1360,7 @@ Moet minder zijn dan 32769x32769</translation>
         <location line="+19"/>
         <location line="+5"/>
         <location line="+312"/>
-        <location line="+22"/>
+        <location line="+20"/>
         <location line="+546"/>
         <location line="+68"/>
         <location line="+1153"/>
@@ -1353,7 +1369,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location line="-2186"/>
+        <location line="-2184"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
@@ -1362,14 +1378,14 @@ Moet minder zijn dan 32769x32769</translation>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+637"/>
+        <location line="+635"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-964"/>
+        <location line="-962"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
@@ -1384,23 +1400,7 @@ Moet minder zijn dan 32769x32769</translation>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-1396"/>
-        <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+659"/>
+        <location line="-738"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1423,7 +1423,7 @@ Lees dit alstublieft:
 </translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+156"/>
         <source>Compile &amp;GLSL</source>
         <translation>Compileren &amp;GLSL</translation>
     </message>
@@ -1497,22 +1497,12 @@ Lees dit alstublieft:
     </message>
     <message>
         <location line="+6"/>
-        <location line="+51"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Fragment-Parameters (*.fragparams);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location line="-30"/>
-        <source>// Generated by: </source>
-        <translation>// Output gegenereerd van bestand: </translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>// Created on: </source>
-        <translation>// Aangemaakt: </translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation>Instellingen opgeslagen naar bestand</translation>
     </message>
@@ -2099,7 +2089,17 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation>Onondersteunde parameter</translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+124"/>
+        <source>// Generated by: </source>
+        <translation type="unfinished">// Output gegenereerd van bestand: </translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>// Created on: </source>
+        <translation type="unfinished">// Aangemaakt: </translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Expected a key value pair, found: </source>
         <translation>Verwacht keywaardenpaar, gevonden: </translation>
     </message>

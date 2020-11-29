@@ -33,7 +33,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -59,7 +59,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-479"/>
+        <location line="-480"/>
         <source>Could not find Eye interface widget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -661,8 +661,8 @@ Initialized as GL_RGBA8</source>
     <message>
         <location line="-1637"/>
         <location line="+16"/>
-        <location line="+1126"/>
-        <location line="+1054"/>
+        <location line="+1128"/>
+        <location line="+1052"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+386"/>
@@ -677,8 +677,8 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="-3106"/>
-        <location line="+1531"/>
-        <location line="+1797"/>
+        <location line="+1533"/>
+        <location line="+1795"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
@@ -756,13 +756,13 @@ This option may be re-enabled through Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+920"/>
+        <location line="+922"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+807"/>
+        <location line="+805"/>
         <source>Reloaded file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -810,7 +810,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2419"/>
+        <location line="-2417"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -851,12 +851,12 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2793"/>
+        <location line="+2791"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2792"/>
+        <location line="-2790"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -996,12 +996,28 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-833"/>
+        <location line="-835"/>
         <source>2D Texture Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+73"/>
+        <location line="+2859"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2858"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+221"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1021,7 +1037,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+168"/>
         <source>&amp;Reload...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1280,13 +1296,13 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-389"/>
-        <location line="+435"/>
+        <location line="-391"/>
+        <location line="+437"/>
         <source>Unable to locate: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1006"/>
+        <location line="-1008"/>
         <location line="+2860"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
@@ -1297,7 +1313,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+773"/>
+        <location line="+775"/>
         <source>Windows</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1334,7 +1350,7 @@ Must be less than 32769x32769</source>
         <location line="+19"/>
         <location line="+5"/>
         <location line="+312"/>
-        <location line="+22"/>
+        <location line="+20"/>
         <location line="+546"/>
         <location line="+68"/>
         <location line="+1153"/>
@@ -1343,7 +1359,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2186"/>
+        <location line="-2184"/>
         <source>Could not create directory %1:
 .</source>
         <translation type="unfinished"></translation>
@@ -1351,13 +1367,13 @@ Must be less than 32769x32769</source>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+637"/>
+        <location line="+635"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-964"/>
+        <location line="-962"/>
         <source>Saved fragment + settings as: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1370,23 +1386,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1396"/>
-        <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+659"/>
+        <location line="-738"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1400,7 +1400,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+156"/>
         <source>Compile &amp;GLSL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1474,22 +1474,12 @@ Please read this:
     </message>
     <message>
         <location line="+6"/>
-        <location line="+51"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-30"/>
-        <source>// Generated by: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>// Created on: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2071,7 +2061,17 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+124"/>
+        <source>// Generated by: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>// Created on: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Expected a key value pair, found: </source>
         <translation type="unfinished"></translation>
     </message>

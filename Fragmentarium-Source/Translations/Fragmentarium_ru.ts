@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+473"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+474"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Камера: Нажмите 2D окно для управления движением с помощью клавиатуры. Для получения более подробной информации, обратитесь к меню Справка.</translation>
     </message>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-479"/>
+        <location line="-480"/>
         <source>Could not find Eye interface widget</source>
         <translation>Не удалось найти интерфейс Eye</translation>
     </message>
@@ -664,8 +664,8 @@ Initialized as GL_RGBA8</source>
     <message>
         <location line="-1637"/>
         <location line="+16"/>
-        <location line="+1126"/>
-        <location line="+1054"/>
+        <location line="+1128"/>
+        <location line="+1052"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+386"/>
@@ -680,8 +680,8 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="-3106"/>
-        <location line="+1531"/>
-        <location line="+1797"/>
+        <location line="+1533"/>
+        <location line="+1795"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
@@ -809,12 +809,12 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+738"/>
+        <location line="+740"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
     <message>
-        <location line="+989"/>
+        <location line="+987"/>
         <source>Reloaded file: %1</source>
         <translation>Перезагрузка файла: %1</translation>
     </message>
@@ -873,7 +873,7 @@ and save before closing!</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2419"/>
+        <location line="-2417"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Во весь экран (Клавиша ESC переключает режимы)</translation>
     </message>
@@ -914,12 +914,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2793"/>
+        <location line="+2791"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2792"/>
+        <location line="-2790"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1059,12 +1059,28 @@ and save before closing!</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-833"/>
+        <location line="-835"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+73"/>
+        <location line="+2859"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2858"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+221"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1158,7 +1174,7 @@ and save before closing!</source>
         <translation>Невозможно найти двоичные файлы OpenEXR !!!</translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+168"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Перезагрузить...</translation>
     </message>
@@ -1417,8 +1433,8 @@ and save before closing!</source>
         <translation>&amp;Примеры</translation>
     </message>
     <message>
-        <location line="-389"/>
-        <location line="+435"/>
+        <location line="-391"/>
+        <location line="+437"/>
         <source>Unable to locate: </source>
         <translation>Невозможно определить местоположение: </translation>
     </message>
@@ -1452,7 +1468,7 @@ and save before closing!</source>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+637"/>
+        <location line="+635"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Невозможно записать файл %1:
@@ -1460,7 +1476,7 @@ and save before closing!</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-973"/>
+        <location line="-971"/>
         <location line="+24"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
@@ -1473,7 +1489,7 @@ and save before closing!</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="+334"/>
+        <location line="+332"/>
         <location line="+505"/>
         <location line="+1285"/>
         <location line="+199"/>
@@ -1491,14 +1507,14 @@ and save before closing!</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-2165"/>
+        <location line="-2163"/>
         <location line="+8"/>
         <location line="+26"/>
         <location line="+5"/>
         <location line="+19"/>
         <location line="+5"/>
         <location line="+312"/>
-        <location line="+22"/>
+        <location line="+20"/>
         <location line="+546"/>
         <location line="+68"/>
         <location line="+1153"/>
@@ -1507,23 +1523,7 @@ and save before closing!</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3519"/>
-        <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="-3516"/>
         <location line="+2860"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
@@ -1565,7 +1565,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+156"/>
         <source>Compile &amp;GLSL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1656,22 +1656,12 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+51"/>
+        <location line="+49"/>
         <source>Fragment Parameters (*.fragparams);;All Files (*.*)</source>
         <translation>Параметры .frag(*.fragparams );;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location line="-30"/>
-        <source>// Generated by: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>// Created on: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-26"/>
         <source>Settings saved to file</source>
         <translation>Сохранить настройки в файл</translation>
     </message>
@@ -2233,7 +2223,17 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <translation>Неподдерживаемый параметр</translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+124"/>
+        <source>// Generated by: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>// Created on: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Expected a key value pair, found: </source>
         <translation>Ожидаемое значение пары ключа, найдено: </translation>
     </message>
