@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
     mainWin->readSettings();
     
     splash.setMask(pixmap.mask());
-    QStringList openFiles = QSettings().value("openFiles").toStringList();
+    QStringList openFiles = (parser.isSet("script")) ? QSettings().value("openFiles").toStringList() : QStringList();
 
     if (!parser.isSet("script") || openFiles.isEmpty()) {
         splash.show();
@@ -366,9 +366,9 @@ int main(int argc, char *argv[])
         }
     } else {
         mainWin->setSplashWidgetTimeout(&splash);
+        return app->exec();
     }
-
-    return app->exec();
+    return 0;
 }
 
 

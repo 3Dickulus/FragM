@@ -210,7 +210,7 @@ void VariableEditor::copy()
 {
     INFO(tr("Copied settings to clipboard"));
     QClipboard *cb = QApplication::clipboard();
-    cb->setText( getSettings(),QClipboard::Clipboard );
+    cb->setText( getSettings(false),QClipboard::Clipboard );
 }
 
 void VariableEditor::paste()

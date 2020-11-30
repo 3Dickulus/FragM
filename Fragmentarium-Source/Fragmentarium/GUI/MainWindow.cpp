@@ -2520,8 +2520,9 @@ void MainWindow::loadFragFile(const QString &fileName)
         stop();
 
         if (QSettings().value("autorun", true).toBool()) {
+            setRebuildStatus( true );
             variableEditor->resetUniforms(true); // set all values and initialize fragment
-            variableEditor->setDefault(); // set vars with default preset
+            setRebuildStatus( variableEditor->setDefault() ); // set vars with default preset
             if (rebuildRequired) {
                 INFO(tr("Rebuilding to update uniform state..."));
                 setRebuildStatus( initializeFragment() );
@@ -2985,7 +2986,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     if (loadingSucceded) {
         tabInfo.append(TabInfo(displayName, textEdit, false, true));
         setRecentFile(filename);
-        textEdit->saveSettings( variableEditor->getSettings() );
+        textEdit->saveSettings( variableEditor->getSettings(false) );
 
     } else {
         tabInfo.append(TabInfo(displayName, textEdit, true));
@@ -3020,7 +3021,7 @@ void MainWindow::tabChanged(int index)
     }
 
     TextEdit *te = getTextEdit();
-    te->saveSettings( variableEditor->getSettings() );
+    te->saveSettings( variableEditor->getSettings(false) );
 
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
@@ -3038,16 +3039,15 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    if(rebuildRequired) setRebuildStatus(initializeFragment());
+    setRebuildStatus(initializeFragment());
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
             setRebuildStatus( variableEditor->setSettings(te->lastSettings()) );
         }
-        if(rebuildRequired) setRebuildStatus(initializeFragment());
+        setRebuildStatus(initializeFragment());
     }
-    if(rebuildRequired) setRebuildStatus(initializeFragment());
 }
 
 void MainWindow::closeTab()

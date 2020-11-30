@@ -681,6 +681,8 @@ QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
 void DisplayWidget::initFragmentShader()
 {
 
+    makeCurrent();
+
     if (shaderProgram != nullptr) {
         shaderProgram->release();
         delete ( shaderProgram );
@@ -688,8 +690,6 @@ void DisplayWidget::initFragmentShader()
     }
 
     QSettings settings;
-
-    makeCurrent();
 
     shaderProgram = new QOpenGLShaderProgram ( this );
     
