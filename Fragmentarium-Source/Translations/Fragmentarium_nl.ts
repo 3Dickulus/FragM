@@ -361,38 +361,38 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2074"/>
+        <location line="+2122"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2074"/>
+        <location line="-2117"/>
+        <location line="+2122"/>
         <source>Could not create vertex shader: </source>
         <translation>Kon vertex shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2068"/>
-        <location line="+2074"/>
+        <location line="-2116"/>
+        <location line="+2122"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Vertex shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-2063"/>
-        <location line="+2074"/>
+        <location line="-2111"/>
+        <location line="+2122"/>
         <source>Could not create fragment shader: </source>
         <translation>Kon fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2067"/>
+        <location line="-2115"/>
         <location line="+14"/>
-        <location line="+2060"/>
+        <location line="+2108"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-1960"/>
+        <location line="-2008"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader heeft geen kanalen gevonden in de EXR-afbeelding: %1</translation>
     </message>
@@ -407,7 +407,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Lader vond EXR-afbeelding: %1 x %2 is geen kubusmap!</translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+1018"/>
         <source>Failed to bind hires buffer</source>
         <translation>Kon hiresBuffer niet verbinden</translation>
     </message>
@@ -422,20 +422,20 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1318"/>
+        <location line="-1366"/>
         <location line="+507"/>
-        <location line="+1567"/>
+        <location line="+1615"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-2087"/>
-        <location line="+2074"/>
+        <location line="-2135"/>
+        <location line="+2122"/>
         <source>Could not link shader: </source>
         <translation>Kan shader niet linken: </translation>
     </message>
     <message>
-        <location line="-2036"/>
+        <location line="-2084"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
@@ -486,7 +486,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location line="+430"/>
+        <location line="+478"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
@@ -521,12 +521,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Spline-pixelshader is mislukt!</translation>
     </message>
     <message>
-        <location line="-1189"/>
+        <location line="-1237"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Geen frontbuffer-sampler gevonden in buffershader. Dit is vreemd.</translation>
     </message>
     <message>
-        <location line="+210"/>
+        <location line="+258"/>
         <source>Failed to release target buffer</source>
         <translation>Kon target buffer niet vrijgeven</translation>
     </message>
@@ -544,7 +544,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-958"/>
+        <location line="-1006"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -554,7 +554,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+784"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -665,10 +665,10 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1128"/>
-        <location line="+1052"/>
+        <location line="+1053"/>
         <location line="+49"/>
         <location line="+77"/>
-        <location line="+386"/>
+        <location line="+385"/>
         <location line="+170"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -796,7 +796,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Strijdig met veranderingen in de editor!</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+108"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Toon voorbewerkte uitvoer in nieuwe tabbladen</translation>
     </message>
@@ -815,7 +815,15 @@ Moet minder zijn dan 32769x32769</translation>
 </translation>
     </message>
     <message>
-        <location line="+424"/>
+        <location line="+122"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+301"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
@@ -1011,23 +1019,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>2D-textuuropties</translation>
     </message>
     <message>
-        <location line="+73"/>
-        <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+221"/>
+        <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1362,8 +1354,8 @@ and save to file before closing.
         <location line="+312"/>
         <location line="+20"/>
         <location line="+546"/>
-        <location line="+68"/>
-        <location line="+1153"/>
+        <location line="+69"/>
+        <location line="+1152"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Fragmentarium</translation>
@@ -1378,14 +1370,14 @@ and save to file before closing.
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+635"/>
+        <location line="+636"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-962"/>
+        <location line="-963"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
@@ -1400,7 +1392,23 @@ and save to file before closing.
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-738"/>
+        <location line="-1398"/>
+        <location line="+2859"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2858"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+659"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1702,9 +1710,9 @@ werd veranderd door een ander programma.
 Wil je het opnieuw laden?</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+60"/>
         <source>Rebuilding to update uniform state...</source>
-        <translation>Herbouwen om de staat waarin zich de uniforms bevinden te updaten...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1743,12 +1751,12 @@ Wil je het opnieuw laden?</translation>
     </message>
     <message>
         <location line="+43"/>
-        <location line="+981"/>
+        <location line="+980"/>
         <source>Loaded file: %1</source>
         <translation>Bestand geladen: %1</translation>
     </message>
     <message>
-        <location line="-973"/>
+        <location line="-972"/>
         <source>Unnamed</source>
         <translation>Naamloos</translation>
     </message>
@@ -1763,15 +1771,7 @@ Wil je het opnieuw laden?</translation>
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+895"/>
+        <location line="+930"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Cmd Script (*.fqs);;Alle bestanden (*.*)</translation>
     </message>
@@ -2763,7 +2763,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1104"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1103"/>
         <source>Could not locate directory in: </source>
         <translation>Kan folder niet vinden in: </translation>
     </message>

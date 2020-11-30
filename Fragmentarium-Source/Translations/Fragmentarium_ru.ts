@@ -361,38 +361,38 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2074"/>
+        <location line="+2122"/>
         <source>No vertex shader found!</source>
         <translation>Не найдены вершинные шейдеры!</translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2074"/>
+        <location line="-2117"/>
+        <location line="+2122"/>
         <source>Could not create vertex shader: </source>
         <translation>Невозможно создать вершинный шейдер: </translation>
     </message>
     <message>
-        <location line="-2068"/>
-        <location line="+2074"/>
+        <location line="-2116"/>
+        <location line="+2122"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Вершинный шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="-2063"/>
-        <location line="+2074"/>
+        <location line="-2111"/>
+        <location line="+2122"/>
         <source>Could not create fragment shader: </source>
         <translation>Не удалось создать фрагмент-шейдер: </translation>
     </message>
     <message>
-        <location line="-2067"/>
+        <location line="-2115"/>
         <location line="+14"/>
-        <location line="+2060"/>
+        <location line="+2108"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="-1960"/>
+        <location line="-2008"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -407,7 +407,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+1018"/>
         <source>Failed to bind hires buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -422,20 +422,20 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1318"/>
+        <location line="-1366"/>
         <location line="+507"/>
-        <location line="+1567"/>
+        <location line="+1615"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
     </message>
     <message>
-        <location line="-2087"/>
-        <location line="+2074"/>
+        <location line="-2135"/>
+        <location line="+2122"/>
         <source>Could not link shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2036"/>
+        <location line="-2084"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Попытка использовать backbuffer не того типа.</translation>
     </message>
@@ -486,7 +486,7 @@ Initialized as GL_RGBA8</source>
         <translation>Неполное FBO Ошибка!</translation>
     </message>
     <message>
-        <location line="+430"/>
+        <location line="+478"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Недействительное FBO - просмотр буфера</translation>
     </message>
@@ -521,12 +521,12 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1189"/>
+        <location line="-1237"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Нет переднего буфера, образец не найден в буфере шейдера. Это не имеет смысла.</translation>
     </message>
     <message>
-        <location line="+210"/>
+        <location line="+258"/>
         <source>Failed to release target buffer</source>
         <translation>Не удалось освободить целевой буфер</translation>
     </message>
@@ -544,7 +544,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-958"/>
+        <location line="-1006"/>
         <source>Unused sampler uniform: </source>
         <translation>Неиспользуемая равномерная переменная сэмплера: </translation>
     </message>
@@ -554,7 +554,7 @@ Initialized as GL_RGBA8</source>
         <translation>Вершинный шейдер не найден!</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+784"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Не удалось связать previewBuffer FBO</translation>
@@ -665,10 +665,10 @@ Initialized as GL_RGBA8</source>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1128"/>
-        <location line="+1052"/>
+        <location line="+1053"/>
         <location line="+49"/>
         <location line="+77"/>
-        <location line="+386"/>
+        <location line="+385"/>
         <location line="+170"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -841,7 +841,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Конфликт с изменениями в редакторе!</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+108"/>
         <source>Showing preprocessed output in new tabs</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
@@ -860,7 +860,7 @@ This option may be re-enabled through Preferences</source>
 </translation>
     </message>
     <message>
-        <location line="+123"/>
+        <location line="+122"/>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
@@ -1064,23 +1064,7 @@ and save before closing!</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
     <message>
-        <location line="+73"/>
-        <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+221"/>
+        <location line="+295"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1468,7 +1452,7 @@ and save to file before closing.
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+635"/>
+        <location line="+636"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Невозможно записать файл %1:
@@ -1476,7 +1460,7 @@ and save to file before closing.
 %2.</translation>
     </message>
     <message>
-        <location line="-971"/>
+        <location line="-972"/>
         <location line="+24"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
@@ -1516,14 +1500,30 @@ and save to file before closing.
         <location line="+312"/>
         <location line="+20"/>
         <location line="+546"/>
-        <location line="+68"/>
-        <location line="+1153"/>
+        <location line="+69"/>
+        <location line="+1152"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3516"/>
+        <location line="-3519"/>
+        <location line="+2859"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2858"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <location line="+2860"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
@@ -1851,7 +1851,7 @@ Would you like to reload it?</source>
 Вы хотите перезапустить его?</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+60"/>
         <source>Rebuilding to update uniform state...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1892,12 +1892,12 @@ Would you like to reload it?</source>
     </message>
     <message>
         <location line="+43"/>
-        <location line="+981"/>
+        <location line="+980"/>
         <source>Loaded file: %1</source>
         <translation>Загруженный файл:%1</translation>
     </message>
     <message>
-        <location line="-973"/>
+        <location line="-972"/>
         <source>Unnamed</source>
         <translation>Без имени</translation>
     </message>
@@ -1912,7 +1912,7 @@ Would you like to reload it?</source>
         <translation>Если в пресете переменные заблокированы &quot;Сборка&quot; нажать ещё раз.</translation>
     </message>
     <message>
-        <location line="+931"/>
+        <location line="+930"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
@@ -2897,7 +2897,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1104"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1103"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>
