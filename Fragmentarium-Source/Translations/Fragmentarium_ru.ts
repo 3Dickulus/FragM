@@ -615,12 +615,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2860"/>
+        <location line="+2859"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2805"/>
+        <location line="-2804"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -645,7 +645,7 @@ Initialized as GL_RGBA8</source>
         <translation>%1 Не получилось!</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Added %1</source>
         <translation>Добавлено %1</translation>
     </message>
@@ -669,7 +669,7 @@ Initialized as GL_RGBA8</source>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+385"/>
-        <location line="+170"/>
+        <location line="+169"/>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -679,14 +679,14 @@ Initialized as GL_RGBA8</source>
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-3106"/>
+        <location line="-3105"/>
         <location line="+1533"/>
-        <location line="+1795"/>
+        <location line="+1794"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3298"/>
+        <location line="-3297"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -860,20 +860,12 @@ This option may be re-enabled through Preferences</source>
 </translation>
     </message>
     <message>
-        <location line="+122"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+301"/>
+        <location line="+422"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2417"/>
+        <location line="-2416"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Во весь экран (Клавиша ESC переключает режимы)</translation>
     </message>
@@ -914,12 +906,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2791"/>
+        <location line="+2790"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2790"/>
+        <location line="-2789"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1059,12 +1051,28 @@ and save before closing!</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-835"/>
+        <location line="-834"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+73"/>
+        <location line="+2858"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2857"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+220"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1475,7 +1483,7 @@ and save before closing!</source>
     <message>
         <location line="+332"/>
         <location line="+505"/>
-        <location line="+1285"/>
+        <location line="+1284"/>
         <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
@@ -1491,7 +1499,7 @@ and save before closing!</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-2163"/>
+        <location line="-2162"/>
         <location line="+8"/>
         <location line="+26"/>
         <location line="+5"/>
@@ -1501,30 +1509,14 @@ and save before closing!</source>
         <location line="+20"/>
         <location line="+546"/>
         <location line="+69"/>
-        <location line="+1152"/>
+        <location line="+1151"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3519"/>
+        <location line="-3514"/>
         <location line="+2859"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2858"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location line="+2860"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
@@ -1861,12 +1853,62 @@ Would you like to reload it?</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+105"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Renderer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>GL Driver: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Display using GL %1.%2 %3 profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>No GL profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Something went wrong!!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>GLSL versions: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Shaders that do not include a #version directive will be treated as targeting GLSL version 110</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Not a runnable fragment.</source>
         <translation>Ваш код не запускается.</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+5"/>
+        <source>Current target: GLSL </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Current target: GLSL 110</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+61"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Компилировать скрипт в %1 мс.</translation>
     </message>
@@ -1891,18 +1933,23 @@ Would you like to reload it?</source>
         <translation>Позиция: %1, строка: %2.</translation>
     </message>
     <message>
-        <location line="+43"/>
-        <location line="+980"/>
+        <location line="+16"/>
+        <source>// Write fragment code here...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <location line="+979"/>
         <source>Loaded file: %1</source>
         <translation>Загруженный файл:%1</translation>
     </message>
     <message>
-        <location line="-972"/>
+        <location line="-971"/>
         <source>Unnamed</source>
         <translation>Без имени</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+71"/>
         <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
         <translation>Авто запуск отключен! Вы должны нажать &quot;Сборка&quot; чтобы применить изменения.</translation>
     </message>
@@ -1912,7 +1959,15 @@ Would you like to reload it?</source>
         <translation>Если в пресете переменные заблокированы &quot;Сборка&quot; нажать ещё раз.</translation>
     </message>
     <message>
-        <location line="+930"/>
+        <location line="+36"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+894"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
@@ -1922,13 +1977,13 @@ Would you like to reload it?</source>
         <translation>Привязать командный скрипт к клавише F6</translation>
     </message>
     <message>
-        <location line="-3755"/>
-        <location line="+2860"/>
+        <location line="-3753"/>
+        <location line="+2859"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+46"/>
         <location line="+10"/>
         <location line="+10"/>
         <source>Launching web browser...</source>
@@ -2897,7 +2952,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1103"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1102"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>
@@ -3173,7 +3228,7 @@ Possible values are &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+68"/>
         <location line="+3"/>
         <source>Script file </source>
         <translation type="unfinished"></translation>
