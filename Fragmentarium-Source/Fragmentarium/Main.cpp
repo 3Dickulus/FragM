@@ -307,6 +307,8 @@ int main(int argc, char *argv[])
 
     mainWin->setVerbose(parser.isSet("verbose"));
 
+    mainWin->setWindowTitle(QString("%1 %2").arg(qApp->applicationName()).arg(qApp->applicationVersion()));
+
     mainWin->show();
 
     mainWin->readSettings();

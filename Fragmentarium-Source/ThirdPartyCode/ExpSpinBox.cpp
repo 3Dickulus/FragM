@@ -33,7 +33,7 @@ void ExpSpinBox::setDecimals(int value)
 QString ExpSpinBox::textFromValue(double value) const
 {
 	// convert to string -> Using exponential or standard display
-    return locale().toString(value, sfmt ? 'e' : 'g', dispDecimals);
+    return QString("%1").arg(value, 1, sfmt ? 'e' : 'g', dispDecimals);
 }
 
 double ExpSpinBox::valueFromText(const QString &text) const

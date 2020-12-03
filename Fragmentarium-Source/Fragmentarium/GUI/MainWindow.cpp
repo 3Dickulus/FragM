@@ -273,7 +273,7 @@ void MainWindow::insertPreset()
 
     if (ok && !newPresetName.isEmpty()) {
 
-        if(newPresetName.contains("KeyFrame.")) { /// adding keyframe
+        if(newPresetName.contains("KeyFrame.", Qt::CaseInsensitive)) { /// adding keyframe
             getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getCameraSettings() + "\n#endpreset\n");
         } else if (newPresetName.contains("Range", Qt::CaseInsensitive)) { /// adding parameter easing range
             if(variableEditor->hasEasing()) {
@@ -287,9 +287,8 @@ void MainWindow::insertPreset()
             getTextEdit()->insertPlainText("\n#preset " + newPresetName + "\n" + getSettings(false) + "\n#endpreset\n");
         }
 
-        if (rebuildRequired) {
-            setRebuildStatus(initializeFragment());
-        } // once to initialize any textures
+        if (rebuildRequired)
+            setRebuildStatus(initializeFragment()); // once to initialize any textures
         variableEditor->setPreset(newPresetName); // apply the settings
 
         INFO(tr("Added %1").arg(newPresetName));
@@ -2529,7 +2528,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             }
             processGuiEvents();
         }
-    
+        
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
         pp?stop():play();
@@ -2676,21 +2675,21 @@ bool MainWindow::initializeFragment()
     logger->getListWidget()->clear();
 
     // Show info first...
-    INFO("Vendor: " + engine->vendor + "\nRenderer: " + engine->renderer + "\nGL Driver: " + engine->glvers);
+    INFO(tr("Vendor: ") + engine->vendor + "\n" + tr("Renderer: ") + engine->renderer + "\n" + tr("GL Driver: ") + engine->glvers);
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();
     if (prof == 1 || prof == 2) {
-        INFO(QString("Display using GL %1.%2 %3 profile").arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+        INFO(QString(tr("Display using GL %1.%2 %3 profile")).arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
     } else if (prof == 0) {
-        INFO( "No GL profile." );
+        INFO( tr("No GL profile.") );
 //         return false;
     } else {
-        WARNING( "Something went wrong!!!" );
+        WARNING( tr("Something went wrong!!!") );
         return false;
     }
 
-    INFO("\nGLSL versions: " + engine->glslvers.join(", "));
-    INFO("Shaders that do not include a #version directive will be treated as targeting GLSL version 110\n");
+    INFO("\n" + tr("GLSL versions: ") + engine->glslvers.join(", "));
+    INFO(tr("Shaders that do not include a #version directive will be treated as targeting GLSL version 110") + "\n");
 
     QStringList imgFileExtensions;
 
@@ -2714,9 +2713,9 @@ bool MainWindow::initializeFragment()
     }
     QString versionProfileLine = inputText.split("\n").at(0);
     if ( versionProfileLine.contains("#version"))
-        INFO("Current target: GLSL " + versionProfileLine.split(" ").at(1));
+        INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1));
     else
-        INFO("Current target: GLSL 110");
+        INFO(tr("Current target: GLSL 110"));
         
     INFO("");
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
@@ -2926,7 +2925,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
     textEdit->setTabStopWidth(20);
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
-    QString s("// Write fragment code here...\r\n\
+    QString s(tr("// Write fragment code here...") + "\r\n\
 #include \"MathUtils.frag\"\r\n\
 #include \"DE-Raytracer.frag\" \r\n\
 \r\n\
@@ -3025,7 +3024,6 @@ void MainWindow::tabChanged(int index)
 
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
-    setWindowTitle(QString("%1 - %2").arg(tabTitle).arg("Fragmentarium"));
     stackedTextEdits->setCurrentWidget(ti.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
 
@@ -3039,7 +3037,8 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    setRebuildStatus(initializeFragment());
+    setRebuildStatus(true);
+    initializeFragment();
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
@@ -3096,9 +3095,8 @@ void MainWindow::closeTab(int index)
     
     setRebuildStatus(variableEditor->setSettings(te->lastSettings()));
     
-    if (rebuildRequired) {
-        setRebuildStatus(initializeFragment());
-    } // this bit of fudge preserves textures ???
+    if (rebuildRequired)
+        setRebuildStatus(initializeFragment()); // this bit of fudge preserves textures ???
 }
 
 void MainWindow::clearKeyFrames()
@@ -3316,7 +3314,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
                 } else {
                     // use the params found in png
                     variableEditor->setSettings(fromPNG);
-                    qApp->clipboard()->setText(fromPNG);
+//                     qApp->clipboard()->setText(fromPNG); // for testing
                 }
             } else {
                 INFO(tr("Must be a .frag or .fragparams file."));

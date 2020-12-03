@@ -1692,6 +1692,7 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
         }
 }
 
+
 void DisplayWidget::draw3DHints()
 {
     if(!hasKeyFrames) return;
