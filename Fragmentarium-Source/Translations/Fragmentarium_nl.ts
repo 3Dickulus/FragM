@@ -355,44 +355,44 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan TexParameter-waarde niet parsen: </translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+173"/>
         <source>Could not get SamplerWidget for %1!</source>
         <translation>Kon geen SamplerWidget verkrijgen voor %1!</translation>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2122"/>
+        <location line="+2074"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
     </message>
     <message>
-        <location line="-2117"/>
-        <location line="+2122"/>
+        <location line="-2069"/>
+        <location line="+2074"/>
         <source>Could not create vertex shader: </source>
         <translation>Kon vertex shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2116"/>
-        <location line="+2122"/>
+        <location line="-2068"/>
+        <location line="+2074"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Vertex shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-2111"/>
-        <location line="+2122"/>
+        <location line="-2063"/>
+        <location line="+2074"/>
         <source>Could not create fragment shader: </source>
         <translation>Kon fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2115"/>
+        <location line="-2067"/>
         <location line="+14"/>
-        <location line="+2108"/>
+        <location line="+2060"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-2008"/>
+        <location line="-1960"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader heeft geen kanalen gevonden in de EXR-afbeelding: %1</translation>
     </message>
@@ -407,7 +407,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Lader vond EXR-afbeelding: %1 x %2 is geen kubusmap!</translation>
     </message>
     <message>
-        <location line="+1018"/>
+        <location line="+970"/>
         <source>Failed to bind hires buffer</source>
         <translation>Kon hiresBuffer niet verbinden</translation>
     </message>
@@ -422,20 +422,20 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1366"/>
+        <location line="-1318"/>
         <location line="+507"/>
-        <location line="+1615"/>
+        <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-2135"/>
-        <location line="+2122"/>
+        <location line="-2087"/>
+        <location line="+2074"/>
         <source>Could not link shader: </source>
         <translation>Kan shader niet linken: </translation>
     </message>
     <message>
-        <location line="-2084"/>
+        <location line="-2036"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
@@ -486,7 +486,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location line="+478"/>
+        <location line="+430"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
@@ -521,12 +521,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Spline-pixelshader is mislukt!</translation>
     </message>
     <message>
-        <location line="-1237"/>
+        <location line="-1189"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Geen frontbuffer-sampler gevonden in buffershader. Dit is vreemd.</translation>
     </message>
     <message>
-        <location line="+258"/>
+        <location line="+210"/>
         <source>Failed to release target buffer</source>
         <translation>Kon target buffer niet vrijgeven</translation>
     </message>
@@ -544,7 +544,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-1006"/>
+        <location line="-958"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -554,7 +554,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+784"/>
+        <location line="+736"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -615,12 +615,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2859"/>
+        <location line="+2851"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location line="-2804"/>
+        <location line="-2796"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
@@ -665,7 +665,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1128"/>
-        <location line="+1053"/>
+        <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+385"/>
@@ -679,14 +679,14 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location line="-3105"/>
+        <location line="-3097"/>
         <location line="+1533"/>
-        <location line="+1794"/>
+        <location line="+1786"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location line="-3297"/>
+        <location line="-3289"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
@@ -769,7 +769,7 @@ Must be less than 32769x32769</source>
 Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
-        <location line="+805"/>
+        <location line="+797"/>
         <source>Reloaded file: %1</source>
         <translation>Reloaded-bestand: %1</translation>
     </message>
@@ -820,7 +820,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2416"/>
+        <location line="-2408"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Volledig scherm (aan-/uitschakelen met ESC-toets)</translation>
     </message>
@@ -861,12 +861,12 @@ Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2790"/>
+        <location line="+2782"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2789"/>
+        <location line="-2781"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1012,14 +1012,14 @@ Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
         <location line="+73"/>
-        <location line="+2858"/>
+        <location line="+2850"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2857"/>
+        <location line="-2849"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1313,12 +1313,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="-1007"/>
-        <location line="+2859"/>
+        <location line="+2851"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
     </message>
     <message>
-        <location line="-2668"/>
+        <location line="-2660"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments en claude voor al zijn hulp bij verbeteringen.. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
@@ -1361,7 +1361,7 @@ and save to file before closing.
         <location line="+5"/>
         <location line="+312"/>
         <location line="+20"/>
-        <location line="+546"/>
+        <location line="+538"/>
         <location line="+69"/>
         <location line="+1151"/>
         <location line="+22"/>
@@ -1369,7 +1369,7 @@ and save to file before closing.
         <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location line="-2183"/>
+        <location line="-2175"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
@@ -1378,14 +1378,14 @@ and save to file before closing.
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+636"/>
+        <location line="+628"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-963"/>
+        <location line="-955"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
@@ -1508,7 +1508,7 @@ Lees dit alstublieft:
     </message>
     <message>
         <location line="+13"/>
-        <location line="+505"/>
+        <location line="+497"/>
         <location line="+1284"/>
         <location line="+199"/>
         <source>Cannot read file %1:
@@ -1517,7 +1517,7 @@ Lees dit alstublieft:
 %2.</translation>
     </message>
     <message>
-        <location line="-1981"/>
+        <location line="-1973"/>
         <source>Settings loaded from file</source>
         <translation>Instellingen geladen uit bestand</translation>
     </message>
@@ -1683,7 +1683,7 @@ Lees dit alstublieft:
         <translation>Gereed</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+22"/>
         <source>Ready</source>
         <translation>Klaar</translation>
     </message>
@@ -1836,8 +1836,8 @@ and save before closing!</source>
         <translation>Bindend opdrachtscript aan F6-toets</translation>
     </message>
     <message>
-        <location line="-3753"/>
-        <location line="+2859"/>
+        <location line="-3745"/>
+        <location line="+2851"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
@@ -2124,7 +2124,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <translation> Preset.</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+52"/>
         <source>Copied </source>
         <translation>Gekopiëerd </translation>
     </message>
