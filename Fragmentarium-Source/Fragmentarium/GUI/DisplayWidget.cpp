@@ -654,8 +654,10 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
                 // jump to error line in text editor
                 TextEdit *te = mainWindow->getTextEdit();
                 QTextCursor cursor(te->textCursor());
-                cursor.setPosition(0);
-                cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
+                if(te->textCursor().blockNumber() != errorLine-1) {
+                    cursor.setPosition(0);
+                    cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
+                }
                 te->setTextCursor( cursor );
                 te->centerCursor();
             }
@@ -1691,7 +1693,6 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
             }
         }
 }
-
 
 void DisplayWidget::draw3DHints()
 {
