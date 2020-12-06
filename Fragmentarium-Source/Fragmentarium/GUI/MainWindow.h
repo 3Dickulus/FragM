@@ -587,7 +587,6 @@ public slots:
         return getTimeSliderValue();
     }
     bool initializeFragment();
-    void callRedraw();
 
     void savePreview();
 
@@ -618,6 +617,8 @@ public slots:
     QString getPresetNames ( bool keyframesORpresets = false );
 
     void readSettings();
+    
+    bool isPaused() { return pausePlay; };
 
 private slots:
 #ifdef USE_OPEN_EXR

@@ -342,7 +342,6 @@ void VariableEditor::resetGroup()
         mainWindow->resetCamera(true);
     }
 
-    mainWindow->callRedraw();
 }
 
 void VariableEditor::copyGroup()

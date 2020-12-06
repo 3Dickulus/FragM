@@ -2306,14 +2306,6 @@ void MainWindow::setSubFrameDisplay(int i)
     frameLabel->setText(QString(" %1 %2").arg(tr("Done")).arg(i));
 }
 
-void MainWindow::callRedraw()
-{
-
-    bool state = engine->isRedrawDisabled();
-    engine->setDisableRedraw(false);
-    engine->setDisableRedraw(state);
-}
-
 void MainWindow::disableAllExcept(QWidget *w)
 {
 
