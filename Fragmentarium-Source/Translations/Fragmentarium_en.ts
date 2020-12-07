@@ -352,7 +352,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+173"/>
+        <location line="+174"/>
         <source>Could not get SamplerWidget for %1!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -612,12 +612,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2851"/>
+        <location line="+2850"/>
         <source>Unsaved changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2796"/>
+        <location line="-2795"/>
         <source>Add Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -662,7 +662,7 @@ Initialized as GL_RGBA8</source>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1128"/>
-        <location line="+1045"/>
+        <location line="+1044"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+385"/>
@@ -676,14 +676,14 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3097"/>
+        <location line="-3096"/>
         <location line="+1533"/>
-        <location line="+1786"/>
+        <location line="+1785"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3289"/>
+        <location line="-3288"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -762,7 +762,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+797"/>
+        <location line="+796"/>
         <source>Reloaded file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -810,7 +810,7 @@ Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2408"/>
+        <location line="-2407"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -851,12 +851,12 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2782"/>
+        <location line="+2781"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2781"/>
+        <location line="-2780"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1002,14 +1002,14 @@ Must be less than 32769x32769</source>
     </message>
     <message>
         <location line="+73"/>
-        <location line="+2850"/>
+        <location line="+2849"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2849"/>
+        <location line="-2848"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1303,12 +1303,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="-1007"/>
-        <location line="+2851"/>
+        <location line="+2850"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2660"/>
+        <location line="-2659"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1351,7 +1351,7 @@ and save to file before closing.
         <location line="+5"/>
         <location line="+312"/>
         <location line="+20"/>
-        <location line="+538"/>
+        <location line="+537"/>
         <location line="+69"/>
         <location line="+1151"/>
         <location line="+22"/>
@@ -1359,7 +1359,7 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2175"/>
+        <location line="-2174"/>
         <source>Could not create directory %1:
 .</source>
         <translation type="unfinished"></translation>
@@ -1367,13 +1367,13 @@ and save to file before closing.
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+628"/>
+        <location line="+627"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-955"/>
+        <location line="-954"/>
         <source>Saved fragment + settings as: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1485,7 +1485,7 @@ Please read this:
     </message>
     <message>
         <location line="+13"/>
-        <location line="+497"/>
+        <location line="+496"/>
         <location line="+1284"/>
         <location line="+199"/>
         <source>Cannot read file %1:
@@ -1493,7 +1493,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1973"/>
+        <location line="-1972"/>
         <source>Settings loaded from file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1644,7 +1644,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+153"/>
         <source>Stopping: last stored time set to</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1810,8 +1810,8 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3745"/>
-        <location line="+2851"/>
+        <location line="-3744"/>
+        <location line="+2850"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
