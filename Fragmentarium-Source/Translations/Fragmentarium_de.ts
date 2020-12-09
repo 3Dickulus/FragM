@@ -615,12 +615,12 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2850"/>
+        <location line="+2851"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2795"/>
+        <location line="-2796"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -665,7 +665,7 @@ Initialisiert als GL_RGBA8</translation>
         <location line="-1637"/>
         <location line="+16"/>
         <location line="+1128"/>
-        <location line="+1044"/>
+        <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+385"/>
@@ -679,14 +679,14 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-3096"/>
+        <location line="-3097"/>
         <location line="+1533"/>
-        <location line="+1785"/>
+        <location line="+1786"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3288"/>
+        <location line="-3289"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -769,7 +769,7 @@ Must be less than 32769x32769</source>
 Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
-        <location line="+796"/>
+        <location line="+797"/>
         <source>Reloaded file: %1</source>
         <translation>Neu geladene Datei: %1</translation>
     </message>
@@ -820,7 +820,7 @@ Muß kleiner sein als 32769x32769</translation>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2407"/>
+        <location line="-2408"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Vollbildanzeige (mit ESC umschalten)</translation>
     </message>
@@ -861,12 +861,12 @@ Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2781"/>
+        <location line="+2782"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2780"/>
+        <location line="-2781"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1012,14 +1012,14 @@ Muß kleiner sein als 32769x32769</translation>
     </message>
     <message>
         <location line="+73"/>
-        <location line="+2849"/>
+        <location line="+2850"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2848"/>
+        <location line="-2849"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1313,12 +1313,12 @@ and save to file before closing.
     </message>
     <message>
         <location line="-1007"/>
-        <location line="+2850"/>
+        <location line="+2851"/>
         <source>Continue</source>
         <translation>Weiter</translation>
     </message>
     <message>
-        <location line="-2659"/>
+        <location line="-2660"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;&lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.&lt;h1&gt;Anerkennung&lt;/h1&gt;&lt;p&gt;Viele der Inspirationen und Formeln kamen von &lt;a href=&quot;http://www.fractalforums.com&quot;&gt;Fractal Forums&lt;/a&gt;, unter anderen von Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi und Jesse. Ein besonderer Dank gilt Knighty und Kali for ihre großartigen Fragmente und claude für all seine Hilfe bei Verbesserungen. Alle Fragmente sollten Information über ihren Ursprung enthalten - Bitte melden Sie mir, wenn ich mich in dieser Hinsicht irgenwo geirrt habe.&lt;/p&gt;&lt;p&gt;Die gebrauchten Icons sind Teil des &lt;ahref=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt;-Projekts. &lt;/p&gt;&lt;p&gt;Fragmentarium is erstellt unter Nutzung des &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt plattformübergreifenden GUI Frameworks&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;table&gt; cellspacing=20&gt;&lt;th&gt; colspan=2 align=left&gt;Übersetzungen durch FractalForums.com-Benutzer&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Deutsch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Niederländisch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
@@ -1361,7 +1361,7 @@ and save to file before closing.
         <location line="+5"/>
         <location line="+312"/>
         <location line="+20"/>
-        <location line="+537"/>
+        <location line="+538"/>
         <location line="+69"/>
         <location line="+1151"/>
         <location line="+22"/>
@@ -1369,7 +1369,7 @@ and save to file before closing.
         <translation></translation>
     </message>
     <message>
-        <location line="-2174"/>
+        <location line="-2175"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Konnte Verzeichnis nicht erstellen: %1:
@@ -1378,14 +1378,14 @@ and save to file before closing.
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+627"/>
+        <location line="+628"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Konnte Datei nicht erstellen: %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-954"/>
+        <location line="-955"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment und Einstellungen gespeichert als: </translation>
     </message>
@@ -1510,7 +1510,7 @@ nicht entfernen</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location line="+496"/>
+        <location line="+497"/>
         <location line="+1284"/>
         <location line="+199"/>
         <source>Cannot read file %1:
@@ -1519,7 +1519,7 @@ nicht entfernen</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1972"/>
+        <location line="-1973"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
@@ -1670,7 +1670,7 @@ nicht entfernen</translation>
         <translation>Zeit: 0s </translation>
     </message>
     <message>
-        <location line="+153"/>
+        <location line="+154"/>
         <source>Stopping: last stored time set to</source>
         <translation>Vorgang stoppt: die zuletzt gespeicherte Zeit is festgelegt auf</translation>
     </message>
@@ -1838,8 +1838,8 @@ and save before closing!</source>
         <translation>Binden Sie das Befehlsskript an die Taste F6</translation>
     </message>
     <message>
-        <location line="-3744"/>
-        <location line="+2850"/>
+        <location line="-3745"/>
+        <location line="+2851"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2802,7 +2802,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>Preprocessor</name>
     <message>
-        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+253"/>
+        <location filename="../Fragmentarium/Parser/Preprocessor.cpp" line="+255"/>
         <source>Including file: </source>
         <translation>Schließt Datei ein: </translation>
     </message>
