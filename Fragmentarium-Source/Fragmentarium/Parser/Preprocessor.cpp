@@ -162,6 +162,7 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
             }
         }
 
+        int incCount = 0;
         for (int i = 1; i < in.count(); i++) {
             if(hasIncludes) {
                 // insert #line directive after #include statement
@@ -180,13 +181,14 @@ void Preprocessor::parseSource(FragmentSource *fs, QString input, QString origin
                                 in.insert(i+1, QString("#line %1 %2").arg(i+1).arg(sf));
                             }
                             else {
-                                in.insert(i+1, QString("#line %1 %2").arg(i).arg(sf));
+                                in.insert(i+1, QString("#line %1 %2").arg(i-(incCount-1)).arg(sf));
                             }
                         }
                     }
                     else {
                         in.insert(i+1, QString("#line %1 %2").arg(i-1).arg(sf));
                     }
+                    incCount++;
                 }
             }
             if(hasVertexCode) {
