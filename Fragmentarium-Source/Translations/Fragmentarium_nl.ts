@@ -355,7 +355,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kan TexParameter-waarde niet parsen: </translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+176"/>
         <source>Could not get SamplerWidget for %1!</source>
         <translation>Kon geen SamplerWidget verkrijgen voor %1!</translation>
     </message>

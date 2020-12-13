@@ -352,7 +352,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+176"/>
         <source>Could not get SamplerWidget for %1!</source>
         <translation type="unfinished"></translation>
     </message>
