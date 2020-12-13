@@ -355,7 +355,7 @@ Initialized as GL_RGBA8</source>
         <translation>Не удалось разобрать значение параметра текстуры: </translation>
     </message>
     <message>
-        <location line="+176"/>
+        <location line="+174"/>
         <source>Could not get SamplerWidget for %1!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -615,12 +615,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2851"/>
+        <location line="+2859"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2796"/>
+        <location line="-2804"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -657,18 +657,18 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1646"/>
+        <location line="+1647"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1637"/>
+        <location line="-1638"/>
         <location line="+16"/>
-        <location line="+1128"/>
+        <location line="+1129"/>
         <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
-        <location line="+385"/>
+        <location line="+392"/>
         <location line="+169"/>
         <location line="+10"/>
         <location line="+10"/>
@@ -679,14 +679,14 @@ Initialized as GL_RGBA8</source>
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-3097"/>
-        <location line="+1533"/>
-        <location line="+1786"/>
+        <location line="-3105"/>
+        <location line="+1534"/>
+        <location line="+1793"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3289"/>
+        <location line="-3297"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -809,7 +809,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+740"/>
+        <location line="+741"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
@@ -846,7 +846,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Отображение предварительно обработанного вывода в новых вкладках</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+131"/>
         <source>Available image formats: </source>
         <translation>Доступные форматы изображений: </translation>
     </message>
@@ -860,12 +860,20 @@ This option may be re-enabled through Preferences</source>
 </translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="+122"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+300"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2408"/>
+        <location line="-2416"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Во весь экран (Клавиша ESC переключает режимы)</translation>
     </message>
@@ -906,12 +914,12 @@ This option may be re-enabled through Preferences</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2782"/>
+        <location line="+2790"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2781"/>
+        <location line="-2789"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1056,23 +1064,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
     <message>
-        <location line="+73"/>
-        <location line="+2850"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2849"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+220"/>
+        <location line="+294"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1196,7 +1188,7 @@ and save to file before closing.
         <translation>Рендер текущего набора правил</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>&amp;Video Encoding</source>
         <translation>Кодирование &amp;видео</translation>
     </message>
@@ -1425,8 +1417,8 @@ and save to file before closing.
         <translation>&amp;Примеры</translation>
     </message>
     <message>
-        <location line="-391"/>
-        <location line="+437"/>
+        <location line="-392"/>
+        <location line="+438"/>
         <source>Unable to locate: </source>
         <translation>Невозможно определить местоположение: </translation>
     </message>
@@ -1483,7 +1475,7 @@ and save to file before closing.
     <message>
         <location line="+332"/>
         <location line="+497"/>
-        <location line="+1284"/>
+        <location line="+1291"/>
         <location line="+199"/>
         <source>Cannot read file %1:
 %2.</source>
@@ -1499,7 +1491,7 @@ and save to file before closing.
 %2.</translation>
     </message>
     <message>
-        <location line="-2154"/>
+        <location line="-2161"/>
         <location line="+8"/>
         <location line="+26"/>
         <location line="+5"/>
@@ -1509,19 +1501,35 @@ and save to file before closing.
         <location line="+20"/>
         <location line="+538"/>
         <location line="+69"/>
-        <location line="+1151"/>
+        <location line="+1158"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3506"/>
-        <location line="+2851"/>
+        <location line="-3517"/>
+        <location line="+2858"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2857"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+2859"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-2660"/>
+        <location line="-2668"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Интегрированная среда для изучения пиксельной графики на базе GPU. &lt;/p&gt;
 &lt;p&gt;ПО создано Михаэлем Хвидфилтом Кристенсеном (Mikael Hvidtfeldt Christensen).&lt;br /&gt;Лицензия зарегистрирована и распространяется по лицензии GPL или LGPL.&lt;/p&gt;
@@ -1562,7 +1570,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+118"/>
         <source>Select Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1853,7 +1861,7 @@ Would you like to reload it?</source>
         <translation>Файл сохранён</translation>
     </message>
     <message>
-        <location line="+105"/>
+        <location line="+112"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1959,15 +1967,7 @@ Would you like to reload it?</source>
         <translation>Если в пресете переменные заблокированы &quot;Сборка&quot; нажать ещё раз.</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+894"/>
+        <location line="+930"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
@@ -1977,8 +1977,8 @@ and save before closing!</source>
         <translation>Привязать командный скрипт к клавише F6</translation>
     </message>
     <message>
-        <location line="-3745"/>
-        <location line="+2851"/>
+        <location line="-3753"/>
+        <location line="+2859"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
