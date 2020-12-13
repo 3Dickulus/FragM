@@ -1026,6 +1026,7 @@ void MainWindow::createActions()
     renderAction = new QAction(QIcon(":/Icons/render.png"), tr("Compile &GLSL"), this);
     renderAction->setShortcut(tr("F5"));
     renderAction->setStatusTip(tr("Render the current ruleset"));
+    renderAction->setObjectName("renderAction");
     connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
 
     videoEncoderAction = new QAction(QIcon(":/Icons/player_eject.png"), tr("&Video Encoding"), this);
@@ -2662,6 +2663,13 @@ bool MainWindow::initializeFragment()
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
+    }
+    
+    // always rebuild when called by user otherwise only rebuild if source has changed
+    if(sender() != nullptr && !sender()->objectName().isEmpty()) {
+        if(sender()->objectName() == QString("renderAction")) {
+            rebuildRequired=true;
+        }
     }
 
     logger->getListWidget()->clear();
