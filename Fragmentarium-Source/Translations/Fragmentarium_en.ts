@@ -358,38 +358,38 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2074"/>
+        <location line="+2077"/>
         <source>No vertex shader found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2074"/>
+        <location line="-2072"/>
+        <location line="+2077"/>
         <source>Could not create vertex shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2068"/>
-        <location line="+2074"/>
+        <location line="-2071"/>
+        <location line="+2077"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2063"/>
-        <location line="+2074"/>
+        <location line="-2066"/>
+        <location line="+2077"/>
         <source>Could not create fragment shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2067"/>
-        <location line="+14"/>
-        <location line="+2060"/>
+        <location line="-2070"/>
+        <location line="+13"/>
+        <location line="+2064"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1960"/>
+        <location line="-1964"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -404,7 +404,12 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+47"/>
+        <source>No slices found in file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+927"/>
         <source>Failed to bind hires buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -419,20 +424,77 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1318"/>
-        <location line="+507"/>
+        <location line="+801"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Renderer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>GL Driver: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>%1 profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>No GL profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>
+Testing GLSL versions: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>
+Test: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Logged fragment shader fail! GLSL version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Logged buffer shader fail! GLSL Version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-11"/>
+        <source>Fragment shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Buffer shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2169"/>
+        <location line="+511"/>
         <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2087"/>
-        <location line="+2074"/>
+        <location line="-2090"/>
+        <location line="+2077"/>
         <source>Could not link shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2036"/>
+        <location line="-2040"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -442,7 +504,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+186"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -468,7 +530,7 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+13"/>
+        <location line="+14"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -541,7 +603,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-958"/>
+        <location line="-959"/>
         <source>Unused sampler uniform: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -551,7 +613,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+737"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation type="unfinished"></translation>
@@ -612,12 +674,12 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2859"/>
+        <location line="+2870"/>
         <source>Unsaved changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2804"/>
+        <location line="-2815"/>
         <source>Add Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -648,20 +710,20 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+7"/>
-        <location line="+69"/>
+        <location line="+75"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1647"/>
+        <location line="+1652"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1638"/>
+        <location line="-1643"/>
         <location line="+16"/>
-        <location line="+1129"/>
+        <location line="+1134"/>
         <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
@@ -676,14 +738,14 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3105"/>
-        <location line="+1534"/>
+        <location line="-3110"/>
+        <location line="+1539"/>
         <location line="+1793"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3297"/>
+        <location line="-3302"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -756,7 +818,7 @@ This option may be re-enabled through Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+923"/>
+        <location line="+928"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation type="unfinished"></translation>
@@ -818,7 +880,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2416"/>
+        <location line="-2421"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -859,12 +921,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2790"/>
+        <location line="+2795"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2789"/>
+        <location line="-2794"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1004,12 +1066,28 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-834"/>
+        <location line="-840"/>
         <source>2D Texture Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+294"/>
+        <location line="+73"/>
+        <location line="+2869"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2868"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+226"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1124,6 +1202,16 @@ and save before closing!</source>
     <message>
         <location line="+5"/>
         <source>Clear Texture Cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Test versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tests the current fragment against all supported GLSL versions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1288,24 +1376,24 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+438"/>
+        <location line="-396"/>
+        <location line="+443"/>
         <source>Unable to locate: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1008"/>
-        <location line="+2859"/>
+        <location line="-1019"/>
+        <location line="+2870"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2668"/>
+        <location line="-2673"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+776"/>
+        <location line="+780"/>
         <source>Windows</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1315,7 +1403,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+283"/>
         <source>Build the fragment first!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1378,23 +1466,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1398"/>
-        <location line="+2858"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2857"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+658"/>
+        <location line="-744"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1413,7 +1485,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+122"/>
         <source>Select Preset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1428,7 +1500,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+411"/>
+        <location line="+412"/>
         <location line="+24"/>
         <source>Could not remove existing:
 &apos;%1&apos;</source>
@@ -1810,8 +1882,8 @@ Would you like to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3753"/>
-        <location line="+2859"/>
+        <location line="-3764"/>
+        <location line="+2870"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2466,13 +2538,13 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+494"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+488"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+54"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+53"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2514,13 +2586,13 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+45"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+44"/>
         <source>Enabling this might be helpful when debugging.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+11"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+12"/>
         <source>Presets contain easing curve settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2556,7 +2628,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+15"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+14"/>
         <source>font: 9pt Courier;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2568,7 +2640,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-48"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-47"/>
         <source>Loop animation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2643,37 +2715,25 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-57"/>
-        <source>Autoload on change</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+43"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-15"/>
         <source>Jump to line on Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
-        <source>Jump to line on Warn</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-26"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-34"/>
         <source>2D Camera Mode on=traveling off=fixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-8"/>
         <source>GUI:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+9"/>
         <source>Animation update on=continuous off=last set</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2721,7 +2781,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Editor Schema: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2757,7 +2817,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+7"/>
         <source>GLSL:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2765,6 +2825,12 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
         <location/>
         <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Apply compatibility patches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-7"/>
+        <source>Autoload on change by external editor</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

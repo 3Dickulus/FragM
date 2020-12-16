@@ -332,6 +332,12 @@ void MainWindow::clearTextures()
     engine->clearTextureCache(nullptr);
 }
 
+void MainWindow::testCompileGLSL()
+{
+
+    getEngine()->testVersions(); 
+}
+
 void MainWindow::bufferSpinBoxChanged(int value)
 {
     Q_UNUSED(value)
@@ -1067,6 +1073,10 @@ void MainWindow::createActions()
     clearTexturesAction = new QAction(tr("Clear Texture Cache"), this);
     connect(clearTexturesAction, SIGNAL(triggered()), this, SLOT(clearTextures()));
 
+    testCompileGLSLAction = new QAction(tr("Test versions"), this);
+    testCompileGLSLAction->setStatusTip(tr("Tests the current fragment against all supported GLSL versions."));
+    connect(testCompileGLSLAction, SIGNAL(triggered()), this, SLOT(testCompileGLSL()));
+
     sfHomeAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Project Homepage (web link)"), this);
     sfHomeAction->setStatusTip(tr("Open the project page in a browser."));
     connect(sfHomeAction, SIGNAL(triggered()), this, SLOT(launchSfHome()));
@@ -1194,6 +1204,7 @@ void MainWindow::createMenus()
     helpMenu->addSeparator();
     helpMenu->addMenu(mc); // "windows" menu
     helpMenu->addAction(clearTexturesAction);
+    helpMenu->addAction(testCompileGLSLAction);
     helpMenu->addSeparator();
 
     helpMenu->addAction(sfHomeAction);
@@ -2674,7 +2685,7 @@ bool MainWindow::initializeFragment()
 
     logger->getListWidget()->clear();
 
-    // Show info first...
+    // Show info first...clearTextureCache
     INFO(tr("Vendor: ") + engine->vendor + "\n" + tr("Renderer: ") + engine->renderer + "\n" + tr("GL Driver: ") + engine->glvers);
     // report the profile that was actually created in the engine
     int prof = engine->format().profile();

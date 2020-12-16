@@ -361,38 +361,38 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2074"/>
+        <location line="+2077"/>
         <source>No vertex shader found!</source>
         <translation>Geen vertex shader gevonden!</translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2074"/>
+        <location line="-2072"/>
+        <location line="+2077"/>
         <source>Could not create vertex shader: </source>
         <translation>Kon vertex shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2068"/>
-        <location line="+2074"/>
+        <location line="-2071"/>
+        <location line="+2077"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Vertex shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-2063"/>
-        <location line="+2074"/>
+        <location line="-2066"/>
+        <location line="+2077"/>
         <source>Could not create fragment shader: </source>
         <translation>Kon fragment shader niet aanmaken: </translation>
     </message>
     <message>
-        <location line="-2067"/>
-        <location line="+14"/>
-        <location line="+2060"/>
+        <location line="-2070"/>
+        <location line="+13"/>
+        <location line="+2064"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-1960"/>
+        <location line="-1964"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader heeft geen kanalen gevonden in de EXR-afbeelding: %1</translation>
     </message>
@@ -407,7 +407,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Lader vond EXR-afbeelding: %1 x %2 is geen kubusmap!</translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+47"/>
+        <source>No slices found in file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+927"/>
         <source>Failed to bind hires buffer</source>
         <translation>Kon hiresBuffer niet verbinden</translation>
     </message>
@@ -422,20 +427,77 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1318"/>
-        <location line="+507"/>
+        <location line="+801"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Renderer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>GL Driver: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>%1 profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>No GL profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>
+Testing GLSL versions: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>
+Test: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Logged fragment shader fail! GLSL version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Logged buffer shader fail! GLSL Version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-11"/>
+        <source>Fragment shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Buffer shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2169"/>
+        <location line="+511"/>
         <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
     <message>
-        <location line="-2087"/>
-        <location line="+2074"/>
+        <location line="-2090"/>
+        <location line="+2077"/>
         <source>Could not link shader: </source>
         <translation>Kan shader niet linken: </translation>
     </message>
     <message>
-        <location line="-2036"/>
+        <location line="-2040"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Poging tot gebruik van backbuffer, maar geen bufferType ingesteld.</translation>
     </message>
@@ -445,7 +507,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Gebruik de buffer-define, b.v.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+186"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
@@ -471,7 +533,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+13"/>
+        <location line="+14"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Buffer fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
@@ -544,7 +606,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-958"/>
+        <location line="-959"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -554,7 +616,7 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+737"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -615,12 +677,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2859"/>
+        <location line="+2870"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location line="-2804"/>
+        <location line="-2815"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
@@ -651,20 +713,20 @@ Geïnitialiseerd als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location line="+69"/>
+        <location line="+75"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-bron (*.frag);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1647"/>
+        <location line="+1652"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Stel de combobox in op &apos;custom-size&apos; om de grootte toe te passen.</translation>
     </message>
     <message>
-        <location line="-1638"/>
+        <location line="-1643"/>
         <location line="+16"/>
-        <location line="+1129"/>
+        <location line="+1134"/>
         <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
@@ -679,14 +741,14 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location line="-3105"/>
-        <location line="+1534"/>
+        <location line="-3110"/>
+        <location line="+1539"/>
         <location line="+1793"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location line="-3297"/>
+        <location line="-3302"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
@@ -762,7 +824,7 @@ Deze optie kan weer worden ingeschakeld in Voorkeuren</translation>
         <translation>Autorun inschakelen</translation>
     </message>
     <message>
-        <location line="+923"/>
+        <location line="+928"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>is te groot!
@@ -828,7 +890,7 @@ and save before closing!</source>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2416"/>
+        <location line="-2421"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Volledig scherm (aan-/uitschakelen met ESC-toets)</translation>
     </message>
@@ -869,12 +931,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2790"/>
+        <location line="+2795"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2789"/>
+        <location line="-2794"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1014,12 +1076,28 @@ and save before closing!</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location line="-834"/>
+        <location line="-840"/>
         <source>2D Texture Options</source>
         <translation>2D-textuuropties</translation>
     </message>
     <message>
-        <location line="+294"/>
+        <location line="+73"/>
+        <location line="+2869"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2868"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+226"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1135,6 +1213,16 @@ and save before closing!</source>
         <location line="+5"/>
         <source>Clear Texture Cache</source>
         <translation>Textuurcache leegmaken</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Test versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tests the current fragment against all supported GLSL versions.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1298,24 +1386,24 @@ and save before closing!</source>
         <translation>&amp;Voorbeelden</translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+438"/>
+        <location line="-396"/>
+        <location line="+443"/>
         <source>Unable to locate: </source>
         <translation>Kan niet vinden: </translation>
     </message>
     <message>
-        <location line="-1008"/>
-        <location line="+2859"/>
+        <location line="-1019"/>
+        <location line="+2870"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
     </message>
     <message>
-        <location line="-2668"/>
+        <location line="-2673"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments en claude voor al zijn hulp bij verbeteringen.. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+776"/>
+        <location line="+780"/>
         <source>Windows</source>
         <translation>ramen</translation>
     </message>
@@ -1325,7 +1413,7 @@ and save before closing!</source>
         <translation>&amp;Helpen</translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+283"/>
         <source>Build the fragment first!</source>
         <translation>Bouw eerst het fragment!</translation>
     </message>
@@ -1392,23 +1480,7 @@ and save before closing!</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-1398"/>
-        <location line="+2858"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2857"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+658"/>
+        <location line="-744"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1436,7 +1508,7 @@ Lees dit alstublieft:
         <translation>Compileren &amp;GLSL</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+122"/>
         <source>Select Preset</source>
         <translation>Preset selecteren</translation>
     </message>
@@ -1451,7 +1523,7 @@ Lees dit alstublieft:
         <translation>Groep naar preset</translation>
     </message>
     <message>
-        <location line="+411"/>
+        <location line="+412"/>
         <location line="+24"/>
         <source>Could not remove existing:
 &apos;%1&apos;</source>
@@ -1836,8 +1908,8 @@ Wil je het opnieuw laden?</translation>
         <translation>Bindend opdrachtscript aan F6-toets</translation>
     </message>
     <message>
-        <location line="-3753"/>
-        <location line="+2859"/>
+        <location line="-3764"/>
+        <location line="+2870"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
@@ -2495,13 +2567,13 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+494"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+488"/>
         <source>Preferences</source>
         <translation>Voorkeuren</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+54"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+53"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation>Voor de compatibiliteit met sommige GPUs.</translation>
     </message>
@@ -2543,13 +2615,13 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+45"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+44"/>
         <source>Enabling this might be helpful when debugging.</source>
         <translation>Wanneer u dit inschakelt kan dat het debuggen eenvoudiger maken.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+11"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+12"/>
         <source>Presets contain easing curve settings</source>
         <translation>Presets bevatten instellingen voor easing curves</translation>
     </message>
@@ -2585,7 +2657,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+15"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+14"/>
         <source>font: 9pt Courier;</source>
         <translation>font: 9pt Courier;</translation>
     </message>
@@ -2597,7 +2669,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-48"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-47"/>
         <source>Loop animation</source>
         <translation>Loop animatie</translation>
     </message>
@@ -2672,37 +2744,25 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-57"/>
-        <source>Autoload on change</source>
-        <translation>Herladen wanneer gewijzigd</translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+43"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-15"/>
         <source>Jump to line on Error</source>
         <translation>Spring naar regel bij Error</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
-        <source>Jump to line on Warn</source>
-        <translation>Spring naar regel op Warn</translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-26"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-34"/>
         <source>2D Camera Mode on=traveling off=fixed</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-8"/>
         <source>GUI:</source>
         <translation>Gebruikers-interface (GUI):</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+9"/>
         <source>Animation update on=continuous off=last set</source>
         <translation>Animatie-update on(aan)=continu off(uit)=laatst gebruikte stand</translation>
     </message>
@@ -2750,7 +2810,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Editor Schema: </source>
         <translation>Editor-schema: </translation>
     </message>
@@ -2786,7 +2846,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+7"/>
         <source>GLSL:</source>
         <translation></translation>
     </message>
@@ -2795,6 +2855,12 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
         <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Apply compatibility patches</source>
         <translation>Compatibiliteitspatches toepassen</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-7"/>
+        <source>Autoload on change by external editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

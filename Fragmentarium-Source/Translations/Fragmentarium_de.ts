@@ -361,38 +361,38 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+49"/>
-        <location line="+2074"/>
+        <location line="+2077"/>
         <source>No vertex shader found!</source>
         <translation>Kein VertexShader gefunden!</translation>
     </message>
     <message>
-        <location line="-2069"/>
-        <location line="+2074"/>
+        <location line="-2072"/>
+        <location line="+2077"/>
         <source>Could not create vertex shader: </source>
         <translation>Konnte nicht erstellen: VertexShader: </translation>
     </message>
     <message>
-        <location line="-2068"/>
-        <location line="+2074"/>
+        <location line="-2071"/>
+        <location line="+2077"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>VertexShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-2063"/>
-        <location line="+2074"/>
+        <location line="-2066"/>
+        <location line="+2077"/>
         <source>Could not create fragment shader: </source>
         <translation>Konnte nicht erstellen: FragmentShader: </translation>
     </message>
     <message>
-        <location line="-2067"/>
-        <location line="+14"/>
-        <location line="+2060"/>
+        <location line="-2070"/>
+        <location line="+13"/>
+        <location line="+2064"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-1960"/>
+        <location line="-1964"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader fand keine Kanäle im EXR-Bild: %1</translation>
     </message>
@@ -407,7 +407,12 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Lader fand EXR-abbildung: %1 x %2 ist keine kubus-map!</translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+47"/>
+        <source>No slices found in file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+927"/>
         <source>Failed to bind hires buffer</source>
         <translation>Konnte hiresBuffer nicht binden</translation>
     </message>
@@ -422,20 +427,77 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="-1318"/>
-        <location line="+507"/>
+        <location line="+801"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Renderer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>GL Driver: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>%1 profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>No GL profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>
+Testing GLSL versions: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>
+Test: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Logged fragment shader fail! GLSL version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Logged buffer shader fail! GLSL Version </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-11"/>
+        <source>Fragment shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Buffer shader success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2169"/>
+        <location line="+511"/>
         <location line="+1567"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
     </message>
     <message>
-        <location line="-2087"/>
-        <location line="+2074"/>
+        <location line="-2090"/>
+        <location line="+2077"/>
         <source>Could not link shader: </source>
         <translation>Shader konnte nicht verlinkt werden: </translation>
     </message>
     <message>
-        <location line="-2036"/>
+        <location line="-2040"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Versuche Backbuffer zu gebrauchen, aber kein BufferTyp eingestellt.</translation>
     </message>
@@ -445,7 +507,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Gebrauche ein Buffer define, z. B.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+186"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader warnt, daß Bild: %1 nicht vollständig ist</translation>
     </message>
@@ -471,7 +533,7 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+13"/>
+        <location line="+14"/>
         <source>Buffer fragment shader compiled with warnings: </source>
         <translation>Buffer FragmentShader kompiliert mit Warnungen: </translation>
     </message>
@@ -544,7 +606,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-958"/>
+        <location line="-959"/>
         <source>Unused sampler uniform: </source>
         <translation>Unbenutzte Probenehmeruniform: </translation>
     </message>
@@ -554,7 +616,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+737"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -615,12 +677,12 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2859"/>
+        <location line="+2870"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location line="-2804"/>
+        <location line="-2815"/>
         <source>Add Preset</source>
         <translation>Voreinstellung hinzufügen</translation>
     </message>
@@ -651,20 +713,20 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location line="+69"/>
+        <location line="+75"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-Quelle (*.frag);;Alle Dateien (*.*)</translation>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1647"/>
+        <location line="+1652"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Bitte die Combobox auf &apos;Angepasst&apos; einstellen um die Größe zu ändern.</translation>
     </message>
     <message>
-        <location line="-1638"/>
+        <location line="-1643"/>
         <location line="+16"/>
-        <location line="+1129"/>
+        <location line="+1134"/>
         <location line="+1045"/>
         <location line="+49"/>
         <location line="+77"/>
@@ -679,14 +741,14 @@ Initialisiert als GL_RGBA8</translation>
         <translation>Kein offener Tab</translation>
     </message>
     <message>
-        <location line="-3105"/>
-        <location line="+1534"/>
+        <location line="-3110"/>
+        <location line="+1539"/>
         <location line="+1793"/>
         <source>Save As</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location line="-3297"/>
+        <location line="-3302"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</translation>
     </message>
@@ -762,7 +824,7 @@ Diese Option ist wieder einzuschalten in Einstellungen</translation>
         <translation>Autorun einschalten</translation>
     </message>
     <message>
-        <location line="+923"/>
+        <location line="+928"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>Zu groß!
@@ -828,7 +890,7 @@ and save before closing!</source>
         <translation>Konnte OpenGL-Funktionen nicht auflösen die zur Aktivierung de ASMBrowsers benötigt sind</translation>
     </message>
     <message>
-        <location line="-2416"/>
+        <location line="-2421"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Vollbildanzeige (mit ESC umschalten)</translation>
     </message>
@@ -869,12 +931,12 @@ and save before closing!</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2790"/>
+        <location line="+2795"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location line="-2789"/>
+        <location line="-2794"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1014,12 +1076,28 @@ and save before closing!</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-834"/>
+        <location line="-840"/>
         <source>2D Texture Options</source>
         <translation>2D-Texturoptionen</translation>
     </message>
     <message>
-        <location line="+294"/>
+        <location line="+73"/>
+        <location line="+2869"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2868"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+226"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Hinweis: Die 3D-Ansicht muss den Tastaturfokus haben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linke Maustaste: Mitte übersetzen. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: zoom. &lt;/li&gt; &lt;li&gt; Rad: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; B / S: hoch / runter &lt;/li&gt; &lt;li&gt; Q/E : Vergrößern/Verkleinern &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Umschalt + Rechte Maustaste: Zeigt Menüs im Vollbildmodus an. &lt;/li &gt; &lt;li&gt; Linke Maustaste: Kamerarichtung ändern. &lt;/li&gt; &lt;li&gt; Rechte Maustaste: Kamera in Bildschirmebene bewegen. &lt;/li&gt; &lt;li&gt; Linke + rechte Maustaste: Zoomen. &lt;/li&gt; &lt;li &gt; Umschalt + linke Maustaste: Objekt drehen (um Ursprung). &lt;/Li&gt; &lt;li&gt; Umschalt + Alt + linke Maustaste: Objekt drehen (um Ziel). &lt;/Li&gt; &lt;li&gt; Umschalt + Tilde (~) wird zurückgesetzt Die Ansicht, um durch den Ursprung zu schauen (0,0,0) &lt;/li&gt; &lt;li&gt; Rad: Vorwärts/Rückwärts bewegen &lt;/li&gt; &lt;li&gt; W / S: Vorwärts / Rückwärts bewegen. &lt;/li&gt; &lt;li&gt; A/D: nach links/rechts bewegen. &lt;/Li&gt; &lt;li&gt; Q/E: rollen &lt;/li&gt; &lt;li&gt; 1/3: Schrittweite erhöhen/verringern x2 &lt;/li&gt; &lt;li&gt; 2: Schrittweite erhöhen / verringern Größe x10 &lt;/li&gt; &lt;li&gt; Umschalt + Rad: Schrittgröße ändern &lt;/li&gt; &lt;li&gt; T/G: Auf/Ab bewegen. &lt;/li&gt; &lt;li&gt; R/F: Gieren &lt;/li&gt; &lt;li &gt; Y/H: Tonhöhe &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Schieberegler &lt;/h2&gt; &lt;p&gt; Wenn ein (Gleit-) Schieberegler eine rechte Maustaste erhält, wird ein Eingabedialog zum Festlegen der Schrittgröße geöffnet. &lt;br&gt; &lt;b&gt; F7-Taste &lt;/b&gt; öffnet die Beschleunigungskurve Editor für den aktuell ausgewählten Schieberegler. &lt;/p&gt;</translation>
     </message>
@@ -1135,6 +1213,16 @@ and save before closing!</source>
         <location line="+5"/>
         <source>Clear Texture Cache</source>
         <translation>Textur-Cache leeren</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Test versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tests the current fragment against all supported GLSL versions.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1298,24 +1386,24 @@ and save before closing!</source>
         <translation>&amp;Vorbilder (Examples)</translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+438"/>
+        <location line="-396"/>
+        <location line="+443"/>
         <source>Unable to locate: </source>
         <translation>Unfindbar: </translation>
     </message>
     <message>
-        <location line="-1008"/>
-        <location line="+2859"/>
+        <location line="-1019"/>
+        <location line="+2870"/>
         <source>Continue</source>
         <translation>Weiter</translation>
     </message>
     <message>
-        <location line="-2668"/>
+        <location line="-2673"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Eine integrierten Umgebung um GPU pixel graphics zu erkunden. &lt;/p&gt;&lt;p&gt;Erstellt durch Mikael Hvidtfeldt Christensen.&lt;br /&gt;Untersteht und ist verteilt unter der der GNU Lesser General Public License [LPGL] oder GPL.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Hinweis&lt;/b&gt;: Manche Fragment-GLSL-Shaders sind durch ihre jeweiligen Eigentümer urheberrechtlich geschützt. Bitte lesen sie den Fragment-Dateikopf vor einer Weiterverbreitung.&lt;h1&gt;Anerkennung&lt;/h1&gt;&lt;p&gt;Viele der Inspirationen und Formeln kamen von &lt;a href=&quot;http://www.fractalforums.com&quot;&gt;Fractal Forums&lt;/a&gt;, unter anderen von Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi und Jesse. Ein besonderer Dank gilt Knighty und Kali for ihre großartigen Fragmente und claude für all seine Hilfe bei Verbesserungen. Alle Fragmente sollten Information über ihren Ursprung enthalten - Bitte melden Sie mir, wenn ich mich in dieser Hinsicht irgenwo geirrt habe.&lt;/p&gt;&lt;p&gt;Die gebrauchten Icons sind Teil des &lt;ahref=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt;-Projekts. &lt;/p&gt;&lt;p&gt;Fragmentarium is erstellt unter Nutzung des &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt plattformübergreifenden GUI Frameworks&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;table&gt; cellspacing=20&gt;&lt;th&gt; colspan=2 align=left&gt;Übersetzungen durch FractalForums.com-Benutzer&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td&gt; align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Deutsch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Niederländisch&lt;/td&gt;&lt;td&gt; align=center&gt;sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+776"/>
+        <location line="+780"/>
         <source>Windows</source>
         <translation></translation>
     </message>
@@ -1325,7 +1413,7 @@ and save before closing!</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+283"/>
         <source>Build the fragment first!</source>
         <translation>Baue zuerst das Fragment!</translation>
     </message>
@@ -1395,23 +1483,7 @@ and save before closing!</source>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-1398"/>
-        <location line="+2858"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2857"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+658"/>
+        <location line="-744"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1437,7 +1509,7 @@ Bitte, lese unterstehendes:
         <translation>Kompilieren &amp;GLSL</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+122"/>
         <source>Select Preset</source>
         <translation>Preset wählen</translation>
     </message>
@@ -1452,7 +1524,7 @@ Bitte, lese unterstehendes:
         <translation>Gruppe ins Preset</translation>
     </message>
     <message>
-        <location line="+411"/>
+        <location line="+412"/>
         <location line="+24"/>
         <source>Could not remove existing:
 &apos;%1&apos;</source>
@@ -1838,8 +1910,8 @@ Möchten Sie es neu laden?</translation>
         <translation>Binden Sie das Befehlsskript an die Taste F6</translation>
     </message>
     <message>
-        <location line="-3753"/>
-        <location line="+2859"/>
+        <location line="-3764"/>
+        <location line="+2870"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -2497,13 +2569,13 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+494"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+488"/>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+54"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+53"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation>Für die Kompatibilität mit einigen GPUs.</translation>
     </message>
@@ -2539,13 +2611,13 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+45"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+44"/>
         <source>Enabling this might be helpful when debugging.</source>
         <translation>Aktivierung könnte Fehlersuche/Debugging einfacher machen.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+11"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+12"/>
         <source>Presets contain easing curve settings</source>
         <translation>Voreinstellungen enthalten Einstellungen für Übergangskurven (easing-curves)</translation>
     </message>
@@ -2581,25 +2653,25 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+15"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+14"/>
         <source>font: 9pt Courier;</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+18"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+19"/>
         <source>Autorun On Load</source>
         <translation>Autorun bei Programmbeginn</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-14"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-15"/>
         <source>Add line numbers to the editing window.</source>
         <translation>Fügen Sie dem Bearbeitungsfenster Zeilennummern hinzu.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-48"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-47"/>
         <source>Loop animation</source>
         <translation>Loop-Animation</translation>
     </message>
@@ -2674,37 +2746,25 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-57"/>
-        <source>Autoload on change</source>
-        <translation>Autoload bei Änderung</translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+43"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-15"/>
         <source>Jump to line on Error</source>
         <translation>Wenn ein Fehler auftritt, springen Sie zur Zeile</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
-        <source>Jump to line on Warn</source>
-        <translation>Gehen Sie zur Warnzeile</translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-26"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-34"/>
         <source>2D Camera Mode on=traveling off=fixed</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-8"/>
         <source>GUI:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+9"/>
         <source>Animation update on=continuous off=last set</source>
         <translation>Animations-Aktualisierung on(an)=kontinuierlich off(aus)=letztbenutzter Zustand</translation>
     </message>
@@ -2752,7 +2812,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Editor Schema: </source>
         <translation>Editor-Farbthema: </translation>
     </message>
@@ -2788,7 +2848,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
+        <location filename="../build/ui_PreferencesDialog.h" line="+7"/>
         <source>GLSL:</source>
         <translation></translation>
     </message>
@@ -2797,6 +2857,12 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
         <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Apply compatibility patches</source>
         <translation>Kompatibilitäts-Patches anwenden</translation>
+    </message>
+    <message>
+        <location/>
+        <location filename="../build/ui_PreferencesDialog.h" line="-7"/>
+        <source>Autoload on change by external editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

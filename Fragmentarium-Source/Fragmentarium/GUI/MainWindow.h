@@ -270,7 +270,7 @@ public:
     };
     bool isChangedUniformInBuffershaderOnly();
     void setLanguage( QString lang ) { langID = lang; };
-    
+    ListWidgetLogger *getLogger() { return logger; };
 
 protected:
     void dragEnterEvent ( QDragEnterEvent *ev );
@@ -679,6 +679,7 @@ private slots:
     void showScriptingHelp();
     void toggleFullScreen();
     void clearTextures();
+    void testCompileGLSL();
 
     void setEasing()
     {
@@ -821,6 +822,7 @@ private:
     QAction *bufferAction1_6;
     QAction *bufferActionCustom;
     QAction *clearTexturesAction;
+    QAction *testCompileGLSLAction;
 
     QString guiStylesheet;
     QString editorStylesheet;

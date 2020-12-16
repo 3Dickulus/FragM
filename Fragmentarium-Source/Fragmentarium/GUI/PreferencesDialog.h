@@ -123,7 +123,6 @@ private slots:
         m_ui.fullPathInRecentFilesListCheckBox->setChecked (settings.value ( "fullPathInRecentFilesList", false ).toBool() );
         m_ui.includeWithAutoSaveCheckBox->setChecked (settings.value ( "includeWithAutoSave", true ).toBool() );
         m_ui.jtloeCheckBox->setChecked (settings.value ( "jumpToLineOnError", true ).toBool() );
-        m_ui.jtlowCheckBox->setChecked (settings.value ( "jumpToLineOnWarn", false ).toBool() );
         m_ui.ddCameraModeCheckBox->setChecked (settings.value ( "ddCameraMode", false ).toBool() );
         m_ui.playRestartModeCheckBox->setChecked (settings.value ( "playRestartMode", false ).toBool() );
         m_ui.enableGLDebugCheckBox->setChecked (settings.value ( "enableGLDebug", false ).toBool() );
@@ -160,7 +159,6 @@ private slots:
         settings.setValue("fullPathInRecentFilesList", m_ui.fullPathInRecentFilesListCheckBox->isChecked() );
         settings.setValue("includeWithAutoSave", m_ui.includeWithAutoSaveCheckBox->isChecked() );
         settings.setValue("jumpToLineOnError", m_ui.jtloeCheckBox->isChecked() );
-        settings.setValue("jumpToLineOnWarn", m_ui.jtlowCheckBox->isChecked() );
         settings.setValue("ddCameraMode", m_ui.ddCameraModeCheckBox->isChecked() );
         settings.setValue("playRestartMode", m_ui.playRestartModeCheckBox->isChecked() );
         settings.setValue("enableGLDebug", m_ui.enableGLDebugCheckBox->isChecked() );

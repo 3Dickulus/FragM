@@ -220,7 +220,7 @@ void DisplayWidget::initializeGL()
             if(v.contains("core")) v.chop(5);
             glslvers << v;
         }
-        glslvers.removeFirst(); // it's empty
+        glslvers[0] = glslvers[1]; glslvers[1] = "110";// fudge
     } else
 #endif
     { // figure it out from the GL version ??
@@ -626,10 +626,11 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
     QSettings settings;
     int maxLines = settings.value ( "maxLogLines", 10 ).toInt(); // for log window list widget
 
+    QRegExp test ( "^([0-9]+)[^0-9]([0-9]+)[^0-9]" );
+
     foreach ( const QString &str, logList ) {
         QString newStr=str;
 
-        QRegExp test ( "^([0-9]+)[^0-9]([0-9]+)[^0-9]" );
         if ( test.indexIn ( str ) != -1 ) {
             if ( num.indexIn ( test.cap ( 1 ) ) != -1 ) {
                 fileIndex=num.cap ( 1 ).toInt();
@@ -638,8 +639,9 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
                 else
                     newStr.replace ( 0,num.cap ( 1 ).length(), fragmentSource.bufferShaderSource->sourceFileNames[0] + " " );
             }
-            if ( num.indexIn ( test.cap ( 2 ) ) != -1 )
+            if ( num.indexIn ( test.cap ( 2 ) ) != -1 ) {
                 errorLine=num.cap ( 1 ).toInt();
+            }
             errorCount++;
         }
 
@@ -648,20 +650,18 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
         // emit a single log widget line for each line in the log
         LOG ( newStr, priority );
 
-        QSettings settings; // only jump to first error as later errors may be caused by this one so fix it first
-        if ( (settings.value ( "jumpToLineOnWarn", true ).toBool() || settings.value ( "jumpToLineOnError", true ).toBool())) {
+        if ( settings.value ( "jumpToLineOnError", true ).toBool() ) {
+            // only jump to first error as later errors may be caused by this one so fix it first
             if(errorCount == 1 && (fragmentSource.sourceFileNames[0] == fragmentSource.sourceFileNames[fileIndex]) && !bS) {
                 // jump to error line in text editor
                 TextEdit *te = mainWindow->getTextEdit();
-                QTextCursor cursor(te->textCursor());
-                
                 if( !(abs(te->textCursor().blockNumber() - (errorLine-1)) <= 2) ) { // fudge issue #156
+                    QTextCursor cursor(te->textCursor());
                     cursor.setPosition(0);
                     cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,errorLine-1);
+                    te->setTextCursor( cursor );
+                    te->centerCursor();
                 }
-                
-                te->setTextCursor( cursor );
-                te->centerCursor();
             }
         }
     }
@@ -706,7 +706,7 @@ void DisplayWidget::initFragmentShader()
         if(!fragmentSource.source.isEmpty() && !(fragmentSource.source[1].startsWith("// compatibility patch"))) {
                 fragmentSource.source.insert(1,fsSourcePatch);
         }
-    } else { //:-P a bit of fudge but it seems to work ???
+    } /*else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
             fragmentSource.vertexSource.insert(1,
@@ -715,12 +715,12 @@ void DisplayWidget::initFragmentShader()
                                         "#define gl_ProjectionMatrix projectionMatrix\n"
                                         "\n")
                                             );
-    }
+    }*/
     
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
     if ( fragmentSource.vertexSource.count() == 0 ) {
-        WARNING ( tr("No vertex shader found!") );
+        createErrorLineLog( tr("No vertex shader found!"), shaderProgram->log(), WarningLevel, false );
         s = false;
     }
 
@@ -755,8 +755,7 @@ void DisplayWidget::initFragmentShader()
     s = shaderProgram->link();
 
     if ( !s ) {
-        WARNING ( tr("Could not link shader: ") );
-        CRITICAL ( shaderProgram->log() );
+        createErrorLineLog( tr("Could not link shader: "), shaderProgram->log(), CriticalLevel, false );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -768,7 +767,7 @@ void DisplayWidget::initFragmentShader()
 
     s = shaderProgram->bind();
     if ( !s ) {
-        WARNING ( tr("Could not bind shaders: ") + shaderProgram->log() );
+        createErrorLineLog( tr("Could not bind shaders: "), shaderProgram->log(), CriticalLevel, false );
         delete ( shaderProgram );
         shaderProgram = nullptr;
         return;
@@ -939,6 +938,9 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         if (sliceCount > 0) {
             file.setFrameBuffer (fb);
             file.readPixels(dw.min.y, dw.max.y);
+        } else { 
+            WARNING(tr("No slices found in file!"));
+            return false;
         }
         
         for (int channel = 0; channel < 4; ++channel) {
@@ -1215,7 +1217,7 @@ void DisplayWidget::initBufferShader()
         if(!fragmentSource.bufferShaderSource->source.isEmpty() && !(fragmentSource.bufferShaderSource->source[1].startsWith("// compatibility patch"))) {
                 fragmentSource.bufferShaderSource->source.insert(1,fsSourcePatch);
         }
-    } else { //:-P a bit of fudge but it seems to work ???
+    } /*else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
             fragmentSource.vertexSource.insert(1,
@@ -1224,12 +1226,12 @@ void DisplayWidget::initBufferShader()
                                         "#define gl_ProjectionMatrix projectionMatrix\n"
                                         "\n")
                                             );
-    }
+    }*/
 
     // Vertex shader
     bool s = bufferShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.bufferShaderSource->vertexSource.join("\n"));
     if ( fragmentSource.bufferShaderSource->vertexSource.count() == 0 ) {
-        WARNING ( tr("No buffershader vertex shader found!") );
+        createErrorLineLog( tr("No buffershader vertex shader found!"), bufferShaderProgram->log(), InfoLevel, true );
         s = false;
     }
 
@@ -1263,8 +1265,9 @@ void DisplayWidget::initBufferShader()
     s = bufferShaderProgram->link();
 
     if ( !s ) {
-        WARNING ( tr("Could not link buffershader: ") );
-        CRITICAL ( bufferShaderProgram->log() );
+        CRITICAL ("");
+        createErrorLineLog( tr("Could not link buffershader: "), bufferShaderProgram->log(), WarningLevel, true  );
+        CRITICAL ("");
         delete ( bufferShaderProgram );
         bufferShaderProgram = nullptr;
         return;
@@ -1275,7 +1278,7 @@ void DisplayWidget::initBufferShader()
 
     s = bufferShaderProgram->bind();
     if ( !s ) {
-        WARNING ( tr("Could not bind shaders: ") + bufferShaderProgram->log() );
+        createErrorLineLog( tr("Could not bind shaders: "), bufferShaderProgram->log(), WarningLevel, true );
         delete ( shaderProgram );
         bufferShaderProgram = nullptr;
         return;
@@ -2882,6 +2885,73 @@ void DisplayWidget::init_spline_shader()
     
     if(compile_shader(vertexShader4, spherePixelShader4) == 0) WARNING(tr("Spline pixel shader failed!"));
     
+}
+
+void DisplayWidget::testVersions()
+{
+    mainWindow->getLogger()->getListWidget()->clear();
+    INFO(tr("Vendor: ") + vendor + "\n" + tr("Renderer: ") + renderer + "\n" + tr("GL Driver: ") + glvers);
+    int prof = format().profile();
+    if (prof == 1 || prof == 2) {
+        INFO(QString(tr("%1 profile")).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+    } else if (prof == 0) {
+        INFO( tr("No GL profile.") );
+        
+    }
+        
+    QString ftmp = fragmentSource.source[0];
+    QString vtmp = fragmentSource.vertexSource[0];
+    QString bftmp = "";
+    QString bvtmp = "";
+
+    if(!(nullptr == fragmentSource.bufferShaderSource)) {
+        bftmp = fragmentSource.bufferShaderSource->source[0];
+        bvtmp = fragmentSource.bufferShaderSource->vertexSource[0];
+    }
+
+    LOG(tr("\nTesting GLSL versions: ") + glslvers.join(", "), InfoLevel);
+    
+    foreach ( const QString &str, glslvers ) {
+        LOG(tr("\nTest: ") + str, InfoLevel);
+        fragmentSource.source[0] = QString("#version %1").arg(str);
+        fragmentSource.vertexSource[0] = QString("#version %1").arg(str);
+
+        makeBuffers();
+
+        initFragmentShader();
+        
+        if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong
+             LOG(tr("Logged fragment shader fail! GLSL version ") + str, CriticalLevel);
+        }
+        else if(shaderProgram->log().isEmpty()) LOG(tr("Fragment shader success"), TimingLevel);
+
+
+        if(!(nullptr == fragmentSource.bufferShaderSource)) {
+            
+            fragmentSource.bufferShaderSource->source[0] = QString("#version %1").arg(str);
+            fragmentSource.bufferShaderSource->vertexSource[0] = QString("#version %1").arg(str);
+            
+            initBufferShader();
+            
+            if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) { // something went wrong
+                LOG(tr("Logged buffer shader fail! GLSL Version ") + str, CriticalLevel);
+            }
+            else if(bufferShaderProgram->log().isEmpty()) LOG(tr("Buffer shader success"), TimingLevel);
+        }    
+    }
+
+    makeBuffers();
+
+    fragmentSource.source[0] = ftmp;
+    fragmentSource.vertexSource[0] = vtmp;
+    
+    initFragmentShader();
+
+    if(!(nullptr == fragmentSource.bufferShaderSource)) {
+        fragmentSource.bufferShaderSource->source[0] = bftmp;
+        fragmentSource.bufferShaderSource->vertexSource[0] = bvtmp;
+        initBufferShader();
+    }
 }
 
 } // namespace GUI
