@@ -706,7 +706,7 @@ void DisplayWidget::initFragmentShader()
         if(!fragmentSource.source.isEmpty() && !(fragmentSource.source[1].startsWith("// compatibility patch"))) {
                 fragmentSource.source.insert(1,fsSourcePatch);
         }
-    } /*else { //:-P a bit of fudge but it seems to work ???
+    } else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
             fragmentSource.vertexSource.insert(1,
@@ -715,7 +715,7 @@ void DisplayWidget::initFragmentShader()
                                         "#define gl_ProjectionMatrix projectionMatrix\n"
                                         "\n")
                                             );
-    }*/
+    }
     
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
