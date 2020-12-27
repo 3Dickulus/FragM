@@ -427,7 +427,7 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="+801"/>
+        <location line="+802"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -442,7 +442,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>%1 profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -458,33 +458,33 @@ Testing GLSL versions: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>
 Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>Logged fragment shader fail! GLSL version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>Logged buffer shader fail! GLSL Version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-11"/>
+        <location line="-12"/>
         <source>Fragment shader success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>Buffer shader success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2169"/>
+        <location line="-2178"/>
         <location line="+511"/>
         <location line="+1567"/>
         <source>Could not bind shaders: </source>
@@ -1540,7 +1540,7 @@ This option may be re-enabled through Preferences</source>
         <location line="+332"/>
         <location line="+497"/>
         <location line="+1291"/>
-        <location line="+199"/>
+        <location line="+198"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Невозможно прочитать файл %1:
@@ -1548,7 +1548,7 @@ This option may be re-enabled through Preferences</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-221"/>
+        <location line="-220"/>
         <source>Cannot write CmdScript %1:
 %2.</source>
         <translation>Невозможно записать файл%1:
@@ -2011,12 +2011,12 @@ Would you like to reload it?</source>
     </message>
     <message>
         <location line="+27"/>
-        <location line="+979"/>
+        <location line="+978"/>
         <source>Loaded file: %1</source>
         <translation>Загруженный файл:%1</translation>
     </message>
     <message>
-        <location line="-971"/>
+        <location line="-970"/>
         <source>Unnamed</source>
         <translation>Без имени</translation>
     </message>
@@ -2039,7 +2039,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+894"/>
+        <location line="+893"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
@@ -2049,7 +2049,7 @@ and save before closing!</source>
         <translation>Привязать командный скрипт к клавише F6</translation>
     </message>
     <message>
-        <location line="-3764"/>
+        <location line="-3763"/>
         <location line="+2870"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
@@ -2171,7 +2171,7 @@ and save before closing!</source>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+66"/>
         <location line="+111"/>
         <source>Error %1 at line %2</source>
         <translation>Ошибка %1 в строке %2</translation>
@@ -3018,7 +3018,7 @@ Or create them with &quot;F7&quot; hotkey for the selected float slider.</source
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1102"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1101"/>
         <source>Could not locate directory in: </source>
         <translation>Не удалось найти директорию в: </translation>
     </message>

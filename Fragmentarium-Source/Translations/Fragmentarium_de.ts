@@ -427,7 +427,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="+801"/>
+        <location line="+802"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -442,7 +442,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>%1 profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -458,33 +458,33 @@ Testing GLSL versions: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>
 Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>Logged fragment shader fail! GLSL version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>Logged buffer shader fail! GLSL Version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-11"/>
+        <location line="-12"/>
         <source>Fragment shader success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>Buffer shader success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2169"/>
+        <location line="-2178"/>
         <location line="+511"/>
         <location line="+1567"/>
         <source>Could not bind shaders: </source>
@@ -1584,14 +1584,14 @@ nicht entfernen</translation>
         <location line="+13"/>
         <location line="+497"/>
         <location line="+1291"/>
-        <location line="+199"/>
+        <location line="+198"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Kann Datei nicht lesen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-1980"/>
+        <location line="-1979"/>
         <source>Settings loaded from file</source>
         <translation>Einstellungen geladen aus Datei</translation>
     </message>
@@ -1872,12 +1872,12 @@ Möchten Sie es neu laden?</translation>
     </message>
     <message>
         <location line="+27"/>
-        <location line="+979"/>
+        <location line="+978"/>
         <source>Loaded file: %1</source>
         <translation>Geladene Datei: %1</translation>
     </message>
     <message>
-        <location line="-971"/>
+        <location line="-970"/>
         <source>Unnamed</source>
         <translation>Unbenannt</translation>
     </message>
@@ -1900,7 +1900,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+894"/>
+        <location line="+893"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>CmdScript (*.fqs);;Alle Dateien (*.*)</translation>
     </message>
@@ -1910,7 +1910,7 @@ and save before closing!</source>
         <translation>Binden Sie das Befehlsskript an die Taste F6</translation>
     </message>
     <message>
-        <location line="-3764"/>
+        <location line="-3763"/>
         <location line="+2870"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
@@ -2039,7 +2039,7 @@ and save before closing!</source>
         <translation>&amp;Schließen</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+66"/>
         <location line="+111"/>
         <source>Error %1 at line %2</source>
         <translation>Fehler %1 in Zeile %2</translation>
@@ -2886,7 +2886,7 @@ Oder erstellen Sie sie mit der Tastenkombination &quot;F7&quot; für den ausgew�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1102"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1101"/>
         <source>Could not locate directory in: </source>
         <translation>Konnte Verzeichnis nicht finden in: </translation>
     </message>
