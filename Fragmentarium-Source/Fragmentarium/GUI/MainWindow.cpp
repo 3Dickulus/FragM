@@ -3824,7 +3824,6 @@ void MainWindow::editScript()
 
 void MainWindow::executeScript()
 {
-
     QTextEdit *e = nullptr;
 
     QSettings settings;

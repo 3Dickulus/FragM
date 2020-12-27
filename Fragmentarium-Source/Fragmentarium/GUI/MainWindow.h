@@ -620,6 +620,7 @@ public slots:
     
     bool isPaused() { return pausePlay; };
 
+    void testVersions() { getEngine()->testVersions(); };
 private slots:
 #ifdef USE_OPEN_EXR
     void initTools();

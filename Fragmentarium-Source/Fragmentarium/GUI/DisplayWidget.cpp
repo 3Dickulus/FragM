@@ -2889,15 +2889,17 @@ void DisplayWidget::init_spline_shader()
 
 void DisplayWidget::testVersions()
 {
+    bool logToConsole = mainWindow->scriptRunning();
     mainWindow->getLogger()->getListWidget()->clear();
-    INFO(tr("Vendor: ") + vendor + "\n" + tr("Renderer: ") + renderer + "\n" + tr("GL Driver: ") + glvers);
+    QString logText = tr("Vendor: ") + vendor + "\n" + tr("Renderer: ") + renderer + "\n" + tr("GL Driver: ") + glvers;
+    if(logToConsole) qDebug() << logText; else INFO(logText);
     int prof = format().profile();
     if (prof == 1 || prof == 2) {
-        INFO(QString(tr("%1 profile")).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
+        logText = QString(tr("%1 profile")).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : "");
     } else if (prof == 0) {
-        INFO( tr("No GL profile.") );
-        
+        logText = tr("No GL profile.");
     }
+    if(logToConsole) qDebug() << logText; else INFO(logText);
         
     QString ftmp = fragmentSource.source[0];
     QString vtmp = fragmentSource.vertexSource[0];
@@ -2909,10 +2911,12 @@ void DisplayWidget::testVersions()
         bvtmp = fragmentSource.bufferShaderSource->vertexSource[0];
     }
 
-    LOG(tr("\nTesting GLSL versions: ") + glslvers.join(", "), InfoLevel);
+    logText = tr("\nTesting GLSL versions: ") + glslvers.join(", ");
+    if(logToConsole) qDebug() << logText; else LOG(logText, InfoLevel);
     
     foreach ( const QString &str, glslvers ) {
-        LOG(tr("\nTest: ") + str, InfoLevel);
+        logText = tr("\nTest: ") + str;
+        if(logToConsole) qDebug() << logText; else LOG(logText, InfoLevel);
         fragmentSource.source[0] = QString("#version %1").arg(str);
         fragmentSource.vertexSource[0] = QString("#version %1").arg(str);
 
@@ -2921,10 +2925,13 @@ void DisplayWidget::testVersions()
         initFragmentShader();
         
         if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong
-             LOG(tr("Logged fragment shader fail! GLSL version ") + str, CriticalLevel);
+            logText = tr("Logged fragment shader fail! GLSL version ") + str;
+            if(logToConsole) qDebug() << logText; else LOG(logText, CriticalLevel);
         }
-        else if(shaderProgram->log().isEmpty()) LOG(tr("Fragment shader success"), TimingLevel);
-
+        else if(shaderProgram->log().isEmpty()) {
+            logText = tr("Fragment shader success");
+            if(logToConsole) qDebug() << logText; else LOG(logText, TimingLevel);
+        }
 
         if(!(nullptr == fragmentSource.bufferShaderSource)) {
             
@@ -2934,9 +2941,13 @@ void DisplayWidget::testVersions()
             initBufferShader();
             
             if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) { // something went wrong
-                LOG(tr("Logged buffer shader fail! GLSL Version ") + str, CriticalLevel);
+                logText = tr("Logged buffer shader fail! GLSL Version ") + str;
+                if(logToConsole) qDebug() << logText; else LOG(logText, CriticalLevel);
             }
-            else if(bufferShaderProgram->log().isEmpty()) LOG(tr("Buffer shader success"), TimingLevel);
+            else if(bufferShaderProgram->log().isEmpty()) {
+                logText = tr("Buffer shader success");
+                if(logToConsole) qDebug() << logText; else LOG(logText, TimingLevel);
+            }
         }    
     }
 
