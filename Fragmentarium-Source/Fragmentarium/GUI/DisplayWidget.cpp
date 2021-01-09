@@ -709,6 +709,7 @@ void DisplayWidget::initFragmentShader()
     } else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
+        if(!fragmentSource.vertexSource[1].contains("uniform mat4 projectionMatrix;"))
             fragmentSource.vertexSource.insert(1,
                                         QString ("\n"
                                         "uniform mat4 projectionMatrix;\n"
@@ -1220,7 +1221,8 @@ void DisplayWidget::initBufferShader()
     } /*else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
-            fragmentSource.vertexSource.insert(1,
+        if(!fragmentSource.bufferShaderSource->vertexSource[1].contains("uniform mat4 projectionMatrix;"))
+            fragmentSource.bufferShaderSource->vertexSource.insert(1,
                                         QString ("\n"
                                         "uniform mat4 projectionMatrix;\n"
                                         "#define gl_ProjectionMatrix projectionMatrix\n"
