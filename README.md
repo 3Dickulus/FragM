@@ -77,7 +77,7 @@ Status
 
 # Pre-built packages
 
-   You can find pre-built packages for OSX 10.14.4, Ubuntu 18.0.4 Bionic, SuSE Leap 15.1 and Windows at https://github.com/3Dickulus/FragM/releases/
+   You can find pre-built packages for Debian, SuSE Leap and Windows at https://github.com/3Dickulus/FragM/releases/
 
 # Dependencies
 
