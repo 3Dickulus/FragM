@@ -448,7 +448,11 @@ private:
     bool glDebugEnabled;
     bool compatibilityProfile;
 
-glm::mat4 m_pvmMatrix;
+    glm::mat4 m_projectionMatrix;
+    glm::mat4 m_viewMatrix;
+    glm::mat4 m_modelMatrix; // identity
+
+    glm::mat4 m_pvmMatrix;
 
 /// Spline Shaders /////////////////////////////////////////////////////////
 QString vertexShader4 = QString("#version 410 core\n"

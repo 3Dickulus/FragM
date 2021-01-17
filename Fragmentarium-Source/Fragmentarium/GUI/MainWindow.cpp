@@ -634,8 +634,6 @@ void MainWindow::init()
     engine = new DisplayWidget(this, splitter);
     engine->setObjectName(QString::fromUtf8("DisplayWidget"));
 
-    engine->show();
-
     tabBar = new QTabBar(this);
     tabBar->setObjectName(QString::fromUtf8("TabBar"));
     tabBar->setMovable(true);

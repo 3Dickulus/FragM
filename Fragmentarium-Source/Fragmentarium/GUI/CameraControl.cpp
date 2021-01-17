@@ -373,11 +373,8 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
     if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
         if (steps > 0.0) {
             stepSize = stepSize * 2.0f;
-            INFO(QCoreApplication::translate("Camera3D", "Step size: %1").arg(stepSize));
-
         } else if (steps < 0.0) {
             stepSize = stepSize * 0.5f;
-            INFO(QCoreApplication::translate("Camera3D", "Step size: %1").arg(stepSize));
         }
         if (stepSize < 1.0E-5) {
             stepSize = 1.0E-5;
@@ -385,6 +382,7 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
         if (stepSize > 10.0) {
             stepSize = 10.0;
         }
+        INFO(QCoreApplication::translate("Camera3D", "Step size: %1").arg(stepSize));
     } else {
         glm::dvec3 direction = (target->getValue() - eye->getValue());
         glm::dvec3 dir = normalize(direction);
@@ -403,12 +401,9 @@ glm::dvec3 Camera3D::screenTo3D(int sx, int sy, double sz)
 {
     if(eye == nullptr || target == nullptr || up == nullptr) return glm::dvec3(0,0,0);
     
-    glm::dvec3 eye2 = eye->getValue(), target2 = target->getValue(),
-              up2 = up->getValue();
-    double coordX =
-        (double(sx) / double(height) * 2.0 - double(width) / double(height));
+    glm::dvec3 eye2 = eye->getValue(), target2 = target->getValue(), up2 = up->getValue();
+    double coordX = (double(sx) / double(height) * 2.0 - double(width) / double(height));
     double coordY = (double(height - sy) / double(height) * 2.0 - 1.0);
-
     glm::dvec3 dir2 = normalize(target2 - eye2);
     glm::dvec3 up3 = normalize(up2 - dot(up2, dir2) * dir2);
     glm::dvec3 right2 = normalize(cross(dir2, up3));
@@ -416,26 +411,6 @@ glm::dvec3 Camera3D::screenTo3D(int sx, int sy, double sz)
     dir2 = (coordX * right2 + coordY * up3) * fov->getValue() + dir2; //.4 = FOV
 
     glm::dvec3 ret = eye2 + dir2 / sz;
-#ifndef Q_OS_WIN
-    if (std::isinf(ret.x)) {
-        ret.x=(1000.0);
-    }
-    if (std::isinf(ret.y)) {
-        ret.y=(1000.0);
-    }
-    if (std::isinf(ret.z)) {
-        ret.z=(1000.0);
-    }
-    if (std::isnan(ret.x)) {
-        ret.x=(0.00001);
-    }
-    if (std::isnan(ret.y)) {
-        ret.y=(0.00001);
-    }
-    if (std::isnan(ret.z)) {
-        ret.z=(0.00001);
-    }
-#endif
     return ret;
 }
 

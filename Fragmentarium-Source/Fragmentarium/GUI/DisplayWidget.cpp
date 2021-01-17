@@ -1703,6 +1703,8 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 
 void DisplayWidget::draw3DHints()
 {
+    setPerspective();
+
     if(!hasKeyFrames) return;
 
     if ( mainWindow->wantPaths()  && !isContinuous()) {
@@ -1712,7 +1714,6 @@ void DisplayWidget::draw3DHints()
             } else {
                 glDisable ( GL_DEPTH_TEST );  // disable depth testing
             }
-            setPerspective();
             drawSplines();
             drawLookatVector();
         }
@@ -1782,14 +1783,14 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     shaderProgram->release();
 
     if (cameraControl->getID() == "3D") {
-        // draw splines using depth buffer for occlusion... or not
-            draw3DHints();
         /// copy the depth value @ mouse XY
-        if(subframeCounter == 1) {
+        if(subframeCounter < 2) {
             float zatmxy;
             glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
-            ZAtMXY = zatmxy;
+            ZAtMXY = 1.0-(2.0 * zatmxy); // ndc_z
         }
+        // draw splines using depth buffer for occlusion... or not
+        draw3DHints();
     }
 }
 
@@ -2296,9 +2297,10 @@ void DisplayWidget::wheelEvent(QWheelEvent *ev)
 void DisplayWidget::mouseMoveEvent(QMouseEvent *ev)
 {
 
-    mouseXY = ev->pos();
-
     if( buttonDown) {
+
+        mouseXY=ev->pos();
+
         if (drawingState == Tiled) {
             return;
         }
@@ -2317,10 +2319,23 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
     }
 
     buttonDown=false;
-
     // if the user just clicked and didn't drag update the statusbar
     if ( ev->pos() == mouseXY ) {
-        glm::dvec3 mXYZ = cameraControl->screenTo3D(mouseXY.x(), mouseXY.y(), ZAtMXY);
+
+        setPerspective();
+        glm::dvec4 mXYZ = glm::dvec4(cameraControl->screenTo3D(mouseXY.x(), mouseXY.y(), ZAtMXY), 1.0);
+
+////////////////////////////
+//     glm::dvec4 vIn = glm::dvec4( (2.0*(mouseXY.x()/width()))-1.0,
+//         1.0-(2.0*(mouseXY.y()/height())),
+//         (2.0 * ZAtMXY)-1.0,
+//         1.0);  
+//     glm::dvec4 mXYZ = vIn * glm::inverse(m_viewMatrix *  m_projectionMatrix);
+//     mXYZ.w = 1.0 / mXYZ.w;
+//     mXYZ.x *= mXYZ.w;
+//     mXYZ.y *= mXYZ.w;
+//     mXYZ.z *= mXYZ.w;
+////////////////////////////
         // update statusbar
         mainWindow->statusBar()->showMessage(QString("X:%1 Y:%2 Z:%3").arg(mXYZ.x).arg(mXYZ.y).arg(mXYZ.z));
         if(ev->button() == Qt::MiddleButton) {
@@ -2346,9 +2361,9 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
                     // only do this for 3D scenes
                     if(cameraID() == "3D" ) {
                         // get the eye pos
-                        glm::vec3 e = mainWindow->getParameter3f("Eye");
+                        glm::dvec3 e = mainWindow->getParameter3f("Eye");
                         // calculate distance between camera and target
-                        double d = distance(mXYZ, glm::dvec3(e));
+                        double d = distance(glm::dvec3(mXYZ.x,mXYZ.y,mXYZ.z), e);
                         // set the focal plane to this distance
                         mainWindow->setParameter( "FocalPlane", d );
                         mainWindow->statusBar()->showMessage(
@@ -2369,10 +2384,13 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
         ev->accept();
     }
 
+
 }
 
 void DisplayWidget::mousePressEvent(QMouseEvent *ev)
 {
+    mouseXY=ev->pos();
+
     buttonDown=true;
     if (drawingState == Tiled) {
         return;
@@ -2381,8 +2399,6 @@ void DisplayWidget::mousePressEvent(QMouseEvent *ev)
             ev->modifiers() == Qt::ShiftModifier) {
         return;
     }
-
-    mouseXY=ev->pos();
 
     bool redraw = cameraControl->mouseEvent ( ev, width(), height() );
     if ( redraw ) {
@@ -2551,10 +2567,10 @@ void DisplayWidget::setPerspective()
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
 
     // these are accurate for spline shaders NOT scene shaders
-    glm::mat4 projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
-    glm::mat4 viewMatrix = glm::lookAt ( eye,target,up );
-    glm::mat4 modelMatrix = glm::mat4(1); // identity
-    m_pvmMatrix = projectionMatrix * viewMatrix * modelMatrix;
+    m_projectionMatrix = glm::perspective ( vertAngle, aspectRatio, zNear, zFar );
+    m_viewMatrix = glm::lookAt ( eye,target,up );
+    m_modelMatrix = glm::mat4(1); // identity
+    m_pvmMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
 }
 
@@ -2687,7 +2703,7 @@ void DisplayWidget::render_splines(int number, double psize)
         GLint cloc = spline_program->uniformLocation("vertex_colour");
             
         // control point to highlight = currently selected preset keyframe
-        int p = mainWindow->getCurrentCtrlPoint()-1;
+        int p = mainWindow->getCurrentCtrlPoint();
 
         int start = mainWindow->getVariableEditor()->getKeyFrameCount();
         int count = mainWindow->getFrameMax();
