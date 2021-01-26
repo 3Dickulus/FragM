@@ -357,38 +357,38 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+50"/>
-        <location line="+2094"/>
+        <location line="+2070"/>
         <source>No vertex shader found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2089"/>
-        <location line="+2094"/>
+        <location line="-2065"/>
+        <location line="+2070"/>
         <source>Could not create vertex shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2088"/>
-        <location line="+2094"/>
+        <location line="-2064"/>
+        <location line="+2070"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2083"/>
-        <location line="+2094"/>
+        <location line="-2059"/>
+        <location line="+2070"/>
         <source>Could not create fragment shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2087"/>
+        <location line="-2063"/>
         <location line="+13"/>
-        <location line="+2081"/>
+        <location line="+2057"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1981"/>
+        <location line="-1957"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -408,7 +408,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+929"/>
+        <location line="+920"/>
         <source>Failed to bind hires buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -423,7 +423,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+817"/>
+        <location line="+802"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -480,20 +480,20 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2195"/>
-        <location line="+512"/>
-        <location line="+1583"/>
+        <location line="-2171"/>
+        <location line="+502"/>
+        <location line="+1569"/>
         <source>Could not bind shaders: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2107"/>
-        <location line="+2094"/>
+        <location line="-2083"/>
+        <location line="+2070"/>
         <source>Could not link shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2057"/>
+        <location line="-2033"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -513,7 +513,7 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+78"/>
         <source>Could not create buffer vertex shader: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -544,7 +544,7 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+431"/>
+        <location line="+432"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -574,17 +574,17 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1043"/>
+        <location line="+1028"/>
         <source>Spline pixel shader failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1205"/>
+        <location line="-1191"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+211"/>
+        <location line="+212"/>
         <source>Failed to release target buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -602,17 +602,17 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-961"/>
+        <location line="-952"/>
         <source>Unused sampler uniform: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+69"/>
         <source>No buffershader vertex shader found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+738"/>
+        <location line="+739"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation type="unfinished"></translation>
@@ -634,7 +634,7 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+271"/>
+        <location line="+256"/>
         <source>Fix me</source>
         <translation type="unfinished"></translation>
     </message>

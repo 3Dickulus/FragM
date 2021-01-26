@@ -360,38 +360,38 @@ Initialisiert als GL_RGBA8</translation>
     </message>
     <message>
         <location line="+50"/>
-        <location line="+2094"/>
+        <location line="+2070"/>
         <source>No vertex shader found!</source>
         <translation>Kein VertexShader gefunden!</translation>
     </message>
     <message>
-        <location line="-2089"/>
-        <location line="+2094"/>
+        <location line="-2065"/>
+        <location line="+2070"/>
         <source>Could not create vertex shader: </source>
         <translation>Konnte nicht erstellen: VertexShader: </translation>
     </message>
     <message>
-        <location line="-2088"/>
-        <location line="+2094"/>
+        <location line="-2064"/>
+        <location line="+2070"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>VertexShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-2083"/>
-        <location line="+2094"/>
+        <location line="-2059"/>
+        <location line="+2070"/>
         <source>Could not create fragment shader: </source>
         <translation>Konnte nicht erstellen: FragmentShader: </translation>
     </message>
     <message>
-        <location line="-2087"/>
+        <location line="-2063"/>
         <location line="+13"/>
-        <location line="+2081"/>
+        <location line="+2057"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>FragmentShader kompiliert mit Warnungen: </translation>
     </message>
     <message>
-        <location line="-1981"/>
+        <location line="-1957"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader fand keine Kanäle im EXR-Bild: %1</translation>
     </message>
@@ -411,7 +411,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+929"/>
+        <location line="+920"/>
         <source>Failed to bind hires buffer</source>
         <translation>Konnte hiresBuffer nicht binden</translation>
     </message>
@@ -426,7 +426,7 @@ Initialisiert als GL_RGBA8</translation>
         <translation>&lt;table width = &quot;100%&quot;&gt;&lt;tr&gt;&lt;td&gt;Gesamt&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Endgröße:%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aktuelle &lt;/td&gt;&lt;td align = &quot;center&quot;&gt;Kachel:%3&lt;/td&gt;&lt;td&gt;At:%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Average/Kachel&lt;/td&gt;&lt;td align = &quot;center&quot;&gt;%5&lt;/td&gt; &lt;td&gt;ETA:%6&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="+817"/>
+        <location line="+802"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -483,20 +483,20 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2195"/>
-        <location line="+512"/>
-        <location line="+1583"/>
+        <location line="-2171"/>
+        <location line="+502"/>
+        <location line="+1569"/>
         <source>Could not bind shaders: </source>
         <translation>Konnte Shaders nicht binden: </translation>
     </message>
     <message>
-        <location line="-2107"/>
-        <location line="+2094"/>
+        <location line="-2083"/>
+        <location line="+2070"/>
         <source>Could not link shader: </source>
         <translation>Shader konnte nicht verlinkt werden: </translation>
     </message>
     <message>
-        <location line="-2057"/>
+        <location line="-2033"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Versuche Backbuffer zu gebrauchen, aber kein BufferTyp eingestellt.</translation>
     </message>
@@ -516,7 +516,7 @@ Test: </source>
         <translation>Keine gültige Textur: </translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+78"/>
         <source>Could not create buffer vertex shader: </source>
         <translation>Konnte Buffer VertexShader nicht erstellen: </translation>
     </message>
@@ -547,7 +547,7 @@ Test: </source>
         <translation>FBO Incomplete Fehler!!</translation>
     </message>
     <message>
-        <location line="+431"/>
+        <location line="+432"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ungültiger FBO - previewBuffer</translation>
     </message>
@@ -577,17 +577,17 @@ Test: </source>
         <translation>Konnte FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="+1043"/>
+        <location line="+1028"/>
         <source>Spline pixel shader failed!</source>
         <translation>Spline-pixelshader gescheitert!</translation>
     </message>
     <message>
-        <location line="-1205"/>
+        <location line="-1191"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Kein Frontbuffersampler gefunden in BufferShader. Das ergibt keinen Sinn.</translation>
     </message>
     <message>
-        <location line="+211"/>
+        <location line="+212"/>
         <source>Failed to release target buffer</source>
         <translation>Konnte TargetBuffer nicht freigeben</translation>
     </message>
@@ -605,17 +605,17 @@ Test: </source>
         <translation>Konnte hiresBuffer FBO nicht freigeben</translation>
     </message>
     <message>
-        <location line="-961"/>
+        <location line="-952"/>
         <source>Unused sampler uniform: </source>
         <translation>Unbenutzte Probenehmeruniform: </translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+69"/>
         <source>No buffershader vertex shader found!</source>
         <translation>Kein Buffershader Vertex Shader gefunden!</translation>
     </message>
     <message>
-        <location line="+738"/>
+        <location line="+739"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Konnte previewBuffer FBO nicht binden</translation>
@@ -637,7 +637,7 @@ Test: </source>
         <translation>[%1x%2] Aspekt=%3</translation>
     </message>
     <message>
-        <location line="+271"/>
+        <location line="+256"/>
         <source>Fix me</source>
         <translation>Reparier mich</translation>
     </message>
