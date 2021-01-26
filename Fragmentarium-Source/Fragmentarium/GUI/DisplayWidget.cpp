@@ -1218,17 +1218,7 @@ void DisplayWidget::initBufferShader()
         if(!fragmentSource.bufferShaderSource->source.isEmpty() && !(fragmentSource.bufferShaderSource->source[1].startsWith("// compatibility patch"))) {
                 fragmentSource.bufferShaderSource->source.insert(1,fsSourcePatch);
         }
-    } /*else { //:-P a bit of fudge but it seems to work ???
-            // projectionMatrix is always passed in as a uniform for all versions
-            // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
-        if(!fragmentSource.bufferShaderSource->vertexSource[1].contains("uniform mat4 projectionMatrix;"))
-            fragmentSource.bufferShaderSource->vertexSource.insert(1,
-                                        QString ("\n"
-                                        "uniform mat4 projectionMatrix;\n"
-                                        "#define gl_ProjectionMatrix projectionMatrix\n"
-                                        "\n")
-                                            );
-    }*/
+    }
 
     // Vertex shader
     bool s = bufferShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.bufferShaderSource->vertexSource.join("\n"));
@@ -1782,13 +1772,14 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // finished with the shader
     shaderProgram->release();
 
-    if (cameraControl->getID() == "3D") {
+    if (cameraControl->getID() == "3D" && subframeCounter <= 2) { // 1= button down 2= button up
         /// copy the depth value @ mouse XY
-        if(subframeCounter < 2) {
-            float zatmxy;
-            glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
-            ZAtMXY = 1.0-(2.0 * zatmxy); // ndc_z
-        }
+        /// when DepthToAlpha = true depth buffer contains 1.0/totalDist
+        /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
+        /// the first case is for EXR alpha channel, the second is for GL occlusion 
+        float zatmxy; // GL y is inverse to Qt screen y
+        glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
+        ZAtMXY = zatmxy;
         // draw splines using depth buffer for occlusion... or not
         draw3DHints();
     }
@@ -2322,20 +2313,7 @@ void DisplayWidget::mouseReleaseEvent(QMouseEvent *ev)
     // if the user just clicked and didn't drag update the statusbar
     if ( ev->pos() == mouseXY ) {
 
-        setPerspective();
         glm::dvec4 mXYZ = glm::dvec4(cameraControl->screenTo3D(mouseXY.x(), mouseXY.y(), ZAtMXY), 1.0);
-
-////////////////////////////
-//     glm::dvec4 vIn = glm::dvec4( (2.0*(mouseXY.x()/width()))-1.0,
-//         1.0-(2.0*(mouseXY.y()/height())),
-//         (2.0 * ZAtMXY)-1.0,
-//         1.0);  
-//     glm::dvec4 mXYZ = vIn * glm::inverse(m_viewMatrix *  m_projectionMatrix);
-//     mXYZ.w = 1.0 / mXYZ.w;
-//     mXYZ.x *= mXYZ.w;
-//     mXYZ.y *= mXYZ.w;
-//     mXYZ.z *= mXYZ.w;
-////////////////////////////
         // update statusbar
         mainWindow->statusBar()->showMessage(QString("X:%1 Y:%2 Z:%3").arg(mXYZ.x).arg(mXYZ.y).arg(mXYZ.z));
         if(ev->button() == Qt::MiddleButton) {
@@ -2405,8 +2383,6 @@ void DisplayWidget::mousePressEvent(QMouseEvent *ev)
         requireRedraw ( clearOnChange );
         ev->accept();
     }
-
-    //     mainWindow->statusBar()->showMessage ( QString ( "X:%1 Y:%2 Z:%3" ).arg( mXYZ.x() ).arg ( mXYZ.y() ).arg ( mXYZ.z() ) );
 }
 
 void DisplayWidget::keyPressEvent(QKeyEvent *ev)
