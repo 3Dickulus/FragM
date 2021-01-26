@@ -885,7 +885,8 @@ void MainWindow::showWelcomeNote()
 bool MainWindow::isChangedUniformInBuffershaderOnly()
 {
     if(!engine->hasShader() || !engine->hasBufferShader()) return false;
-    QStringList lastSet = getTextEdit()->testParms().split("\n");
+    QStringList lastSet;
+    if(getTextEdit() != 0) lastSet = getTextEdit()->testParms().split("\n");
     bool inBufferShaderOnly = false;
     if (!lastSet.isEmpty()) {
         QStringList thisSet = variableEditor->getSettings().split("\n");

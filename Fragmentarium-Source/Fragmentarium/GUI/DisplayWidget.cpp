@@ -1693,8 +1693,6 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
 
 void DisplayWidget::draw3DHints()
 {
-    setPerspective();
-
     if(!hasKeyFrames) return;
 
     if ( mainWindow->wantPaths()  && !isContinuous()) {
@@ -1773,6 +1771,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     shaderProgram->release();
 
     if (cameraControl->getID() == "3D" && subframeCounter <= 2) { // 1= button down 2= button up
+        setPerspective(); // for spline shaders
         /// copy the depth value @ mouse XY
         /// when DepthToAlpha = true depth buffer contains 1.0/totalDist
         /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
