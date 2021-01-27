@@ -1702,6 +1702,13 @@ void DisplayWidget::draw3DHints()
             } else {
                 glDisable ( GL_DEPTH_TEST );  // disable depth testing
             }
+            setPerspective();
+            // this lets splines be visible when DEPTH_TO_ALPHA mode is active
+            if (depthToAlpha) {
+                glDepthFunc ( GL_GREATER );
+            } else {
+                glDepthFunc ( GL_LESS );  // closer to eye passes test
+            }
             drawSplines();
             drawLookatVector();
         }
@@ -1771,7 +1778,8 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     shaderProgram->release();
 
     if (cameraControl->getID() == "3D" && subframeCounter <= 2) { // 1= button down 2= button up
-        setPerspective(); // for spline shaders
+        // draw splines using depth buffer for occlusion... or not
+        draw3DHints();
         /// copy the depth value @ mouse XY
         /// when DepthToAlpha = true depth buffer contains 1.0/totalDist
         /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
@@ -1779,8 +1787,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         float zatmxy; // GL y is inverse to Qt screen y
         glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
         ZAtMXY = zatmxy;
-        // draw splines using depth buffer for occlusion... or not
-        draw3DHints();
     }
 }
 
@@ -2563,14 +2569,6 @@ void DisplayWidget::setCurveSettings(const QStringList cset)
 
 void DisplayWidget::drawSplines()
 {
-
-    // this lets splines be visible when DEPTH_TO_ALPHA mode is active
-    if (depthToAlpha) {
-        glDepthFunc ( GL_GREATER );
-        glDepthMask ( GL_FALSE ); // no Writing to depth buffer
-    } else {
-        glDepthFunc ( GL_LESS );  // closer to eye passes test
-    }
 
     render_splines(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
     render_splines(mainWindow->getFrameMax(), 1.0);
