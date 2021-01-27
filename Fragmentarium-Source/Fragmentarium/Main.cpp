@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
     mainWin->readSettings();
     
     splash.setMask(pixmap.mask());
-    QStringList openFiles = (parser.isSet("script")) ? QSettings().value("openFiles").toStringList() : QStringList();
+    QStringList openFiles = (parser.isSet("script")) ? QStringList() : QSettings().value("openFiles").toStringList();
 
     if (!parser.isSet("script") || openFiles.isEmpty()) {
         splash.show();
