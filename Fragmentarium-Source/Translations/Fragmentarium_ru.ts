@@ -360,38 +360,38 @@ Initialized as GL_RGBA8</source>
     </message>
     <message>
         <location line="+50"/>
-        <location line="+2070"/>
+        <location line="+2067"/>
         <source>No vertex shader found!</source>
         <translation>Не найдены вершинные шейдеры!</translation>
     </message>
     <message>
-        <location line="-2065"/>
-        <location line="+2070"/>
+        <location line="-2062"/>
+        <location line="+2067"/>
         <source>Could not create vertex shader: </source>
         <translation>Невозможно создать вершинный шейдер: </translation>
     </message>
     <message>
-        <location line="-2064"/>
-        <location line="+2070"/>
+        <location line="-2061"/>
+        <location line="+2067"/>
         <source>Vertex shader compiled with warnings: </source>
         <translation>Вершинный шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="-2059"/>
-        <location line="+2070"/>
+        <location line="-2056"/>
+        <location line="+2067"/>
         <source>Could not create fragment shader: </source>
         <translation>Не удалось создать фрагмент-шейдер: </translation>
     </message>
     <message>
-        <location line="-2063"/>
+        <location line="-2060"/>
         <location line="+13"/>
-        <location line="+2057"/>
+        <location line="+2054"/>
         <location line="+14"/>
         <source>Fragment shader compiled with warnings: </source>
         <translation>Фрагмент-шейдер компилируется с предупреждениями: </translation>
     </message>
     <message>
-        <location line="-1957"/>
+        <location line="-1954"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -411,7 +411,7 @@ Initialized as GL_RGBA8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+920"/>
+        <location line="+925"/>
         <source>Failed to bind hires buffer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -426,7 +426,7 @@ Initialized as GL_RGBA8</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Окончательный размер: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Текущий&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Плитка: %3&lt;/td&gt;&lt;td&gt;подкадр: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Средняя сек / плитка&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;П.в.п.: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="+802"/>
+        <location line="+794"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -483,20 +483,20 @@ Test: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2171"/>
+        <location line="-2168"/>
         <location line="+502"/>
-        <location line="+1569"/>
+        <location line="+1566"/>
         <source>Could not bind shaders: </source>
         <translation>Не удалось связать шейдеры: </translation>
     </message>
     <message>
-        <location line="-2083"/>
-        <location line="+2070"/>
+        <location line="-2080"/>
+        <location line="+2067"/>
         <source>Could not link shader: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2033"/>
+        <location line="-2030"/>
         <source>Trying to use a backbuffer, but no bufferType set.</source>
         <translation>Попытка использовать backbuffer не того типа.</translation>
     </message>
@@ -547,7 +547,7 @@ Test: </source>
         <translation>Неполное FBO Ошибка!</translation>
     </message>
     <message>
-        <location line="+432"/>
+        <location line="+437"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Недействительное FBO - просмотр буфера</translation>
     </message>
@@ -577,17 +577,17 @@ Test: </source>
         <translation>Не удалось отсоединить FBO</translation>
     </message>
     <message>
-        <location line="+1028"/>
+        <location line="+1020"/>
         <source>Spline pixel shader failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1191"/>
+        <location line="-1188"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Нет переднего буфера, образец не найден в буфере шейдера. Это не имеет смысла.</translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+217"/>
         <source>Failed to release target buffer</source>
         <translation>Не удалось освободить целевой буфер</translation>
     </message>
@@ -605,7 +605,7 @@ Test: </source>
         <translation>Не удалось освободить hiresBuffer FBO</translation>
     </message>
     <message>
-        <location line="-952"/>
+        <location line="-957"/>
         <source>Unused sampler uniform: </source>
         <translation>Неиспользуемая равномерная переменная сэмплера: </translation>
     </message>
@@ -615,7 +615,7 @@ Test: </source>
         <translation>Вершинный шейдер не найден!</translation>
     </message>
     <message>
-        <location line="+739"/>
+        <location line="+744"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Не удалось связать previewBuffer FBO</translation>
@@ -676,12 +676,12 @@ Test: </source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2868"/>
+        <location line="+2874"/>
         <source>Unsaved changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location line="-2813"/>
+        <location line="-2819"/>
         <source>Add Preset</source>
         <translation>Добавить предустановку</translation>
     </message>
@@ -718,15 +718,16 @@ Test: </source>
     </message>
     <message>
         <location line="-31"/>
-        <location line="+1650"/>
+        <location line="+1652"/>
         <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
         <translation>Выпадающий список в &apos;Свободный размер&apos;, применить размер.</translation>
     </message>
     <message>
-        <location line="-1641"/>
+        <location line="-1643"/>
         <location line="+16"/>
-        <location line="+1132"/>
-        <location line="+1045"/>
+        <location line="+1134"/>
+        <location line="+935"/>
+        <location line="+114"/>
         <location line="+49"/>
         <location line="+77"/>
         <location line="+392"/>
@@ -740,14 +741,14 @@ Test: </source>
         <translation>Нет открытых вкладок</translation>
     </message>
     <message>
-        <location line="-3108"/>
-        <location line="+1537"/>
-        <location line="+1793"/>
+        <location line="-3114"/>
+        <location line="+1539"/>
+        <location line="+1797"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location line="-3300"/>
+        <location line="-3305"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Фрагментариум&lt;/h1&gt;&lt;p&gt;версии %1. &lt;/p&gt;</translation>
     </message>
@@ -870,12 +871,12 @@ This option may be re-enabled through Preferences</source>
         <translation>Включить автозапуск</translation>
     </message>
     <message>
-        <location line="+746"/>
+        <location line="+747"/>
         <source>Build the fragment first!</source>
         <translation>Сначала создайте фрагмент!</translation>
     </message>
     <message>
-        <location line="+979"/>
+        <location line="+983"/>
         <source>Reloaded file: %1</source>
         <translation>Перезагрузка файла: %1</translation>
     </message>
@@ -921,12 +922,20 @@ This option may be re-enabled through Preferences</source>
 </translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="+122"/>
+        <source>
+To keep Easing curves you must
+add a preset named &quot;Range&quot;
+and save before closing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+300"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Не удалось разрешить OpenGL функции, необходимые для включения AsmBrowser</translation>
     </message>
     <message>
-        <location line="-2421"/>
+        <location line="-2425"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Во весь экран (Клавиша ESC переключает режимы)</translation>
     </message>
@@ -967,12 +976,12 @@ This option may be re-enabled through Preferences</source>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2795"/>
+        <location line="+2799"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location line="-2794"/>
+        <location line="-2798"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
@@ -1112,12 +1121,28 @@ This option may be re-enabled through Preferences</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-838"/>
+        <location line="-840"/>
         <source>2D Texture Options</source>
         <translation>Опция 2D-текстуры</translation>
     </message>
     <message>
-        <location line="+300"/>
+        <location line="+73"/>
+        <location line="+2873"/>
+        <source>There are unsaved changes.
+%1
+Continue will discard changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2872"/>
+        <source>
+Tip: Update easing curves in preset
+and save to file before closing.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+227"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt;
   Обратите внимание: 3D вид должен иметь фокус клавиатуры!
@@ -1211,7 +1236,7 @@ This option may be re-enabled through Preferences</source>
         <translation>Невозможно найти двоичные файлы OpenEXR !!!</translation>
     </message>
     <message>
-        <location line="+168"/>
+        <location line="+169"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Перезагрузить...</translation>
     </message>
@@ -1480,8 +1505,8 @@ This option may be re-enabled through Preferences</source>
         <translation>&amp;Примеры</translation>
     </message>
     <message>
-        <location line="-396"/>
-        <location line="+443"/>
+        <location line="-397"/>
+        <location line="+444"/>
         <source>Unable to locate: </source>
         <translation>Невозможно определить местоположение: </translation>
     </message>
@@ -1515,7 +1540,7 @@ This option may be re-enabled through Preferences</source>
     <message>
         <location line="+8"/>
         <location line="+367"/>
-        <location line="+628"/>
+        <location line="+632"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Невозможно записать файл %1:
@@ -1523,7 +1548,7 @@ This option may be re-enabled through Preferences</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-964"/>
+        <location line="-968"/>
         <location line="+24"/>
         <source>Could not copy dependency:
 &apos;%1&apos; to 
@@ -1537,7 +1562,7 @@ This option may be re-enabled through Preferences</source>
     </message>
     <message>
         <location line="+332"/>
-        <location line="+497"/>
+        <location line="+501"/>
         <location line="+1291"/>
         <location line="+198"/>
         <source>Cannot read file %1:
@@ -1554,7 +1579,7 @@ This option may be re-enabled through Preferences</source>
 %2.</translation>
     </message>
     <message>
-        <location line="-2161"/>
+        <location line="-2165"/>
         <location line="+8"/>
         <location line="+26"/>
         <location line="+5"/>
@@ -1562,7 +1587,7 @@ This option may be re-enabled through Preferences</source>
         <location line="+5"/>
         <location line="+312"/>
         <location line="+20"/>
-        <location line="+538"/>
+        <location line="+542"/>
         <location line="+69"/>
         <location line="+1158"/>
         <location line="+22"/>
@@ -1570,29 +1595,13 @@ This option may be re-enabled through Preferences</source>
         <translation>Фрагментариум</translation>
     </message>
     <message>
-        <location line="-3526"/>
-        <location line="+2867"/>
-        <source>There are unsaved changes.
-%1
-Continue will discard changes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-2866"/>
-        <source>
-Tip: Update easing curves in preset
-and save to file before closing.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location line="+2868"/>
+        <location line="-3529"/>
+        <location line="+2874"/>
         <source>Continue</source>
         <translation>Продолжать</translation>
     </message>
     <message>
-        <location line="-2671"/>
+        <location line="-2676"/>
         <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Интегрированная среда для изучения пиксельной графики на базе GPU. &lt;/p&gt;
 &lt;p&gt;ПО создано Михаэлем Хвидфилтом Кристенсеном (Mikael Hvidtfeldt Christensen).&lt;br /&gt;Лицензия зарегистрирована и распространяется по лицензии GPL или LGPL.&lt;/p&gt;
@@ -1628,7 +1637,7 @@ Please read this:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+157"/>
         <source>Compile &amp;GLSL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1905,7 +1914,7 @@ Must be less than 32769x32769</source>
         <translation>Нет данных!</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+44"/>
         <source>It looks like the file: %1
  has been changed by another program.
 Would you like to reload it?</source>
@@ -2030,15 +2039,7 @@ Would you like to reload it?</source>
         <translation>Если в пресете переменные заблокированы &quot;Сборка&quot; нажать ещё раз.</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>
-To keep Easing curves you must
-add a preset named &quot;Range&quot;
-and save before closing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+893"/>
+        <location line="+929"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Команда скрипта (*.fqs);;Все файлы (*.*)</translation>
     </message>
@@ -2048,8 +2049,8 @@ and save before closing!</source>
         <translation>Привязать командный скрипт к клавише F6</translation>
     </message>
     <message>
-        <location line="-3761"/>
-        <location line="+2868"/>
+        <location line="-3767"/>
+        <location line="+2874"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
