@@ -7,7 +7,7 @@ Status
 [![Release][release-image]][releases]
 [![License][license-image]][license]
 
-[release-image]: https://img.shields.io/badge/release-2.5.4-green.svg?style=flat
+[release-image]: https://img.shields.io/badge/release-2.5.5-green.svg?style=flat
 [releases]: https://github.com/3Dickulus/FragM/releases
 
 [license-image]: https://img.shields.io/badge/license-GPL3-green.svg?style=flat
