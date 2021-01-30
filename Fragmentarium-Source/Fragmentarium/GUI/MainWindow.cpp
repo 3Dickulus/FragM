@@ -382,6 +382,7 @@ bool MainWindow::saveAs()
 
     if (saveFile(fileName)) {
         t.filename = fileName;
+        tabBar->setTabToolTip(index,fileName);
         return true;
     }
     return false;
@@ -2434,6 +2435,10 @@ void MainWindow::reloadFrag()
 {
 
     int index = tabBar->currentIndex();
+    if (index == -1) {
+        WARNING(tr("No open tab"));
+        return;
+    }
     reloadFragFile( index );
 }
 
