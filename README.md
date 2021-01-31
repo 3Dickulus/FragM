@@ -14,6 +14,9 @@ Status
 [license]: https://github.com/3Dickulus/FragM/blob/master/LICENSE
 
 ### FragM now uses submodules for the Examples folder and user contributed subfolders.
+
+    Examples repo https://github.com/3Dickulus/Fragmentarium_Examples_Folder
+
     when cloning the repo use 'git clone --recurse-submodules https://github.com/3Dickulus/FragM.git'
     when checking out a branch use 'git checkout --recurse-submodules <branchname>'
     when updating from the online repo 'git submodule update --init --remote --recursive'
