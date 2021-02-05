@@ -164,7 +164,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     depthToAlpha = false;
     ZAtMXY=0.0;
     buttonDown = false;
-    updateRefreshRate();
     glDebugEnabled = false;
     spline_program = nullptr;
     tileImage = nullptr;
@@ -360,7 +359,6 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
 void DisplayWidget::requireRedraw(bool clear )
 {
-
     if (disableRedraw) {
         return;
     }
@@ -1817,11 +1815,6 @@ bool DisplayWidget::FBOcheck()
         return false;
     }
 
-    if(verbose && subframeCounter == 1) {
-        static int c = 0;
-        qDebug() << QString("drawToFrameBufferObject: %1").arg(c++);
-    }
-
     return true;
 }
 
@@ -1830,6 +1823,11 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     if (!this->isValid() || !FBOcheck()) {
         return;
+    }
+
+    if(verbose && subframeCounter == 1) {
+        static int c = 0;
+        qDebug() << QString("drawToFrameBufferObject: %1").arg(c++);
     }
 
     QSize s = backBuffer->size();
@@ -1877,7 +1875,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         if (bufferUniformsHaveChanged) {
                 setShaderUniforms ( bufferShaderProgram );
         }
-    } else shaderProgram->bind();
+    } else if (shaderProgram != nullptr) shaderProgram->bind(); // if no buffershader
 
     setViewPort ( pixelWidth(),pixelHeight() );
 
@@ -1900,7 +1898,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
-    } else shaderProgram->release();
+    } else if (shaderProgram != nullptr) shaderProgram->release();
 
     if (buffer != nullptr && !buffer->release()) {
         WARNING ( tr("Failed to release target buffer") );
@@ -2160,7 +2158,7 @@ void DisplayWidget::paintGL()
         if ( mainWindow->getVariableEditor()->hasEasing() ) {
             updateEasingCurves ( mainWindow->getFrame() ); // current frame
         }
-        if (eyeSpline != nullptr) {
+        if (eyeSpline != nullptr && cameraID() == "3D") {
             int index = mainWindow->getFrame();
             glm::dvec3 e = eyeSpline->getSplinePoint ( index );
             glm::dvec3 t = targetSpline->getSplinePoint ( index );
@@ -2186,8 +2184,7 @@ void DisplayWidget::updateBuffers()
 
 void DisplayWidget::resizeGL(int /* width */, int /* height */)
 {
-
-    // When resizing the perspective must be recalculated
+    // When resizing the aspect must be recalculated
     updatePerspective();
     makeBuffers();
     requireRedraw ( true );
