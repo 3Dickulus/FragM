@@ -59,7 +59,7 @@ namespace GUI
 MainWindow::MainWindow(QSplashScreen *splashWidget)
     : splashWidget(splashWidget), cmdScriptDebugger(nullptr)
 {
-
+    pausePlay = true;
     bufferXSpinBox = nullptr;
     bufferYSpinBox = nullptr;
     lastStoredTime = 0;
@@ -2059,12 +2059,13 @@ void MainWindow::createToolBars()
     playAction->setShortcut(tr("F11"));
     playAction->setStatusTip(tr("Starts animation or subframe rendering."));
     connect(playAction, SIGNAL(triggered()), this, SLOT(play()));
+    playAction->setEnabled(false);
 
     stopAction = new QAction(QIcon(":/Icons/player_stop.png"), tr("Stop"), this);
     stopAction->setShortcut(tr("F12"));
     stopAction->setStatusTip(tr("Stops animation or subframe rendering."));
     connect(stopAction, SIGNAL(triggered()), this, SLOT(stop()));
-    stopAction->setEnabled(false);
+    stopAction->setEnabled(true);
 
     renderModeToolBar->addAction(rewindAction);
     renderModeToolBar->addAction(playAction);
@@ -2229,14 +2230,15 @@ void MainWindow::play( bool restart )
     if (restart) {
     lastTime->restart();
     }
-    engine->setContinuous(true);
     getTime();
     pausePlay=false;
+    engine->setContinuous(true);
 }
 
 void MainWindow::stop()
 {
 
+    engine->setContinuous(false);
     playAction->setEnabled(true);
     stopAction->setEnabled(false);
     lastStoredTime = getTime();
@@ -2246,7 +2248,6 @@ void MainWindow::stop()
     }
     // statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
 
-    engine->setContinuous(false);
     getTime();
     pausePlay=true;
 }
@@ -2507,8 +2508,6 @@ void MainWindow::reloadFragFile( QString f )
 
 void MainWindow::loadFragFile(const QString &fileName)
 {
-    int sfmax = getSubFrameMax();
-    setSubframeMax(1);
     // calling with nonexistant filename before test prevents crash
     // fi a non-quoted filename with an unescaped space will appear as 2 file
     // names, both are wrong the first appears as non frag the second appears as
@@ -2525,6 +2524,8 @@ void MainWindow::loadFragFile(const QString &fileName)
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
+        int sfmax = getSubFrameMax();
+        setSubframeMax(1);
 
         if (QSettings().value("autorun", true).toBool()) {
             setRebuildStatus( true );
@@ -2536,6 +2537,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             }
             processGuiEvents();
         }
+        setSubframeMax(sfmax);
         
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
@@ -2543,7 +2545,6 @@ void MainWindow::loadFragFile(const QString &fileName)
     } else if(scriptRunning()) {
         stopScript();    // file failed to load or doesn't exist
     }
-    setSubframeMax(sfmax);
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -3423,6 +3424,7 @@ void MainWindow::preferences()
     QString styleSheetFile = "file:///"+guiStylesheet;
     if(guiStylesheet.isEmpty()) styleSheetFile = "";
     qApp->setStyleSheet(styleSheetFile);
+    // restart timer signal after setting preference
     engine->updateRefreshRate();
 
     setRecentFile("");
