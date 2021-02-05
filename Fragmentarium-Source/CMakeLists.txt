@@ -212,7 +212,6 @@ set ( Fragmentarium_HDRS
 	)
 
 set ( Fragmentarium_SRCS
-	Fragmentarium/Main.cpp
     ThirdPartyCode/ExpSpinBox.cpp
 	ThirdPartyCode/hdrloader.cpp
 	ThirdPartyCode/asmbrowser.cpp
@@ -236,6 +235,7 @@ set ( Fragmentarium_SRCS
 	SyntopiaCore/Misc/Misc.cpp
 	SyntopiaCore/Misc/Version.cpp
     ThirdPartyCode/TimeLine.cpp
+	Fragmentarium/Main.cpp
 	)
 
 set ( Fragmentarium_RSCS
