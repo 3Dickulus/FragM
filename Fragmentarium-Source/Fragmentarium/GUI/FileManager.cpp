@@ -87,7 +87,7 @@ QString FileManager::resolveName(QString fileName, QString originalFileName, boo
 {
 
         // First check absolute filenames
-    if (QFileInfo(fileName).isAbsolute()) {
+    if (QFileInfo(fileName).isAbsolute() && QFileInfo(fileName).exists()) {
         return fileName;
     }
         QStringList pathsTried;
@@ -119,6 +119,8 @@ QString FileManager::resolveName(QString fileName, QString originalFileName, boo
             }
         }
     throw Exception(QCoreApplication::translate("FileManager", "Could not resolve path for file: ") + fileName);
+    
+    return ""; // just in case
 }
 
 } // namespace GUI
