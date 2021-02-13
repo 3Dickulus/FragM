@@ -2524,7 +2524,7 @@ void MainWindow::loadFragFile(const QString &fileName)
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
-        int sfmax = getSubFrameMax();
+        int sfmax = (getSubFrameMax()==0)?1:getSubFrameMax();
         setSubframeMax(1);
 
         if (QSettings().value("autorun", true).toBool()) {
@@ -2729,7 +2729,7 @@ bool MainWindow::initializeFragment()
     }
     QString versionProfileLine = inputText.split("\n").at(0);
     if ( versionProfileLine.contains("#version"))
-        INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1));
+        INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1) + ((versionProfileLine.contains("compatibility"))?" Compatibility":""));
     else
         INFO(tr("Current target: GLSL 110"));
         
