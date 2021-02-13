@@ -159,7 +159,6 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     eyeSpline = targetSpline = upSpline = nullptr;
     setAutoFillBackground ( false );
     foundnV = false;
-    requireRedraw ( true );
     exrMode = false;
     depthToAlpha = false;
     ZAtMXY=0.0;
@@ -340,13 +339,13 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     makeBuffers();
     INFO ( tr("Created front and back buffers as ") + b );
 
-    requireRedraw ( true );
-
     initFragmentShader();
     
     if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong so do not try to setup textures or buffer shader
         return;
     }
+
+    requireRedraw ( true );
 
     initBufferShader();
 
@@ -354,7 +353,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
         if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) {
             return;
         }
-    }    
+    }
 }
 
 void DisplayWidget::requireRedraw(bool clear )
@@ -707,7 +706,7 @@ void DisplayWidget::initFragmentShader()
     } else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
-        if(!fragmentSource.vertexSource[1].contains("uniform mat4 projectionMatrix;"))
+        if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource[1].contains("uniform mat4 projectionMatrix;"))
             fragmentSource.vertexSource.insert(1,
                                         QString ("\n"
                                         "uniform mat4 projectionMatrix;\n"
@@ -2503,8 +2502,8 @@ void DisplayWidget::drawLookatVector()
 {
     int currentframe = mainWindow->getTime();
     
-    glm::dvec3 ec = eyeSpline->getSplinePoint ( currentframe +1);
-    glm::dvec3 tc = targetSpline->getSplinePoint ( currentframe +1);
+//     glm::dvec3 ec = eyeSpline->getSplinePoint ( currentframe +1);
+//     glm::dvec3 tc = targetSpline->getSplinePoint ( currentframe +1);
 
     // specify vertex arrays
     glBindVertexArray( svao );
