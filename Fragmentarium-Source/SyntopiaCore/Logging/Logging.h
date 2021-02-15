@@ -5,6 +5,8 @@
 #include <QTime>
 #include <QVector>
 
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+
 namespace SyntopiaCore
 {
 namespace Logging
