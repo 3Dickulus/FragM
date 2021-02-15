@@ -51,6 +51,7 @@ QStringList FileManager::getFiles(QStringList filters)
     return entries;
 }
 
+// for Texture files
 bool FileManager::fileExists(QString fileName)
 {
     // First check absolute filenames
@@ -78,6 +79,7 @@ bool FileManager::fileExists(QString fileName)
     return false;
 }
 
+// for included fragment source files
 QString FileManager::resolveName(QString fileName, bool verboseMessages)
 {
     return resolveName(fileName, originalFileName, verboseMessages);
@@ -85,8 +87,7 @@ QString FileManager::resolveName(QString fileName, bool verboseMessages)
 
 QString FileManager::resolveName(QString fileName, QString originalFileName, bool verboseMessages)
 {
-
-        // First check absolute filenames
+    // First check absolute filenames
     if (QFileInfo(fileName).isAbsolute() && QFileInfo(fileName).exists()) {
         return fileName;
     }
@@ -96,9 +97,9 @@ QString FileManager::resolveName(QString fileName, QString originalFileName, boo
         if (!originalFileName.isEmpty()) {
             QDir d = QFileInfo(originalFileName).absolutePath();
             QString path = d.absoluteFilePath(fileName);
-        if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
-            return path;
-        }
+            if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
+                return path;
+            }
             pathsTried.append(path);
         }
 
@@ -106,9 +107,9 @@ QString FileManager::resolveName(QString fileName, QString originalFileName, boo
         foreach (QString p, includePaths) {
             QDir d(p);
             QString path = d.absoluteFilePath(fileName);
-        if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
-            return path;
-        }
+            if (QFileInfo(path).exists() && QFileInfo(path).isFile()) {
+                return path;
+            }
             pathsTried.append(path);
         }
 
