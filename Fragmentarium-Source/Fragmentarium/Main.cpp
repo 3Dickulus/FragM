@@ -249,9 +249,6 @@ int main(int argc, char *argv[])
     QScopedPointer<QApplication> app(new QApplication(argc, argv));
     app->setObjectName("Application");
 
-    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
-    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
-
     // before creating main window record the last run state
     last_run_state = QSettings().value("isStarting").toBool();
 
@@ -296,7 +293,7 @@ int main(int argc, char *argv[])
     }
 
     Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow(&splash);
+    mainWin = new Fragmentarium::GUI::MainWindow();
     mainWin->setObjectName("MainWindow");
 
     app->setApplicationVersion(mainWin->getVersion());
@@ -313,12 +310,13 @@ int main(int argc, char *argv[])
 
     mainWin->readSettings();
     
+    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
+    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+
     splash.setMask(pixmap.mask());
     QStringList openFiles = (parser.isSet("script")) ? QStringList() : QSettings().value("openFiles").toStringList();
 
-    if (!parser.isSet("script") || openFiles.isEmpty()) {
-        splash.show();
-    }
+    splash.show();
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
@@ -327,7 +325,6 @@ int main(int argc, char *argv[])
         mainWin->loadFragFile( fragFile );
     } else if (openFiles.count() > 0 && !parser.isSet("script")) {
 
-        splash.finish(mainWin);
         while(openFiles.count() > 0) {
             mainWin->loadFragFile(openFiles.first());
             openFiles.removeFirst();
@@ -340,6 +337,7 @@ int main(int argc, char *argv[])
     app->processEvents();
 
     if(parser.isSet("script")) {
+        splash.finish(mainWin);
         QString filename = parser.value("script");
         if(filename.endsWith(".fqs")) {
 
@@ -347,7 +345,6 @@ int main(int argc, char *argv[])
 
             if(file.exists()) {
                 if (file.open(QFile::ReadOnly | QFile::Text)) {
-                    splash.finish(mainWin);
                     QTextStream in(&file);
                     QString text = in.readAll();
                     file.close();
