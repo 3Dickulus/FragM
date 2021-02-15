@@ -94,18 +94,12 @@ protected:
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void updateLineNumberArea(const QRect &, int);
-    void matchParentheses();
-    void matchBrackets();
+    void highlightBrackets();
 
 private:
     MainWindow* mainWindow;
     QString savedSettings;
     QString testSettings;
-    bool matchLeftParenthesis ( QTextBlock currentBlock, int i, int numLeftParentheses );
-    bool matchRightParenthesis ( QTextBlock currentBlock, int i, int numRightParentheses );
-    void createParenthesisSelection(int pos);
-    bool matchBra ( QTextBlock currentBlock, int i, int numBras );
-    bool matchKet ( QTextBlock currentBlock, int i, int numKets );
     void createBracketSelection(int pos);
 };
 

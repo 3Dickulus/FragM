@@ -45,33 +45,6 @@ namespace Fragmentarium
 namespace GUI
 {
 
-struct ParenthesisInfo {
-    QChar character;
-    int position;
-};
-
-struct BracketInfo {
-    QChar character;
-    int position;
-};
-
-class TextBlockData : public QTextBlockUserData
-{
-public:
-    TextBlockData();
-
-    QVector<ParenthesisInfo *> parentheses();
-    void insert ( ParenthesisInfo *info );
-    void append ( ParenthesisInfo *info );
-
-    QVector<BracketInfo *> brackets();
-    void insert ( BracketInfo *info );
-    void append ( BracketInfo *info );
-private:
-    QVector<ParenthesisInfo *> m_parentheses;
-    QVector<BracketInfo *> m_brackets;
-};
-
 class FragmentHighlighter : public QSyntaxHighlighter
 {
 public:
@@ -194,8 +167,6 @@ protected:
             glslVersionChanged = false;
         }
 
-        TextBlockData *data = new TextBlockData;
-
         for ( int i = 0; i < text.length(); ++i ) {
             if ( state == InsideMultiLineComment ) {
                 if ( text.mid ( i, 2 ) == "*/" ) {
@@ -214,21 +185,11 @@ protected:
             if ( state != InsideMultiLineComment && currentBlockState() != 0 ) {
                 if ( text.at ( i ) == '{' || text.at ( i ) == '}' ) {
                     setFormat ( i, 1, textFormat.value ( "Preprocessor" ) );
-                    BracketInfo *info = new BracketInfo;
-                    info->character = text.at ( i );
-                    info->position = i;
-                    data->insert ( info );
                 } else if ( text.at ( i ) == '(' || text.at ( i ) == ')' ) {
                     setFormat ( i, 1, textFormat.value ( "UserFunction" ) );
-                    ParenthesisInfo *info = new ParenthesisInfo;
-                    info->character = text.at ( i );
-                    info->position = i;
-                    data->insert ( info );
                 }
             }
         }
-
-        setCurrentBlockUserData ( data );
 
         if ( state == InsideMultiLineComment ) {
             setFormat ( start, text.length() - start, textFormat.value ( "MultiComment" ) );
@@ -320,7 +281,6 @@ protected:
         highlightingRules.append ( rule );
 
         rule.group = "Numbers"; // generic
-//         rule.pattern = QRegExp("\\b[-+]?\\d*\\.?\\d+([eE][-+]?\\d+)?\\b");
         rule.pattern = QRegExp ( "\\b[+-]?\\d{1,}[\\.]?\\d*(?:([eE][+-]\\d{1,}|[fF]))?\\b" );
         rule.pattern.setCaseSensitivity ( Qt::CaseInsensitive );
         rule.format = textFormat.value ( "Numbers" );
