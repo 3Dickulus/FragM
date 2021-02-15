@@ -30,6 +30,8 @@
 #include "asmbrowser.h"
 #include <QScriptEngineDebugger>
 
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
+
 class QScriptEngineDebugger;
 class QAction;
 class QMenu;
@@ -147,7 +149,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow ( QSplashScreen *splashWidget );
+    explicit MainWindow(QWidget* parent=nullptr);
     virtual ~MainWindow()
     {
         if ( !fragWatch->files().isEmpty() ) {

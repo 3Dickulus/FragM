@@ -56,8 +56,8 @@ namespace Fragmentarium
 namespace GUI
 {
 
-MainWindow::MainWindow(QSplashScreen *splashWidget)
-    : splashWidget(splashWidget), cmdScriptDebugger(nullptr)
+MainWindow::MainWindow(QWidget* parent)
+    : cmdScriptDebugger(nullptr)
 {
     pausePlay = true;
     bufferXSpinBox = nullptr;
