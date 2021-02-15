@@ -20,8 +20,6 @@
 #include "TextEdit.h"
 #include <QtSpline.h>
 
-#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
-
 namespace Fragmentarium
 {
 namespace GUI
@@ -2514,14 +2512,14 @@ void DisplayWidget::drawLookatVector()
     if(spline_program != nullptr) {
         spline_program->bind();
         GLint cloc = spline_program->uniformLocation( "vertex_colour");
-        glUniform1f(spline_program->uniformLocation("pointRadius"), 3 );
+        glUniform1f(spline_program->uniformLocation("pointRadius"), 1.1 );
 
         if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
         // highlight the source position
-        glDrawArrays(GL_POINTS, start+currentframe+1, 1 );
+        glDrawArrays(GL_POINTS, start+currentframe, 1 );
         if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
         // highlight the target position
-        glDrawArrays(GL_POINTS, start+count+currentframe+1, 1 );
+        glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
         spline_program->release();
     }
 }
@@ -2566,8 +2564,8 @@ void DisplayWidget::setCurveSettings(const QStringList cset)
 void DisplayWidget::drawSplines()
 {
 
-    render_splines(mainWindow->getVariableEditor()->getKeyFrameCount(), 4.0);
-    render_splines(mainWindow->getFrameMax(), 1.0);
+    render_splines(mainWindow->getVariableEditor()->getKeyFrameCount(), 1.0);
+    render_splines(mainWindow->getFrameMax(), 0.5);
 
     // TODO add vectors to spline control points and enable editing of points with
     // mouse
