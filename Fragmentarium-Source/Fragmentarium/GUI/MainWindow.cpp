@@ -715,7 +715,7 @@ void MainWindow::init()
         }
         settings.setValue("firstRun", false);
     }
-    removeSplash();
+
     {
         QSettings settings;
         if (settings.value("isStarting", false).toBool()) {
@@ -2707,6 +2707,15 @@ bool MainWindow::initializeFragment()
     INFO("\n" + tr("GLSL versions: ") + engine->glslvers.join(", "));
     INFO(tr("Shaders that do not include a #version directive will be treated as targeting GLSL version 110") + "\n");
 
+    // test for nVidia card and GL > 4.0
+    if (asmAction != nullptr) {
+        editMenu->removeAction(asmAction);
+        if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
+            WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
+
+        }
+    }
+
     QStringList imgFileExtensions;
 
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
@@ -3375,32 +3384,6 @@ void MainWindow::setRecentFile(const QString &fileName)
     }
 
     recentFileSeparator->setVisible(numRecentFiles > 0);
-}
-
-void MainWindow::setSplashWidgetTimeout(QSplashScreen *w)
-{
-
-    splashWidget = w;
-    QTimer::singleShot(2000, this, SLOT(removeSplash()));
-    // test for nVidia card and GL > 4.0
-    if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-        WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
-
-        if (asmAction != nullptr) {
-            editMenu->removeAction(asmAction);
-        }
-
-    }
-
-}
-
-void MainWindow::removeSplash()
-{
-
-    if (splashWidget != nullptr) {
-        splashWidget->finish(this);
-    }
-    splashWidget = nullptr;
 }
 
 void MainWindow::insertText()

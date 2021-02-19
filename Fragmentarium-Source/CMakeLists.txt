@@ -70,8 +70,8 @@ IF ( USE_OPEN_EXR )
 ENDIF ()
 
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
-OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" ON)
-OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
+OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
+OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" ON)
 
 # set to the mingw lib path
 IF ( WIN32 )

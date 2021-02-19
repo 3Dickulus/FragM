@@ -192,7 +192,6 @@ public:
         return variableEditor->getSettings(p);
     };
     void disableAllExcept ( QWidget *w );
-    void setSplashWidgetTimeout ( QSplashScreen *w );
     void highlightBuildButton ( bool value );
     FileManager *getFileManager()
     {
@@ -644,7 +643,6 @@ private slots:
     void videoEncoderRequest();
     void bufferActionChanged ( QAction *action );
     void showWelcomeNote();
-    void removeSplash();
     void maxSubSamplesChanged ( int value );
     void makeScreenshot();
     void showPreprocessedScript();
@@ -715,7 +713,6 @@ private slots:
 private:
 
     QString langID;
-    QSplashScreen *splashWidget;
     QScriptEngineDebugger *cmdScriptDebugger;
     QSpinBox *timeMaxSpinBox;
     QPushButton *animationButton;

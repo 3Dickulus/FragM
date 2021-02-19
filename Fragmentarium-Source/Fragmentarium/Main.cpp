@@ -292,8 +292,18 @@ int main(int argc, char *argv[])
         }
     }
 
+    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
+    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+
+    splash.setMask(pixmap.mask());
+    splash.show();
+
     Fragmentarium::GUI::MainWindow *mainWin;
     mainWin = new Fragmentarium::GUI::MainWindow();
+
+    // Makes the splash screen wait until the widget mainWin is displayed before calling close() on itself.
+    splash.finish(mainWin);
+
     mainWin->setObjectName("MainWindow");
 
     app->setApplicationVersion(mainWin->getVersion());
@@ -310,13 +320,7 @@ int main(int argc, char *argv[])
 
     mainWin->readSettings();
     
-    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
-    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
-
-    splash.setMask(pixmap.mask());
     QStringList openFiles = (parser.isSet("script")) ? QStringList() : QSettings().value("openFiles").toStringList();
-
-    splash.show();
 
     QStringList args = parser.positionalArguments();
     QString fragFile = args.isEmpty() ? QString() : args.last();
@@ -337,7 +341,6 @@ int main(int argc, char *argv[])
     app->processEvents();
 
     if(parser.isSet("script")) {
-        splash.finish(mainWin);
         QString filename = parser.value("script");
         if(filename.endsWith(".fqs")) {
 
@@ -364,7 +367,6 @@ int main(int argc, char *argv[])
             printf("%s",qPrintable(app->translate("main","Script file requires .fqs extention!\n")));
         }
     } else {
-        mainWin->setSplashWidgetTimeout(&splash);
         return app->exec();
     }
     return 0;
