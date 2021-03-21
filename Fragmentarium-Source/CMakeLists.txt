@@ -46,6 +46,14 @@ set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 # find_package ( glm REQUIRED )
+
+option (GL_PREFERENCE_GLVND "Open GL preference GLVND" ON)
+set(OpenGL_GL_PREFERENCE "LEGACY")
+MARK_AS_ADVANCED (GL_PREFERENCE_GLVND)
+IF ( GL_PREFERENCE_GLVND )
+    set(OpenGL_GL_PREFERENCE "GLVND")
+ENDIF ()
+
 find_package ( OpenGL REQUIRED )
 find_package ( Qt5LinguistTools REQUIRED )
 
