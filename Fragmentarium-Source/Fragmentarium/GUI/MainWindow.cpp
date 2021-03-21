@@ -3051,6 +3051,7 @@ void MainWindow::tabChanged(int index)
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
     stackedTextEdits->setCurrentWidget(ti.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
+    setWindowTitle(QString("%1 - %2").arg(tabTitle).arg("Fragmentarium"));
 
     clearKeyFrames();
     setRebuildStatus(true);
@@ -3120,8 +3121,7 @@ void MainWindow::closeTab(int index)
     
     setRebuildStatus(variableEditor->setSettings(te->lastSettings()));
     
-    if (rebuildRequired)
-        setRebuildStatus(initializeFragment()); // this bit of fudge preserves textures ???
+    setRebuildStatus(initializeFragment()); // this bit of fudge preserves textures ???
 }
 
 void MainWindow::clearKeyFrames()
