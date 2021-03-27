@@ -753,12 +753,7 @@ void MainWindow::init()
     createMenus();
     renderModeChanged();
 
-
-#ifdef USE_OPEN_EXR
-#ifndef Q_OS_WIN
-initTools();
-#endif // UNIX
-#endif // USE_OPEN_EXR
+    initTools();
 
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
     setupScriptEngine();
@@ -771,6 +766,8 @@ initTools();
 
 void MainWindow::initTools()
 {
+    // FIXME need to destroy the old one because none of this will happen if exrToolsMenu has already been built
+    // like when the preferences are changed changes wont take effect without restarting the program
 #ifdef USE_OPEN_EXR
     // do we have any paths?
     if(exrBinaryPath.count() != 0) {

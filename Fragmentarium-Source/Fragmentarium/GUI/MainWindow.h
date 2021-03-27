@@ -623,8 +623,8 @@ public slots:
 
     void testVersions() { getEngine()->testVersions(); };
 private slots:
-#ifdef USE_OPEN_EXR
     void initTools();
+#ifdef USE_OPEN_EXR
     void runEXRTool();
 #endif // USE_OPEN_EXR
     void runSupportProgram();
