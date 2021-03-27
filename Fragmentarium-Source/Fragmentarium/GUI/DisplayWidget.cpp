@@ -815,6 +815,18 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 
     HDRLoaderResult result;
     bool loaded = HDRLoader::load ( texturePath.toLocal8Bit().data(), result );
+        int s;
+        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+
+        if (type == GL_SAMPLER_2D && (result.width>s || result.height>s) ) {
+            WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height).arg(s));
+            loaded = false;
+        }
+
+        if(type == GL_SAMPLER_CUBE && (result.width>s || result.height != 6*result.width)){
+            WARNING(tr("Loader found HDR image: %1 x %2 is not a cube map!").arg(result.width).arg(result.height));
+            loaded = false;
+        }
 
     if ( loaded ) {
         glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
@@ -826,12 +838,10 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3] );
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3] );
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3] );
-        } else {
+        } else if ( type == GL_TEXTURE_2D ) {
             glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, &result.cols[0] );
         }
 
-    } else {
-        WARNING ( "HDR texture failed to load!" );
     }
 
     return loaded;
