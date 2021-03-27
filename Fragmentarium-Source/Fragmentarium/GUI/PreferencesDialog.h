@@ -68,6 +68,18 @@ public slots:
         }
     }
 
+    void getSupportProgramPaths() {
+        QStringList pathNames;
+        QFileDialog dialog(this, QString("Select a path."));
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setOption(QFileDialog::ShowDirsOnly, true);
+        if (dialog.exec())
+            pathNames = dialog.selectedFiles();
+        if (!pathNames.isEmpty()) {
+            m_ui.supportProgramBinPathsLineEdit->setText(pathNames.join(";"));
+        }
+    }
+
     void getEditorStylesheet() {
         QString fileName;
         QString filter = tr("Stylesheet (*.qss);;All Files (*.*)");
@@ -130,6 +142,7 @@ private slots:
 #ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
 #endif // USE_OPEN_EXR
+        m_ui.supportProgramBinPathsLineEdit->setText (settings.value ( "supportProgramBinPaths", "./bin" ).toString() );
         m_ui.editorStylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
         m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
         m_ui.logLinesSpinBox->setValue (settings.value ( "maxLogLines", 10 ).toInt() );
@@ -166,6 +179,7 @@ private slots:
 #ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
 #endif // USE_OPEN_EXR
+        settings.setValue("supportProgramBinPaths", m_ui.supportProgramBinPathsLineEdit->text());
         settings.setValue("editorStylesheet", m_ui.editorStylesheetLineEdit->text());
         settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );
         settings.setValue("maxLogLines", m_ui.logLinesSpinBox->value());

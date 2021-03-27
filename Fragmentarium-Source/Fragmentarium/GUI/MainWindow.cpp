@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget* parent)
 #ifdef USE_OPEN_EXR
     exrToolsMenu = nullptr;
 #endif
+    supportProgramsMenu = nullptr;
 
     maxRecentFiles = 5;
     editorTheme = 0;
@@ -768,63 +769,95 @@ initTools();
     qApp->setStyleSheet(styleSheetFile);
 }
 
-#ifdef USE_OPEN_EXR
 void MainWindow::initTools()
 {
-
-    QStringList filters;
-
-    if (exrToolsMenu == nullptr) {
-      exrToolsMenu = menuBar()->addMenu(tr("EXR &Tools"));
+#ifdef USE_OPEN_EXR
+    // do we have any paths?
+    if(exrBinaryPath.count() != 0) {
+        // has it been done already?
+        if(exrToolsMenu == nullptr) {
+            // iterate over the list of paths
+            QStringListIterator pathIterator(exrBinaryPath);
+            while (pathIterator.hasNext()) {
+                // validate existence
+                QDir exrbp(pathIterator.next());
+                // if found at least one valid path
+                if(exrbp.exists()) {
+                    QStringList filters; filters << "exr*";
+                    exrbp.setNameFilters(filters);
+                    QStringList filesList = exrbp.entryList();
+                    // if found at least one valid tool iterate over the list of tools adding menu items
+                    if(filesList.count() > 0) {
+                        QStringListIterator toolIterator(filesList);
+                        while (toolIterator.hasNext()) {
+                            // get abs path to file
+                            QString toolName = exrbp.absoluteFilePath(toolIterator.next());
+                            QFileInfo qfi(toolName);
+                            // validate as executable
+                            if(qfi.isExecutable()) {
+                                // we have path and files so add menu to bar just once though
+                                if (exrToolsMenu == nullptr) {
+                                    exrToolsMenu = menuBar()->addMenu(tr("EXR Tools"));
+                                }
+                                // add item to menu
+                                auto *a = new QAction(qfi.fileName(), this);
+                                a->setData(toolName);
+                                a->setObjectName(toolName);
+                                connect(a, SIGNAL(triggered()), this, SLOT(runEXRTool()));
+                                exrToolsMenu->addAction(a);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+#endif // USE_OPEN_EXR
 
-    QDir exrbp( exrBinaryPath.first() );
-
-    while (!exrbp.exists()) {
-        exrBinaryPath.removeFirst();
-        exrbp.setPath( exrBinaryPath.first() );
-    }
-
-    if (!exrbp.exists()) {
-        QAction *a = new QAction(tr("Unable to locate: ") + exrbp.absolutePath(), this);
-        a->setEnabled(false);
-        exrToolsMenu->addAction(a);
-    } else {
-
-        exrToolsMenu->clear();
-
-        // -- OpenEXR binary tools Menu --
-        if (exrToolsMenu != nullptr) {
-            filters.clear();
-            filters << "exr*";
-
-            QString path = exrbp.absolutePath();
-            QDir dir(path);
-
-            dir.setNameFilters(filters);
-
-            QStringList sl = dir.entryList();
-            if (sl.isEmpty()) {
-                QAction *a = new QAction(tr("Unable to locate OpenEXR binaries !!!"), this);
-                a->setEnabled(false);
-                exrToolsMenu->addAction(a);
-            } else {
-                for (int i = 0; i < sl.size(); i++) {
-                    auto *a = new QAction(sl[i], this);
-                    QString absPath = QDir(path ).absoluteFilePath(sl[i]);
-
-                    a->setData(absPath);
-                    a->setObjectName(absPath);
-
-                    connect(a, SIGNAL(triggered()), this, SLOT(runTool()));
-                    exrToolsMenu->addAction(a);
+    // do we have any paths?
+    if(supportProgramsBinaryPath.count() != 0) {
+        // has it been done already?
+        if(supportProgramsMenu == nullptr) {
+            // iterate over the list of paths
+            QStringListIterator pathIterator(supportProgramsBinaryPath);
+            while (pathIterator.hasNext()) {
+                // validate existence
+                QDir spbp(pathIterator.next());
+                // if found at least one valid path
+                if(spbp.exists()) {
+                    QStringList filters; filters << "ggr*";
+                    spbp.setNameFilters(filters);
+                    QStringList filesList = spbp.entryList();
+                    // if found at least one valid tool iterate over the list of tools adding menu items
+                    if(filesList.count() > 0) {
+                        QStringListIterator toolIterator(filesList);
+                        while (toolIterator.hasNext()) {
+                            // get abs path to file
+                            QString toolName = spbp.absoluteFilePath(toolIterator.next());
+                            QFileInfo qfi(toolName);
+                            // validate as executable
+                            if(qfi.isExecutable()) {
+                                // we have path and files so add menu to bar just once though
+                                if (supportProgramsMenu == nullptr) {
+                                    supportProgramsMenu = menuBar()->addMenu(tr("GLSL Tools"));
+                                }
+                                // add item to menu
+                                auto *a = new QAction(qfi.fileName(), this);
+                                a->setData(toolName);
+                                a->setObjectName(toolName);
+                                connect(a, SIGNAL(triggered()), this, SLOT(runSupportProgram()));
+                                supportProgramsMenu->addAction(a);
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-void MainWindow::runTool()
+#ifdef USE_OPEN_EXR
+void MainWindow::runEXRTool()
 {
 
     QString cmnd = sender()->objectName();
@@ -865,8 +898,69 @@ void MainWindow::runTool()
         msgBox.exec();
     }
 }
-
 #endif // USE_OPEN_EXR
+
+void MainWindow::runSupportProgram()
+{
+    QString cmnd = sender()->objectName();
+    // for now it's ggr2glsl program only
+    // get input file file
+    QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
+    QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), "", filter);
+    if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
+        return;
+    }
+    cmnd += " < " + ggrFileName;
+    // get output file
+    filter = tr("Fragments (*.frag);;All Files (*.*)");
+    QString glslFileName = QFileDialog::getSaveFileName(this, tr("Write GLSL Fragment"), ggrFileName.replace(".ggr","-gradient.frag"), filter);
+    if (glslFileName.isEmpty()) {
+        return;
+    }
+    cmnd += " > " + glslFileName;
+
+    // confirm user request
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setText( cmnd );
+    msgBox.setInformativeText(tr("Do you want to execute this command?"));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    switch (ret) {
+    case QMessageBox::Ok:
+        break;
+    case QMessageBox::Cancel:
+        cmnd = "";
+        break;
+    default:
+        // should never be reached
+        cmnd = "";
+        break;
+    }
+
+    if(cmnd != "" && system( cmnd.toStdString().c_str() ) != -1) {
+        // confirm success
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText( cmnd );
+        msgBox.setInformativeText(tr("Command executed successfully!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+    }
+    else {
+        // confirm fail
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText( cmnd );
+        msgBox.setInformativeText(tr("Execute command Failed!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+    }
+
+}
 
 void MainWindow::showWelcomeNote()
 {
@@ -2366,6 +2460,7 @@ void MainWindow::readSettings()
 #ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
 #endif // USE_OPEN_EXR
+    supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
 }
@@ -2399,6 +2494,12 @@ void MainWindow::writeSettings()
     }
     settings.setValue("exrBinPaths", ebpaths);
 #endif // USE_OPEN_EXR
+
+    QString sppaths = supportProgramsBinaryPath.join(";");
+    if (supportProgramsBinaryPath.count() == 1) {
+        ebpaths += ";";
+    }
+    settings.setValue("supportProgramBinPaths", ebpaths);
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
@@ -3063,7 +3164,6 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    setRebuildStatus(true);
     initializeFragment();
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
@@ -3418,11 +3518,7 @@ void MainWindow::preferences()
       getTextEdit()->highlightCurrentLine();
     }
 
-#ifdef USE_OPEN_EXR
-#ifndef Q_OS_WIN
-initTools();
-#endif // UNIX
-#endif // USE_OPEN_EXR
+    initTools();
 }
 
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)

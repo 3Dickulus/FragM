@@ -625,8 +625,9 @@ public slots:
 private slots:
 #ifdef USE_OPEN_EXR
     void initTools();
-    void runTool();
+    void runEXRTool();
 #endif // USE_OPEN_EXR
+    void runSupportProgram();
 
     void veDockChanged ( bool t )
     {
@@ -847,6 +848,9 @@ private:
     QMenu *exrToolsMenu;
     QStringList exrBinaryPath;
 #endif // USE_OPEN_EXR
+
+    QMenu *supportProgramsMenu;
+    QStringList supportProgramsBinaryPath;
 
     QMap<int, KeyFrameInfo *> keyframeMap;
     QMap<int, EasingInfo *> easingMap;
