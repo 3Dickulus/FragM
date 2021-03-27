@@ -2497,9 +2497,9 @@ void MainWindow::writeSettings()
 
     QString sppaths = supportProgramsBinaryPath.join(";");
     if (supportProgramsBinaryPath.count() == 1) {
-        ebpaths += ";";
+        sppaths += ";";
     }
-    settings.setValue("supportProgramBinPaths", ebpaths);
+    settings.setValue("supportProgramBinPaths", sppaths);
 
     settings.setValue("showFileToolbar", !fileToolBar->isHidden() );
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
