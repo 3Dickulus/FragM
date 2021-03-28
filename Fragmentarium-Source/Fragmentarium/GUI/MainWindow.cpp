@@ -899,22 +899,22 @@ void MainWindow::runEXRTool()
 
 void MainWindow::runSupportProgram()
 {
-    QString cmnd = sender()->objectName();
     // for now it's ggr2glsl program only
+    QString cmnd = "\"" + sender()->objectName() + "\""; // in case the program name has spaces
     // get input file file
     QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
     QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), "", filter);
     if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
         return;
     }
-    cmnd += " < " + ggrFileName;
+    cmnd += " < \"" + ggrFileName + "\""; // in case the gradient name has spaces
     // get output file
     filter = tr("Fragments (*.frag);;All Files (*.*)");
     QString glslFileName = QFileDialog::getSaveFileName(this, tr("Write GLSL Fragment"), ggrFileName.replace(".ggr","-gradient.frag"), filter);
     if (glslFileName.isEmpty()) {
         return;
     }
-    cmnd += " > " + glslFileName;
+    cmnd += " > \"" + glslFileName + "\""; // in case the fragment name has spaces
 
     // confirm user request
     QMessageBox msgBox(this);
