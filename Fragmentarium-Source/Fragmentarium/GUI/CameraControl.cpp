@@ -373,7 +373,7 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
     }
     if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
         if (steps > 0.0) {
-            stepSize = stepSize * 2.0f;
+            stepSize = stepSize * 2.0;
         } else if (steps < 0.0) {
             stepSize = stepSize * 0.5f;
         }
@@ -387,7 +387,7 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
     } else {
         glm::dvec3 direction = (target->getValue() - eye->getValue());
         glm::dvec3 dir = normalize(direction);
-        glm::dvec3 offset = dir * stepSize * (steps);
+        glm::dvec3 offset = dir * stepSize * (steps) / fov->getValue();
         eye->setValue(eye->getValue() + offset);
         target->setValue(target->getValue() + offset);
         return true;
