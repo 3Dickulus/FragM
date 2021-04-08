@@ -302,7 +302,7 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
         mouseDown = glm::dvec3(0, 0, -1);
     }
 
-    if (mouseDown.z != -1 && e->buttons() == Qt::NoButton) {
+    if (mouseDown.z != -1 && e->buttons() != Qt::NoButton) {
         glm::dvec3 dp = mouseDown - pos;
 
         double mouseSpeed = stepSize * 10.0;    // for anything related to movement (rotate arround origin/target, "zoom" & translate)
