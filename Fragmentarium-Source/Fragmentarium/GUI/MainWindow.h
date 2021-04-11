@@ -634,8 +634,7 @@ private slots:
         variableEditor->dockChanged ( t );
     }; // 05/22/17 Sabine ;)
     void clearKeyFrameControl();
-    void bufferXSpinBoxChanged ( int x );
-    void bufferYSpinBoxChanged (int y );
+    void bufferSpinBoxChanged ( int value );
     void timeChanged ( int value );
     void timeLineRequest ( QPoint p );
     void timeLineRequest ()
@@ -719,8 +718,8 @@ private:
     QSpinBox *timeMaxSpinBox;
     QPushButton *animationButton;
     QPushButton *progressiveButton;
-    QCheckBox *aspectRatioLock;
-    int aspectMode;
+    QPushButton *bufferSizeControl;
+    int bufferSizeMultiplier;
     QList<QWidget *> disabledWidgets;
     QLabel *buildLabel;
     QLabel *timeLabel;
@@ -763,7 +762,6 @@ private:
     QMenu *renderMenu;
     QMenu *parametersMenu;
     QMenu *examplesMenu;
-    QMenu *viewMenu;
     QMenu *helpMenu;
     QToolBar *fileToolBar;
     QToolBar *renderToolBar;
@@ -820,10 +818,9 @@ private:
     bool pausePlay;
 
     QAction *bufferAction1;
-    QAction *bufferAction2;
-    QAction *bufferAction3;
-    QAction *bufferAction4;
-    QAction *bufferAction5;
+    QAction *bufferAction1_2;
+    QAction *bufferAction1_4;
+    QAction *bufferAction1_6;
     QAction *bufferActionCustom;
     QAction *clearTexturesAction;
     QAction *testCompileGLSLAction;
@@ -865,14 +862,8 @@ private:
     
     QPixmap enginePixmap;
     QLabel* engineOverlay;
-    QFrame *engineFrame;
-    QGridLayout *engineGridLayout;
-    QSpacerItem *topEngineSpacer;
-    QSpacerItem *leftEngineSpacer;
-    QSpacerItem *rightEngineSpacer;
-    QSpacerItem *bottomEngineSpacer;
-    double aspectRatio;
-    bool lockedToWindowSize;
+
+
 };
 }
 } // namespace Fragmentarium
