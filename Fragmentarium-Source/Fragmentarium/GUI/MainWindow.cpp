@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget* parent)
     bufferXSpinBox = nullptr;
     bufferYSpinBox = nullptr;
     lastStoredTime = 0;
-    bufferSizeMultiplier = 1;
+    aspectMode = 1;
     exrMode = false;
 #ifdef USE_OPEN_EXR
     exrToolsMenu = nullptr;
@@ -96,7 +96,6 @@ MainWindow::MainWindow(QWidget* parent)
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
     includeWithAutoSave = true;
-    playRestartMode = false;
 
     init();
 
@@ -118,6 +117,9 @@ MainWindow::MainWindow(QWidget* parent)
     keyShiftF6->setKey( QKeySequence("Shift+F6"));    // Set the key code
     // connect handler to keypress
     connect(keyShiftF6, SIGNAL(activated()), this, SLOT(slotShortcutShiftF6()));
+    aspectRatio = settings.value("aspectRatio", 1).toDouble();
+//     aspectRatioLock->setChecked(settings.value("lockAspectRatio", false).toBool());
+    lockedToWindowSize = true;
 }
 
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
@@ -339,13 +341,21 @@ void MainWindow::testCompileGLSL()
     getEngine()->testVersions(); 
 }
 
-void MainWindow::bufferSpinBoxChanged(int value)
+void MainWindow::bufferXSpinBoxChanged( int x )
 {
-    Q_UNUSED(value)
-
-    QToolTip::showText(pos()+bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
+    if(aspectRatioLock->isChecked()) {
+        bufferYSpinBox->setValue(x/aspectRatio);
+    }
+    bufferActionChanged(new QAction());
 }
 
+void MainWindow::bufferYSpinBoxChanged( int y )
+{
+    if(aspectRatioLock->isChecked()) {
+        bufferXSpinBox->setValue(y*aspectRatio);
+    }
+    bufferActionChanged(new QAction());
+}
 
 bool MainWindow::save()
 {
@@ -627,14 +637,50 @@ void MainWindow::init()
     lastTime = new QTime();
     lastTime->start();
 
-    splitter = new QSplitter(this);
-    splitter->setObjectName(QString::fromUtf8("splitter"));
+////////////////////////////////////////////////////////////
+// initialize textedit stack, displaywidget and tabbar
+////////////////////////////////////////////////////////////
+    QFrame *f = new QFrame(this);
+    f->setObjectName(QString::fromUtf8("f"));
+    f->setFrameShape(QFrame::NoFrame);
+    
+    QGridLayout *fGridLayout = new QGridLayout(f);
+    fGridLayout->setSpacing(0);
+    fGridLayout->setSizeConstraint(QLayout::SetNoConstraint);
+    fGridLayout->setContentsMargins(0, 0, 0, 0);
+    
+    splitter = new QSplitter(f);
     splitter->setOrientation(Qt::Horizontal);
 
     stackedTextEdits = new QStackedWidget(splitter);
+    splitter->addWidget(stackedTextEdits); // splitter->widget(0) < left side
 
-    engine = new DisplayWidget(this, splitter);
-    engine->setObjectName(QString::fromUtf8("DisplayWidget"));
+    engineFrame = new QFrame(splitter);
+    engineFrame->setFrameShape(QFrame::NoFrame);
+
+    engineGridLayout = new QGridLayout(engineFrame);
+    engineGridLayout->setSpacing(0);
+    engineGridLayout->setSizeConstraint(QLayout::SetNoConstraint);
+    engineGridLayout->setContentsMargins(0, 0, 0, 0);
+
+    topEngineSpacer = new QSpacerItem(20, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+    engineGridLayout->addItem(topEngineSpacer, 0, 1, 1, 1);
+    leftEngineSpacer = new QSpacerItem(0, 20, QSizePolicy::Minimum, QSizePolicy::Preferred);
+    engineGridLayout->addItem(leftEngineSpacer, 1, 0, 1, 1);
+
+    engine = new DisplayWidget(this, engineFrame);
+    engine->setObjectName(QString::fromUtf8("engine"));
+    engine->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    engine->setMinimumWidth(20);
+    engine->setMinimumHeight(20);
+    engineGridLayout->addWidget(engine, 1, 1, 1, 1);
+
+    rightEngineSpacer = new QSpacerItem(0, 20, QSizePolicy::Minimum, QSizePolicy::Preferred);
+    engineGridLayout->addItem(rightEngineSpacer, 1, 2, 1, 1);
+    bottomEngineSpacer = new QSpacerItem(20, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+    engineGridLayout->addItem(bottomEngineSpacer, 2, 1, 1, 1);
+
+    splitter->addWidget(engineFrame); // splitter->widget(1) < right side
 
     tabBar = new QTabBar(this);
     tabBar->setObjectName(QString::fromUtf8("TabBar"));
@@ -642,17 +688,18 @@ void MainWindow::init()
     tabBar->setTabsClosable(true);
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    fGridLayout->addWidget(tabBar, 0, 0, 1, 1);
+    fGridLayout->addWidget(splitter, 1, 0, 1, 1);
+    f->setLayout(fGridLayout);
+
+    // lets get the show on the road
+    setCentralWidget(f);
+
+////////////////////////////////////////////////////////////
+
     fpsLabel = new QLabel(this);
     statusBar()->addPermanentWidget(fpsLabel);
-
-    QFrame* f = new QFrame(this);
-    frameMainWindow = new QVBoxLayout();
-    frameMainWindow->setSpacing(0);
-    frameMainWindow->setMargin(4);
-    f->setLayout(frameMainWindow);
-    f->layout()->addWidget(tabBar);
-    f->layout()->addWidget(splitter);
-    setCentralWidget(f);
 
     QDir d(getExamplesDir());
 
@@ -1206,6 +1253,14 @@ void MainWindow::createActions()
     }
 
     qApp->setWindowIcon(QIcon(":/Icons/fragmentarium.png"));
+
+    bufferAction1 = new QAction(tr("Lock to window size"));
+    bufferAction2 = new QAction(tr("Aspect 1/1"));
+    bufferAction3 = new QAction(tr("Aspect 4/3"));
+    bufferAction4 = new QAction(tr("Aspect 16/9"));
+    bufferAction5 = new QAction(tr("Aspect from window."));
+    bufferActionCustom = new QAction(tr("Custom size"));
+
 }
 
 void MainWindow::createMenus()
@@ -1277,6 +1332,18 @@ void MainWindow::createMenus()
     examplesMenu = menuBar()->addMenu(tr("&Examples"));
     buildExamplesMenu();
 
+    
+    // -- View Menu --
+    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(bufferAction1);
+    viewMenu->addAction(bufferAction2);
+    viewMenu->addAction(bufferAction3);
+    viewMenu->addAction(bufferAction4);
+    viewMenu->addAction(bufferAction5);
+    viewMenu->addSeparator();
+    viewMenu->addAction(bufferActionCustom);
+    connect(viewMenu, SIGNAL(triggered(QAction *)), this, SLOT(bufferActionChanged(QAction *)));
+
     // RMB in menu bar for "windows" menu access
     QMenu* mc = createPopupMenu();
     mc->setTitle(tr("Windows"));
@@ -1308,7 +1375,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(introAction);
 
     createOpenGLContextMenu();
-
+    
 }
 
 void MainWindow::buildExamplesMenu()
@@ -2084,7 +2151,7 @@ void MainWindow::createToolBars()
     settings.value("showEditToolbar").toBool() ? editToolBar->show() : editToolBar->hide();
 
     bufferToolBar = addToolBar(tr("Buffer Dimensions"));
-    bufferToolBar->addWidget(new QLabel(tr("Buffer Size. X: "), this));
+    bufferToolBar->addWidget(new QLabel(tr("Buffer Size. X:"), this));
     bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
     bufferToolBar->setToolTipDuration(5000);
     bufferXSpinBox = new QSpinBox(bufferToolBar);
@@ -2093,29 +2160,20 @@ void MainWindow::createToolBars()
     bufferXSpinBox->setSingleStep(1);
     bufferXSpinBox->setEnabled(false);
     bufferToolBar->addWidget(bufferXSpinBox);
-    bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
+    bufferToolBar->addWidget(new QLabel(tr(" Y:"), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
     bufferYSpinBox->setRange(0,8000);
     bufferYSpinBox->setValue(10);
     bufferYSpinBox->setSingleStep(1);
     bufferYSpinBox->setEnabled(false);
-    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
-    connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
-    bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
-    auto *menu = new QMenu();
-    bufferAction1 = menu->addAction(tr("Lock to window size"));
-    bufferAction1_2 = menu->addAction(tr("Lock to 1/2 window size"));
-    bufferAction1_4 = menu->addAction(tr("Lock to 1/4 window size"));
-    bufferAction1_6 = menu->addAction(tr("Lock to 1/6 window size"));
-    menu->addSeparator();
-    bufferActionCustom = menu->addAction(tr("Custom size"));
-    bufferSizeControl->setMenu(menu);
-
-    connect(menu, SIGNAL(triggered(QAction *)), this, SLOT(bufferActionChanged(QAction *)));
-
     bufferToolBar->addWidget(bufferYSpinBox);
-    bufferToolBar->addWidget(bufferSizeControl);
-    bufferToolBar->setObjectName(QString::fromUtf8("BufferDimensions"));
+    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
+    connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferYSpinBoxChanged(int)));
+
+    aspectRatioLock = new QCheckBox(tr(" Lock Aspect"), bufferToolBar);
+    aspectRatioLock->setLayoutDirection(Qt::RightToLeft);
+    bufferToolBar->addWidget(aspectRatioLock);
+    bufferToolBar->setObjectName(QString::fromUtf8("BufferAspect"));
 
     renderToolBar = addToolBar(tr("Render Toolbar"));
     renderToolBar->addAction(renderAction);
@@ -2235,24 +2293,22 @@ void MainWindow::setTimeSliderValue(int value)
 void MainWindow::bufferActionChanged(QAction *action)
 {
 
-    bool lockedToWindowSize = true;
-    
-    bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
-        bufferSizeMultiplier = 1;
-    } else if (action == bufferAction1_2) {
-        bufferSizeMultiplier = 2;
-    } else if (action == bufferAction1_4) {
-        bufferSizeMultiplier = 4;
-    } else if (action == bufferAction1_6) {
-        bufferSizeMultiplier = 6;
-    } else if (action == bufferActionCustom) { lockedToWindowSize = false;
-        bufferSizeMultiplier = 0;
+        aspectMode = 1; lockedToWindowSize = true;
+    } else if (action == bufferAction2) {
+        aspectMode = 2; aspectRatio=1; // setting 1:1
+    } else if (action == bufferAction3) {
+        aspectMode = 3; aspectRatio=4.0/3.0; // setting 4:3
+    } else if (action == bufferAction4) {
+        aspectMode = 4; aspectRatio=16.0/9.0; // setting 16:9
+    } else if (action == bufferAction5) {
+        aspectMode = 5; aspectRatio=double(engine->width())/double(engine->height()); // setting from window
+    } else if (action == bufferActionCustom) {
+        aspectMode = 0; lockedToWindowSize = false;
     }
-
-    bufferYSpinBox->setEnabled(!lockedToWindowSize);
     bufferXSpinBox->setEnabled(!lockedToWindowSize);
-    
+    bufferYSpinBox->setEnabled(!lockedToWindowSize);
+
     engine->updateBuffers();
 }
 
@@ -2464,7 +2520,6 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
-
     QSettings settings;
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
@@ -2515,6 +2570,10 @@ void MainWindow::writeSettings()
     }
 
     settings.setValue("openFiles", openFiles);
+
+    settings.setValue("aspectRatio", aspectRatio);
+//     settings.setValue("lockAspectRatio", aspectRatioLock->isChecked());
+
     settings.sync();
 
 }
@@ -3518,49 +3577,96 @@ void MainWindow::preferences()
     initTools();
 }
 
+// this calculates desired buffer characteristics for gui
+// called from engine when window or buffer size changes
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
 {
-
     if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY =  bufferYSpinBox->value();
         return;
     }
-    if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {
+    if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {   bufferSizeX = w;  bufferSizeY = h;
         return;
     }
-    if (bufferSizeMultiplier>0) {
-        // Locked to a fraction of the window size
-        bufferSizeX = w/bufferSizeMultiplier;
-        bufferSizeY = h/bufferSizeMultiplier;
-        bufferXSpinBox->blockSignals(true);
-        bufferYSpinBox->blockSignals(true);
-        bufferXSpinBox->setValue(bufferSizeX);
-        bufferYSpinBox->setValue(bufferSizeY);
-        bufferXSpinBox->blockSignals(false);
-        bufferYSpinBox->blockSignals(false);
-        fitWindow = true;
-    } else if (bufferSizeMultiplier<=0) {
-        bufferSizeX = bufferXSpinBox->value();
-        bufferSizeY =  bufferYSpinBox->value();
 
-        double f = (double)bufferSizeX/(double)w;
-        //bool downsized = false;
-        if (f>1.0) {
-            //downsized = true;
-            bufferSizeX/=f;
-            bufferSizeY/=f;
+    fitWindow = lockedToWindowSize;
+
+    switch(aspectMode) {
+        case 0:
+            // custom size
+            bufferSizeX = bufferXSpinBox->value();
+            bufferSizeY =  bufferYSpinBox->value();
+
+            engine->setMinimumWidth(bufferSizeX);
+            engine->setMinimumHeight(bufferSizeY);
+            engine->setMaximumWidth(bufferSizeX);
+            engine->setMaximumHeight(bufferSizeY);
+            
+            topEngineSpacer->changeSize(20,0,QSizePolicy::Preferred,QSizePolicy::Expanding);
+            bottomEngineSpacer->changeSize(20,0,QSizePolicy::Preferred,QSizePolicy::Expanding);
+            leftEngineSpacer->changeSize(0,20,QSizePolicy::Expanding,QSizePolicy::Preferred);
+            rightEngineSpacer->changeSize(0,20,QSizePolicy::Expanding,QSizePolicy::Preferred);
+            engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        break;
+        case 1: {
+            // Locked to window size
+            bufferSizeX = engineFrame->width();
+            bufferSizeY = engineFrame->height();
+            if(aspectRatioLock->isChecked()) {
+                bufferSizeX = bufferSizeY*aspectRatio;
+            }
+
+            bufferXSpinBox->blockSignals(true);
+            bufferYSpinBox->blockSignals(true);
+            bufferXSpinBox->setValue(bufferSizeX);
+            bufferYSpinBox->setValue(bufferSizeY);
+            bufferXSpinBox->blockSignals(false);
+            bufferYSpinBox->blockSignals(false);
+
+            engine->setMinimumWidth(20);
+            engine->setMinimumHeight(20);
+            engine->setMaximumWidth(4096);
+            engine->setMaximumHeight(4096);
+            
+            topEngineSpacer->changeSize(20,0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+            bottomEngineSpacer->changeSize(20,0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+            leftEngineSpacer->changeSize(0,20, QSizePolicy::Minimum, QSizePolicy::Preferred);
+            rightEngineSpacer->changeSize(0,20, QSizePolicy::Minimum, QSizePolicy::Preferred);
+            engine->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         }
+        break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            bufferXSpinBox->blockSignals(true);
+            bufferXSpinBox->setValue(bufferYSpinBox->value()*aspectRatio);
+            bufferXSpinBox->blockSignals(false);
 
-        f = (double)bufferSizeY/(double)h;
-        if (f>1.0) {
-            //downsized = true;
-            bufferSizeX/=f;
-            bufferSizeY/=f;
-        }
+            bufferSizeX = bufferXSpinBox->value();
+            bufferSizeY =  bufferYSpinBox->value();
 
-        fitWindow = false;
+            engine->setMinimumWidth(bufferSizeX);
+            engine->setMinimumHeight(bufferSizeY);
+            engine->setMaximumWidth(bufferSizeX);
+            engine->setMaximumHeight(bufferSizeY);
+
+            topEngineSpacer->changeSize(20,0,QSizePolicy::Preferred,QSizePolicy::Preferred);
+            bottomEngineSpacer->changeSize(20,0,QSizePolicy::Preferred,QSizePolicy::Preferred);
+            leftEngineSpacer->changeSize(0,20,QSizePolicy::Preferred,QSizePolicy::Preferred);
+            rightEngineSpacer->changeSize(0,20,QSizePolicy::Preferred,QSizePolicy::Preferred);
+            engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        break;
+        default: break; // should never get here.
     }
+
+            if(aspectRatioLock->isChecked() && fitWindow) {
+                QList<int> sizes = splitter->sizes();
+                sizes[0] = splitter->width()-(bufferSizeX+splitter->handle(1)->width()+1);
+                sizes[1] = bufferSizeX;
+                splitter->setSizes(sizes);
+            }
 }
 
 void MainWindow::indent()
