@@ -148,6 +148,7 @@ private slots:
         m_ui.logLinesSpinBox->setValue (settings.value ( "maxLogLines", 10 ).toInt() );
         m_ui.editorThemeComboBox->setCurrentIndex( settings.value ( "editorTheme", 0 ).toInt() );
         m_ui.guiStylesheetLineEdit->setText (settings.value ( "guiStylesheet", "" ).toString() );
+        m_ui.tileSizeFromScreenCheckBox->setChecked (settings.value ( "tileSizeFromScreen", false ).toBool() );
     }
 
     void saveSettings()
@@ -185,6 +186,7 @@ private slots:
         settings.setValue("maxLogLines", m_ui.logLinesSpinBox->value());
         settings.setValue("editorTheme",  m_ui.editorThemeComboBox->currentIndex());
         settings.setValue("guiStylesheet", m_ui.guiStylesheetLineEdit->text());
+        settings.setValue ("tileSizeFromScreen", m_ui.tileSizeFromScreenCheckBox->isChecked());
         settings.sync();
     }
 

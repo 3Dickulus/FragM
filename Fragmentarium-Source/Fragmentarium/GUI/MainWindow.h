@@ -634,7 +634,8 @@ private slots:
         variableEditor->dockChanged ( t );
     }; // 05/22/17 Sabine ;)
     void clearKeyFrameControl();
-    void bufferSpinBoxChanged ( int value );
+    void bufferXSpinBoxChanged ( int value );
+    void bufferYSpinBoxChanged ( int value );
     void timeChanged ( int value );
     void timeLineRequest ( QPoint p );
     void timeLineRequest ()
@@ -711,6 +712,10 @@ private slots:
 #endif
     void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
 
+    void lockAspect(bool l){
+        lockedAspect = l; l ? aspectLock->setIcon(QIcon(":/Icons/padlocka.png")) : aspectLock->setIcon(QIcon(":/Icons/padlockb.png"));
+        currentAspect = (double)bufferXSpinBox->value()/(double)bufferYSpinBox->value();
+    };
 private:
 
     QString langID;
@@ -719,7 +724,6 @@ private:
     QPushButton *animationButton;
     QPushButton *progressiveButton;
     QPushButton *bufferSizeControl;
-    int bufferSizeMultiplier;
     QList<QWidget *> disabledWidgets;
     QLabel *buildLabel;
     QLabel *timeLabel;
@@ -818,10 +822,8 @@ private:
     bool pausePlay;
 
     QAction *bufferAction1;
-    QAction *bufferAction1_2;
-    QAction *bufferAction1_4;
-    QAction *bufferAction1_6;
     QAction *bufferActionCustom;
+
     QAction *clearTexturesAction;
     QAction *testCompileGLSLAction;
 
@@ -862,8 +864,13 @@ private:
     
     QPixmap enginePixmap;
     QLabel* engineOverlay;
-
-
+    QFrame *engineFrame;
+    QGridLayout *engineLayout;
+    QPushButton *aspectLock;
+    bool tileSizeFromScreen;
+    bool lockedToWindowSize;
+    bool lockedAspect;
+    double currentAspect;
 };
 }
 } // namespace Fragmentarium

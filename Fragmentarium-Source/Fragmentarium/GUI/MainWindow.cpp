@@ -63,7 +63,6 @@ MainWindow::MainWindow(QWidget* parent)
     bufferXSpinBox = nullptr;
     bufferYSpinBox = nullptr;
     lastStoredTime = 0;
-    bufferSizeMultiplier = 1;
     exrMode = false;
 #ifdef USE_OPEN_EXR
     exrToolsMenu = nullptr;
@@ -98,6 +97,8 @@ MainWindow::MainWindow(QWidget* parent)
     includeWithAutoSave = true;
     playRestartMode = false;
 
+    lockedAspect = false;
+    
     init();
 
     QSettings settings;
@@ -118,6 +119,11 @@ MainWindow::MainWindow(QWidget* parent)
     keyShiftF6->setKey( QKeySequence("Shift+F6"));    // Set the key code
     // connect handler to keypress
     connect(keyShiftF6, SIGNAL(activated()), this, SLOT(slotShortcutShiftF6()));
+
+    lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
+    lockedAspect = settings.value("lockedAspect", false).toBool();
+    currentAspect = settings.value("currentAspect", 1.7777).toDouble();
+    tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
 }
 
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
@@ -339,13 +345,33 @@ void MainWindow::testCompileGLSL()
     getEngine()->testVersions(); 
 }
 
-void MainWindow::bufferSpinBoxChanged(int value)
+void MainWindow::bufferXSpinBoxChanged(int value)
 {
-    Q_UNUSED(value)
-
-    QToolTip::showText(pos()+bufferSizeControl->pos(), tr("Set combobox to 'custom-size' to apply size."), nullptr);
+    if(!lockedToWindowSize) {
+        if(lockedAspect) {
+            bufferYSpinBox->blockSignals(true);
+            bufferYSpinBox->setValue(value/currentAspect);
+            bufferYSpinBox->blockSignals(false);
+        }
+    }
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+            bufferActionChanged(bufferActionCustom);
+    }
 }
 
+void MainWindow::bufferYSpinBoxChanged(int value)
+{
+    if(!lockedToWindowSize) {
+        if(lockedAspect) {
+            bufferXSpinBox->blockSignals(true);
+            bufferXSpinBox->setValue(value*currentAspect);
+            bufferXSpinBox->blockSignals(false);
+        }
+    }
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+            bufferActionChanged(bufferActionCustom);
+    }
+}
 
 bool MainWindow::save()
 {
@@ -632,10 +658,17 @@ void MainWindow::init()
     splitter->setOrientation(Qt::Horizontal);
 
     stackedTextEdits = new QStackedWidget(splitter);
-
-    engine = new DisplayWidget(this, splitter);
+    splitter->addWidget(stackedTextEdits);
+    engineFrame = new QFrame();
+    engineFrame->setFrameStyle(QFrame::StyledPanel);
+    engineLayout = new QGridLayout();
+    engineLayout->setMargin(0);
+    engineFrame->setLayout(engineLayout);
+    engine = new DisplayWidget(this, engineFrame );
     engine->setObjectName(QString::fromUtf8("DisplayWidget"));
-
+    engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    engineLayout->addWidget(engine,1,1,1,1);
+    splitter->addWidget( engineFrame );
     tabBar = new QTabBar(this);
     tabBar->setObjectName(QString::fromUtf8("TabBar"));
     tabBar->setMovable(true);
@@ -753,7 +786,7 @@ void MainWindow::init()
     createMenus();
     renderModeChanged();
 
-initTools();
+    initTools();
 
     highlightBuildButton( !(QSettings().value("autorun", true).toBool()) );
     setupScriptEngine();
@@ -762,6 +795,29 @@ initTools();
     QString styleSheetFile = "file:///"+guiStylesheet;
     if(guiStylesheet.isEmpty()) styleSheetFile = guiStylesheet;
     qApp->setStyleSheet(styleSheetFile);
+    
+    if(!lockedToWindowSize){
+        QSettings settings;
+        int x = settings.value("tilewidth",16).toInt();
+        int y = settings.value("tileheight",9).toInt();
+        bufferSizeControl->blockSignals(true);
+        bufferSizeControl->setText( bufferActionCustom->text() );
+        bufferSizeControl->blockSignals(false);
+        engine->setMaximumSize(QSize(x,y));
+        engine->setMinimumSize(QSize(x,y));
+        
+        bufferXSpinBox->blockSignals(true);
+        bufferYSpinBox->blockSignals(true);
+        bufferXSpinBox->setValue(x);
+        bufferYSpinBox->setValue(y);
+        bufferXSpinBox->blockSignals(false);
+        bufferYSpinBox->blockSignals(false);
+
+        aspectLock->setChecked(lockedAspect);
+        bufferYSpinBox->setEnabled(!lockedToWindowSize);
+        bufferXSpinBox->setEnabled(!lockedToWindowSize);
+        aspectLock->setEnabled(!lockedToWindowSize);
+    }
 }
 
 void MainWindow::initTools()
@@ -1569,6 +1625,16 @@ void MainWindow::tileBasedRender()
         return;
     }
 
+    int tmpX = bufferXSpinBox->value();
+    int tmpY = bufferYSpinBox->value();
+
+    if(tileSizeFromScreen) {
+        QSettings settings;
+        settings.setValue("tilewidth",tmpX);
+        settings.setValue("tileheight",tmpY);
+        settings.sync();
+    }
+    
     OutputDialog od(this);
 retry:
     od.setMaxTime(timeMax);
@@ -1955,6 +2021,10 @@ retry:
         engine->requireRedraw(true);
     }
     engine->clearTileBuffer();
+
+    bufferXSpinBox->setValue(tmpX);
+    bufferYSpinBox->setValue(tmpY);
+    
     engine->updateBuffers();
 
 }
@@ -2088,25 +2158,35 @@ void MainWindow::createToolBars()
     bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
     bufferToolBar->setToolTipDuration(5000);
     bufferXSpinBox = new QSpinBox(bufferToolBar);
-    bufferXSpinBox->setRange(0,8000);
+    bufferXSpinBox->setRange(1,4096);
     bufferXSpinBox->setValue(10);
     bufferXSpinBox->setSingleStep(1);
     bufferXSpinBox->setEnabled(false);
     bufferToolBar->addWidget(bufferXSpinBox);
+    
+    aspectLock = new QPushButton(bufferToolBar);
+    aspectLock->setObjectName("lockbutton");
+    aspectLock->setFlat(true);
+    aspectLock->setStyleSheet("* {background: none; border: none; outline: none;}");
+    aspectLock->setIcon(QIcon(":/Icons/padlockb.png"));
+    aspectLock->setFixedSize(12,18);
+    aspectLock->setCheckable(true);
+    aspectLock->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+    aspectLock->setEnabled(false);
+    connect(aspectLock, SIGNAL(toggled(bool)), this, SLOT(lockAspect(bool)));
+    bufferToolBar->addWidget(aspectLock);
+    
     bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
-    bufferYSpinBox->setRange(0,8000);
+    bufferYSpinBox->setRange(1,4096);
     bufferYSpinBox->setValue(10);
     bufferYSpinBox->setSingleStep(1);
     bufferYSpinBox->setEnabled(false);
-    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
-    connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferSpinBoxChanged(int)));
+    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
+    connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferYSpinBoxChanged(int)));
     bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
     auto *menu = new QMenu();
     bufferAction1 = menu->addAction(tr("Lock to window size"));
-    bufferAction1_2 = menu->addAction(tr("Lock to 1/2 window size"));
-    bufferAction1_4 = menu->addAction(tr("Lock to 1/4 window size"));
-    bufferAction1_6 = menu->addAction(tr("Lock to 1/6 window size"));
     menu->addSeparator();
     bufferActionCustom = menu->addAction(tr("Custom size"));
     bufferSizeControl->setMenu(menu);
@@ -2115,6 +2195,7 @@ void MainWindow::createToolBars()
 
     bufferToolBar->addWidget(bufferYSpinBox);
     bufferToolBar->addWidget(bufferSizeControl);
+
     bufferToolBar->setObjectName(QString::fromUtf8("BufferDimensions"));
 
     renderToolBar = addToolBar(tr("Render Toolbar"));
@@ -2234,25 +2315,25 @@ void MainWindow::setTimeSliderValue(int value)
 
 void MainWindow::bufferActionChanged(QAction *action)
 {
-
-    bool lockedToWindowSize = true;
-    
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
-        bufferSizeMultiplier = 1;
-    } else if (action == bufferAction1_2) {
-        bufferSizeMultiplier = 2;
-    } else if (action == bufferAction1_4) {
-        bufferSizeMultiplier = 4;
-    } else if (action == bufferAction1_6) {
-        bufferSizeMultiplier = 6;
-    } else if (action == bufferActionCustom) { lockedToWindowSize = false;
-        bufferSizeMultiplier = 0;
+        lockedToWindowSize = true;
+        engine->setMaximumSize(4096,4096);
+        engine->setMinimumSize(1,1);
+        bool t = lockedAspect;
+        aspectLock->setChecked(false);
+        lockedAspect = t;
+    } else if (action == bufferActionCustom) { 
+        engine->setMaximumSize(QSize(bufferXSpinBox->value(),bufferYSpinBox->value()));
+        engine->setMinimumSize(QSize(bufferXSpinBox->value(),bufferYSpinBox->value()));
+        lockedToWindowSize = false;
+        aspectLock->setChecked(lockedAspect);
     }
 
     bufferYSpinBox->setEnabled(!lockedToWindowSize);
     bufferXSpinBox->setEnabled(!lockedToWindowSize);
-    
+    aspectLock->setEnabled(!lockedToWindowSize);
+
     engine->updateBuffers();
 }
 
@@ -2460,6 +2541,8 @@ void MainWindow::readSettings()
     supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
+    lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
+
 }
 
 void MainWindow::writeSettings()
@@ -2507,6 +2590,10 @@ void MainWindow::writeSettings()
     settings.setValue("editorTheme", editorTheme);
     settings.setValue("guiStylesheet", guiStylesheet);
 
+    settings.setValue("lockedToWindowSize", lockedToWindowSize);
+    settings.setValue("lockedAspect", lockedAspect);
+    settings.setValue("currentAspect", currentAspect);
+
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
         for (auto &i : tabInfo) {
@@ -2515,6 +2602,12 @@ void MainWindow::writeSettings()
     }
 
     settings.setValue("openFiles", openFiles);
+    
+    if(!lockedToWindowSize){
+        settings.setValue("tilewidth",bufferXSpinBox->value());
+        settings.setValue("tileheight",bufferYSpinBox->value());
+    }
+
     settings.sync();
 
 }
@@ -3521,18 +3614,20 @@ initTools();
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
 {
 
+    if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {
+        return;
+    }
+
     if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY =  bufferYSpinBox->value();
         return;
     }
-    if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {
-        return;
-    }
-    if (bufferSizeMultiplier>0) {
-        // Locked to a fraction of the window size
-        bufferSizeX = w/bufferSizeMultiplier;
-        bufferSizeY = h/bufferSizeMultiplier;
+
+    if (lockedToWindowSize) {
+        // Locked to the window size
+        bufferSizeX = w;
+        bufferSizeY = h;
         bufferXSpinBox->blockSignals(true);
         bufferYSpinBox->blockSignals(true);
         bufferXSpinBox->setValue(bufferSizeX);
@@ -3540,24 +3635,25 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
         bufferXSpinBox->blockSignals(false);
         bufferYSpinBox->blockSignals(false);
         fitWindow = true;
-    } else if (bufferSizeMultiplier<=0) {
+
+    } else if (!lockedToWindowSize) {
         bufferSizeX = bufferXSpinBox->value();
-        bufferSizeY =  bufferYSpinBox->value();
+        bufferSizeY = bufferYSpinBox->value();
 
-        double f = (double)bufferSizeX/(double)w;
-        //bool downsized = false;
-        if (f>1.0) {
-            //downsized = true;
-            bufferSizeX/=f;
-            bufferSizeY/=f;
-        }
-
-        f = (double)bufferSizeY/(double)h;
-        if (f>1.0) {
-            //downsized = true;
-            bufferSizeX/=f;
-            bufferSizeY/=f;
-        }
+//         double f = (double)bufferSizeX/(double)w;
+//         //bool downsized = false;
+//         if (f>1.0) {
+//             //downsized = true;
+//             bufferSizeX/=f;
+//             bufferSizeY/=f;
+//         }
+// 
+//         f = (double)bufferSizeY/(double)h;
+//         if (f>1.0) {
+//             //downsized = true;
+//             bufferSizeX/=f;
+//             bufferSizeY/=f;
+//         }
 
         fitWindow = false;
     }

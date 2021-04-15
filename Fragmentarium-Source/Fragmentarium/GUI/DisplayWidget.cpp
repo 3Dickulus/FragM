@@ -1301,6 +1301,8 @@ void DisplayWidget::makeBuffers()
 
     int w = pixelWidth();
     int h = pixelHeight();
+    
+    mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
 
     if ( bufferSizeX!=0 ) {
         w = bufferSizeX;
@@ -2185,7 +2187,6 @@ void DisplayWidget::paintGL()
 
 void DisplayWidget::updateBuffers()
 {
-
     resizeGL ( 0,0 );
 }
 
@@ -2203,7 +2204,6 @@ void DisplayWidget::updatePerspective()
     if (pixelHeight() == 0 || pixelWidth() == 0) {
         return;
     }
-    mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
     QString infoText = tr("[%1x%2] Aspect=%3")
                        .arg(pixelWidth())
                        .arg(pixelHeight())
