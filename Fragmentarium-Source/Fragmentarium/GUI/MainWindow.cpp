@@ -660,6 +660,7 @@ void MainWindow::init()
     stackedTextEdits = new QStackedWidget(splitter);
     splitter->addWidget(stackedTextEdits);
     engineFrame = new QFrame();
+    engineFrame->setObjectName("engineFrame");
     engineFrame->setFrameStyle(QFrame::StyledPanel);
     engineLayout = new QGridLayout();
     engineLayout->setMargin(0);
@@ -2155,8 +2156,8 @@ void MainWindow::createToolBars()
 
     bufferToolBar = addToolBar(tr("Buffer Dimensions"));
     bufferToolBar->addWidget(new QLabel(tr("Buffer Size. X: "), this));
-    bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
-    bufferToolBar->setToolTipDuration(5000);
+//     bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
+//     bufferToolBar->setToolTipDuration(5000);
     bufferXSpinBox = new QSpinBox(bufferToolBar);
     bufferXSpinBox->setRange(1,4096);
     bufferXSpinBox->setValue(10);
