@@ -7,26 +7,13 @@
 	Info:		Load HDR image and convert to a set of float32 RGB triplet.
 ************************************************************************************/
 
-#include "hdrloader.h"
-
-//#pragma warning( disable : 4244 )
-
 #include <math.h>
 #include <memory.h>
 #include <stdio.h>
 
-typedef unsigned char RGBE[4];
-#define R			0
-#define G			1
-#define B			2
-#define E			3
+#include "hdrloader.h"
 
-#define  MINELEN	8				// minimum scanline length for encoding
-#define  MAXELEN	0x7fff			// maximum scanline length for encoding
-
-static void workOnRGBE(RGBE *scan, int len, float *cols);
-static bool decrunch(RGBE *scanline, int len, FILE *file);
-static bool oldDecrunch(RGBE *scanline, int len, FILE *file);
+//#pragma warning( disable : 4244 )
 
 bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 {
@@ -34,7 +21,7 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 	char str[200];
 	FILE *file;
 
-	file = fopen(fileName, "rb");
+    file = fopen(fileName, "rb");
 	if (!file)
 		return false;
 
@@ -46,7 +33,7 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 
 	fseek(file, 1, SEEK_CUR);
 
-// 	char cmd[200];
+	char cmd[200];
 	i = 0;
 	char c = 0, oldc;
 	while(true) {
@@ -54,7 +41,7 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 		c = fgetc(file);
 		if (c == 0xa && oldc == 0xa)
 			break;
-// 		cmd[i++] = c;
+		cmd[i++] = c;
 	}
 
 	char reso[200];
@@ -98,14 +85,14 @@ bool HDRLoader::load(const char *fileName, HDRLoaderResult &res)
 	return true;
 }
 
-float convertComponent(int expo, int val)
+float HDRLoader::convertComponent(int expo, int val)
 {
-	float v = val / 256.0f;
+	float v = (float) val / 256.0f;
 	float d = (float) pow((float)2.0f, expo);
 	return v * d;
 }
 
-void workOnRGBE(RGBE *scan, int len, float *cols)
+void HDRLoader::workOnRGBE(RGBE *scan, int len, float *cols)
 {
 	while (len-- > 0) {
 		int expo = scan[0][E] - 128;
@@ -117,7 +104,7 @@ void workOnRGBE(RGBE *scan, int len, float *cols)
 	}
 }
 
-bool decrunch(RGBE *scanline, int len, FILE *file)
+bool HDRLoader::decrunch(RGBE *scanline, int len, FILE *file)
 {
 	int  i, j;
 
@@ -160,7 +147,7 @@ bool decrunch(RGBE *scanline, int len, FILE *file)
 	return feof(file) ? false : true;
 }
 
-bool oldDecrunch(RGBE *scanline, int len, FILE *file)
+bool HDRLoader::oldDecrunch(RGBE *scanline, int len, FILE *file)
 {
 	int i;
 	int rshift = 0;

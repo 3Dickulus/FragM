@@ -812,21 +812,21 @@ vec3  backgroundColor(vec3 dir) {
 
 bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint textureID )
 {
-
     HDRLoaderResult result;
     bool loaded = HDRLoader::load ( texturePath.toLocal8Bit().data(), result );
-        int s;
-        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+    int s;
 
-        if (type == GL_SAMPLER_2D && (result.width>s || result.height>s) ) {
-            WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height).arg(s));
-            loaded = false;
-        }
+    glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
 
-        if(type == GL_SAMPLER_CUBE && (result.width>s || result.height != 6*result.width)){
-            WARNING(tr("Loader found HDR image: %1 x %2 is not a cube map!").arg(result.width).arg(result.height));
-            loaded = false;
-        }
+    if (type == GL_SAMPLER_2D && (result.width>s || result.height>s) ) {
+        WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height).arg(s));
+        loaded = false;
+    }
+
+    if(type == GL_SAMPLER_CUBE && (result.width>s || result.height != 6*result.width)){
+        WARNING(tr("Loader found HDR image: %1 x %2 is not a cube map!").arg(result.width).arg(result.height));
+        loaded = false;
+    }
 
     if ( loaded ) {
         glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
@@ -838,10 +838,13 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3] );
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3] );
             glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3] );
-        } else if ( type == GL_TEXTURE_2D ) {
+        } else if ( type == GL_SAMPLER_2D ) {
             glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, &result.cols[0] );
         }
 
+    } else {
+        WARNING(tr("Hdrloader failed: %1").arg(texturePath));
+        return false;
     }
 
     return loaded;
@@ -980,7 +983,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4));
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5));
-        } else {
+        } else if ( type == GL_SAMPLER_2D ) {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, base);
         }
 
@@ -1005,23 +1008,23 @@ bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textu
 
     if(loaded) {
         glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
-    }
 
-    if(type == GL_SAMPLER_CUBE && loaded) {
-        QImage t = im.convertToFormat(QImage::Format_RGBA8888);
+        if(type == GL_SAMPLER_CUBE) {
+            QImage t = im.convertToFormat(QImage::Format_RGBA8888);
 
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 0));
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 1));
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 2));
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 3));
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 4));
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 5));
-    } else if(loaded) {
-        QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits());
-    } else {
-        WARNING("Texture failed to load!");
-        return false;
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 0));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 1));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 2));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 3));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 4));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 5));
+        } else if(type == GL_SAMPLER_2D) {
+            QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits());
+        } else {
+            WARNING("Texture failed to load!");
+            return false;
+        }
     }
     return loaded;
 }
