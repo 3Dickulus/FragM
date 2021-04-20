@@ -39,9 +39,9 @@ void segv_handler(int s)
         "– A reproducible description of the steps that caused the error (if possible).\n"
         "\n"
         "If you have an account at github you can post in <https://github.com/3Dickulus/FragM/issues>\n"
+        "or file a bug report at <https://github.com/3Dickulus/FragM>\n"
         "You can also find discussions about Fragmentarium at <https://fractalforums.org/fragmentarium/17>\n"
-        "or...\n"
-        "You may email errors to 3dickulus at gmail dot com\n";
+        "\n";
     write(2 /* stderr FD */, message, strlen(message));
     abort();
 }
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
         mainWin->loadFragFile(QDir(mainWin->getExamplesDir()).absoluteFilePath("Historical 3D Fractals/Mandelbulb.frag"));
     }
 
-    // needs here on windows or script control gets priority over gui refresh
+    // needed here on windows or script control gets priority over gui refresh
     app->processEvents();
 
     if(parser.isSet("script")) {
@@ -359,17 +359,20 @@ int main(int argc, char *argv[])
                     mainWin->runScript( text );
                 } else {
                     printf("%s",qPrintable(app->translate("main","Script file ") + filename + app->translate("main"," open failed!\n")));
+                    exit(0);
                 }
             } else {
                 printf("%s",qPrintable(app->translate("main","Script file ") + filename + app->translate("main"," does not exist!\n")));
+                exit(0);
             }
         } else {
             printf("%s",qPrintable(app->translate("main","Script file requires .fqs extention!\n")));
+            exit(0);
         }
     } else {
         return app->exec();
     }
-    return 0;
+    exit(0);
 }
 
 
