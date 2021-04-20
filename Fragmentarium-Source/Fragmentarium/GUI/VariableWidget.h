@@ -587,7 +587,7 @@ public:
     QString getValue() ;
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() );
+        return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg(defaultValue).arg(defaultChannelValue.join(";"));
     }
     void reset()
     {
@@ -699,7 +699,7 @@ public:
                   double defaultValue, double min, double max, bool logarithmic );
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( max );
+        return QString ( "%1:%2:%3:%4:%5" ).arg ( group ).arg ( getName() ).arg ( min ).arg (defaultValue).arg ( max );
     }
     virtual QString getValueAsText()
     {
@@ -758,8 +758,9 @@ public:
     virtual QString getUniqueName()
     {
         QString f = QString("[%1 %2]").arg(min.x).arg(min.y);
+        QString d = QString("[%1 %2]").arg(defaultValue.x).arg(defaultValue.y);
         QString t = QString("[%1 %2]").arg(max.x).arg(max.y);
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
     }
 
     virtual QString getValueAsText()
@@ -828,7 +829,12 @@ public:
     /// FloatVariable constructor.
     Float3Widget ( QWidget *parent, QWidget *variableEditor, QString name,
                    glm::dvec3 defaultValue, glm::dvec3 min, glm::dvec3 max, bool logarithmic );
-    virtual QString getUniqueName();
+    virtual QString getUniqueName(){
+        QString f = QString("[%1 %2 %3]").arg(min.x).arg(min.y).arg(min.z);
+        QString d = QString("[%1 %2 %3]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z);
+        QString t = QString("[%1 %2 %3]").arg(max.x).arg(max.y).arg(max.z);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
+    }
     virtual QString getValueAsText()
     {
         int p = FDEC;
@@ -904,7 +910,12 @@ public:
     /// FloatVariable constructor.
     Float4Widget ( QWidget *parent, QWidget *variableEditor, QString name,
                    glm::dvec4 defaultValue, glm::dvec4 min, glm::dvec4 max, bool logarithmic );
-    virtual QString getUniqueName();
+    virtual QString getUniqueName(){
+        QString f = QString("[%1 %2 %3 %4]").arg(min.x).arg(min.y).arg(min.z).arg(min.w);
+        QString d = QString("[%1 %2 %3 %4]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z).arg(defaultValue.w);
+        QString t = QString("[%1 %2 %3 %4]").arg(max.x).arg(max.y).arg(max.z).arg(max.w);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
+    }
     virtual QString getValueAsText()
     {
         int p = FDEC;
@@ -981,7 +992,8 @@ public:
                   glm::dvec3 defaultValue );
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2" ).arg ( group ).arg ( getName() );
+        QString d = QString("[%1 %2 %3]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z);
+        return QString ( "%1:%2:%3" ).arg ( group ).arg ( getName() ).arg(d);
     }
     virtual QString getValueAsText()
     {
@@ -1043,7 +1055,8 @@ public:
                        glm::dvec3 defaultColorValue );
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( max );
+        QString d = QString("[%1 %2 %3]").arg(defaultColorValue.x).arg(defaultColorValue.y).arg(defaultColorValue.z);
+        return QString ( "%1:%2:%3:%4:%5:%6" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( defaultValue ).arg ( max ).arg ( d );
     }
     virtual QString getValueAsText()
     {
@@ -1111,7 +1124,7 @@ public:
                 int defaultValue, int min, int max );
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2:%3:%4" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( max );
+        return QString ( "%1:%2:%3:%4:%5" ).arg ( group ).arg ( getName() ).arg ( min ).arg ( defaultValue ).arg ( max );
     }
     virtual QString getValueAsText()
     {
@@ -1163,7 +1176,7 @@ public:
                  bool defaultValue );
     virtual QString getUniqueName()
     {
-        return QString ( "%1:%2" ).arg ( group ).arg ( getName() );
+        return QString ( "%1:%2:%3" ).arg ( group ).arg ( getName() ).arg ( defaultValue );
     }
     virtual QString getValueAsText()
     {

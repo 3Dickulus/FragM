@@ -403,22 +403,6 @@ void Float3Widget::n3Changed()
     emit(doneChanges());
 }
 
-QString Float3Widget::getUniqueName()
-{
-    if (normalize) {
-        return QString("%1:%2:%3:%4")
-               .arg(group)
-               .arg(getName())
-               .arg("[0 0 0]")
-               .arg("[0 0 0]");
-    }
-
-    QString f = QString("[%1 %2 %3]").arg(min.x).arg(min.y).arg(min.z);
-    QString t = QString("[%1 %2 %3]").arg(max.x).arg(max.y).arg(max.z);
-
-    return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
-}
-
 QString Float3Widget::toString()
 {
     int p = FDEC;
@@ -504,21 +488,6 @@ void Float4Widget::setValue(glm::dvec4 v)
     comboSlider2->setValue(v.y);
     comboSlider3->setValue(v.z);
     comboSlider4->setValue(v.w);
-}
-
-QString Float4Widget::getUniqueName()
-{
-    QString f = QString("[%1 %2 %3 %4]")
-                .arg(min.x)
-                .arg(min.y)
-                .arg(min.z)
-                .arg(min.w);
-    QString t = QString("[%1 %2 %3 %4]")
-                .arg(max.x)
-                .arg(max.y)
-                .arg(max.z)
-                .arg(max.w);
-    return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
 }
 
 QString Float4Widget::toString()

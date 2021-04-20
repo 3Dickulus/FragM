@@ -172,7 +172,7 @@ public:
         GuiParameter(group, name, tooltip), defaultValue(defaultValue), defaultChannel(defaultChannel) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2:%3:%4").arg(group).arg(getName());
+        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(defaultValue).arg(defaultChannel);
     }
     QString getDefaultValue() {
         return defaultValue;
@@ -192,7 +192,7 @@ public:
         GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(from).arg(defaultValue).arg(to);
     }
     double getFrom() {
         return from;
@@ -216,8 +216,9 @@ public:
 
     virtual QString getUniqueName() {
         QString f = QString("[%1 %2]").arg(from.x).arg(from.y);
+        QString d = QString("[%1 %2]").arg(defaultValue.x).arg(defaultValue.y);
         QString t = QString("[%1 %2]").arg(to.x).arg(to.y);
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
     }
     glm::dvec2 getFrom() {
         return from;
@@ -241,8 +242,9 @@ public:
 
     virtual QString getUniqueName() {
         QString f = QString("[%1 %2 %3]").arg(from.x).arg(from.y).arg(from.z);
+        QString d = QString("[%1 %2 %3]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z);
         QString t = QString("[%1 %2 %3]").arg(to.x).arg(to.y).arg(to.z);
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
     }
     glm::dvec3 getFrom() {
         return from;
@@ -266,8 +268,9 @@ public:
 
     virtual QString getUniqueName() {
         QString f = QString("[%1 %2 %3 %4]").arg(from.x).arg(from.y).arg(from.z).arg(from.w);
+        QString d = QString("[%1 %2 %3 %4]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z).arg(defaultValue.w);
         QString t = QString("[%1 %2 %3 %4]").arg(to.x).arg(to.y).arg(to.z).arg(to.w);
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(f).arg(t);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(f).arg(d).arg(t);
     }
     glm::dvec4 getFrom() {
         return from;
@@ -290,7 +293,8 @@ public:
         GuiParameter(group,name, tooltip), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2").arg(group).arg(getName());
+        QString d = QString("[%1 %2 %3]").arg(defaultValue.x).arg(defaultValue.y).arg(defaultValue.z);
+        return QString("%1:%2:%3").arg(group).arg(getName()).arg(d);
     }
     glm::dvec3 getDefaultValue() {
         return defaultValue;
@@ -306,7 +310,9 @@ public:
         GuiParameter(group,name, tooltip), defaultValue(defaultValue), from(from), to(to), defaultColorValue(defaultColorValue) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to);
+        QString d = QString("[%1 %2 %3]").arg(defaultColorValue.x).arg(defaultColorValue.y).arg(defaultColorValue.z);
+        return QString("%1:%2:%3:%4:%5:%6").arg(group).arg(getName()).arg(from).arg(defaultValue).arg(to).arg(d);
+        
     }
     glm::dvec3 getDefaultColorValue() {
         return defaultColorValue;
@@ -333,7 +339,7 @@ public:
         GuiParameter(group, name, tooltip), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2").arg(group).arg(getName());
+        return QString("%1:%2:%3").arg(group).arg(getName()).arg(defaultValue);
     }
     bool getDefaultValue() {
         return defaultValue;
@@ -349,7 +355,7 @@ public:
         GuiParameter(group, name, tooltip), from(from), to(to), defaultValue(defaultValue) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(from).arg(to);
+        return QString("%1:%2:%3:%4:%5").arg(group).arg(getName()).arg(from).arg(defaultValue).arg(to);
     }
     int getFrom() {
         return from;
