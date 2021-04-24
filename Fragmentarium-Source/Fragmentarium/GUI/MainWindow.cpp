@@ -2718,7 +2718,7 @@ void MainWindow::loadFragFile(const QString &fileName)
         engine->setState(DisplayWidget::Progressive);
         bool pp = pausePlay;
         stop();
-        int sfmax = (getSubFrameMax()==0)?1:getSubFrameMax();
+        int sfmax = getSubFrameMax();
         setSubframeMax(1);
 
         if (QSettings().value("autorun", true).toBool()) {
@@ -2972,6 +2972,10 @@ bool MainWindow::initializeFragment()
     
     if (fs.bufferShaderSource != nullptr) {
         variableEditor->substituteLockedVariables(fs.bufferShaderSource);
+    }
+
+    if ( fs.subframeMax != -1 ) {
+        setSubframeMax ( fs.subframeMax );
     }
 
     static int lastTime;

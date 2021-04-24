@@ -224,7 +224,6 @@ public:
     void setCurveSettings ( const QStringList cset );
 
     void updatePerspective();
-    void drawLookatVector();
     void drawSplines();
     void createSplines ( int numberOfControlPoints, int numberOfFrames );
 
@@ -322,15 +321,15 @@ protected:
     void paintEvent ( QPaintEvent * ev ) Q_DECL_OVERRIDE;
     void showEvent ( QShowEvent *ev ) Q_DECL_OVERRIDE;
     void createErrorLineLog( QString message, QString log, LogLevel priority, bool bS );
-    int pixelWidth()
-    {
-        return width() * devicePixelRatio();
-    }
-
-    int pixelHeight()
-    {
-        return height() * devicePixelRatio();
-    }
+//     int pixelWidth()
+//     {
+//         return width() * devicePixelRatio();
+//     }
+// 
+//     int pixelHeight()
+//     {
+//         return height() * devicePixelRatio();
+//     }
 
     /// Actual drawing is implemented here
     void paintGL() Q_DECL_OVERRIDE;

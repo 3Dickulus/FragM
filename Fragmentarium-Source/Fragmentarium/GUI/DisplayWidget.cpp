@@ -295,9 +295,6 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
     iterationsBetweenRedraws = fs.iterationsBetweenRedraws;
-    if ( fs.subframeMax != -1 ) {
-        mainWindow->setSubframeMax ( fs.subframeMax );
-    }
 
     // Camera setup
     if ( fragmentSource.camera == "" ) {
@@ -1302,10 +1299,10 @@ void DisplayWidget::resetCamera(bool fullReset)
 void DisplayWidget::makeBuffers()
 {
 
-    int w = pixelWidth();
-    int h = pixelHeight();
+    int w = width();
+    int h = height();
     
-    mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
+    mainWindow->getBufferSize(w, h, bufferSizeX, bufferSizeY, fitWindow);
 
     if ( bufferSizeX!=0 ) {
         w = bufferSizeX;
@@ -1643,7 +1640,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
 {
 
-    cameraControl->transform(pixelWidth(), pixelHeight()); // -- Modelview + loadIdentity not required?
+    cameraControl->transform(width(), height()); // -- Modelview + loadIdentity not required?
 
     int l = shaderProg->uniformLocation ( "pixelSize" );
 
@@ -1720,7 +1717,6 @@ void DisplayWidget::draw3DHints()
                 glDepthFunc ( GL_LESS );  // closer to eye passes test
             }
             drawSplines();
-            drawLookatVector();
         }
     }
 }
@@ -1787,16 +1783,21 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // finished with the shader
     shaderProgram->release();
 
-    if (cameraControl->getID() == "3D" && subframeCounter <= 2) { // 1= button down 2= button up
-        // draw splines using depth buffer for occlusion... or not
-        draw3DHints();
-        /// copy the depth value @ mouse XY
-        /// when DepthToAlpha = true depth buffer contains 1.0/totalDist
-        /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
-        /// the first case is for EXR alpha channel, the second is for GL occlusion 
-        float zatmxy; // GL y is inverse to Qt screen y
-        glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
-        ZAtMXY = zatmxy;
+    if (cameraControl->getID() == "3D" ) {
+        if(subframeCounter <= 2) { // 1= button down 2= button up
+            /// copy the depth value @ mouse XY
+            /// when DepthToAlpha = true depth buffer contains 1.0/totalDist
+            /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
+            /// the first case is for EXR alpha channel, the second is for GL occlusion
+            float zatmxy; // GL y is inverse to Qt screen y
+            glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
+            ZAtMXY = zatmxy;
+        }
+
+        if(hasKeyFrames) {
+            // draw splines using depth buffer for occlusion... or not
+            draw3DHints();
+        }
     }
 }
 
@@ -1889,7 +1890,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else if (shaderProgram != nullptr) shaderProgram->bind(); // if no buffershader
 
-    setViewPort ( pixelWidth(),pixelHeight() );
+    setViewPort ( width(),height() );
 
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
     glBindTexture ( GL_TEXTURE_2D, previewBuffer->texture() );
@@ -1935,7 +1936,7 @@ void DisplayWidget::clearTileBuffer()
     }
     }
     subframeCounter=0;
-    mainWindow->getBufferSize(pixelWidth(), pixelHeight(), bufferSizeX, bufferSizeY, fitWindow);
+    mainWindow->getBufferSize(width(), height(), bufferSizeX, bufferSizeY, fitWindow);
     makeBuffers();
 }
 
@@ -2133,11 +2134,11 @@ void DisplayWidget::setState(DrawingState state)
 
 void DisplayWidget::paintGL()
 {
-    if ( drawingState == Tiled ) {
+    if ( drawingState == Tiled) {
         return;
     }
 
-    if (pixelHeight() == 0 || pixelWidth() == 0) {
+    if (height() == 0 || width() == 0) {
         return;
     }
 
@@ -2204,13 +2205,13 @@ void DisplayWidget::resizeGL(int /* width */, int /* height */)
 void DisplayWidget::updatePerspective()
 {
 
-    if (pixelHeight() == 0 || pixelWidth() == 0) {
+    if (height() == 0 || width() == 0) {
         return;
     }
     QString infoText = tr("[%1x%2] Aspect=%3")
-                       .arg(pixelWidth())
-                       .arg(pixelHeight())
-                       .arg((double)pixelWidth() / pixelHeight());
+                       .arg(width())
+                       .arg(height())
+                       .arg((double)width() / height());
     mainWindow-> statusBar()->showMessage ( infoText, 5000 );
 }
 
@@ -2509,34 +2510,6 @@ void DisplayWidget::updateEasingCurves(int currentframe)
     }
 }
 
-void DisplayWidget::drawLookatVector()
-{
-    int currentframe = mainWindow->getTime();
-    
-//     glm::dvec3 ec = eyeSpline->getSplinePoint ( currentframe +1);
-//     glm::dvec3 tc = targetSpline->getSplinePoint ( currentframe +1);
-
-    // specify vertex arrays
-    glBindVertexArray( svao );
-
-    int start = mainWindow->getVariableEditor()->getKeyFrameCount() * 2;
-    int count = mainWindow->getFrameMax();
-
-    if(spline_program != nullptr) {
-        spline_program->bind();
-        GLint cloc = spline_program->uniformLocation( "vertex_colour");
-        glUniform1f(spline_program->uniformLocation("pointRadius"), 1.1 );
-
-        if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-        // highlight the source position
-        glDrawArrays(GL_POINTS, start+currentframe, 1 );
-        if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
-        // highlight the target position
-        glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
-        spline_program->release();
-    }
-}
-
 void DisplayWidget::setPerspective()
 {
 
@@ -2669,10 +2642,13 @@ void DisplayWidget::init_arrays()
 
 // XYZ vectors @ control points aligned to upSpline vector
 // option to show vectors for all points vs controlpoints (keyframes) only
-void DisplayWidget::render_splines(int number, double psize)
+void DisplayWidget::render_splines(int numberOfPoints, double psize)
 {
     if(spline_program != nullptr) {
         
+        GLint cloc = spline_program->uniformLocation("vertex_colour");
+        if(cloc == -1) { WARNING("No colour uniform location in spline shader!"); return; }
+            
         // create the VAO.
         glGenVertexArrays( 1, &svao );
         glBindVertexArray( svao );
@@ -2680,8 +2656,6 @@ void DisplayWidget::render_splines(int number, double psize)
         glEnableVertexAttribArray( 0 );
         glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
 
-        GLint cloc = spline_program->uniformLocation("vertex_colour");
-            
         // control point to highlight = currently selected preset keyframe
         int p = mainWindow->getCurrentCtrlPoint();
 
@@ -2702,8 +2676,6 @@ void DisplayWidget::render_splines(int number, double psize)
             glPointParameteri( GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT );
         }
         
-        glPointSize(psize);
-
         spline_program->bind();
 
         glUniform1f(spline_program->uniformLocation("pointScale"), pixel_scale);
@@ -2719,22 +2691,22 @@ void DisplayWidget::render_splines(int number, double psize)
         // specify vertex arrays
         glBindVertexArray( svao );
         
-        if(number == start ) {
+        if(numberOfPoints == start ) {
             count = start; 
             start=0;
         }
 
-        if(start == 0) { // drawing control points one at a time
+        if(start == 0) { // drawing keyframe points one at a time
 
             glm::vec4 c = eyeSpline->controlColor();
 
             for(int i=0;i<count;++i) {
                 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    if(cloc != -1 ) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0);
                 }
                 else {
-                   if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    glUniform4f(cloc, c.x, c.y, c.z, 1.0);
                 }
                 
                 glDrawArrays(GL_POINTS, i, 1 );
@@ -2746,33 +2718,44 @@ void DisplayWidget::render_splines(int number, double psize)
             for(int i=0;i<count;++i) {
 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    if(cloc != -1) glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0);
                 }
                 else {
-                    if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    glUniform4f(cloc, c.x, c.y, c.z, 1.0);
                 }
 
                 glDrawArrays(GL_POINTS, start+i, 1 );
             }
         }
-        else { // drawing path points
+        else {
             // skip the control points
             start *= 2;
+            // highlight lookat vector points for current frame
+            int currentframe = mainWindow->getTime();
+            glUniform1f(spline_program->uniformLocation("pointRadius"), 0.75 );
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            // highlight the camera position
+            glDrawArrays(GL_POINTS, start+currentframe, 1 );
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            // highlight the target position
+            glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
+            // drawing path points
+            glUniform1f(spline_program->uniformLocation("pointRadius"), psize );
             // get the spline color
             glm::vec4 c = eyeSpline->splineColor();
-
-            if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             // render the camera path
             glDrawArrays(GL_POINTS, start, count );
             // skip the control points and camera path points
-            start = start+count; 
+            start = start+count;
             // get the spline color
             c = targetSpline->splineColor();
-            if(cloc != -1) glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            glUniform4f(cloc, c.x, c.y, c.z, 1.0);
             // render the target path
             glDrawArrays(GL_POINTS, start, count );
             
         }
+
         // disable arrays
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
