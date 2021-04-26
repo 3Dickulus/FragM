@@ -122,8 +122,10 @@ MainWindow::MainWindow(QWidget* parent)
 
     lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
     lockedAspect = settings.value("lockedAspect", false).toBool();
+    aspectLock->setChecked(lockedAspect);
     currentAspect = settings.value("currentAspect", 1.7777).toDouble();
     tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
+    
 }
 
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
@@ -660,8 +662,14 @@ void MainWindow::init()
     stackedTextEdits = new QStackedWidget(splitter);
     splitter->addWidget(stackedTextEdits);
     engineFrame = new QFrame();
+    QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+    if(fullScreenEnabled)
+        engineFrame->setMaximumSize(screenGeometry.width(),screenGeometry.height());
+    else
+        engineFrame->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
+
     engineFrame->setObjectName("engineFrame");
-    engineFrame->setFrameStyle(QFrame::StyledPanel);
+    engineFrame->setFrameStyle(QFrame::NoFrame);
     engineLayout = new QGridLayout();
     engineLayout->setMargin(0);
     engineFrame->setLayout(engineLayout);
@@ -804,8 +812,8 @@ void MainWindow::init()
         bufferSizeControl->blockSignals(true);
         bufferSizeControl->setText( bufferActionCustom->text() );
         bufferSizeControl->blockSignals(false);
-        engine->setMaximumSize(QSize(x,y));
-        engine->setMinimumSize(QSize(x,y));
+        engine->setMaximumSize(x,y);
+        engine->setMinimumSize(x,y);
         
         bufferXSpinBox->blockSignals(true);
         bufferYSpinBox->blockSignals(true);
@@ -1080,9 +1088,10 @@ void MainWindow::createOpenGLContextMenu()
 
 void MainWindow::toggleFullScreen()
 {
-
-    if (fullScreenEnabled) {
+    if (fullScreenEnabled) { // it's on so toggle it off
         frameMainWindow->setMargin(4);
+        QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+        engineFrame->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
         showNormal();
         fullScreenEnabled = false;
         fullScreenAction->setChecked(false);
@@ -1090,15 +1099,18 @@ void MainWindow::toggleFullScreen()
         menuBar()->show();
         statusBar()->show();
         tabBar->show();
+        bufferToolBar->show();
     } else {
         frameMainWindow->setMargin(0);
         fullScreenAction->setChecked(true);
         fullScreenEnabled = true;
-
+        bufferToolBar->hide();
         tabBar->hide();
         stackedTextEdits->hide();
         menuBar()->hide();
         statusBar()->hide();
+        QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+        engineFrame->setMaximumSize(screenGeometry.width(),screenGeometry.height());
         showFullScreen();
     }
 }
@@ -2322,13 +2334,13 @@ void MainWindow::bufferActionChanged(QAction *action)
     if (action == bufferAction1) {
         lockedToWindowSize = true;
         engine->setMaximumSize(4096,4096);
-        engine->setMinimumSize(1,1);
+        engine->setMinimumSize(16,16);
         bool t = lockedAspect;
         aspectLock->setChecked(false);
         lockedAspect = t;
     } else if (action == bufferActionCustom) { 
-        engine->setMaximumSize(QSize(bufferXSpinBox->value(),bufferYSpinBox->value()));
-        engine->setMinimumSize(QSize(bufferXSpinBox->value(),bufferYSpinBox->value()));
+        engine->setMaximumSize(bufferXSpinBox->value(),bufferYSpinBox->value());
+        engine->setMinimumSize(bufferXSpinBox->value(),bufferYSpinBox->value());
         lockedToWindowSize = false;
         aspectLock->setChecked(lockedAspect);
     }
