@@ -1298,13 +1298,22 @@ void DisplayWidget::resetCamera(bool fullReset)
 
 void DisplayWidget::makeBuffers()
 {
+    makeCurrent();
 
     int w = width();
     int h = height();
-    
+
     mainWindow->getBufferSize(w, h, bufferSizeX, bufferSizeY, fitWindow);
 
-    if ( bufferSizeX!=0 ) {
+    if(isVisible() && !fitWindow ) {
+        if(drawingState != Tiled) {
+            blockSignals(true);
+            resize(bufferSizeX,bufferSizeY);
+            blockSignals(false);
+        }
+    }
+
+    if ( !fitWindow ) {
         w = bufferSizeX;
         h = bufferSizeY;
     }
@@ -1349,7 +1358,6 @@ void DisplayWidget::makeBuffers()
         backBuffer = nullptr;
     }
 
-    makeCurrent();
 
     QOpenGLFramebufferObjectFormat fbof;
     fbof.setAttachment ( QOpenGLFramebufferObject::Depth );
@@ -1925,7 +1933,6 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
  */
 void DisplayWidget::clearTileBuffer()
 {
-
     if (hiresBuffer != nullptr) {
         bool relcheck = hiresBuffer->release();
         if(relcheck) {
@@ -1936,7 +1943,6 @@ void DisplayWidget::clearTileBuffer()
     }
     }
     subframeCounter=0;
-    mainWindow->getBufferSize(width(), height(), bufferSizeX, bufferSizeY, fitWindow);
     makeBuffers();
 }
 
@@ -2039,7 +2045,6 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                                QProgressDialog *progress, int *steps,
                                QImage *im, const QTime &totalTime)
 {
-
     tiles = tileMax;
     tilesCount = tile;
     padding = pad;
@@ -2057,6 +2062,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
         hiresBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     }
+
     if ( !hiresBuffer->isValid() ) {
       WARNING ( tr("Failed to create hiresBuffer FBO") );
     }
@@ -2073,9 +2079,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                              .arg(time, 8, 'g', 3, QChar(' ')));
 
     for ( int i = 0; i< subframes; i++ ) {
-
         if ( !progress->wasCanceled() ) {
-
             // compute ETA in ms
             int64_t total = progress->maximum();
             int64_t current = *steps;
@@ -2110,9 +2114,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                                     .arg ( i )
                                     .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
-
             ( *steps ) ++;
-
             drawToFrameBufferObject ( hiresBuffer, false );
         }
     }
@@ -2209,9 +2211,9 @@ void DisplayWidget::updatePerspective()
         return;
     }
     QString infoText = tr("[%1x%2] Aspect=%3")
-                       .arg(width())
-                       .arg(height())
-                       .arg((double)width() / height());
+                       .arg(bufferSizeX)
+                       .arg(bufferSizeY)
+                       .arg((double)bufferSizeX / bufferSizeY);
     mainWindow-> statusBar()->showMessage ( infoText, 5000 );
 }
 

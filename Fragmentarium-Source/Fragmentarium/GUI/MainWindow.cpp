@@ -349,30 +349,16 @@ void MainWindow::testCompileGLSL()
 
 void MainWindow::bufferXSpinBoxChanged(int value)
 {
-    if(!lockedToWindowSize) {
-        if(lockedAspect) {
-            bufferYSpinBox->blockSignals(true);
-            bufferYSpinBox->setValue(value/currentAspect);
-            bufferYSpinBox->blockSignals(false);
-        }
-    }
-    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
-            bufferActionChanged(bufferActionCustom);
-    }
+//     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+//             bufferActionChanged(bufferActionCustom);
+//     }
 }
 
 void MainWindow::bufferYSpinBoxChanged(int value)
 {
-    if(!lockedToWindowSize) {
-        if(lockedAspect) {
-            bufferXSpinBox->blockSignals(true);
-            bufferXSpinBox->setValue(value*currentAspect);
-            bufferXSpinBox->blockSignals(false);
-        }
-    }
-    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
-            bufferActionChanged(bufferActionCustom);
-    }
+//     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+//             bufferActionChanged(bufferActionCustom);
+//     }
 }
 
 bool MainWindow::save()
@@ -661,23 +647,21 @@ void MainWindow::init()
 
     stackedTextEdits = new QStackedWidget(splitter);
     splitter->addWidget(stackedTextEdits);
-    engineFrame = new QFrame();
-    QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
-    if(fullScreenEnabled)
-        engineFrame->setMaximumSize(screenGeometry.width(),screenGeometry.height());
-    else
-        engineFrame->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
 
-    engineFrame->setObjectName("engineFrame");
-    engineFrame->setFrameStyle(QFrame::NoFrame);
-    engineLayout = new QGridLayout();
-    engineLayout->setMargin(0);
-    engineFrame->setLayout(engineLayout);
-    engine = new DisplayWidget(this, engineFrame );
+    QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+
+    engine = new DisplayWidget(this, splitter );
+
+    if(fullScreenEnabled)
+        engine->setMaximumSize(screenGeometry.width(),screenGeometry.height());
+    else
+        engine->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
+
     engine->setObjectName(QString::fromUtf8("DisplayWidget"));
+    engine->setMinimumSize(16,16);
     engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    engineLayout->addWidget(engine,1,1,1,1);
-    splitter->addWidget( engineFrame );
+
+    splitter->addWidget( engine );
     tabBar = new QTabBar(this);
     tabBar->setObjectName(QString::fromUtf8("TabBar"));
     tabBar->setMovable(true);
@@ -812,8 +796,6 @@ void MainWindow::init()
         bufferSizeControl->blockSignals(true);
         bufferSizeControl->setText( bufferActionCustom->text() );
         bufferSizeControl->blockSignals(false);
-        engine->setMaximumSize(x,y);
-        engine->setMinimumSize(x,y);
         
         bufferXSpinBox->blockSignals(true);
         bufferYSpinBox->blockSignals(true);
@@ -1088,10 +1070,10 @@ void MainWindow::createOpenGLContextMenu()
 
 void MainWindow::toggleFullScreen()
 {
+        QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
     if (fullScreenEnabled) { // it's on so toggle it off
         frameMainWindow->setMargin(4);
-        QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
-        engineFrame->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
+        engine->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
         showNormal();
         fullScreenEnabled = false;
         fullScreenAction->setChecked(false);
@@ -1109,8 +1091,7 @@ void MainWindow::toggleFullScreen()
         stackedTextEdits->hide();
         menuBar()->hide();
         statusBar()->hide();
-        QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
-        engineFrame->setMaximumSize(screenGeometry.width(),screenGeometry.height());
+        engine->setMaximumSize(screenGeometry.width(),screenGeometry.height());
         showFullScreen();
     }
 }
@@ -1477,8 +1458,10 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
 
                     QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
                     im.fill(Qt::black);
-    // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
-    std::this_thread::sleep_for(std::chrono::microseconds(10000));
+                    
+                    // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
+                    std::this_thread::sleep_for(std::chrono::microseconds(10000));
+                    
                     engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
                     if (padding>0.0)  {
@@ -1492,9 +1475,10 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                     if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
                         cachedTileImages.insert(tile,im);
                     }
+
                     // display scaled tiles
-                    float wScaleFactor = engine->width() / maxTiles;
-                    float hScaleFactor = engine->height() / maxTiles;
+                    float wScaleFactor = enginePixmap.width() / maxTiles;
+                    float hScaleFactor = enginePixmap.height() / maxTiles;
                     int dx = (tile / maxTiles);
                     int dy = (maxTiles-1)-(tile % maxTiles);
                     QRect source ( 0, 0, wScaleFactor, hScaleFactor );
@@ -1882,7 +1866,7 @@ retry:
     // create an overlay using enginePixmap as background
     engineOverlay = new QLabel();
     engineOverlay->setPixmap(enginePixmap);
-
+    
     bool isFirst = true;
 
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
@@ -1948,7 +1932,6 @@ retry:
             imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
         } else
 #endif
-            
         renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
 
         pause ? stop() : play();
@@ -2035,12 +2018,11 @@ retry:
     if (preview || progress.wasCanceled()) {
         engine->requireRedraw(true);
     }
-    engine->clearTileBuffer();
 
     bufferXSpinBox->setValue(tmpX);
     bufferYSpinBox->setValue(tmpY);
-    
-    engine->updateBuffers();
+
+    engine->clearTileBuffer();
 
 }
 
@@ -2333,14 +2315,10 @@ void MainWindow::bufferActionChanged(QAction *action)
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
         lockedToWindowSize = true;
-        engine->setMaximumSize(4096,4096);
-        engine->setMinimumSize(16,16);
         bool t = lockedAspect;
         aspectLock->setChecked(false);
         lockedAspect = t;
     } else if (action == bufferActionCustom) { 
-        engine->setMaximumSize(bufferXSpinBox->value(),bufferYSpinBox->value());
-        engine->setMinimumSize(bufferXSpinBox->value(),bufferYSpinBox->value());
         lockedToWindowSize = false;
         aspectLock->setChecked(lockedAspect);
     }
@@ -2557,6 +2535,7 @@ void MainWindow::readSettings()
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
     lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
+    currentAspect = settings.value("currentAspect", 1.7777).toDouble();
 
 }
 
@@ -3632,10 +3611,11 @@ initTools();
 
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
 {
-
     if (bufferXSpinBox == nullptr || bufferYSpinBox == nullptr) {
         return;
     }
+
+    fitWindow = lockedToWindowSize;
 
     if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
@@ -3647,35 +3627,30 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
         // Locked to the window size
         bufferSizeX = w;
         bufferSizeY = h;
-        bufferXSpinBox->blockSignals(true);
-        bufferYSpinBox->blockSignals(true);
-        bufferXSpinBox->setValue(bufferSizeX);
-        bufferYSpinBox->setValue(bufferSizeY);
-        bufferXSpinBox->blockSignals(false);
-        bufferYSpinBox->blockSignals(false);
-        fitWindow = true;
-
     } else if (!lockedToWindowSize) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY = bufferYSpinBox->value();
-
-//         double f = (double)bufferSizeX/(double)w;
-//         //bool downsized = false;
-//         if (f>1.0) {
-//             //downsized = true;
-//             bufferSizeX/=f;
-//             bufferSizeY/=f;
-//         }
-// 
-//         f = (double)bufferSizeY/(double)h;
-//         if (f>1.0) {
-//             //downsized = true;
-//             bufferSizeX/=f;
-//             bufferSizeY/=f;
-//         }
-
-        fitWindow = false;
+        if(lockedAspect) {
+            double fw = (double)bufferSizeX/(double)w;
+            double fh = (double)bufferSizeY/(double)h;
+            if (fw!=1.0 && h > bufferSizeY/fw) {
+                bufferSizeX = w;
+                bufferSizeY = bufferSizeX/currentAspect;
+            }
+            else
+            if (fh!=1.0 && w > bufferSizeX/fh) {
+                bufferSizeX = bufferSizeY*currentAspect;
+                bufferSizeY = h;
+            }
+        }
     }
+
+    bufferXSpinBox->blockSignals(true);
+    bufferYSpinBox->blockSignals(true);
+    bufferXSpinBox->setValue(bufferSizeX);
+    bufferYSpinBox->setValue(bufferSizeY);
+    bufferXSpinBox->blockSignals(false);
+    bufferYSpinBox->blockSignals(false);
 }
 
 void MainWindow::indent()

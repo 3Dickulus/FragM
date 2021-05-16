@@ -864,8 +864,6 @@ private:
     
     QPixmap enginePixmap;
     QLabel* engineOverlay;
-    QFrame *engineFrame;
-    QGridLayout *engineLayout;
     QPushButton *aspectLock;
     bool tileSizeFromScreen;
     bool lockedToWindowSize;
