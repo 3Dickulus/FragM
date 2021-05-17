@@ -2740,7 +2740,7 @@ void MainWindow::loadFragFile(const QString &fileName)
 }
 
 bool MainWindow::saveFile(const QString &fileName)
-{wrong
+{
 
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
