@@ -349,14 +349,14 @@ void MainWindow::testCompileGLSL()
 
 void MainWindow::bufferXSpinBoxChanged(int value)
 {
-//     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+//     if(engine->getState() == DisplayWidget::Tiled && lockedToWindowSize) {
 //             bufferActionChanged(bufferActionCustom);
 //     }
 }
 
 void MainWindow::bufferYSpinBoxChanged(int value)
 {
-//     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+//     if(engine->getState() == DisplayWidget::Tiled && lockedToWindowSize) {
 //             bufferActionChanged(bufferActionCustom);
 //     }
 }
@@ -1581,8 +1581,8 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
                         out.writeTile (dx, dy);
 
                         // display scaled tiles
-                        float wScaleFactor = engine->width() / maxTiles;
-                        float hScaleFactor = engine->height() / maxTiles;
+                        float wScaleFactor = enginePixmap.width() / maxTiles;
+                        float hScaleFactor = enginePixmap.height() / maxTiles;
                         int dx = (tile / maxTiles);
                         int dy = (maxTiles-1)-(tile % maxTiles);
                         QRect source ( 0, 0, wScaleFactor, hScaleFactor );
@@ -1782,6 +1782,12 @@ retry:
             WARNING(e.getMessage());
         }
     }
+
+    // TODO: when screen aspect and buffer aspect are different clip screen centered buffer sized pixmap
+    // eg: GL area aspect = 16/9 hires render tile aspect = 1/1
+    // symptom1: progress pixmap is distorted in "custom size" mode but hires render has correct size and projection
+    // symptom2: progress pixmap is rendered at screen aspect in "Lock to window size" mode but hires render has correct size with wrong projection
+    // workaround: use "Edit->Preferences->Get render tile size from screen" = checked, and don't change the tile size in the hires render dialog
 
     // before clearing the buffer grab a copy for render progress background
     enginePixmap = engine->grab();
@@ -2023,6 +2029,7 @@ retry:
     bufferYSpinBox->setValue(tmpY);
 
     engine->clearTileBuffer();
+    engine->updateBuffers();
 
 }
 
@@ -2733,7 +2740,7 @@ void MainWindow::loadFragFile(const QString &fileName)
 }
 
 bool MainWindow::saveFile(const QString &fileName)
-{
+{wrong
 
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));

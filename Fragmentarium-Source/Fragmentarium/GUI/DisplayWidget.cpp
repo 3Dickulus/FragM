@@ -1647,19 +1647,18 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 
 void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h)
 {
-
     cameraControl->transform(width(), height()); // -- Modelview + loadIdentity not required?
 
     int l = shaderProg->uniformLocation ( "pixelSize" );
 
     if ( l != -1 ) {
-        shaderProg->setUniformValue ( l, ( float ) ( 1.0/w ), ( float ) ( 1.0/h ) );
+        shaderProg->setUniformValue ( l, 1.0/(float)w , 1.0/(float)h );
     }
     // Only in DepthBufferShader.frag & NODE-Raytracer.frag
     l = shaderProg->uniformLocation ( "globalPixelSize" );
 
     if ( l != -1 ) {
-        shaderProg->setUniformValue ( l, ( ( float ) 1.0/w ), ( ( float ) 1.0/h ) );
+        shaderProg->setUniformValue ( l, 1.0/(float)w , 1.0/(float)h );
     }
 
     l = shaderProg->uniformLocation ( "time" );
@@ -1898,7 +1897,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else if (shaderProgram != nullptr) shaderProgram->bind(); // if no buffershader
 
-    setViewPort ( width(),height() );
+    setViewPort ( bufferSizeX, bufferSizeY );
 
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
     glBindTexture ( GL_TEXTURE_2D, previewBuffer->texture() );
@@ -2524,7 +2523,7 @@ void DisplayWidget::setPerspective()
     cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
     glm::dvec3 up = glm::dvec3(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
 
-    auto aspectRatio = double((double)width() / (double)height());
+    auto aspectRatio = double((double)bufferSizeX / (double)bufferSizeY); 
     double zNear = 0.00001;
     double zFar = 1000.0;
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
