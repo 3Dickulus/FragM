@@ -1,3 +1,4 @@
+#include <thread>
 #include <iostream>
 #include <QShortcut>
 #include <QButtonGroup>
