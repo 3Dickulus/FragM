@@ -65,56 +65,58 @@ INCLUDEPATH+= $$PWD/ \
               $$PWD/SyntopiaCore/Logging \
               $$PWD/SyntopiaCore/Misc
 
-HEADERS += $$PWD/Fragmentarium/GUI/CameraControl.h \
-           $$PWD/ThirdPartyCode/asmbrowser.h \
-           $$PWD/Fragmentarium/GUI/DisplayWidget.h \
-           $$PWD/ThirdPartyCode/Highlighter.h \
-           $$PWD/Fragmentarium/GUI/TextEdit.h \
-           $$PWD/Fragmentarium/GUI/MainWindow.h \
-           $$PWD/Fragmentarium/GUI/VariableEditor.h \
-           $$PWD/Fragmentarium/GUI/VariableWidget.h \
-           $$PWD/ThirdPartyCode/qrangeslider.h \
-           $$PWD/ThirdPartyCode/qdoublerangeslider.h \
-           $$PWD/ThirdPartyCode/EasingAnimation.h \
-           $$PWD/ThirdPartyCode/EasingWindow.h \
-           $$PWD/Fragmentarium/Parser/Preprocessor.h \
-           $$PWD/SyntopiaCore/Exceptions/Exception.h \
-           $$PWD/SyntopiaCore/Logging/ListWidgetLogger.h \
-           $$PWD/SyntopiaCore/Logging/Logging.h \
-           $$PWD/SyntopiaCore/Misc/MiniParser.h \
-           $$PWD/SyntopiaCore/Misc/Misc.h \
-           $$PWD/SyntopiaCore/Misc/Version.h \
-           $$PWD/Fragmentarium/GUI/PreferencesDialog.h \
-           $$PWD/Fragmentarium/GUI/OutputDialog.h \
-           $$PWD/Fragmentarium/GUI/FileManager.h \
-           $$PWD/ThirdPartyCode/hdrloader.h \
-           $$PWD/ThirdPartyCode/QtSpline.h \
-           $$PWD/ThirdPartyCode/Timeline.h \
-           $$PWD/ThirdPartyCode/VideoDialog.h
-
-SOURCES += $$PWD/Fragmentarium/Main.cpp \
-           $$PWD/Fragmentarium/GUI/CameraControl.cpp \
-           $$PWD/ThirdPartyCode/asmbrowser.cpp \
-           $$PWD/Fragmentarium/GUI/DisplayWidget.cpp \
-           $$PWD/Fragmentarium/GUI/TextEdit.cpp \
+HEADERS +=$$PWD/Fragmentarium/GUI/CameraControl.h \
+          $$PWD/Fragmentarium/GUI/TextEdit.h \
+          $$PWD/Fragmentarium/GUI/VariableEditor.h \
+          $$PWD/Fragmentarium/GUI/VariableWidget.h \
+          $$PWD/Fragmentarium/GUI/DisplayWidget.h \
+          $$PWD/Fragmentarium/GUI/MainWindow.h \
+          $$PWD/Fragmentarium/GUI/FileManager.h \
+          $$PWD/Fragmentarium/GUI/OutputDialog.h \
+          $$PWD/Fragmentarium/GUI/PreferencesDialog.h \
+          $$PWD/Fragmentarium/Parser/Preprocessor.h \
+          $$PWD/SyntopiaCore/Exceptions/Exception.h \
+          $$PWD/SyntopiaCore/Logging/ListWidgetLogger.h \
+          $$PWD/SyntopiaCore/Logging/Logging.h \
+          $$PWD/SyntopiaCore/Misc/MiniParser.h \
+          $$PWD/SyntopiaCore/Misc/Misc.h \
+          $$PWD/SyntopiaCore/Misc/Version.h \
+          $$PWD/ThirdPartyCode/EasingAnimation.h \
+          $$PWD/ThirdPartyCode/EasingWindow.h \
+          $$PWD/ThirdPartyCode/QtSpline.h \
+          $$PWD/ThirdPartyCode/VideoDialog.h \
+          $$PWD/ThirdPartyCode/asmbrowser.h \
+          $$PWD/ThirdPartyCode/hdrloader.h \
+          $$PWD/ThirdPartyCode/qdoublerangeslider.h \
+          $$PWD/ThirdPartyCode/qrangeslider.h \
+          $$PWD/ThirdPartyCode/ExpSpinBox.h \
+          $$PWD/ThirdPartyCode/Highlighter.h \
+          $$PWD/ThirdPartyCode/TimeLine.h
+          
+SOURCES += $$PWD/Fragmentarium/GUI/OutputDialog.cpp \
            $$PWD/Fragmentarium/GUI/MainWindow.cpp \
+           $$PWD/Fragmentarium/GUI/FileManager.cpp \
+           $$PWD/Fragmentarium/GUI/TextEdit.cpp \
            $$PWD/Fragmentarium/GUI/VariableEditor.cpp \
            $$PWD/Fragmentarium/GUI/VariableWidget.cpp \
-           $$PWD/ThirdPartyCode/EasingWindow.cpp \
-           $$PWD/ThirdPartyCode/qrangeslider.cpp \
-           $$PWD/ThirdPartyCode/qdoublerangeslider.cpp \
+           $$PWD/Fragmentarium/GUI/CameraControl.cpp \
+           $$PWD/Fragmentarium/GUI/DisplayWidget.cpp \
            $$PWD/Fragmentarium/Parser/Preprocessor.cpp \
+           $$PWD/Fragmentarium/Main.cpp \
            $$PWD/SyntopiaCore/Logging/ListWidgetLogger.cpp \
            $$PWD/SyntopiaCore/Logging/Logging.cpp \
            $$PWD/SyntopiaCore/Misc/MiniParser.cpp \
            $$PWD/SyntopiaCore/Misc/Misc.cpp \
            $$PWD/SyntopiaCore/Misc/Version.cpp \
-           $$PWD/Fragmentarium/GUI/OutputDialog.cpp \
-           $$PWD/Fragmentarium/GUI/FileManager.cpp \
-           $$PWD/ThirdPartyCode/hdrloader.cpp \
            $$PWD/ThirdPartyCode/QtSpline.cpp \
-           $$PWD/ThirdPartyCode/Timeline.cpp \
-           $$PWD/ThirdPartyCode/VideoDialog.cpp
+           $$PWD/ThirdPartyCode/VideoDialog.cpp \
+           $$PWD/ThirdPartyCode/asmbrowser.cpp \
+           $$PWD/ThirdPartyCode/hdrloader.cpp \
+           $$PWD/ThirdPartyCode/qdoublerangeslider.cpp \
+           $$PWD/ThirdPartyCode/qrangeslider.cpp \
+           $$PWD/ThirdPartyCode/EasingWindow.cpp \
+           $$PWD/ThirdPartyCode/ExpSpinBox.cpp \
+           $$PWD/ThirdPartyCode/TimeLine.cpp
 
 FORMS += $$PWD/ThirdPartyCode/EasingDialog.ui \
          $$PWD/Fragmentarium/GUI/OutputDialog.ui \

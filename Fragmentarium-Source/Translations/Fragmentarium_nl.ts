@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="nl" sourcelanguage="en">
+<TS version="2.0" language="nl" sourcelanguage="en">
 <context>
     <name>AsmBrowser</name>
     <message>
@@ -34,7 +34,7 @@
 <context>
     <name>Camera2D</name>
     <message>
-        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+449"/>
+        <location filename="../Fragmentarium/GUI/CameraControl.cpp" line="+454"/>
         <source>Camera: Click on 2D window for key focus. See Help Menu for more.</source>
         <translation>Camera: Klik in het 2D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
@@ -60,7 +60,7 @@
 <context>
     <name>Camera3D</name>
     <message>
-        <location line="-455"/>
+        <location line="-460"/>
         <source>Could not find Eye interface widget</source>
         <translation>Kan het Eye-interfacewidget niet vinden</translation>
     </message>
@@ -85,11 +85,11 @@
         <translation>Camera: Gebruik W/S om te vliegen. 1/3 past de snelheid aan. Q/E rolt. Klik in het 3D-venster voor de focus. Zie het Help-menu voor meer informatie.</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+31"/>
         <location line="+6"/>
         <location line="+6"/>
         <location line="+6"/>
-        <location line="+229"/>
+        <location line="+232"/>
         <source>Step size: %1</source>
         <translation>Stapgrootte: %1</translation>
     </message>
@@ -98,145 +98,121 @@
     <name>EasingDialog</name>
     <message>
         <location filename="../ThirdPartyCode/EasingDialog.ui"/>
-        <location filename="../build/ui_EasingDialog.h" line="+384"/>
         <source>Easing curves</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Path type (view only)</source>
         <translation>Padtype (read-only)</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Line</source>
         <translation>Lijn</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Circle</source>
         <translation>Cirkel</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Properties</source>
         <translation>Eigenschappen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Period</source>
         <translation>Frequentie</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Amplitude</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Overshoot</source>
         <translation>Overschrijding</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Settings</source>
         <translation>Instellingen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Minimum:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>0.0</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Maximum:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>1.0</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value Start</source>
         <translation>Startwaarde</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value Fin</source>
         <translation>Eindwaarde</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frame In</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frame Out</source>
         <translation>Frame Uit</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Loops</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Ping</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Pong</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Total</source>
         <translation>Totaal</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>00000</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Value</source>
         <translation>Waarde</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_EasingDialog.h" line="+1"/>
         <source>Frames</source>
         <translation></translation>
     </message>
@@ -244,7 +220,7 @@
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="../Fragmentarium/GUI/FileManager.cpp" line="+118"/>
+        <location filename="../Fragmentarium/GUI/FileManager.cpp" line="+119"/>
         <source>Tried path: </source>
         <translation>Pad geprobeerd: </translation>
     </message>
@@ -290,12 +266,12 @@
 <context>
     <name>Fragmentarium::GUI::DisplayWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+257"/>
+        <location filename="../Fragmentarium/GUI/DisplayWidget.cpp" line="+254"/>
         <source>Setting display update timer to %1 ms (max %2 FPS).</source>
         <translation>Update-timer van de display ingesteld op %1 ms (max %2 FPS).</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+57"/>
         <source>Unknown camera type: </source>
         <translation>Onbekend cameratype: </translation>
     </message>
@@ -319,12 +295,12 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Front- en backbuffers aangemaakt als </translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-42"/>
         <source>Maximum texture size: %1x%1</source>
         <translation>Maximale textuurgrootte: %1x%1</translation>
     </message>
     <message>
-        <location line="+137"/>
+        <location line="+134"/>
         <source>Asked gpu for %1 mip-map levels.</source>
         <translation>Bij GPU %1 mip-map-levels aangevraagd.</translation>
     </message>
@@ -391,7 +367,22 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation>Fragment shader aangemaakt met waarschuwingen: </translation>
     </message>
     <message>
-        <location line="-1953"/>
+        <location line="-2006"/>
+        <source>Loader found HDR image: %1 x %2 is too large! max %3x%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Loader found HDR image: %1 x %2 is not a cube map!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Hdrloader failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
         <source>Loader found no channels in EXR image: %1</source>
         <translation>Lader heeft geen kanalen gevonden in de EXR-afbeelding: %1</translation>
     </message>
@@ -411,22 +402,22 @@ Geïnitialiseerd als GL_RGBA8</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+925"/>
+        <location line="+938"/>
         <source>Failed to bind hires buffer</source>
         <translation>Kon hiresBuffer niet verbinden</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+189"/>
         <source>Frame:%1/%2 Time:%3</source>
         <translation>Omlijsting:%1/%2 Tijd:%3</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+30"/>
         <source>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Final Size: %2&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Current&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tile: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;             &lt;tr&gt;&lt;td&gt;Avg sec/tile&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;             &lt;/table&gt;</source>
         <translation>&lt;table width=&quot;100%&quot;&gt;             &lt;tr&gt;&lt;td&gt;Totaal&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%1&lt;/td&gt;&lt;td&gt;Uiteindelijke grootte: %2&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Huidige&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;Tegel: %3&lt;/td&gt;&lt;td&gt;Sub: %4&lt;/td&gt;&lt;/tr&gt;            &lt;tr&gt;&lt;td&gt;Gem sec/tegel&lt;/td&gt;&lt;td align=&quot;center&quot;&gt;%5&lt;/td&gt;&lt;td&gt;ETA: %6&lt;/td&gt;&lt;/tr&gt;            &lt;/table&gt;</translation>
     </message>
     <message>
-        <location line="+793"/>
+        <location line="+771"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -484,8 +475,8 @@ Test: </source>
     </message>
     <message>
         <location line="-2167"/>
-        <location line="+502"/>
-        <location line="+1565"/>
+        <location line="+515"/>
+        <location line="+1552"/>
         <source>Could not bind shaders: </source>
         <translation>Kan shaders niet verbinden: </translation>
     </message>
@@ -506,7 +497,7 @@ Test: </source>
         <translation>Gebruik de buffer-define, b.v.: &apos;#buffer RGBA8&apos; </translation>
     </message>
     <message>
-        <location line="+186"/>
+        <location line="+199"/>
         <source>Exrloader found EXR image: %1 is not complete</source>
         <translation>Exrloader heeft EXR-afbeelding gevonden: %1 is niet compleet</translation>
     </message>
@@ -542,12 +533,12 @@ Test: </source>
         <translation>Kan buffer shader niet linken: </translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+109"/>
         <source>FBO Incomplete Error!</source>
         <translation>FBO Incompleet Fout!</translation>
     </message>
     <message>
-        <location line="+437"/>
+        <location line="+440"/>
         <source>Non valid FBO - previewBuffer</source>
         <translation>Ongeldige FBO - previewBuffer</translation>
     </message>
@@ -577,35 +568,35 @@ Test: </source>
         <translation>Kan FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="+1019"/>
+        <location line="+993"/>
         <source>Spline pixel shader failed!</source>
         <translation>Spline-pixelshader is mislukt!</translation>
     </message>
     <message>
-        <location line="-1187"/>
+        <location line="-1165"/>
         <source>No front buffer sampler found in buffer shader. This doesn&apos;t make sense.</source>
         <translation>Geen frontbuffer-sampler gevonden in buffershader. Dit is vreemd.</translation>
     </message>
     <message>
-        <location line="+217"/>
+        <location line="+221"/>
         <source>Failed to release target buffer</source>
         <translation>Kon target buffer niet vrijgeven</translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+46"/>
         <location line="+99"/>
         <source>Failed to bind hiresBuffer FBO</source>
         <translation>Kon hiresBuffer FBO niet verbinden</translation>
     </message>
     <message>
-        <location line="-129"/>
-        <location line="+40"/>
-        <location line="+150"/>
+        <location line="-128"/>
+        <location line="+39"/>
+        <location line="+146"/>
         <source>Failed to release hiresBuffer FBO</source>
         <translation>Kon hiresBuffer FBO niet vrijgeven</translation>
     </message>
     <message>
-        <location line="-957"/>
+        <location line="-964"/>
         <source>Unused sampler uniform: </source>
         <translation>Ongebruikt monstertrekkeruniform: </translation>
     </message>
@@ -615,7 +606,7 @@ Test: </source>
         <translation>Geen shader-hoekpuntshader gevonden!</translation>
     </message>
     <message>
-        <location line="+744"/>
+        <location line="+755"/>
         <location line="+41"/>
         <source>Failed to bind previewBuffer FBO</source>
         <translation>Kon previewBuffer FBO niet verbinden</translation>
@@ -632,7 +623,7 @@ Test: </source>
         <translation>Kon hiresBuffer FBO niet aanmaken</translation>
     </message>
     <message>
-        <location line="+152"/>
+        <location line="+146"/>
         <source>[%1x%2] Aspect=%3</source>
         <translation>[%1x%2] Aspect=%3</translation>
     </message>
@@ -655,7 +646,7 @@ Test: </source>
 <context>
     <name>Fragmentarium::GUI::MainWindow</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+126"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="+136"/>
         <source>Host Preprocessor Commands</source>
         <translation>Host Preprocessor Commandos</translation>
     </message>
@@ -676,12 +667,12 @@ Test: </source>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+2875"/>
+        <location line="+3071"/>
         <source>Unsaved changes</source>
         <translation>Onopgeslagen veranderingen</translation>
     </message>
     <message>
-        <location line="-2820"/>
+        <location line="-3016"/>
         <source>Add Preset</source>
         <translation>Preset toevoegen</translation>
     </message>
@@ -712,43 +703,37 @@ Test: </source>
     </message>
     <message>
         <location line="+7"/>
-        <location line="+75"/>
+        <location line="+81"/>
         <source>Fragment Source (*.frag);;All Files (*.*)</source>
         <translation>Fragment-bron (*.frag);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location line="-31"/>
-        <location line="+1652"/>
-        <source>Set combobox to &apos;custom-size&apos; to apply size.</source>
-        <translation>Stel de combobox in op &apos;custom-size&apos; om de grootte toe te passen.</translation>
-    </message>
-    <message>
-        <location line="-1643"/>
+        <location line="-22"/>
         <location line="+16"/>
-        <location line="+1134"/>
-        <location line="+936"/>
+        <location line="+1275"/>
+        <location line="+972"/>
         <location line="+114"/>
         <location line="+49"/>
         <location line="+77"/>
-        <location line="+392"/>
-        <location line="+169"/>
+        <location line="+405"/>
+        <location line="+168"/>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+10"/>
-        <location line="+139"/>
-        <location line="+84"/>
+        <location line="+113"/>
+        <location line="+79"/>
         <source>No open tab</source>
         <translation>Geen open tab</translation>
     </message>
     <message>
-        <location line="-3116"/>
-        <location line="+1539"/>
-        <location line="+1799"/>
+        <location line="-3274"/>
+        <location line="+1689"/>
+        <location line="+1807"/>
         <source>Save As</source>
         <translation>Opslaan als</translation>
     </message>
     <message>
-        <location line="-3307"/>
+        <location line="-3465"/>
         <source>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Version %1. &lt;/p&gt;</source>
         <translation>&lt;h1&gt;Fragmentarium&lt;/h1&gt;&lt;p&gt;Versie %1. &lt;/p&gt;</translation>
     </message>
@@ -783,7 +768,7 @@ Test: </source>
         <translation>Fragmentarium script-commandos.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+85"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
@@ -824,14 +809,14 @@ Deze optie kan weer worden ingeschakeld in Voorkeuren</translation>
         <translation>Autorun inschakelen</translation>
     </message>
     <message>
-        <location line="+929"/>
+        <location line="+1064"/>
         <source>is too large!
 Must be less than 32769x32769</source>
         <translation>is te groot!
 Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
-        <location line="+802"/>
+        <location line="+832"/>
         <source>Reloaded file: %1</source>
         <translation>Reloaded-bestand: %1</translation>
     </message>
@@ -863,12 +848,12 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Toon voorbewerkte uitvoer in nieuwe tabbladen</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+140"/>
         <source>Available image formats: </source>
         <translation>Beschikbare afbeeldingsformaten: </translation>
     </message>
     <message>
-        <location line="+228"/>
+        <location line="+232"/>
         <source>// Cannot read file %1:
 // %2
 </source>
@@ -877,12 +862,62 @@ Moet minder zijn dan 32769x32769</translation>
 </translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="-264"/>
         <source>Failed to resolve OpenGL functions required to enable AsmBrowser</source>
         <translation>Kan OpenGl-functies niet herkennen die benodigd zijn om de AsmBrowser in te kunnen schakelen</translation>
     </message>
     <message>
-        <location line="-2426"/>
+        <location line="-2479"/>
+        <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, IÃ±igo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+417"/>
+        <source>EXR Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>GLSL Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+66"/>
+        <source>GIMP gradients (*.ggr);;All Files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Read GIMP Gradient</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Fragments (*.frag);;All Files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Write GLSL Fragment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Do you want to execute this command?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Command executed successfully!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Execute command Failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+101"/>
         <source>Fullscreen (ESC key toggles)</source>
         <translation>Volledig scherm (aan-/uitschakelen met ESC-toets)</translation>
     </message>
@@ -923,12 +958,12 @@ Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+2801"/>
+        <location line="+2833"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location line="-2800"/>
+        <location line="-2832"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1068,12 +1103,12 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location line="-840"/>
+        <location line="-972"/>
         <source>2D Texture Options</source>
         <translation>2D-textuuropties</translation>
     </message>
     <message>
-        <location line="+301"/>
+        <location line="+307"/>
         <source>&lt;p&gt;Notice: the 3D view must have keyboard focus!&lt;/p&gt;&lt;h2&gt;2D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Left mousebutton: translate center.&lt;/li&gt;&lt;li&gt;Right mousebutton: zoom.&lt;/li&gt;&lt;li&gt;Wheel: zoom&lt;/li&gt;&lt;li&gt;A/D: left/right&lt;/li&gt;&lt;li&gt;W/S: up/down&lt;/li&gt;&lt;li&gt;Q/E: zoom in/out&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;3D&lt;/h2&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Shift+Right mouse button: shows menus when in fullscreen mode.&lt;/li&gt;&lt;li&gt;Left mouse button: change camera direction.&lt;/li&gt;&lt;li&gt;Right mouse button: move camera in screen plane.&lt;/li&gt;&lt;li&gt;Left+Right mouse button: zoom.&lt;/li&gt;&lt;li&gt;Shift+Left mouse button: rotate object (around origin).&lt;/li&gt;&lt;li&gt;Shift+Alt+Left mouse button: rotate object (around target).&lt;/li&gt;&lt;li&gt;Shift+Tilde (~) resets the view to look through origin (0,0,0)&lt;/li&gt;&lt;li&gt;Wheel: Move forward/backward&lt;/li&gt;&lt;li&gt;W/S: move forward/back.&lt;/li&gt;&lt;li&gt;A/D: move left/right.&lt;/li&gt;&lt;li&gt;Q/E: roll&lt;/li&gt;&lt;li&gt;1/3: increase/decrease step size x2&lt;/li&gt;&lt;li&gt;2: increase/decrease step size x10&lt;/li&gt;&lt;li&gt;Shift+Wheel: change step size&lt;/li&gt;&lt;li&gt;T/G: move up/down.&lt;/li&gt;&lt;li&gt;R/F: yaw&lt;/li&gt;&lt;li&gt;Y/H: pitch&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;h2&gt;Sliders&lt;/h2&gt;&lt;p&gt;When a (float) slider recieves a Right Mouse Button Click it opens an input dialog to set the step size.&lt;br&gt;&lt;b&gt;F7 Key&lt;/b&gt; opens the easing curve editor for the currently selected slider.&lt;/p&gt;</source>
         <translation>&lt;p&gt; Opmerking: de 3D-weergave moet toetsenbordfocus hebben! &lt;/p&gt; &lt;h2&gt; 2D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Linkermuisknop: Vertaal midden. &lt;/li&gt; &lt;li&gt; Rechter muisknop: zoom. &lt;/li&gt; &lt;li&gt; Wiel: zoom &lt;/li&gt; &lt;li&gt; A / D: links / rechts &lt;/li&gt; &lt;li&gt; W / S: omhoog / omlaag &lt;/li&gt; &lt;li&gt; Q / E : inzoomen / uitzoomen &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; 3D &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; Shift + rechtermuisknop: toont menu&apos;s in de modus voor volledig scherm. &lt;/li &gt; &lt;li&gt; Linkermuisknop: wijzig de camerarichting. &lt;/li&gt; &lt;li&gt; Rechter muisknop: verplaats de camera in het schermvlak. &lt;/li&gt; &lt;li&gt; Linkermuisknop + zoomknop &lt;/li&gt; &lt;li &gt; Shift + linkermuisknop: object roteren (rond oorsprong). &lt;/Li&gt; &lt;li&gt; Shift + Alt + linkermuisknop: object roteren (rond doel). &lt;/Li&gt; &lt;li&gt; Shift + Tilde (~) stelt opnieuw in het uitzicht om door de oorsprong te kijken (0,0,0) &lt;/li&gt; &lt;li&gt; Wiel: vooruit / achteruit gaan &lt;/li&gt; &lt;li&gt; W / S: vooruit / achteruit gaan. &lt;/li&gt; &lt;li&gt; A / D: beweeg links / rechts. &lt;/Li&gt; &lt;li&gt; Q / E: rol &lt;/li&gt; &lt;li&gt; 1/3: verhoog / verlaag stapgrootte x2 &lt;/li&gt; &lt;li&gt; 2: verhoog / verlaag stap size x10 &lt;/li&gt; &lt;li&gt; Shift + Wheel: verander stapgrootte &lt;/li&gt; &lt;li&gt; T / G: beweeg omhoog / omlaag. &lt;/li&gt; &lt;li&gt; R / F: yaw &lt;/li&gt; &lt;li &gt; Y / H: toonhoogte &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt; &lt;h2&gt; Sliders &lt;/h2&gt; &lt;p&gt; Wanneer een (float) -schuifregelaar een rechtermuisknop krijgt Klik op om een ​​invoerdialoog te openen om de stapgrootte in te stellen. &lt;br&gt; &lt;b&gt; F7-toets &lt;/b&gt; opent de easing-curve editor voor de momenteel geselecteerde schuifregelaar. &lt;/p&gt;</translation>
     </message>
@@ -1083,17 +1118,7 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>&lt;h2&gt; Opdrachten voor afbeeldingen en animatiedialogen &lt;/h2&gt; &lt;p&gt; &lt;ul&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimationLength (int); &lt;/b&gt; &lt;/li&gt; Stelt de totale duur van de animatie in seconden in. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileWidth (int); &lt;/b&gt; &lt;/li&gt; &lt;li&gt; &lt;b&gt; void setTileHeight (int); &lt;/b&gt; &lt;/li&gt; stelt de tegel in breedte en hoogte. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setTileMax (int); &lt;/b&gt; &lt;/li&gt; Stelt het aantal rij- en kolomtegels in, deze waarde in het kwadraat = totale tegels. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setSubFrames (int); &lt;/b&gt; &lt;/li&gt; Stelt het aantal te verzamelen frames in. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setOutputBaseFileName (String) ; &lt;/b&gt; &lt;/li&gt; Stelt de bestandsnaam in voor de opgeslagen afbeelding, &lt;br&gt; als het script de volledige controle heeft, moet dit door het script voor elk frame worden ingesteld, en - als animatie frag bestandinstellingen, keyframes enz. gebruikt, dan hoeft dit slechts één keer te worden ingesteld om basename te gebruiken en voegt Fragmentarium een ​​met 5  cijfers opgevulde index toe. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setFps (int); &lt;/b&gt; &lt;/li&gt; Stelt de frames per seconde voor rendering. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setStartFrame (int); &lt;/b&gt; &lt;/li&gt; Stelt het startframe-nummer in voor het weergeven van een reeks frames. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setEndFrame (int); &lt;/b&gt; &lt;/li&gt; Stelt het eindframenummer in voor het renderen van een reeks frames. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAnimation ( bool); &lt;/b&gt; &lt;/li&gt; FALSE zet alleen de animatie van het script in. &lt;br&gt; TRUE maakt controle mogelijk vanuit hoofdframes en verlichte curven. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setPreview (bool); &lt;/b&gt; &lt;/li&gt; TRUE geeft een voorbeeld van frames in een venster op het bureaublad in plaats van het opslaan van afbeeldingsbestanden. &lt;br&gt; WAARSCHUWING !!! dit opent een venster VOOR ELK FRAME en sluit het wanneer het volgende klaar is voor weergave. &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setAutoSave (bool); &lt;/b&gt; &lt;/li&gt; TRUE zal opslaan bestanden in de submap. &lt;br&gt; FALSE gebruikt het pad ingesteld door setOutputBaseFileName (String) &lt;/p&gt; &lt;p&gt; &lt;li&gt; &lt;b&gt; void setUniqueID (bool); &lt;/b&gt; &lt;/li&gt; doet hetzelfde als &quot;Voeg een unieke ID toe aan de bestandsnaam&quot; in de HiResolution- en animatiedialoog. &lt;br&gt; &lt;/p&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+241"/>
-        <source>EXR &amp;Tools</source>
-        <translation>EXR &amp;Tools</translation>
-    </message>
-    <message>
-        <location line="+30"/>
-        <source>Unable to locate OpenEXR binaries !!!</source>
-        <translation>Kon geen OpenEXR binaries vinden !!!</translation>
-    </message>
-    <message>
-        <location line="+169"/>
+        <location line="+566"/>
         <source>&amp;Reload...</source>
         <translation>&amp;Verversen...</translation>
     </message>
@@ -1362,24 +1387,18 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>&amp;Voorbeelden</translation>
     </message>
     <message>
-        <location line="-397"/>
-        <location line="+444"/>
+        <location line="+47"/>
         <source>Unable to locate: </source>
         <translation>Kan niet vinden: </translation>
     </message>
     <message>
-        <location line="-1019"/>
-        <location line="+2875"/>
+        <location line="-1151"/>
+        <location line="+3071"/>
         <source>Continue</source>
         <translation>Doorgaan met</translation>
     </message>
     <message>
-        <location line="-2677"/>
-        <source>&lt;p&gt;An integrated environment for exploring GPU pixel graphics. &lt;/p&gt;&lt;p&gt;Created by Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licensed and distributed under the LPGL or GPL license.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Notice&lt;/b&gt;: some fragment (GLSL) shaders are copyright by other authors, and may carry other licenses. Please check the fragment file header before redistributing.&lt;h1&gt;Acknowledgement&lt;/h1&gt;&lt;p&gt;Much of the inspiration and formulas for Fragmentarium came from the community at &lt;a href=http://www.fractalforums.com&gt;FractalForums.com&lt;/a&gt;, including Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, and others. Special thanks goes out to Knighty and Kali for their great fragments and claude for all his help with improvements. All fragments should include information about their origins - please notify me, if I made any mis-attributions.&lt;/p&gt;&lt;p&gt;The icons used are part of the &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is built using the &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Translations by Fractal Forums users&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russian&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;German&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Dutch&lt;/td&gt;&lt;td align=center&gt;Sabine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Een geïntegreerde omgeving voor het verkennen van pixel-graphics. &lt;/p&gt;&lt;p&gt;Door Mikael Hvidtfeldt Christensen.&lt;br /&gt;Licentie en verspreiding onder LPGL-of GPL-licentie.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Aantekening&lt;/b&gt;: sommige fragment-(GLSL)shaders hebben copyright bij andere auteurs, en kunnen andere licenties hebben. Check alstublieft de fragment-bestandsheader voorafgaande aan verspreiding.&lt;h1&gt;Dankwoord&lt;/h1&gt;&lt;p&gt;Een groot deel van de inspiratie en formules is te danken aan de community van &lt;a href=http://www.fractalforums.com&gt;Fractal Forums&lt;/a&gt;, onder meer Tom Beddard, Jan Kadlec, Iñigo Quilez, Buddhi, Jesse, en anderen. Bijzondere dank  gaat naar Knighty en Kali  voor hun  geweldige fragments en claude voor al zijn hulp bij verbeteringen.. Allefragments zouden informatie moeten bevatten over hun oorsprong - waarschuw mij alstublieft als ik daarin een verkeerde toekenning heb gedaan.&lt;/p&gt;&lt;p&gt;De gebruikte icons zijn deel van het &lt;a href=&quot;http://www.everaldo.com/crystal/&quot;&gt;Everaldo: Crystal&lt;/a&gt; project. &lt;/p&gt;&lt;p&gt;Fragmentarium is geprogrammeerd onder gebruikmaking van &lt;a href=&quot;http://trolltech.com/developer/downloads/qt/index&quot;&gt;Qt cross-platform GUI framework&lt;/a&gt;. &lt;/p&gt;&lt;/p&gt;&lt;p&gt;&lt;table cellspacing=20&gt;&lt;th colspan=2 align=left&gt;Vertalingen door Fractal Forums-gebruikers&lt;/th&gt;&lt;tr&gt;&lt;td&gt;Russiisch&lt;/td&gt;&lt;td align=center&gt;SCORPION&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Russisch&lt;/td&gt;&lt;td align=center&gt;Crist-JRoger&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Duits&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Nederlands&lt;/td&gt;&lt;td align=center&gt;Sabine62&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location line="+779"/>
+        <location line="-1962"/>
         <source>Windows</source>
         <translation>ramen</translation>
     </message>
@@ -1389,12 +1408,12 @@ Moet minder zijn dan 32769x32769</translation>
         <translation>&amp;Helpen</translation>
     </message>
     <message>
-        <location line="+283"/>
+        <location line="+288"/>
         <source>Build the fragment first!</source>
         <translation>Bouw eerst het fragment!</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+57"/>
         <source>// Output generated from file: </source>
         <translation>// Output gegenereerd van bestand: </translation>
     </message>
@@ -1415,17 +1434,17 @@ Moet minder zijn dan 32769x32769</translation>
         <location line="+5"/>
         <location line="+19"/>
         <location line="+5"/>
-        <location line="+312"/>
+        <location line="+321"/>
         <location line="+20"/>
-        <location line="+543"/>
+        <location line="+570"/>
         <location line="+69"/>
-        <location line="+1159"/>
+        <location line="+1140"/>
         <location line="+22"/>
         <source>Fragmentarium</source>
         <translation>Fragmentarium</translation>
     </message>
     <message>
-        <location line="-2188"/>
+        <location line="-2205"/>
         <source>Could not create directory %1:
 .</source>
         <translation>Kan folder niet aanmaken %1:
@@ -1433,15 +1452,15 @@ Moet minder zijn dan 32769x32769</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+367"/>
-        <location line="+633"/>
+        <location line="+376"/>
+        <location line="+660"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Kan bestand niet schrijven %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-960"/>
+        <location line="-996"/>
         <source>Saved fragment + settings as: </source>
         <translation>Fragment en instellingen opgeslagen als: </translation>
     </message>
@@ -1456,15 +1475,15 @@ Moet minder zijn dan 32769x32769</translation>
 &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location line="-1409"/>
-        <location line="+2874"/>
+        <location line="-1556"/>
+        <location line="+3070"/>
         <source>There are unsaved changes.
 %1
 Continue will discard changes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2873"/>
+        <location line="-3069"/>
         <source>
 Tip: Update easing curves in preset
 and save to file before closing.
@@ -1472,7 +1491,7 @@ and save to file before closing.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+663"/>
+        <location line="+792"/>
         <source>This is your first run of Fragmentarium.
 Please read this:
 
@@ -1495,7 +1514,7 @@ Lees dit alstublieft:
 </translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+160"/>
         <source>Compile &amp;GLSL</source>
         <translation>Compileren &amp;GLSL</translation>
     </message>
@@ -1515,14 +1534,14 @@ Lees dit alstublieft:
         <translation>Groep naar preset</translation>
     </message>
     <message>
-        <location line="+412"/>
+        <location line="+427"/>
         <location line="+24"/>
         <source>Could not remove existing:
 &apos;%1&apos;</source>
         <translation>Kon bestaand:  &apos;%1 &apos; niet verwijderen</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+51"/>
         <source>Do you want to try again?</source>
         <translation>Wilt u het nog een keer proberen?</translation>
     </message>
@@ -1537,18 +1556,18 @@ Lees dit alstublieft:
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location line="+158"/>
-        <location line="+42"/>
+        <location line="+157"/>
+        <location line="+46"/>
         <source>Saved file : </source>
         <translation>Opgeslagen bestand: </translation>
     </message>
     <message>
-        <location line="-40"/>
+        <location line="-44"/>
         <source>Save file failed! : </source>
         <translation>Bestand opslaan mislukt! : </translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+33"/>
         <source>Images (</source>
         <translation>Afbeeldingen (</translation>
     </message>
@@ -1580,8 +1599,8 @@ Lees dit alstublieft:
     </message>
     <message>
         <location line="+13"/>
-        <location line="+502"/>
-        <location line="+1292"/>
+        <location line="+529"/>
+        <location line="+1273"/>
         <location line="+198"/>
         <source>Cannot read file %1:
 %2.</source>
@@ -1589,7 +1608,7 @@ Lees dit alstublieft:
 %2.</translation>
     </message>
     <message>
-        <location line="-1985"/>
+        <location line="-1993"/>
         <source>Settings loaded from file</source>
         <translation>Instellingen geladen uit bestand</translation>
     </message>
@@ -1619,7 +1638,7 @@ Lees dit alstublieft:
         <translation>Buffer-Grootte. X: </translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+22"/>
         <source>Y: </source>
         <translation>Y: </translation>
     </message>
@@ -1630,27 +1649,12 @@ Lees dit alstublieft:
         <translation>Vergrendelen naar venstergrootte</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Lock to 1/2 window size</source>
-        <translation>Vergrendelen naar 1/2 venstergrootte</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Lock to 1/4 window size</source>
-        <translation>Vergrendelen naar 1/4 venstergrootte</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Lock to 1/6 window size</source>
-        <translation>Vergrendelen naar 1/6 venstergrootte</translation>
-    </message>
-    <message>
         <location line="+2"/>
         <source>Custom size</source>
         <translation>Aangepaste grootte</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>Render Toolbar</source>
         <translation>Werkbalk Render</translation>
     </message>
@@ -1740,7 +1744,7 @@ Lees dit alstublieft:
         <translation>Tijd: 0s </translation>
     </message>
     <message>
-        <location line="+155"/>
+        <location line="+151"/>
         <source>Stopping: last stored time set to</source>
         <translation>Stopt: laatst opgeslagen tijd ingesteld op</translation>
     </message>
@@ -1760,7 +1764,7 @@ Lees dit alstublieft:
         <translation>Klaar</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+110"/>
         <source>No data!</source>
         <translation>Geen data!</translation>
     </message>
@@ -1824,7 +1828,7 @@ Wil je het opnieuw laden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+28"/>
         <source>Not a runnable fragment.</source>
         <translation>Geen uitvoerbaar fragment.</translation>
     </message>
@@ -1839,7 +1843,7 @@ Wil je het opnieuw laden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+65"/>
         <source>Compiled script in %1 ms.</source>
         <translation>Script gecompileerd in %1 ms.</translation>
     </message>
@@ -1870,17 +1874,17 @@ Wil je het opnieuw laden?</translation>
     </message>
     <message>
         <location line="+27"/>
-        <location line="+979"/>
+        <location line="+947"/>
         <source>Loaded file: %1</source>
         <translation>Bestand geladen: %1</translation>
     </message>
     <message>
-        <location line="-971"/>
+        <location line="-939"/>
         <source>Unnamed</source>
         <translation>Naamloos</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+72"/>
         <source>Auto run is disabled! You must select &quot;Build&quot; and apply a preset.</source>
         <translation>Autorun is uitgeschakeld! U moet &quot;Build&quot; selecteren en een preset toepassen.</translation>
     </message>
@@ -1890,7 +1894,7 @@ Wil je het opnieuw laden?</translation>
         <translation>Wanneer de preset vergrendelde variabelen verandert is &quot;Build&quot; opnieuw vereist.</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+35"/>
         <source>
 To keep Easing curves you must
 add a preset named &quot;Range&quot;
@@ -1898,7 +1902,7 @@ and save before closing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+894"/>
+        <location line="+862"/>
         <source>CMD Script (*.fqs);;All Files (*.*)</source>
         <translation>Cmd Script (*.fqs);;Alle bestanden (*.*)</translation>
     </message>
@@ -1908,13 +1912,13 @@ and save before closing!</source>
         <translation>Bindend opdrachtscript aan F6-toets</translation>
     </message>
     <message>
-        <location line="-3769"/>
-        <location line="+2875"/>
+        <location line="-3933"/>
+        <location line="+3071"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+45"/>
         <location line="+10"/>
         <location line="+10"/>
         <source>Launching web browser...</source>
@@ -1989,7 +1993,7 @@ and save before closing!</source>
         <translation>Moet een .frag- of .fragparams-bestand zijn.</translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+314"/>
         <source>#endpreset not found!</source>
         <translation>#endpreset niet gevonden!</translation>
     </message>
@@ -2104,7 +2108,7 @@ and save before closing!</source>
         <translation>Logbestand (*.log);;Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+48"/>
         <location line="+12"/>
         <source>Stylesheet (*.qss);;All Files (*.*)</source>
         <translation>Stylesheet (*.qss);;All Files (*.*)</translation>
@@ -2113,7 +2117,7 @@ and save before closing!</source>
 <context>
     <name>Fragmentarium::GUI::SamplerWidget</name>
     <message>
-        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+861"/>
+        <location filename="../Fragmentarium/GUI/VariableWidget.cpp" line="+830"/>
         <source>Read channel list from %1 FAILED!</source>
         <translation>Kanaal-lijst lezen van %1 MISLUKT!</translation>
     </message>
@@ -2444,121 +2448,101 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <name>OutputDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/OutputDialog.ui"/>
-        <location filename="../build/ui_OutputDialog.h" line="+349"/>
         <source>High Resolution and Animation Render</source>
         <translation>Hoge-resolutie- en animatie-render</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Number of subframes (for progressive rendering):</source>
         <translation>Aantal subframes (voor progressief renderen):</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+11"/>
         <source>Filename:</source>
         <translation>Bestandsnaam:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="-10"/>
         <source>Animation</source>
         <translation>Animatie</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+8"/>
         <source>Total Frames:</source>
         <translation>Totaal aantal frames:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="-6"/>
         <source>End Frame:</source>
         <translation>Endframe:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Maximum length in seconds:</source>
         <translation>Maximale lengte in seconden:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+4"/>
         <source>File</source>
         <translation>Bestand</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="-15"/>
         <source>Padding 0%: (resulting size: nnn x nnn pixels - nnn MegaPixel):</source>
         <translation>Padding 0%: (Uiteindelijke grootte: nnn x nnn pixels - nnn MegaPixel):</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+5"/>
         <source>Start Frame:</source>
         <translation>Startframe:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>FPS:</source>
         <translation>FPS:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+9"/>
         <source>Add unique ID to name ()</source>
         <translation>Voeg unieke ID toe aan naam ()</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+1"/>
         <source>Autosave fragment (as [ImageOutputName].frag)</source>
         <translation>Automatisch opslaan van fragment (als [ImageOutputName].frag)</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="-4"/>
         <source>Preview frame in window</source>
         <translation>Voorbeeldframe in venster</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="-14"/>
         <source>Render tiles: (2x2 - 1630x1920 pixels - 3.1 MPixel):</source>
         <translation>Render tegels: (2x2 - 1630x1920 pixels - 3.1 MPixel):</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>Tile width:</source>
         <translation>Tegelbreedte:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+1"/>
         <source>Tile height:</source>
         <translation>Tegelhoogte:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+7"/>
         <source>Set in Preferences.</source>
         <translation>Instellen in Voorkeuren.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+10"/>
         <source>Copies all used texture files into the fragment folder.</source>
         <translation>Slaat alle gebruikte textuur-bestanden op in de fragment-map.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_OutputDialog.h" line="+2"/>
         <source>Save texture files</source>
         <translation>Sla textuurbestanden op</translation>
     </message>
@@ -2567,298 +2551,256 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <name>PreferencesDialog</name>
     <message>
         <location filename="../Fragmentarium/GUI/PreferencesDialog.ui"/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+488"/>
         <source>Preferences</source>
         <translation>Voorkeuren</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+53"/>
         <source>For compatibility with some GPU&apos;s.</source>
         <translation>Voor de compatibiliteit met sommige GPUs.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Move main() to end</source>
         <translation>Verplaats main() naar het einde</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+7"/>
         <source>Disabling this might make debugging easier.</source>
         <translation>Wanneer u dit uitschakelt kan dat het debuggen eenvoudiger maken.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Autorun On Load</source>
         <translation>Automatisch starten bij laden</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-58"/>
         <source>Some engines use non GL matrices.</source>
         <translation>Sommige machines gebruiken non-GL matrices.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Draw spline paths for camera and target</source>
         <translation>Teken spline-paden voor camera en doel</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-5"/>
         <source>Spline Occlusion</source>
         <translation>Spline-occlusie</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+44"/>
         <source>Enabling this might be helpful when debugging.</source>
         <translation>Wanneer u dit inschakelt kan dat het debuggen eenvoudiger maken.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+12"/>
         <source>Presets contain easing curve settings</source>
         <translation>Presets bevatten instellingen voor easing curves</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Locked uniforms use #define or const</source>
         <translation>Vergendelde uniforms gebruiken #define of const</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-32"/>
         <source>OpenGL refresh rate (in milliseconds)</source>
         <translation>OpenGL refresh rate (in milliseconden)</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+28"/>
         <source>Animation frame rate (in frames per second)</source>
         <translation>Animatie-framerate (in frames per seconde)</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-26"/>
         <source>Include paths:</source>
         <translation>Include-paden:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Examples/Include;</source>
         <translation>Examples/Include;</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+14"/>
         <source>font: 9pt Courier;</source>
         <translation>font: 9pt Courier;</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+4"/>
         <source>Add line numbers to the editing window.</source>
         <translation>Voeg regelnummers toe aan het bewerkingsvenster.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-47"/>
         <source>Loop animation</source>
         <translation>Loop animatie</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+17"/>
+        <source>GLSL tools paths:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Log File Size</source>
         <translation>Log bestandsgrootte</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>K</source>
         <translation>K</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Log File Path</source>
         <translation>Log bestandspad</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>fragm.log</source>
         <translation>fragm.log</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-10"/>
-        <location line="+6"/>
-        <location line="+5"/>
-        <location line="+9"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-16"/>
-        <source>EXR binaries paths:</source>
-        <translation>EXR binaire paden:</translation>
-    </message>
-    <message>
-        <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>bin;</source>
         <translation>bin;</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-4"/>
         <source>Max Recent Files</source>
         <translation>Max. Recente bestanden</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-9"/>
         <source>Full path in recent files menu.</source>
         <translation>Volledig pad in het recente bestandsmenu.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+29"/>
         <source>Log to File</source>
         <translation>Log in op bestand</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+25"/>
         <source>#Include files with AutoSave Fragments</source>
         <translation>Bestanden opnemen met AutoSave-clips</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-15"/>
         <source>Jump to line on Error</source>
         <translation>Spring naar regel bij Error</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-34"/>
         <source>2D Camera Mode on=traveling off=fixed</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-8"/>
         <source>GUI:</source>
         <translation>Gebruikers-interface (GUI):</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+9"/>
         <source>Animation update on=continuous off=last set</source>
         <translation>Animatie-update on(aan)=continu off(uit)=laatst gebruikte stand</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>GUI Stylesheet:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Log Window Max Lines</source>
         <translation>Max. aantal regels in het log-venster</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Application</source>
         <translation>Applicatie</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+10"/>
         <source>Texture file dialog uses mimetypes when checked.</source>
         <translation>Wanneer aangevinkt gebruikt de textuur-bestanddialoog mimetypes.</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Texture file dialog lists image files by extension or mimetype</source>
         <translation>Textuur-bestanddialoog sorteeert afbeeldingen op extensie of mimetype</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+2"/>
         <source>Enable GL debug</source>
         <translation>Schakel GL-debug in</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+5"/>
+        <source>EXR tools paths:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Get render tile size from screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Editor:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Editor Schema: </source>
         <translation>Editor-schema: </translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Default</source>
         <translation>Standaard</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Solarized Dark</source>
         <translation>Gesolariseerde donkere delen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Solarized Light</source>
         <translation>Gesolariseerde lichte delen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+1"/>
         <source>Retta</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+3"/>
         <source>Editor Text:</source>
         <translation>Editor-tekst:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+7"/>
         <source>GLSL:</source>
         <translation></translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="+6"/>
         <source>Apply compatibility patches</source>
         <translation>Compatibiliteitspatches toepassen</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_PreferencesDialog.h" line="-7"/>
         <source>Autoload on change by external editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2884,7 +2826,7 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1102"/>
+        <location filename="../Fragmentarium/GUI/MainWindow.cpp" line="-1070"/>
         <source>Could not locate directory in: </source>
         <translation>Kan folder niet vinden in: </translation>
     </message>
@@ -2921,7 +2863,6 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <name>TimeLineDialog</name>
     <message>
         <location filename="../ThirdPartyCode/TimeLineDialog.ui"/>
-        <location filename="../build/ui_TimeLineDialog.h" line="+61"/>
         <source>Dialog</source>
         <translation>Dialoog</translation>
     </message>
@@ -2930,77 +2871,61 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
     <name>VideoDialog</name>
     <message>
         <location filename="../ThirdPartyCode/VideoDialog.ui"/>
-        <location filename="../build/ui_VideoDialog.h" line="+286"/>
         <source>Video Encoding</source>
         <translation>Video Codering</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>From:</source>
         <translation>Van:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
-        <location line="+2"/>
-        <location line="+2"/>
-        <location line="+2"/>
-        <location line="+4"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="-9"/>
         <source>To:</source>
         <translation>Tot:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Enc Cmd:</source>
         <translation>Enc Cmd:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Options:</source>
         <translation>Opties:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Start</source>
         <translation>Begin</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Encoding Status:</source>
         <translation>Coderingsstatus:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Play Cmd:</source>
         <translation>Afspelen Cmd:</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+2"/>
         <source>Play Output</source>
         <translation>Afspelen Output</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Stop</source>
         <translation>Hou op</translation>
     </message>
     <message>
         <location/>
-        <location filename="../build/ui_VideoDialog.h" line="+1"/>
         <source>Close</source>
         <translation>Sluiten</translation>
     </message>
@@ -3008,12 +2933,12 @@ Of maak ze met de snelkoppeling \ &quot;F7 \&quot; voor de geselecteerde zwevend
 <context>
     <name>main</name>
     <message>
-        <location filename="../Fragmentarium/Main.cpp" line="+259"/>
+        <location filename="../Fragmentarium/Main.cpp" line="+256"/>
         <source>Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics.</source>
         <translation>Fragmentarium is een cross-platform-IDE voor het verkennen van pixel-gebaseerde GPU-graphics.</translation>
     </message>
     <message>
-        <location line="-170"/>
+        <location line="-167"/>
         <source>initial fragment to open.</source>
         <translation>initiëel fragment openen.</translation>
     </message>
@@ -3141,7 +3066,7 @@ Mogelijke waarden zijn &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;,&apos;nl&apo
         <translation>Teveel argumenten opgegeven.</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+79"/>
         <source>Using </source>
         <translation>Gebruikt </translation>
     </message>
@@ -3161,27 +3086,27 @@ Mogelijke waarden zijn &apos;de&apos;,&apos;ru&apos;,&apos;en&apos;,&apos;nl&apo
         <translation> mislukt!!!</translation>
     </message>
     <message>
-        <location line="+68"/>
-        <location line="+3"/>
+        <location line="+71"/>
+        <location line="+4"/>
         <source>Script file </source>
         <translation>Script-bestand </translation>
     </message>
     <message>
-        <location line="-3"/>
+        <location line="-4"/>
         <source> open failed!
 </source>
         <translation> openen mislukt!
 </translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source> does not exist!
 </source>
         <translation> bestaat niet!
 </translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Script file requires .fqs extention!
 </source>
         <translation>Script-files benodigen de .fqs-extensie!
