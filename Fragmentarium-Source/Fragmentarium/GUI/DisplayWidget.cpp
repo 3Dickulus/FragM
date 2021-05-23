@@ -1305,15 +1305,17 @@ void DisplayWidget::makeBuffers()
 
     mainWindow->getBufferSize(w, h, bufferSizeX, bufferSizeY, fitWindow);
 
-    if(isVisible() && !fitWindow ) {
-        if(drawingState != Tiled) {
-            blockSignals(true);
-            resize(bufferSizeX,bufferSizeY);
-            blockSignals(false);
+    if ( drawingState != Tiled ) {
+        if ( isVisible() ) {
+            if ( !fitWindow ) {
+                blockSignals ( true );
+                resize ( bufferSizeX,bufferSizeY );
+                blockSignals ( false );
+            } 
         }
     }
 
-    if ( !fitWindow ) {
+    if ( bufferSizeX != w || bufferSizeY != h ) {
         w = bufferSizeX;
         h = bufferSizeY;
     }
@@ -1358,17 +1360,6 @@ void DisplayWidget::makeBuffers()
         backBuffer = nullptr;
     }
 
-
-    QOpenGLFramebufferObjectFormat fbof;
-    fbof.setAttachment ( QOpenGLFramebufferObject::Depth );
-    fbof.setInternalTextureFormat ( bufferType );
-    fbof.setTextureTarget ( GL_TEXTURE_2D );
-
-    // we must create both the backbuffer and previewBuffer
-    previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
-    backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
-    doClearBackBuffer = true;
-
     if (format().majorVersion() > 2 || isCompat()) {
         GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -1380,6 +1371,16 @@ void DisplayWidget::makeBuffers()
         glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
     }
 
+    QOpenGLFramebufferObjectFormat fbof;
+    fbof.setAttachment ( QOpenGLFramebufferObject::Depth );
+    fbof.setInternalTextureFormat ( bufferType );
+    fbof.setTextureTarget ( GL_TEXTURE_2D );
+
+    // we must create both the backbuffer and previewBuffer
+    previewBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
+    backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
+    doClearBackBuffer = true;
+
     glGenBuffers( 1, &vbo );
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
@@ -1390,11 +1391,11 @@ void DisplayWidget::setViewPort(int w, int h)
 {
 
     if ( drawingState == Tiled ) {
-        glViewport ( 0, 0,bufferSizeX, bufferSizeY );
+        glViewport(0, 0, bufferSizeX < w ? bufferSizeX : w, bufferSizeY < h ? bufferSizeY : h);
     } else if ( fitWindow ) {
         glViewport ( 0, 0, w, h );
     } else {
-        glViewport(0, 0, bufferSizeX < w ? bufferSizeX : w, bufferSizeY < h ? bufferSizeY : h);
+        glViewport ( 0, 0,bufferSizeX, bufferSizeY );
     }
 }
 
@@ -2286,6 +2287,7 @@ void DisplayWidget::showEvent(QShowEvent *ev)
     requireRedraw ( true );
     // starts timer signal when GL widget is shown
     updateRefreshRate();
+    updateBuffers();
 }
 
 void DisplayWidget::wheelEvent(QWheelEvent *ev)

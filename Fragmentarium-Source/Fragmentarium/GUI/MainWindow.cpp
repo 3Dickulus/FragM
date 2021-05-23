@@ -121,12 +121,7 @@ MainWindow::MainWindow(QWidget* parent)
     // connect handler to keypress
     connect(keyShiftF6, SIGNAL(activated()), this, SLOT(slotShortcutShiftF6()));
 
-    lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
-    lockedAspect = settings.value("lockedAspect", false).toBool();
-    aspectLock->setChecked(lockedAspect);
-    currentAspect = settings.value("currentAspect", 1.7777).toDouble();
-    tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
-    
+    connect(splitter, SIGNAL(splitterMoved(int, int)), this, SLOT(movedSplitter(int, int)));
 }
 
 void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
@@ -348,18 +343,52 @@ void MainWindow::testCompileGLSL()
     getEngine()->testVersions(); 
 }
 
+void MainWindow::movedSplitter(int pos, int index)
+{
+    Q_UNUSED(pos)
+    Q_UNUSED(index)
+    bufferActionChanged(lockedToWindowSize ? bufferAction1 : bufferActionCustom);
+}
+
+// finished editing ie:pressed return or clicked on something else
+void MainWindow::bufferSizeXChanged()
+{
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+        bufferActionChanged(bufferActionCustom);
+    }
+}
+
+// finished editing ie:pressed return or clicked on something else
+void MainWindow::bufferSizeYChanged()
+{
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+        bufferActionChanged(bufferActionCustom);
+    }
+}
+
+// value changed
 void MainWindow::bufferXSpinBoxChanged(int value)
 {
-//     if(engine->getState() == DisplayWidget::Tiled && lockedToWindowSize) {
-//             bufferActionChanged(bufferActionCustom);
-//     }
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+        if(lockedAspect) {
+            bufferYSpinBox->blockSignals(true);
+            bufferYSpinBox->setValue(value/currentAspect);
+            bufferYSpinBox->blockSignals(false);
+        }
+            bufferActionChanged(bufferActionCustom);
+    }
 }
 
 void MainWindow::bufferYSpinBoxChanged(int value)
 {
-//     if(engine->getState() == DisplayWidget::Tiled && lockedToWindowSize) {
-//             bufferActionChanged(bufferActionCustom);
-//     }
+    if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
+        if(lockedAspect) {
+            bufferXSpinBox->blockSignals(true);
+            bufferXSpinBox->setValue(value*currentAspect);
+            bufferXSpinBox->blockSignals(false);
+        }
+            bufferActionChanged(bufferActionCustom);
+    }
 }
 
 bool MainWindow::save()
@@ -659,7 +688,7 @@ void MainWindow::init()
         engine->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
 
     engine->setObjectName(QString::fromUtf8("DisplayWidget"));
-    engine->setMinimumSize(16,16);
+    engine->setMinimumSize(1,1);
     engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
     splitter->addWidget( engine );
@@ -792,8 +821,8 @@ void MainWindow::init()
     
     if(!lockedToWindowSize){
         QSettings settings;
-        int x = settings.value("tilewidth",16).toInt();
-        int y = settings.value("tileheight",9).toInt();
+        int x = settings.value("tilewidth",456).toInt();
+        int y = settings.value("tileheight",256).toInt();
         bufferSizeControl->blockSignals(true);
         bufferSizeControl->setText( bufferActionCustom->text() );
         bufferSizeControl->blockSignals(false);
@@ -805,7 +834,7 @@ void MainWindow::init()
         bufferXSpinBox->blockSignals(false);
         bufferYSpinBox->blockSignals(false);
 
-        aspectLock->setChecked(lockedAspect);
+        aspectLock->setChecked(false);
         bufferYSpinBox->setEnabled(!lockedToWindowSize);
         bufferXSpinBox->setEnabled(!lockedToWindowSize);
         aspectLock->setEnabled(!lockedToWindowSize);
@@ -1445,174 +1474,158 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
 
 void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
-            auto *l = new QVBoxLayout;
-            l->setMargin(0);
-            l->addWidget(engineOverlay);
-            // apply overlay to GL area
-            engine->setLayout(l);
+    for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+        QTime tiletime;
+        tiletime.start();
 
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-                QTime tiletime;
-                tiletime.start();
+        if (!progress.wasCanceled()) {
 
-                if (!progress.wasCanceled()) {
+            QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+            im.fill(Qt::black);
+            
+            // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
+            std::this_thread::sleep_for(std::chrono::microseconds(10000));
+            
+            engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    
-                    // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
-                    std::this_thread::sleep_for(std::chrono::microseconds(10000));
-                    
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        auto nw = (int)(tileWidth / (1.0 + padding));
-                        auto nh = (int)(tileHeight / (1.0 + padding));
-                        int ox = (tileWidth-nw)/2;
-                        int oy = (tileHeight-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.insert(tile,im);
-                    }
-
-                    // display scaled tiles
-                    float wScaleFactor = enginePixmap.width() / maxTiles;
-                    float hScaleFactor = enginePixmap.height() / maxTiles;
-                    int dx = (tile / maxTiles);
-                    int dy = (maxTiles-1)-(tile % maxTiles);
-                    QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                    QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
-                    im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                    // render scaled tiles into the overlay pixmap
-                    QPainter painter2( &enginePixmap );
-                    painter2.drawImage ( target, im, source );
-                    painter2.end();
-
-                    // update the GL area overlay
-                    engineOverlay->setPixmap(enginePixmap);
-                    
-                } else {
-                    stopScript();
-                    tile = maxTiles*maxTiles;
-                }
-
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
+            if (padding>0.0)  {
+                auto nw = (int)(tileWidth / (1.0 + padding));
+                auto nh = (int)(tileHeight / (1.0 + padding));
+                int ox = (tileWidth-nw)/2;
+                int oy = (tileHeight-nh)/2;
+                im = im.copy(ox,oy,nw,nh);
             }
-            // cleanup the leftovers?
-            delete l;
+
+            if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                cachedTileImages.insert(tile,im);
+            }
+
+            // display scaled tiles
+            float wScaleFactor = enginePixmap.width() / maxTiles;
+            float hScaleFactor = enginePixmap.height() / maxTiles;
+            int dx = (tile / maxTiles);
+            int dy = (maxTiles-1)-(tile % maxTiles);
+            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+            QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            // render scaled tiles into the overlay pixmap
+            QPainter painter2( &enginePixmap );
+            painter2.drawImage ( target, im, source );
+            painter2.end();
+
+            // update the GL area overlay
+            engineOverlay->setPixmap(enginePixmap);
+            
+        } else {
+            stopScript();
+            tile = maxTiles*maxTiles;
+        }
+
+        if ((maxTiles * maxTiles) == 1) {
+            engine->tileAVG = tiletime.elapsed();
+        } else {
+            engine->tileAVG += tiletime.elapsed();
+        }
+    }
 }
 
 #ifdef USE_OPEN_EXR
 bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
-            auto *l = new QVBoxLayout;
-            l->setMargin(0);
-            l->addWidget(engineOverlay);
-            // apply overlay to GL area
-            engine->setLayout(l);
+    //
+    // Write a tiled image with one level using a tile-sized framebuffer.
+    //
 
-            //
-            // Write a tiled image with one level using a tile-sized framebuffer.
-            //
+    bool d2a = engine->wantsDepthToAlpha();
+    
+    Header header (maxTiles*tileWidth, maxTiles*tileHeight);
+    header.channels().insert ("R", Channel (Imf::FLOAT));
+    header.channels().insert ("G", Channel (Imf::FLOAT));
+    header.channels().insert ("B", Channel (Imf::FLOAT));
+    if(d2a)
+        header.channels().insert ("Z", Channel (Imf::FLOAT));
+    else
+        header.channels().insert ("A", Channel (Imf::FLOAT));
+    
+    header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
+    
+    TiledOutputFile out(name.toLatin1(), header);
+    
+    Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
 
-            bool d2a = engine->wantsDepthToAlpha();
-            
-            Header header (maxTiles*tileWidth, maxTiles*tileHeight);
-            header.channels().insert ("R", Channel (Imf::FLOAT));
-            header.channels().insert ("G", Channel (Imf::FLOAT));
-            header.channels().insert ("B", Channel (Imf::FLOAT));
-            if(d2a)
-                header.channels().insert ("Z", Channel (Imf::FLOAT));
-            else
-                header.channels().insert ("A", Channel (Imf::FLOAT));
-            
-            header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
-            
-            TiledOutputFile out(name.toLatin1(), header);
-            
-            Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
+    FrameBuffer frameBuffer;
+    frameBuffer.insert ("R", Slice (Imf::FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+    frameBuffer.insert ("G", Slice (Imf::FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+    frameBuffer.insert ("B", Slice (Imf::FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+    if(d2a)
+        frameBuffer.insert ("Z", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+    else
+        frameBuffer.insert ("A", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
+    
 
-            FrameBuffer frameBuffer;
-            frameBuffer.insert ("R", Slice (Imf::FLOAT, (char *) &pixels[0][0].r, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("G", Slice (Imf::FLOAT, (char *) &pixels[0][0].g, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            frameBuffer.insert ("B", Slice (Imf::FLOAT, (char *) &pixels[0][0].b, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            if(d2a)
-                frameBuffer.insert ("Z", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            else
-                frameBuffer.insert ("A", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-            
+    for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
-            for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
+        QTime tiletime;
+        tiletime.start();
 
-              QTime tiletime;
-              tiletime.start();
+        if (!progress.wasCanceled()) {
 
-              if (!progress.wasCanceled()) {
+            QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
+            im.fill(Qt::black);
+               
+            engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
-                    QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
-                    im.fill(Qt::black);
-                    engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
-
-                    if (padding>0.0)  {
-                        int w = im.width();
-                        int h = im.height();
-                        auto nw = (int)(w / (1.0 + padding));
-                        auto nh = (int)(h / (1.0 + padding));
-                        int ox = (w-nw)/2;
-                        int oy = (h-nh)/2;
-                        im = im.copy(ox,oy,nw,nh);
-                    }
-
-                    if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
-                        cachedTileImages.append(im);
-                    }
-
-                    int dx = (tile / maxTiles);
-                    int dy = (maxTiles-1)-(tile % maxTiles);
-
-                    if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
-
-                        out.setFrameBuffer (frameBuffer);
-                        out.writeTile (dx, dy);
-
-                        // display scaled tiles
-                        float wScaleFactor = enginePixmap.width() / maxTiles;
-                        float hScaleFactor = enginePixmap.height() / maxTiles;
-                        int dx = (tile / maxTiles);
-                        int dy = (maxTiles-1)-(tile % maxTiles);
-                        QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                        QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
-                        im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                        // render scaled tiles into the overlay pixmap
-                        QPainter painter2( &enginePixmap );
-                        painter2.drawImage ( target, im, source );
-                        painter2.end();
-                        // update the GL area overlay
-                        engineOverlay->setPixmap(enginePixmap);
-                    }
-                } else {
-                  stopScript();
-                  tile = maxTiles*maxTiles;
-                }
-                if ((maxTiles * maxTiles) == 1) {
-                    engine->tileAVG = tiletime.elapsed();
-                } else {
-                    engine->tileAVG += tiletime.elapsed();
-                }
+            if (padding>0.0)  {
+                int w = im.width();
+                int h = im.height();
+                auto nw = (int)(w / (1.0 + padding));
+                auto nh = (int)(h / (1.0 + padding));
+                int ox = (w-nw)/2;
+                int oy = (h-nh)/2;
+                im = im.copy(ox,oy,nw,nh);
             }
 
-            engine->update();
-            
-            // cleanup the leftovers?
-            delete l;
-            
-            return out.isValidLevel(0,0);
+            if (tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769) {
+                cachedTileImages.append(im);
+            }
+
+            int dx = (tile / maxTiles);
+            int dy = (maxTiles-1)-(tile % maxTiles);
+
+            if(engine->getRGBAFtile( pixels, tileWidth, tileHeight )) {
+
+                out.setFrameBuffer (frameBuffer);
+                out.writeTile (dx, dy);
+
+                // display scaled tiles
+                float wScaleFactor = enginePixmap.width() / maxTiles;
+                float hScaleFactor = enginePixmap.height() / maxTiles;
+                int dx = (tile / maxTiles);
+                int dy = (maxTiles-1)-(tile % maxTiles);
+                QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+                im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                // render scaled tiles into the overlay pixmap
+                QPainter painter2( &enginePixmap );
+                painter2.drawImage ( target, im, source );
+                painter2.end();
+                // update the GL area overlay
+                engineOverlay->setPixmap(enginePixmap);
+            }
+        } else {
+            stopScript();
+            tile = maxTiles*maxTiles;
+        }
+        if ((maxTiles * maxTiles) == 1) {
+            engine->tileAVG = tiletime.elapsed();
+        } else {
+            engine->tileAVG += tiletime.elapsed();
+        }
+    }
+
+    engine->update();
+    
+    return out.isValidLevel(0,0);
 
 }
 #endif
@@ -1620,25 +1633,23 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
 void MainWindow::tileBasedRender()
 {
 
-    if (!engine->hasShader()) {
-        WARNING(tr("Build the fragment first!"));
-        return;
-    }
-
     int tmpX = bufferXSpinBox->value();
     int tmpY = bufferYSpinBox->value();
-
     if(tileSizeFromScreen) {
         QSettings settings;
         settings.setValue("tilewidth",tmpX);
         settings.setValue("tileheight",tmpY);
         settings.sync();
     }
-    
     OutputDialog od(this);
 retry:
-    od.setMaxTime(timeMax);
+    if(tileSizeFromScreen) {
+        od.tileXSizeChanged(tmpX);
+        od.tileYSizeChanged(tmpY);
+    }
 
+    od.setMaxTime(timeMax);
+    od.setAspectLock(lockedAspect);
     bool runFromScript = runningScript;
 
     if(!runFromScript) {
@@ -1649,11 +1660,40 @@ retry:
         od.readOutputSettings();
     }
 
+    // get tile size from output dialog
     int tileWidth = od.getTileWidth();
-    bufferXSpinBox->setValue(tileWidth);
     int tileHeight = od.getTileHeight();
-    bufferYSpinBox->setValue(tileHeight);
 
+    // calculate an offset if aspect ratios don't match
+    QRect r = QRect(QPoint(0, 0), QSize(-1, -1));
+
+    if((double)tmpX/(double)tmpY != (double)tileWidth/(double)tileHeight) {
+        int tw = tileWidth;
+        int th = tileHeight;
+        double aspect = tw/th;
+        double fw = (double)tw/(double)tmpX;
+        double fh = (double)th/(double)tmpY;
+        if (fw!=1.0 && tmpY > th/fw) {
+            tw = tmpX;
+            th = tmpX/aspect;
+        }
+        else
+        if (fh!=1.0 && tmpX > tw/fh) {
+            tw = tmpY*aspect;
+            th = tmpY;
+        }
+
+        r = QRect( QPoint((tmpX-tw)/2, (tmpY-th)/2), QSize(tw, th) );
+    }
+    // before clearing the buffer grab a copy for render progress background
+    enginePixmap = engine->grab(r);
+
+    // no locked aspect calculations during tile render
+    bool ta = lockedAspect;
+    lockAspect(false);
+    bufferXSpinBox->setValue(tileWidth);
+    bufferYSpinBox->setValue(tileHeight);
+    // save the source files if required
     if ( (od.doSaveFragment() || od.doAnimation()) && !od.preview()) {
         QString fileName = od.getFragmentFileName();
         logger->getListWidget()->clear();
@@ -1784,15 +1824,6 @@ retry:
         }
     }
 
-    // TODO: when screen aspect and buffer aspect are different clip screen centered buffer sized pixmap
-    // eg: GL area aspect = 16/9 hires render tile aspect = 1/1
-    // symptom1: progress pixmap is distorted in "custom size" mode but hires render has correct size and projection
-    // symptom2: progress pixmap is rendered at screen aspect in "Lock to window size" mode but hires render has correct size with wrong projection
-    // workaround: use "Edit->Preferences->Get render tile size from screen" = checked, and don't change the tile size in the hires render dialog
-
-    // before clearing the buffer grab a copy for render progress background
-    enginePixmap = engine->grab();
-
     DisplayWidget::DrawingState oldState = engine->getState();
     engine->setState(DisplayWidget::Tiled);
     engine->clearTileBuffer();
@@ -1815,7 +1846,7 @@ retry:
     exrMode = fileName.endsWith(".exr", Qt::CaseInsensitive);
     engine->setEXRmode(exrMode);
 #endif
-
+    // check for excessive tile size and allow option to change it
     if ((tileWidth * maxTiles > 32768 || tileHeight * maxTiles > 32768) && !exrMode) {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -1853,7 +1884,7 @@ retry:
     engine->renderAVG = 0;
     engine->renderETA =  "";
     engine->renderToFrame = endTime-1;
-
+    // create our progress dialog
     QProgressDialog progress(tr("Rendering"), tr("Abort"), 0, totalSteps, this);
     progress.setMinimumDuration(1000);
     progress.setValue ( 0 );
@@ -1873,9 +1904,14 @@ retry:
     // create an overlay using enginePixmap as background
     engineOverlay = new QLabel();
     engineOverlay->setPixmap(enginePixmap);
-    
-    bool isFirst = true;
+    // hide the GL area and add our image progress overlay
+    QList<int> splitSizes = splitter->sizes();
+    splitSizes << 0;
+    splitter->insertWidget(1,engineOverlay);
+    splitter->setSizes(splitSizes);
 
+    bool isFirst = true;
+    // render tiles and update progress
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
 
@@ -2019,6 +2055,7 @@ retry:
     }
 
     delete engineOverlay;
+    splitter->setSizes(splitSizes);
     engine->tilesCount = 0;
     engine->setState(oldState);
     progress.setValue(totalSteps);
@@ -2030,8 +2067,11 @@ retry:
     bufferYSpinBox->setValue(tmpY);
 
     engine->clearTileBuffer();
+
     engine->updateBuffers();
 
+    // reset locked aspect status
+    lockAspect(ta);
 }
 
 void MainWindow::savePreview()
@@ -2164,9 +2204,11 @@ void MainWindow::createToolBars()
 //     bufferToolBar->setToolTipDuration(5000);
     bufferXSpinBox = new QSpinBox(bufferToolBar);
     bufferXSpinBox->setRange(1,4096);
-    bufferXSpinBox->setValue(10);
+//     bufferXSpinBox->setValue(256);
     bufferXSpinBox->setSingleStep(1);
     bufferXSpinBox->setEnabled(false);
+    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
+    connect(bufferXSpinBox, SIGNAL(editingFinished()), this, SLOT(bufferSizeXChanged()));
     bufferToolBar->addWidget(bufferXSpinBox);
     
     aspectLock = new QPushButton(bufferToolBar);
@@ -2184,11 +2226,11 @@ void MainWindow::createToolBars()
     bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
     bufferYSpinBox->setRange(1,4096);
-    bufferYSpinBox->setValue(10);
+//     bufferYSpinBox->setValue(256);
     bufferYSpinBox->setSingleStep(1);
     bufferYSpinBox->setEnabled(false);
-    connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
     connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferYSpinBoxChanged(int)));
+    connect(bufferYSpinBox, SIGNAL(editingFinished()), this, SLOT(bufferSizeYChanged()));
     bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
     auto *menu = new QMenu();
     bufferAction1 = menu->addAction(tr("Lock to window size"));
@@ -2291,8 +2333,7 @@ void MainWindow::createToolBars()
     timeToolBar->addWidget(timeMaxSpinBox);
     timeToolBar->setObjectName(QString::fromUtf8("Time"));
 
-    timeMaxChanged(timeMaxSpinBox->value()); // call when timeMax changes to setup
-    // the time slider for frame accuracy
+    timeMaxChanged(timeMaxSpinBox->value()); // call when timeMax changes to setup the time slider for frame accuracy
     autoFocusEnabled = false;
 
 }
@@ -2326,16 +2367,17 @@ void MainWindow::bufferActionChanged(QAction *action)
         bool t = lockedAspect;
         aspectLock->setChecked(false);
         lockedAspect = t;
-    } else if (action == bufferActionCustom) { 
+        // because there is no layout available in a QSplitter we have to resize manually here
+        engine->resize( splitter->width() - splitter->handle(1)->width() - splitter->handle(1)->pos().x()+1 , splitter->handle(1)->height() );
+    } else if (action == bufferActionCustom) {
         lockedToWindowSize = false;
         aspectLock->setChecked(lockedAspect);
+        engine->resize(bufferXSpinBox->value(),bufferYSpinBox->value()); //engine->updateBuffers();
     }
 
     bufferYSpinBox->setEnabled(!lockedToWindowSize);
     bufferXSpinBox->setEnabled(!lockedToWindowSize);
     aspectLock->setEnabled(!lockedToWindowSize);
-
-    engine->updateBuffers();
 }
 
 void MainWindow::timeLineRequest(QPoint p)
@@ -2543,8 +2585,8 @@ void MainWindow::readSettings()
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
     lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
-    currentAspect = settings.value("currentAspect", 1.7777).toDouble();
-
+    currentAspect = settings.value("currentAspect", 1.7778).toDouble();
+    tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
 }
 
 void MainWindow::writeSettings()
@@ -2605,11 +2647,11 @@ void MainWindow::writeSettings()
 
     settings.setValue("openFiles", openFiles);
     
-    if(!lockedToWindowSize){
-        settings.setValue("tilewidth",bufferXSpinBox->value());
-        settings.setValue("tileheight",bufferYSpinBox->value());
-    }
+    settings.setValue("tilewidth",bufferXSpinBox->value());
+    settings.setValue("tileheight",bufferYSpinBox->value());
 
+    settings.setValue ("tileSizeFromScreen", tileSizeFromScreen);
+    
     settings.sync();
 
 }
@@ -3614,7 +3656,7 @@ void MainWindow::preferences()
       getTextEdit()->highlightCurrentLine();
     }
 
-initTools();
+    initTools();
 }
 
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
@@ -3627,7 +3669,7 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
 
     if (engine != nullptr && engine->getState() == DisplayWidget::Tiled) {
         bufferSizeX = bufferXSpinBox->value();
-        bufferSizeY =  bufferYSpinBox->value();
+        bufferSizeY = bufferYSpinBox->value();
         return;
     }
 
@@ -3652,13 +3694,12 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
             }
         }
     }
-
-    bufferXSpinBox->blockSignals(true);
-    bufferYSpinBox->blockSignals(true);
-    bufferXSpinBox->setValue(bufferSizeX);
-    bufferYSpinBox->setValue(bufferSizeY);
-    bufferXSpinBox->blockSignals(false);
-    bufferYSpinBox->blockSignals(false);
+        bufferXSpinBox->blockSignals(true);
+        bufferYSpinBox->blockSignals(true);
+        bufferXSpinBox->setValue(bufferSizeX);
+        bufferYSpinBox->setValue(bufferSizeY);
+        bufferXSpinBox->blockSignals(false);
+        bufferYSpinBox->blockSignals(false);
 }
 
 void MainWindow::indent()

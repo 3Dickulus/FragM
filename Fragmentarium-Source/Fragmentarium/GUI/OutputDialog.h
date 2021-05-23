@@ -52,6 +52,13 @@ public:
     {
         return tileHeight;
     };
+    void setAspectLock(bool l) {
+        m_ui.lockAspectCheckBox->setChecked(l);
+    };
+    bool getAspectLock() {
+        return m_ui.lockAspectCheckBox->isChecked();
+    };
+
 public slots:
     QString getFragmentFileName();
     bool doSaveFragment()
@@ -78,7 +85,9 @@ public slots:
         return m_ui.endFrameSpinBox->value();
     }
     void readOutputSettings();
-    void tileSizeChanged ( int value );
+    void tileXSizeChanged ( int value );
+    void tileYSizeChanged ( int value );
+    void lockAspect(bool l);
 private slots:
     void animationChanged();
     void chooseFile();
@@ -96,6 +105,8 @@ private:
     int tileHeight;
     QStringList extensions;
     QString fragmentFileName;
+    bool lockedAspect;
+    double currentAspect;
 };
 
 } // namespace GUI

@@ -30,9 +30,9 @@ OutputDialog::OutputDialog(QWidget *parent) : QDialog(parent)
     connect(m_ui.autoSaveCheckBox, SIGNAL(clicked()), this, SLOT(updateFileName()));
     connect(m_ui.fileButton, SIGNAL(clicked()), this, SLOT(chooseFile()));
     connect(m_ui.filenameEdit, SIGNAL(textChanged(const QString &)), this, SLOT(updateFileName(const QString &)));
-    connect(m_ui.tileWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileSizeChanged(int)));
-    connect(m_ui.tileHeightSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileSizeChanged(int)));
-
+    connect(m_ui.tileWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileXSizeChanged(int)));
+    connect(m_ui.tileHeightSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileYSizeChanged(int)));
+    connect(m_ui.lockAspectCheckBox,SIGNAL(toggled(bool)), this, SLOT(lockAspect(bool)));
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
 #ifdef USE_OPEN_EXR
     a.append("exr");
@@ -41,7 +41,9 @@ OutputDialog::OutputDialog(QWidget *parent) : QDialog(parent)
             extensions.append(QString(s));
     }
 
-    tileSizeChanged(0);
+    lockAspect(m_ui.lockAspectCheckBox->isChecked());
+    tileXSizeChanged(tileWidth);
+    tileYSizeChanged(tileHeight);
     updateTotalTiles(0);
     animationChanged();
     updateFileName();
@@ -70,6 +72,7 @@ void OutputDialog::readOutputSettings()
     m_ui.previewFrameCheckBox->setChecked(settings.value("preview", false).toBool());
     m_ui.tileWidthSpinBox->setValue(settings.value("tilewidth", 16).toInt());
     m_ui.tileHeightSpinBox->setValue(settings.value("tileheight", 9).toInt());
+    m_ui.lockAspectCheckBox->setChecked(settings.value("lockedAspect", false).toBool());
 }
 
 void OutputDialog::saveOutputSettings()
@@ -277,9 +280,25 @@ void OutputDialog::updateTotalTiles(int value)
     // Tiles x subframes x animframes
 }
 
-void OutputDialog::tileSizeChanged(int value)
+void OutputDialog::tileXSizeChanged(int value)
 {
-    Q_UNUSED(value)
+    if(lockedAspect) {
+        m_ui.tileHeightSpinBox->blockSignals(true);
+        m_ui.tileHeightSpinBox->setValue(value/currentAspect);
+        m_ui.tileHeightSpinBox->blockSignals(false);
+    }
+    tileWidth = m_ui.tileWidthSpinBox->value();
+    tileHeight = m_ui.tileHeightSpinBox->value();
+    tilesChanged(getTiles());
+}
+
+void OutputDialog::tileYSizeChanged(int value)
+{
+    if(lockedAspect) {
+        m_ui.tileWidthSpinBox->blockSignals(true);
+        m_ui.tileWidthSpinBox->setValue(value*currentAspect);
+        m_ui.tileWidthSpinBox->blockSignals(false);
+    }
     tileWidth = m_ui.tileWidthSpinBox->value();
     tileHeight = m_ui.tileHeightSpinBox->value();
     tilesChanged(getTiles());
@@ -294,5 +313,11 @@ double OutputDialog::getPadding()
 {
     return m_ui.paddingSlider->value()/100.0;
 }
+
+void OutputDialog::lockAspect(bool l){
+    lockedAspect = l; l ? m_ui.lockAspectCheckBox->setIcon(QIcon(":/Icons/padlocka.png")) : m_ui.lockAspectCheckBox->setIcon(QIcon(":/Icons/padlockb.png"));
+    currentAspect = (double)m_ui.tileWidthSpinBox->value()/(double)m_ui.tileHeightSpinBox->value();
+}
+    
 } // namespace GUI
 } // namespace Fragmentarium

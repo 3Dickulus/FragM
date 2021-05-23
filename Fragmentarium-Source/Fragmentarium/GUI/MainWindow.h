@@ -162,7 +162,7 @@ public:
             cmdScriptDebugger->~QScriptEngineDebugger();
             cmdScriptDebugger = 0;
         }
-        
+        writeSettings();
     };
 
     double getTime();
@@ -636,6 +636,9 @@ private slots:
     void clearKeyFrameControl();
     void bufferXSpinBoxChanged ( int value );
     void bufferYSpinBoxChanged ( int value );
+    void bufferSizeXChanged();
+    void bufferSizeYChanged();
+    void movedSplitter(int pos, int index);
     void timeChanged ( int value );
     void timeLineRequest ( QPoint p );
     void timeLineRequest ()
