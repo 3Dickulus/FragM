@@ -1670,21 +1670,23 @@ retry:
     if((double)tmpX/(double)tmpY != (double)tileWidth/(double)tileHeight) {
         int tw = tileWidth;
         int th = tileHeight;
-        double aspect = tw/th;
+        double aspect = (double)tw/(double)th;
+
         double fw = (double)tw/(double)tmpX;
-        double fh = (double)th/(double)tmpY;
-        if (fw!=1.0 && tmpY > th/fw) {
+        if (fw!=1.0) {
             tw = tmpX;
             th = tmpX/aspect;
         }
-        else
-        if (fh!=1.0 && tmpX > tw/fh) {
+
+        double fh = (double)th/(double)tmpY;
+        if (fh>1.0) {
             tw = tmpY*aspect;
             th = tmpY;
         }
 
         r = QRect( QPoint((tmpX-tw)/2, (tmpY-th)/2), QSize(tw, th) );
     }
+
     // before clearing the buffer grab a copy for render progress background
     enginePixmap = engine->grab(r);
 
@@ -3694,12 +3696,13 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
             }
         }
     }
-        bufferXSpinBox->blockSignals(true);
-        bufferYSpinBox->blockSignals(true);
-        bufferXSpinBox->setValue(bufferSizeX);
-        bufferYSpinBox->setValue(bufferSizeY);
-        bufferXSpinBox->blockSignals(false);
-        bufferYSpinBox->blockSignals(false);
+    
+    bufferXSpinBox->blockSignals(true);
+    bufferYSpinBox->blockSignals(true);
+    bufferXSpinBox->setValue(bufferSizeX);
+    bufferYSpinBox->setValue(bufferSizeY);
+    bufferXSpinBox->blockSignals(false);
+    bufferYSpinBox->blockSignals(false);
 }
 
 void MainWindow::indent()

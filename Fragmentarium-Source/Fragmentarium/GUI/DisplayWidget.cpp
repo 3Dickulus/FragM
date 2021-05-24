@@ -1940,10 +1940,9 @@ void DisplayWidget::clearTileBuffer()
             hiresBuffer = nullptr;
         } else {
             WARNING(tr("Failed to release hiresBuffer FBO"));
-    }
+        }
     }
     subframeCounter=0;
-    makeBuffers();
 }
 
 void DisplayWidget::clearGL()

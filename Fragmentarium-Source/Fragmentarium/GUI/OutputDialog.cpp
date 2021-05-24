@@ -73,6 +73,7 @@ void OutputDialog::readOutputSettings()
     m_ui.tileWidthSpinBox->setValue(settings.value("tilewidth", 16).toInt());
     m_ui.tileHeightSpinBox->setValue(settings.value("tileheight", 9).toInt());
     m_ui.lockAspectCheckBox->setChecked(settings.value("lockedAspect", false).toBool());
+    currentAspect = (double)m_ui.tileWidthSpinBox->value()/(double)m_ui.tileHeightSpinBox->value();
 }
 
 void OutputDialog::saveOutputSettings()
@@ -224,6 +225,8 @@ void OutputDialog::tilesChanged(int value)
 {
 
     Q_UNUSED(value)
+   
+    currentAspect = (double)tileWidth/(double)tileHeight;
 
     int t = m_ui.tilesSlider->value();
     auto mp = (double)((t * tileWidth * t * tileHeight) / (1024.0 * 1024.0));
