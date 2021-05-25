@@ -316,10 +316,10 @@ int main(int argc, char *argv[])
 
     mainWin->setWindowTitle(QString("%1 %2").arg(qApp->applicationName()).arg(qApp->applicationVersion()));
 
+    mainWin->readSettings();
+
     mainWin->show();
 
-    mainWin->readSettings();
-    
     QStringList openFiles = (parser.isSet("script")) ? QStringList() : QSettings().value("openFiles").toStringList();
 
     QStringList args = parser.positionalArguments();

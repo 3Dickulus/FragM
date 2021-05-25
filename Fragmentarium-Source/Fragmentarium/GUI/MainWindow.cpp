@@ -339,8 +339,10 @@ void MainWindow::clearTextures()
 
 void MainWindow::testCompileGLSL()
 {
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  engine->testVersions(); 
+  QApplication::restoreOverrideCursor();
 
-    getEngine()->testVersions(); 
 }
 
 void MainWindow::movedSplitter(int pos, int index)
@@ -834,7 +836,7 @@ void MainWindow::init()
         bufferXSpinBox->blockSignals(false);
         bufferYSpinBox->blockSignals(false);
 
-        aspectLock->setChecked(false);
+        lockAspect(false);
         bufferYSpinBox->setEnabled(!lockedToWindowSize);
         bufferXSpinBox->setEnabled(!lockedToWindowSize);
         aspectLock->setEnabled(!lockedToWindowSize);
@@ -1912,6 +1914,8 @@ retry:
     splitter->insertWidget(1,engineOverlay);
     splitter->setSizes(splitSizes);
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
     bool isFirst = true;
     // render tiles and update progress
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
@@ -2056,6 +2060,8 @@ retry:
         }
     }
 
+  QApplication::restoreOverrideCursor();
+
     delete engineOverlay;
     splitter->setSizes(splitSizes);
     engine->tilesCount = 0;
@@ -2188,7 +2194,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveAction);
     fileToolBar->addAction(saveAsAction);
     fileToolBar->setObjectName(QString::fromUtf8("FileToolbar"));
-//     fileToolBar->hide();
+
     QSettings settings;
     settings.value("showFileToolbar").toBool() ? fileToolBar->show() : fileToolBar->hide();
 
@@ -2197,16 +2203,14 @@ void MainWindow::createToolBars()
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
     editToolBar->setObjectName(QString::fromUtf8("EditToolbar"));
-//     editToolBar->hide();
+
     settings.value("showEditToolbar").toBool() ? editToolBar->show() : editToolBar->hide();
 
     bufferToolBar = addToolBar(tr("Buffer Dimensions"));
     bufferToolBar->addWidget(new QLabel(tr("Buffer Size. X: "), this));
-//     bufferToolBar->setToolTip(tr("Set combobox to 'custom-size' to apply size."));
-//     bufferToolBar->setToolTipDuration(5000);
+
     bufferXSpinBox = new QSpinBox(bufferToolBar);
     bufferXSpinBox->setRange(1,4096);
-//     bufferXSpinBox->setValue(256);
     bufferXSpinBox->setSingleStep(1);
     bufferXSpinBox->setEnabled(false);
     connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
@@ -2228,7 +2232,6 @@ void MainWindow::createToolBars()
     bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
     bufferYSpinBox->setRange(1,4096);
-//     bufferYSpinBox->setValue(256);
     bufferYSpinBox->setSingleStep(1);
     bufferYSpinBox->setEnabled(false);
     connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferYSpinBoxChanged(int)));
@@ -2366,15 +2369,13 @@ void MainWindow::bufferActionChanged(QAction *action)
     bufferSizeControl->setText(action->text());
     if (action == bufferAction1) {
         lockedToWindowSize = true;
-        bool t = lockedAspect;
-        aspectLock->setChecked(false);
-        lockedAspect = t;
+        lockAspect(false);
         // because there is no layout available in a QSplitter we have to resize manually here
         engine->resize( splitter->width() - splitter->handle(1)->width() - splitter->handle(1)->pos().x()+1 , splitter->handle(1)->height() );
     } else if (action == bufferActionCustom) {
         lockedToWindowSize = false;
-        aspectLock->setChecked(lockedAspect);
-        engine->resize(bufferXSpinBox->value(),bufferYSpinBox->value()); //engine->updateBuffers();
+        lockAspect(lockedAspect);
+        engine->resize(bufferXSpinBox->value(),bufferYSpinBox->value());
     }
 
     bufferYSpinBox->setEnabled(!lockedToWindowSize);
@@ -2463,7 +2464,6 @@ void MainWindow::stop()
     if (engine->getState() == DisplayWidget::Animation) {
         INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime / renderFPS));
     }
-    // statusBar()->showMessage(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime/renderFPS));
 
     getTime();
     pausePlay=true;
@@ -2716,7 +2716,7 @@ void MainWindow::reloadFragFile( QString f )
         msgBox.addButton(tr("Ignore"),QMessageBox::RejectRole);
         msgBox.setText(s);
         first = false;
-        autoLoad = msgBox.exec()==1 ? false : true; // (msgBox.clickedButton() == a);
+        autoLoad = msgBox.exec()==1 ? false : true;
     }
 
     if (autoLoad) {
@@ -2935,7 +2935,6 @@ bool MainWindow::initializeFragment()
         INFO(QString(tr("Display using GL %1.%2 %3 profile")).arg(engine->format().majorVersion()).arg(engine->format().minorVersion()).arg(prof == 1 ? "Core" : prof == 2 ? "Compatibility" : ""));
     } else if (prof == 0) {
         INFO( tr("No GL profile.") );
-//         return false;
     } else {
         WARNING( tr("Something went wrong!!!") );
         return false;
@@ -2986,7 +2985,7 @@ bool MainWindow::initializeFragment()
     QString filename = tabInfo[tabBar->currentIndex()].filename;
     QSettings settings;
     bool moveMain = settings.value("moveMain", true).toBool();
-    //     readSettings();
+
     fileManager.setOriginalFileName(filename);
 
     if (variableEditor->hasKeyFrames()) {
@@ -3163,7 +3162,6 @@ void MainWindow::cursorPositionChanged()
     int incFudge = 1;
     if (!(fs->source.count())) return;
     for (int i = 0; i < fs->lines.count(); i++) {
-        // fs->sourceFiles[fs->sourceFile[i]]->fileName()
         if (fs->lines[i] == blockNumber && QString::compare(filename, fs->sourceFileNames[fs->sourceFile[i]], Qt::CaseInsensitive) == 0) {
             ex.append(QString::number(i+incFudge));
         }
