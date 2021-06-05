@@ -130,7 +130,7 @@ bool Camera3D::parseKeys()
     glm::dvec3 right = normalize(cross(dir, up->getValue()));
     glm::dvec3 upV = up->getValue();
 
-    double factor = stepSize * 10.0;     // for anything related to movement
+//     double factor = stepSize * 10.0;     // for anything related to movement
     double rotationFactor = 2.0;         // for camera rotations independant of FoV (roll on the z axis with E and Q)
     double sensitivity = fovDown * 5.0;  // for camera rotations depending on FoV (T, G, Y & H)
 
