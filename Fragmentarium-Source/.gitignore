@@ -1,4 +1,5 @@
 .directory
 build
+build.win
 .kdev4/**
 *.kdev4
