@@ -36,7 +36,7 @@ MessageCallback( GLenum source,
                  const GLchar* message,
                  const void* userParam )
 {
-    // ignore non-significant error/warning codes
+    // ignore non-significant error/warning codes ???
     if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
 
     std::cout << "GL Debug message (" << id << "): " <<  message << " ";
@@ -92,6 +92,9 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 }
 
 // used immediately after glFunctions() to get line numbers with gl debug output
+// eg:
+// GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str()); glCheckError();
+//
 #define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
 #endif
 #endif
@@ -290,7 +293,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
 
     GLint s;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
-    INFO ( tr( "Maximum texture size: %1x%1" ).arg ( s ) );
+    INFO ( tr( "Maximum texture size: %1x%1" ).arg( s ) );
     
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
@@ -424,8 +427,8 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
             glGetTexParameteriv ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &levels );
 
             if ( wantedLevels != levels ) {
-              WARNING( tr("Asked gpu for %1 mip-map levels.").arg(wantedLevels) );
-              WARNING( tr("GPU returned %1 mip-map levels.").arg(levels));
+                WARNING( tr("Asked gpu for %1 mip-map levels.").arg(wantedLevels) );
+                WARNING( tr("GPU returned %1 mip-map levels.").arg(levels));
             }
         }
     }
@@ -441,8 +444,8 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (fWanted > 1.0) ? (fWanted < fLargest) ? fWanted : fLargest : 1.0);
         glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
         if ( fLargest != fWanted ) {
-          WARNING( tr("Asked gpu for %1 anisotropic filter.").arg(fWanted));
-          WARNING( tr("GPU returned %1 anisotropic filter.").arg(fLargest));
+            WARNING( tr("Asked gpu for %1 anisotropic filter.").arg(fWanted));
+            WARNING( tr("GPU returned %1 anisotropic filter.").arg(fLargest));
         }
     }
 
@@ -816,7 +819,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
 
     if (type == GL_SAMPLER_2D && (result.width>s || result.height>s) ) {
-        WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height).arg(s));
+        WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height, s));
         loaded = false;
     }
 
@@ -893,7 +896,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
 
         if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
-            WARNING(tr("Loader found EXR image: %1 x %2 is too large! max %3x%3").arg(w).arg(h).arg(s));
+            WARNING(tr("Loader found EXR image: %1 x %2 is too large! max %3x%4").arg(w).arg(h).arg(s).arg(s));
             return false;
         }
 
@@ -1345,7 +1348,7 @@ void DisplayWidget::makeBuffers()
     }
 
     // we must create both the backbuffer and previewBuffer
-    bufferString = QString ( "%1x%2 %3." ).arg ( w ).arg ( h ).arg ( b );
+    bufferString = QString ( "%1x%2 %3." ).arg( w).arg(h).arg(b );
     if (oldBufferString == bufferString) {
         return;
     }
@@ -1544,7 +1547,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
     // this only returns uniforms that have not been optimized out
     glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
 
-    for (uint i = 0; i < count; i++) {
+    for (uint i = 0; i < (uint)count; i++) {
 
         GLsizei bufSize = 256;
         GLsizei length;
@@ -1679,7 +1682,7 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
         l = shaderProg->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
             if (verbose && subframeCounter == 1) {
-                qDebug() << QString("Binding backbuffer (ID: %1) to active texture %2").arg(i).arg(0);
+                qDebug() << QString("Binding backbuffer (ID: %1) to active texture 0").arg(i);
             }
             if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                 setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
@@ -2069,8 +2072,8 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
     }
 
-    QString frametile = QString("%1.%2").arg ( tileMax*tileMax ).arg ( subframes );
-    QString framesize = QString("%1x%2").arg ( (tileMax*w)/(1.0 + padding) ).arg ( (tileMax*h)/(1.0 + padding) );
+    QString frametile = QString("%1.%2").arg( tileMax*tileMax ).arg( subframes );
+    QString framesize = QString("%1x%2").arg( (tileMax*w)/(1.0 + padding) ).arg( (tileMax*h)/(1.0 + padding) );
 
     progress->setWindowTitle(tr( "Frame:%1/%2 Time:%3" )
                              .arg((int)(time * renderFPS))
@@ -2094,7 +2097,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
             QTime t(0,0,0,0);
             t=t.addMSecs((int) eta);
             if (days > 0) {
-                renderETA = QString("%1:%2").arg(days).arg(t.toString("hh:mm:ss"));
+                renderETA = QString("%1:%2").arg(days).arg( t.toString("hh:mm:ss") );
             } else if (hours) {
                 renderETA = t.toString("hh:mm:ss");
             } else {
@@ -2615,7 +2618,7 @@ void DisplayWidget::delete_buffer_objects() {
 
 void DisplayWidget::init_arrays()
 {
-    uint kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
+    int kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
     uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( float ) * 4;
 
 	glGenBuffers( 1, &svbo );
