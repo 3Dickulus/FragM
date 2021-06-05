@@ -1484,7 +1484,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
 
             QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
             im.fill(Qt::black);
-            
+
             // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
             std::this_thread::sleep_for(std::chrono::microseconds(10000));
             
@@ -1502,22 +1502,23 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                 cachedTileImages.insert(tile,im);
             }
 
-            // display scaled tiles
-            float wScaleFactor = enginePixmap.width() / maxTiles;
-            float hScaleFactor = enginePixmap.height() / maxTiles;
-            int dx = (tile / maxTiles);
-            int dy = (maxTiles-1)-(tile % maxTiles);
-            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-            QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
-            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            // render scaled tiles into the overlay pixmap
-            QPainter painter2( &enginePixmap );
-            painter2.drawImage ( target, im, source );
-            painter2.end();
+            if(!runningScript) {
+                // display scaled tiles
+                float wScaleFactor = enginePixmap.width() / maxTiles;
+                float hScaleFactor = enginePixmap.height() / maxTiles;
+                int dx = (tile / maxTiles);
+                int dy = (maxTiles-1)-(tile % maxTiles);
+                QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+                im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                // render scaled tiles into the overlay pixmap
+                QPainter painter2( &enginePixmap );
+                painter2.drawImage ( target, im, source );
+                painter2.end();
 
-            // update the GL area overlay
-            engineOverlay->setPixmap(enginePixmap);
-            
+                // update the GL area overlay
+                engineOverlay->setPixmap(enginePixmap);
+            }            
         } else {
             stopScript();
             tile = maxTiles*maxTiles;
@@ -1575,6 +1576,9 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
             im.fill(Qt::black);
                
+            // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
+            std::this_thread::sleep_for(std::chrono::microseconds(10000));
+
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
             if (padding>0.0)  {
@@ -1599,20 +1603,22 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
                 out.setFrameBuffer (frameBuffer);
                 out.writeTile (dx, dy);
 
-                // display scaled tiles
-                float wScaleFactor = enginePixmap.width() / maxTiles;
-                float hScaleFactor = enginePixmap.height() / maxTiles;
-                int dx = (tile / maxTiles);
-                int dy = (maxTiles-1)-(tile % maxTiles);
-                QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
-                im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                // render scaled tiles into the overlay pixmap
-                QPainter painter2( &enginePixmap );
-                painter2.drawImage ( target, im, source );
-                painter2.end();
-                // update the GL area overlay
-                engineOverlay->setPixmap(enginePixmap);
+                if(!runningScript) {
+                    // display scaled tiles
+                    float wScaleFactor = enginePixmap.width() / maxTiles;
+                    float hScaleFactor = enginePixmap.height() / maxTiles;
+                    int dx = (tile / maxTiles);
+                    int dy = (maxTiles-1)-(tile % maxTiles);
+                    QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+                    QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+                    im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    // render scaled tiles into the overlay pixmap
+                    QPainter painter2( &enginePixmap );
+                    painter2.drawImage ( target, im, source );
+                    painter2.end();
+                    // update the GL area overlay
+                    engineOverlay->setPixmap(enginePixmap);
+                }
             }
         } else {
             stopScript();
@@ -1637,7 +1643,7 @@ void MainWindow::tileBasedRender()
 
     int tmpX = bufferXSpinBox->value();
     int tmpY = bufferYSpinBox->value();
-    if(tileSizeFromScreen) {
+    if(tileSizeFromScreen && !runningScript) {
         QSettings settings;
         settings.setValue("tilewidth",tmpX);
         settings.setValue("tileheight",tmpY);
@@ -1645,7 +1651,7 @@ void MainWindow::tileBasedRender()
     }
     OutputDialog od(this);
 retry:
-    if(tileSizeFromScreen) {
+    if(tileSizeFromScreen && !runningScript) {
         od.tileXSizeChanged(tmpX);
         od.tileYSizeChanged(tmpY);
     }
@@ -1666,20 +1672,19 @@ retry:
     int tileWidth = od.getTileWidth();
     int tileHeight = od.getTileHeight();
 
-    // calculate an offset if aspect ratios don't match
     QRect r = QRect(QPoint(0, 0), QSize(-1, -1));
-
+    // calculate an offset if aspect ratios don't match
     if((double)tmpX/(double)tmpY != (double)tileWidth/(double)tileHeight) {
         int tw = tileWidth;
         int th = tileHeight;
         double aspect = (double)tw/(double)th;
-
+        // adjust to X
         double fw = (double)tw/(double)tmpX;
         if (fw!=1.0) {
             tw = tmpX;
             th = tmpX/aspect;
         }
-
+        // adjust to Y if needed
         double fh = (double)th/(double)tmpY;
         if (fh>1.0) {
             tw = tmpY*aspect;
@@ -1840,7 +1845,7 @@ retry:
     int maxTime = od.getMaxTime();
     bool preview = od.preview();
     int startTime = od.doAnimation() ? od.startAtFrame() : 0;
-    int endTime = od.doAnimation() ? od.endAtFrame() : 0;
+    int endTime = od.doAnimation() ? od.endAtFrame()+1 : 0;
     int maxTiles = od.getTiles();
 
     int timeSteps = fps*maxTime;
@@ -1913,8 +1918,10 @@ retry:
     splitSizes << 0;
     splitter->insertWidget(1,engineOverlay);
     splitter->setSizes(splitSizes);
-
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    int handleWidth = splitter->handleWidth();
+    splitter->setHandleWidth(handleWidth/2);
+  
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     bool isFirst = true;
     // render tiles and update progress
@@ -2060,13 +2067,18 @@ retry:
         }
     }
 
-  QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 
     delete engineOverlay;
+
+    splitter->setHandleWidth(handleWidth);
     splitter->setSizes(splitSizes);
+
     engine->tilesCount = 0;
     engine->setState(oldState);
+
     progress.setValue(totalSteps);
+
     if (preview || progress.wasCanceled()) {
         engine->requireRedraw(true);
     }
@@ -2462,7 +2474,7 @@ void MainWindow::stop()
     lastStoredTime = getTime();
 
     if (engine->getState() == DisplayWidget::Animation) {
-        INFO(QString("%1 %2").arg(tr("Stopping: last stored time set to")).arg((double)lastStoredTime / renderFPS));
+        INFO( tr("Stopping: last stored time set to %1").arg((double)lastStoredTime / renderFPS) );
     }
 
     getTime();
@@ -3020,6 +3032,7 @@ bool MainWindow::initializeFragment()
         setSubframeMax ( fs.subframeMax );
     }
 
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     static int lastTime;
     QTime start = QTime::currentTime();
     if(rebuildRequired) {
@@ -3031,6 +3044,10 @@ bool MainWindow::initializeFragment()
             WARNING(e.getMessage());
         }
     } else ms = lastTime;
+    QApplication::restoreOverrideCursor();
+
+    // Added sleep of 10 millisecs so that CPU waits a bit for GPU
+    std::this_thread::sleep_for(std::chrono::microseconds(10000));
 
     if (engine->hasShader()) {
         // BUG Fixs Up vector
@@ -3680,14 +3697,17 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
     } else if (!lockedToWindowSize) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY = bufferYSpinBox->value();
+        // Aspect is handled a bit differently here compared to tilebased render
+        // because changes are "live" as the GUI is adjusted by user
         if(lockedAspect) {
             double fw = (double)bufferSizeX/(double)w;
             double fh = (double)bufferSizeY/(double)h;
+            // adjust X
             if (fw!=1.0 && h > bufferSizeY/fw) {
                 bufferSizeX = w;
                 bufferSizeY = bufferSizeX/currentAspect;
             }
-            else
+            else // adjust y
             if (fh!=1.0 && w > bufferSizeX/fh) {
                 bufferSizeX = bufferSizeY*currentAspect;
                 bufferSizeY = h;
@@ -4148,9 +4168,9 @@ void MainWindow::slotShortcutF6()
     QSettings settings;
     QString scriptname = settings.value("cmdscriptfilename").toString();
 
-    if(!scriptname.isEmpty()) {
+    bool loadingSucceded = false;
 
-        bool loadingSucceded = false;
+    if(!scriptname.isEmpty()) {
 
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -4168,21 +4188,23 @@ void MainWindow::slotShortcutF6()
         }
     }
 
-    runningScript = true;
+    if(loadingSucceded) {
+        runningScript = true;
 
-    QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
+        QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
 
-    QApplication::restoreOverrideCursor();
+        QApplication::restoreOverrideCursor();
 
-    if (result.isError()) {
-        QString err = result.toString();
-        cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
-        WARNING(tr("Error %1 at line %2").arg(err).arg(cmdScriptLineNumber));
-        runningScript=false;
-    } else {
-        cmdScriptLineNumber = 0;
-    }
-    runningScript = false;
+        if (result.isError()) {
+            QString err = result.toString();
+            cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
+            WARNING(tr("Error %1 at line %2").arg(err).arg(cmdScriptLineNumber));
+            runningScript=false;
+        } else {
+            cmdScriptLineNumber = 0;
+        }
+        
+    } else runningScript = false;
 }
 
 /* Slot handler of Shift+F6

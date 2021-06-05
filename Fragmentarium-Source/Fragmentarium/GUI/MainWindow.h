@@ -474,6 +474,7 @@ public slots:
     };
     void setSubFrames ( int s )
     {
+        setSubframeMax( s );
         QSettings settings;
         settings.setValue ( "subframes", s );
         settings.sync();
