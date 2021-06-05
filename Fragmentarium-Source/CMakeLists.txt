@@ -87,11 +87,7 @@ IF ( WIN32 )
 ENDIF ()
 
 IF(OPENGL_LIBRARIES_NOTFOUND)
-    IF(APPLE)
-        FIND_LIBRARY(OPENGL_LIBRARIES OpenGL )
-    ELSEIF(UNIX)
-        FIND_LIBRARY(OPENGL_LIBRARIES GL )
-    ELSEIF(WIN32)
+    IF(WIN32)
         set(OPENGL_LIBRARIES "-lopengl32" )
     ENDIF ()
 ENDIF ()
@@ -122,7 +118,7 @@ IF ( USE_OPEN_EXR )
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
     IF ( WIN32 )
-        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include/OpenEXR )
+        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include )
 
         set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
