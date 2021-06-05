@@ -37,16 +37,16 @@ FragmentSource::FragmentSource() :
 // Helpers:
 namespace
 {
-float parseFloat(QString s)
-{
-    bool success = false;
-    float to = s.toFloat(&success);
-    if (!success) {
-        WARNING("Could not parse float: " + s);
-        return 0;
-    }
-    return to;
-}
+// float parseFloat(QString s)
+// {
+//     bool success = false;
+//     float to = s.toFloat(&success);
+//     if (!success) {
+//         WARNING("Could not parse float: " + s);
+//         return 0;
+//     }
+//     return to;
+// }
 
 double parseDouble ( QString s ) {
     bool success = false;
