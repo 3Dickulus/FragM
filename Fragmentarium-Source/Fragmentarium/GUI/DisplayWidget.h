@@ -62,24 +62,32 @@
 
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_MAC
-#include <OpenEXRConfig.h>
+#include <OpenEXR/OpenEXRConfig.h>
 #endif
-#include <ImfArray.h>
-#include <ImfChannelList.h>
-#include <ImfNamespace.h>
-#include <ImfRgba.h>
-#include <ImfRgbaFile.h>
-#include <ImfTileDescription.h>
-#include <ImfTiledOutputFile.h>
-#include <ImfTiledRgbaFile.h>
-#include <half.h>
+#include <OpenEXR/ImfArray.h>
+#include <OpenEXR/ImfChannelList.h>
+#include <OpenEXR/ImfNamespace.h>
+#include <OpenEXR/ImfRgba.h>
+#include <OpenEXR/ImfRgbaFile.h>
+#include <OpenEXR/ImfTileDescription.h>
+#include <OpenEXR/ImfTiledOutputFile.h>
+#include <OpenEXR/ImfTiledRgbaFile.h>
+#define COMBINED_OPENEXR_VERSION ((10000*OPENEXR_VERSION_MAJOR) + \
+                                  (100*OPENEXR_VERSION_MINOR) + \
+                                  OPENEXR_VERSION_PATCH)
+#if COMBINED_OPENEXR_VERSION >= 20599 /* 2.5.99: pre-3.0 */
+#   include <Imath/half.h>
+#else
+    // OpenEXR 2.x, use the old locations
+#   include <OpenEXR/half.h>
+#endif
 
-#include <ImfInputFile.h>
-#include <ImfPartHelper.h>
-#include <ImfPartType.h>
-#include <ImfTiledInputPart.h>
+#include <OpenEXR/ImfInputFile.h>
+#include <OpenEXR/ImfPartHelper.h>
+#include <OpenEXR/ImfPartType.h>
+#include <OpenEXR/ImfTiledInputPart.h>
 
-#include <Iex.h>
+#include <OpenEXR/Iex.h>
 
 #endif
 
