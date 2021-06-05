@@ -30,7 +30,7 @@ project(Fragmentarium-${FRAGM_VERSION} VERSION ${FRAGM_VERSION} LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 11)
 
 IF(UNIX AND NOT APPLE)
-    # for find_package ( OpenEXR REQUIRED )
+
     find_package(ECM REQUIRED NO_MODULE)
 
     set(CMAKE_MODULE_PATH
@@ -66,7 +66,7 @@ IF ( USE_OPENGL_4 )
     ADD_DEFINITIONS ( -DUSE_OPENGL_4=1 )
 ENDIF ()
 
-ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wno-deprecated )
+ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wall )
 
 # ON if you have OpenEXR libs and include files
 OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
@@ -83,7 +83,7 @@ OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" ON)
 
 # set to the mingw lib path
 IF ( WIN32 )
-  set ( MINGW_LIB_PATH "c:/Qt/Qt5.9.9/Tools/mingw530_32/lib" CACHE PATH "set to the mingw lib path" )
+  set ( MINGW_LIB_PATH "C:/Qt/Qt5.9.9/Tools/mingw530_32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
 IF(OPENGL_LIBRARIES_NOTFOUND)
@@ -98,9 +98,8 @@ ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
-set (OpenEXR_LIBRARIES "")
+set (OpenEXTRA_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
-set (Ilmbase_INCLUDE_DIRS "")
 
     IF ( APPLE  )
         set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
@@ -109,25 +108,15 @@ set (Ilmbase_INCLUDE_DIRS "")
         set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
     ENDIF ()
 
-MARK_AS_ADVANCED (OpenEXR_LIBRARIES)
+MARK_AS_ADVANCED (OpenEXTRA_LIBRARIES)
 MARK_AS_ADVANCED (OpenEXR_INCLUDE_DIRS)
-MARK_AS_ADVANCED (Ilmbase_INCLUDE_DIRS)
 MARK_AS_ADVANCED (GLM_INCLUDE_DIRS)
 
 IF ( USE_OPEN_EXR )
 
     IF(UNIX AND NOT APPLE)
         find_package ( OpenEXR REQUIRED )
-        set( OpenEXR_LIBS
-            IlmImf
-            Half
-            Imath
-            Iex
-            IexMath
-            IlmThread
-        )
-
-        set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
+        set( OpenEXTRA_LIBRARIES z pthread )
     ENDIF ()
 
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
@@ -148,27 +137,12 @@ IF ( USE_OPEN_EXR )
 
         MESSAGE("Using MinGW threads")
         ADD_DEFINITIONS(-mthreads)
-        set ( OpenEXR_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
+        set ( OpenEXTRA_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
     ENDIF ()
 
     IF(APPLE)
-        set ( OpenEXR_LIB_DIR /usr/local/Cellar/openexr/2.4.0/lib )
-        set ( Ilmbase_LIB_DIR /usr/local/Cellar/ilmbase/2.4.0/lib )
-
-        set ( OpenEXR_INCLUDE_DIRS /usr/local/Cellar/openexr/2.4.0/include/OpenEXR )
-        set ( Ilmbase_INCLUDE_DIRS /usr/local/Cellar/ilmbase/2.4.0/include/OpenEXR )
-
-        set( OpenEXR_LIBS
-            IlmImf
-            Half
-            Imath
-            Iex
-            IexMath
-            IlmThread
-        )
-
-        set( OpenEXR_LIBRARIES -L${Ilmbase_LIB_DIR} -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} z pthread )
+        set( OpenEXTRA_LIBRARIES z pthread )
 
         ADD_DEFINITIONS ( -pthread )
 
@@ -184,7 +158,6 @@ include_directories (
     ${OPENGL_INCLUDE_DIR}
 	${GLM_INCLUDE_DIRS}
 	${OpenEXR_INCLUDE_DIRS}
-	${Ilmbase_INCLUDE_DIRS}
 	${Qt5Core_INCLUDE_DIRS}
 	${Qt5Script_INCLUDE_DIRS}
 	${Qt5Widgets_INCLUDE_DIRS}
@@ -307,15 +280,41 @@ IF ( APPLE )
 ELSEIF ( UNIX )
   add_executable ( ${PROJECT_NAME} ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
-#   set ( WIN32_EXECUTABLE ON )
+# one for desktop
   add_executable ( ${PROJECT_NAME} WIN32 ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
-#   set ( WIN32_EXECUTABLE OFF )
+# one for console
   add_executable ( ${PROJECT_NAME}-console ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
-target_link_libraries ( ${PROJECT_NAME} ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME}
+${OPENGL_LIBRARIES}
+        # For OpenEXR/Imath 3.x:
+          $<$<TARGET_EXISTS:OpenEXR::OpenEXR>:OpenEXR::OpenEXR>
+          $<$<TARGET_EXISTS:Imath::Imath>:Imath::Imath>
+          $<$<TARGET_EXISTS:Imath::Half>:Imath::Half>
+        # For OpenEXR 2.4/2.5:
+          $<$<TARGET_EXISTS:OpenEXR::IlmImf>:OpenEXR::IlmImf>
+          $<$<TARGET_EXISTS:IlmBase::Imath>:IlmBase::Imath>
+          $<$<TARGET_EXISTS:IlmBase::Half>:IlmBase::Half>
+          $<$<TARGET_EXISTS:IlmBase::IlmThread>:IlmBase::IlmThread>
+          $<$<TARGET_EXISTS:IlmBase::Iex>:IlmBase::Iex>
+          $<$<TARGET_EXISTS:IlmBase::IexMath>:IlmBase::IexMath>
+${OpenEXTRA_LIBRARIES} )
 IF ( WIN32 )
-target_link_libraries ( ${PROJECT_NAME}-console ${OPENGL_LIBRARIES} ${OpenEXR_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME}-console
+${OPENGL_LIBRARIES}
+        # For OpenEXR/Imath 3.x:
+          $<$<TARGET_EXISTS:OpenEXR::OpenEXR>:OpenEXR::OpenEXR>
+          $<$<TARGET_EXISTS:Imath::Imath>:Imath::Imath>
+          $<$<TARGET_EXISTS:Imath::Half>:Imath::Half>
+        # For OpenEXR 2.4/2.5:
+          $<$<TARGET_EXISTS:OpenEXR::IlmImf>:OpenEXR::IlmImf>
+          $<$<TARGET_EXISTS:IlmBase::Imath>:IlmBase::Imath>
+          $<$<TARGET_EXISTS:IlmBase::Half>:IlmBase::Half>
+          $<$<TARGET_EXISTS:IlmBase::IlmThread>:IlmBase::IlmThread>
+          $<$<TARGET_EXISTS:IlmBase::Iex>:IlmBase::Iex>
+          $<$<TARGET_EXISTS:IlmBase::IexMath>:IlmBase::IexMath>
+${OpenEXTRA_LIBRARIES} )
 ENDIF ()
 
 qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script ScriptTools)
