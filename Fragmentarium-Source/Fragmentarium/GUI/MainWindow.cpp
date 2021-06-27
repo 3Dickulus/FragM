@@ -1489,8 +1489,8 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
             im.fill(Qt::black);
 
-            // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
-//             std::this_thread::sleep_for(std::chrono::microseconds(10000));
+            // Added sleep of 10 ms so that CPU does not submit too much work to GPU
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 

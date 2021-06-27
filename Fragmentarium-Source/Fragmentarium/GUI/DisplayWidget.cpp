@@ -2117,8 +2117,8 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
     if ( !progress->wasCanceled() ) {
         for ( int i = 0; i< subframes; i++ ) {
-            ( *steps ) ++;
             drawToFrameBufferObject ( hiresBuffer, false );
+            ( *steps ) ++;
         }
     }
 
