@@ -874,13 +874,13 @@ void MainWindow::initTools()
                                 // we have path and files so add menu to bar just once though
                                 if (exrToolsMenu == nullptr) {
                                     exrToolsMenu = menuBar()->addMenu(tr("EXR Tools"));
-    }
+                                }
                                 // add item to menu
                                 auto *a = new QAction(qfi.fileName(), this);
                                 a->setData(toolName);
                                 a->setObjectName(toolName);
                                 connect(a, SIGNAL(triggered()), this, SLOT(runEXRTool()));
-                exrToolsMenu->addAction(a);
+                                exrToolsMenu->addAction(a);
                             }
                         }
                     }
@@ -978,22 +978,25 @@ void MainWindow::runEXRTool()
 
 void MainWindow::runSupportProgram()
 {
-    // for now it's ggr2glsl program only
     QString cmnd = "\"" + sender()->objectName() + "\""; // in case the program name has spaces
-    // get input file file
-    QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
-    QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), "", filter);
-    if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
-        return;
+    bool cmndOk = false;
+    // for now it's ggr2glsl program only
+    if(cmnd.contains("ggr2glsl", Qt::CaseInsensitive)) {
+        // get input file file
+        QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
+        QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), "", filter);
+        if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
+            return;
+        }
+        cmnd += " < \"" + ggrFileName + "\""; // in case the gradient name has spaces
+        // get output file
+        filter = tr("Fragments (*.frag);;All Files (*.*)");
+        QString glslFileName = QFileDialog::getSaveFileName(this, tr("Write GLSL Fragment"), ggrFileName.replace(".ggr","-gradient.frag"), filter);
+        if (glslFileName.isEmpty()) {
+            return;
+        }
+        cmnd += " > \"" + glslFileName + "\""; // in case the fragment name has spaces
     }
-    cmnd += " < \"" + ggrFileName + "\""; // in case the gradient name has spaces
-    // get output file
-    filter = tr("Fragments (*.frag);;All Files (*.*)");
-    QString glslFileName = QFileDialog::getSaveFileName(this, tr("Write GLSL Fragment"), ggrFileName.replace(".ggr","-gradient.frag"), filter);
-    if (glslFileName.isEmpty()) {
-        return;
-    }
-    cmnd += " > \"" + glslFileName + "\""; // in case the fragment name has spaces
 
     // confirm user request
     QMessageBox msgBox(this);
@@ -1005,17 +1008,18 @@ void MainWindow::runSupportProgram()
     int ret = msgBox.exec();
     switch (ret) {
     case QMessageBox::Ok:
+        cmndOk = true;
         break;
     case QMessageBox::Cancel:
-        cmnd = "";
+        cmnd = ""; cmndOk = false;
         break;
     default:
         // should never be reached
-        cmnd = "";
+        cmnd = ""; cmndOk = false;
         break;
     }
 
-    if(cmnd != "" && system( cmnd.toStdString().c_str() ) != -1) {
+    if(cmndOk && system( cmnd.toStdString().c_str() ) != -1) {
         // confirm success
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Information);
@@ -1486,7 +1490,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             im.fill(Qt::black);
 
             // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
-            std::this_thread::sleep_for(std::chrono::microseconds(10000));
+//             std::this_thread::sleep_for(std::chrono::microseconds(10000));
             
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
@@ -1905,7 +1909,7 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-    progress.resize(300, 120);
+    progress.resize(320, 120);
 
     QTime totalTime;
     totalTime.start();
