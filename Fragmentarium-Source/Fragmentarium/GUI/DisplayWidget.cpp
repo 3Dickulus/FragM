@@ -2072,13 +2072,6 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
       WARNING ( tr("Failed to bind hiresBuffer FBO") );
     }
 
-    if ( !progress->wasCanceled() ) {
-        for ( int i = 0; i< subframes; i++ ) {
-            ( *steps ) ++;
-            drawToFrameBufferObject ( hiresBuffer, false );
-        }
-    }
-
     QString frametile = QString("%1.%2").arg( tileMax*tileMax ).arg( subframes );
     QString framesize = QString("%1x%2").arg( (tileMax*w)/(1.0 + padding) ).arg( (tileMax*h)/(1.0 + padding) );
 
@@ -2121,6 +2114,13 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                             .arg ( renderETA ) );
     
     progress->setValue ( *steps );
+
+    if ( !progress->wasCanceled() ) {
+        for ( int i = 0; i< subframes; i++ ) {
+            ( *steps ) ++;
+            drawToFrameBufferObject ( hiresBuffer, false );
+        }
+    }
 
 
     (*im) = hiresBuffer->toImage();
