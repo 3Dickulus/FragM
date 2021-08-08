@@ -455,6 +455,92 @@ private:
 };
 
 
+// A helper class (combined int menu+spinner)
+class IntComboBox : public QWidget
+{
+    Q_OBJECT
+public:
+    IntComboBox(QWidget* parent, int defaultValue, QStringList texts)
+        : QWidget ( parent ), defaultValue ( defaultValue ), texts ( texts )
+    {
+
+        setMinimumSize(160,20);
+        setMaximumSize(2048,20);
+        setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+
+        QHBoxLayout* l = new QHBoxLayout(this);
+        l->setSpacing(2);
+        l->setContentsMargins(0,0,0,0);
+
+        comboBox = new QComboBox(this);
+//         comboBox->setRange(minimum,maximum);
+        comboBox->addItems(texts);
+        comboBox->setCurrentIndex(defaultValue);
+
+        comboBox->setMinimumSize(160,20);
+        comboBox->setMaximumSize(2048,20);
+        comboBox->setSizePolicy (QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+        l->addWidget(comboBox);
+
+        spinner = new QSpinBox(this);
+        spinner->setMaximum(texts.count()-1);
+        spinner->setMinimum(0);
+        spinner->setValue(defaultValue);
+        spinner->setKeyboardTracking(false);
+        l->addWidget(spinner);
+
+        setSizePolicy ( QSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+
+        connect (spinner, SIGNAL(valueChanged(int)), this, SLOT(spinnerChanged(int)));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxChanged(int)));
+    }
+
+    int getValue()
+    {
+        return spinner->value();
+    }
+public slots:
+    void setValue ( int i )
+    {
+        spinner->setValue ( i );
+    }
+
+    void setValue ( QStringList list )
+    {
+        int index = comboBox->currentIndex();
+        comboBox->clear();
+        comboBox->addItems(list);
+        spinner->setValue ( index );
+    }
+
+signals:
+    void changed();
+
+protected slots:
+    void spinnerChanged ( int val )
+    {
+        comboBox->blockSignals(true);
+        comboBox->setCurrentIndex(val);
+        comboBox->blockSignals(false);
+        emit changed();
+    }
+
+    void comboBoxChanged ( int val )
+    {
+        spinner->blockSignals(true);
+        spinner->setValue(val);
+        spinner->blockSignals(false);
+        emit changed();
+    }
+
+private:
+
+    QComboBox* comboBox;
+    QSpinBox* spinner;
+    int defaultValue;
+    QStringList texts;
+};
+
 class CameraControl;
 
 /// Widget editor base class.
@@ -1212,6 +1298,58 @@ public:
 private:
     QCheckBox* checkBox;
     bool defaultValue;
+};
+
+
+class IntMenuWidget : public VariableWidget
+{
+public:
+    /// Variable constructor.
+    IntMenuWidget ( QWidget *parent, QWidget *variableEditor, QString name, int defaultValue, QStringList texts );
+    virtual QString getUniqueName()
+    {
+        return QString ( "%1:%2:%3" ).arg ( group ).arg ( getName() ).arg ( defaultValue );
+    }
+    virtual QString getValueAsText()
+    {
+        return QString::number ( comboBox->getValue() );
+    };
+    virtual QString toString();
+    virtual bool fromString(QString string);
+    int getValue()
+    {
+        return comboBox->getValue();
+    }
+    void setValue ( int i )
+    {
+        comboBox->setValue ( i );
+    }
+    virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
+    void reset()
+    {
+        comboBox->setValue ( defaultValue );
+    }
+    QString getLockedSubstitution()
+    {
+        return "const int " + name + " = " +
+               QString::number ( comboBox->getValue() ) + ";";
+    };
+    QString getLockedSubstitution2()
+    {
+        return "#define " + name + " " + QString::number ( comboBox->getValue() ) +
+               "";
+    };
+
+    void setIsDouble ( bool wd = false )
+    {
+        wantDouble = wd;
+    };
+    void setSliderType(SliderType ){};
+
+private:
+    IntComboBox* comboBox;
+    int defaultValue;
+    QStringList texts;
 };
 
 

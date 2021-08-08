@@ -372,6 +372,28 @@ private:
     int defaultValue;
 };
 
+class IntMenuParameter : public GuiParameter {
+public:
+    IntMenuParameter(QString group, QString name, QString tooltip, int defaultValue, QStringList texts) :
+        GuiParameter(group, name, tooltip), defaultValue(defaultValue), texts(texts) {}
+
+    virtual QString getUniqueName() {
+        return QString("%1:%2:%3").arg(group).arg(getName()).arg(defaultValue);
+    }
+    int getDefaultValue() {
+        return defaultValue;
+    }
+    int getCount() {
+        return texts.count();
+    }
+    QStringList getText() {
+        return texts;
+    }
+private:
+    int defaultValue;
+    QStringList texts;
+};
+
 class FragmentSource {
 public:
     FragmentSource();
@@ -415,6 +437,7 @@ public:
     static QRegExp colorChooser ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
     static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
 
+    static QRegExp intMenu ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*menu\\[(\\S+),(.*)\\]"+lockTypeString );
     static QRegExp intSlider ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
     static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"+lockTypeString );
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
@@ -454,6 +477,7 @@ public:
     void parseFloat3Slider( FragmentSource* fs, int i);
     void parseFloat4Slider( FragmentSource* fs, int i);
     void parseColorChooser( FragmentSource* fs, int i);
+    void parseIntMenu( FragmentSource* fs, int i);
     void parseIntSlider( FragmentSource* fs, int i);
     void parseBoolChooser( FragmentSource* fs, int i);
     void parseIterations( FragmentSource* fs);

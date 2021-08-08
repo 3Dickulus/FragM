@@ -340,6 +340,7 @@ protected:
 
                 << "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+);\\s*slider\\[(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\]"
                 << "^\\s*uniform\\s+int\\s+(\\S+);\\s*slider\\[(" + NUMi + "),(" + NUMi + "),(" + NUMi + ")\\]"
+                << "^\\s*uniform\\s+int\\s+(\\S+);\\s*menu\\[(" + NUMi + "),(.*)\\]"
                 << "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[([true|false]{1,5})\\]"
                 << "^\\s*uniform\\s+sampler([2D|Cube]{1,4})\\s+(\\S+);\\s*file\\[(\\S+)[,\\s+]{0,1}([\\S+]{1,})\\]"
                 << "(random\\[" + NUMf + "," + NUMf + "\\])"

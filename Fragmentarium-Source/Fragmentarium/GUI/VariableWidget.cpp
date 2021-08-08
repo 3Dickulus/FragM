@@ -1020,6 +1020,50 @@ void BoolWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
         shaderProgram->setUniformValue(l, (checkBox->isChecked() ? 1 : 0));
     }
 }
+/// ------------ MenuWidget ---------------------
+
+IntMenuWidget::IntMenuWidget(QWidget *parent, QWidget *variableEditor, QString name, int defaultValue, QStringList texts)
+    : VariableWidget(parent, variableEditor, name), defaultValue(defaultValue), texts ( texts )
+{
+
+    auto *l = new QHBoxLayout(widget);
+    l->setSpacing(2);
+    l->setContentsMargins (0,0,0,0);
+
+    comboBox = new IntComboBox(parent, defaultValue, texts);
+    comboBox->setObjectName(name);
+    l->addWidget(comboBox);
+    connect(comboBox, SIGNAL(changed()),  this, SLOT(valueChanged()));
+
+}
+
+QString IntMenuWidget::toString()
+{
+    return QString("%1").arg(comboBox->getValue());
+}
+
+bool IntMenuWidget::fromString(QString string)
+{
+    if (comboBox->getValue() == string.toInt()) {
+        return false;
+    }
+    int i;
+    MiniParser(string).getInt(i);
+    if (i == getValue()) {
+        return false;
+    }
+
+    comboBox->setValue(i);
+    return isLocked();
+}
+
+void IntMenuWidget::setUserUniform(QOpenGLShaderProgram *shaderProgram)
+{
+    int l = uniformLocation(shaderProgram);
+    if (l != -1) {
+        shaderProgram->setUniformValue(l, (int)(comboBox->getValue()));
+    }
+}
 
 } // namespace GUI
 } // namespace Fragmentarium

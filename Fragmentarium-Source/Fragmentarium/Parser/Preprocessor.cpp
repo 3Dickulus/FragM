@@ -646,6 +646,29 @@ void Preprocessor::parseBoolChooser(FragmentSource *fs, int i)
     fs->params.append(bp);
 }
 
+void Preprocessor::parseIntMenu(FragmentSource *fs, int i)
+{
+    QString name = intMenu.cap(1);
+    fs->source[i] = "uniform int " + name + ";"; // uniform location
+    QString defS = intMenu.cap(2);
+    QString textS = intMenu.cap(3);
+
+    bool succes = false;
+    int def = defS.toInt(&succes);
+    bool succes2 = false;
+    QStringList text = textS.split(";");
+    if(text[0].length() < textS.length()) succes2=true;
+
+    if (!succes || !succes2) {
+        WARNING("Could not parse integer value for uniform: " + name);
+        return; // continue;
+    }
+
+    IntMenuParameter *mp = new IntMenuParameter(currentGroup, name, lastComment, def, text);
+    setLockType(mp, intMenu.cap(4));
+    fs->params.append(mp);
+}
+
 void Preprocessor::parseIterations(FragmentSource *fs)
 {
     QString iterationCount = iterations.cap(1);
@@ -730,6 +753,8 @@ FragmentSource Preprocessor::parse(QString input, QString file, bool moveMain)
             parseFloat4Slider(&fs, i);
         } else if (colorChooser.indexIn(s) != -1) {
             parseColorChooser(&fs, i);
+        } else if (intMenu.indexIn(s) != -1) {
+            parseIntMenu(&fs, i);
         } else if (intSlider.indexIn(s) != -1) {
             parseIntSlider(&fs, i);
         } else if (boolChooser.indexIn(s) != -1) {
