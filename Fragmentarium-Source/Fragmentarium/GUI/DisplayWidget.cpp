@@ -2080,6 +2080,19 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                              .arg(renderToFrame)
                              .arg(time, 8, 'g', 3, QChar(' ')));
 
+    progress->setValue ( *steps );
+
+    if ( !progress->wasCanceled() ) {
+        for ( int i = 0; i< subframes; i++ ) {
+            ( *steps ) ++;
+            drawToFrameBufferObject ( hiresBuffer, false );
+        }
+    }
+
+    (*im) = hiresBuffer->toImage();
+    tileImage = im;
+    subframeCounter=0;
+
     // compute ETA in ms
     int64_t total = progress->maximum();
     int64_t current = *steps;
@@ -2113,19 +2126,6 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                             .arg ( (tileAVG/(tile+1))/1000.0 )
                             .arg ( renderETA ) );
     
-    progress->setValue ( *steps );
-
-    if ( !progress->wasCanceled() ) {
-        for ( int i = 0; i< subframes; i++ ) {
-            drawToFrameBufferObject ( hiresBuffer, false );
-            ( *steps ) ++;
-        }
-    }
-
-
-    (*im) = hiresBuffer->toImage();
-    tileImage = im;
-    subframeCounter=0;
 
     if ( !hiresBuffer->release() ) {
       WARNING ( tr("Failed to release hiresBuffer FBO") );
@@ -2192,6 +2192,7 @@ void DisplayWidget::paintGL()
     }
 
     drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0) );
+
 
 }
 
