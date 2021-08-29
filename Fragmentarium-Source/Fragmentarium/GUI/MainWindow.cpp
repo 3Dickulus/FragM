@@ -3375,12 +3375,9 @@ void MainWindow::closeTab(int index)
     // if no more tabs don't try to reset to last saved settings
     if (tabBar->currentIndex() == -1) {
         return;
-    }    // this bit of fudge resets the tab to its last settings
-    TextEdit *te = getTextEdit();
-    
-    setRebuildStatus(variableEditor->setSettings(te->lastSettings()));
-    
-        setRebuildStatus(initializeFragment()); // this bit of fudge preserves textures ???
+    }
+    // this bit of fudge resets the tab to its last settings and preserves textures ???
+    setRebuildStatus(initializeFragment());
 }
 
 void MainWindow::clearKeyFrames()
