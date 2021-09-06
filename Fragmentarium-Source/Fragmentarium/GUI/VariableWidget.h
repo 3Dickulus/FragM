@@ -146,7 +146,6 @@ public:
             if (ok) {
                 slider->setSingleStep(i);
                 slider->setPageStep(i*10);
-                spinner->setSingleStep(i);
             }
 
         } else if ( choice == &scientificFormatAction ) {
