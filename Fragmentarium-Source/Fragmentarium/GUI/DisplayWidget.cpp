@@ -1744,7 +1744,6 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         qDebug() << QString("Draw fragment program: %1").arg(c++);
     }
 
-    shaderProgram->bind();
 
     // -- Viewport
     if ( toBuffer ) {
@@ -1752,6 +1751,8 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     } else {
         setViewPort ( w,h );
     }
+
+    shaderProgram->bind();
 
     // -- Projection
     // The projection mode as used here
@@ -1779,6 +1780,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         setShaderUniforms(shaderProgram);
     }
 
+    glFinish(); // wait for GPU to return control noop if Q is empty
     glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
     glEnable ( GL_DEPTH_TEST );  // enable depth testing
     glDepthMask ( GL_TRUE );     // enable depth buffer writing
@@ -1788,8 +1790,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 	glDrawArrays( GL_TRIANGLES, 0, 3 ); // shader draws on this surface
-
-    glFinish(); // wait for GPU to return control
+    glFlush(); // the Q
 
     // finished with the shader
     shaderProgram->release();
@@ -1891,6 +1892,8 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         return;
     }
 
+    setViewPort ( bufferSizeX, bufferSizeY );
+
     // Draw a textured quad using the preview texture.
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->bind();
@@ -1901,8 +1904,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else if (shaderProgram != nullptr) shaderProgram->bind(); // if no buffershader
 
-    setViewPort ( bufferSizeX, bufferSizeY );
-
+    glFinish(); // wait for GPU to return control noop if Q is empty
     glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
     glBindTexture ( GL_TEXTURE_2D, previewBuffer->texture() );
 
@@ -1917,8 +1919,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
-
-    glFinish(); // wait for GPU to return control
+    glFlush(); // the Q
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
