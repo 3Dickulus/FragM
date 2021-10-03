@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Fragmentarium
+Comment=Experimental GLSL IDE An integrated environment for exploring GPU pixel graphics.
+TryExec=Fragmentarium-2.5.5-210928
+Exec=Fragmentarium-2.5.5-210928
+Icon=FragMicon
+NoDisplay=false
+Path=/usr/local/Fragmentarium-2.5.5-210928/
+StartupNotify=true
+Terminal=false
+Categories=Development;
+X-KDE-SubstituteUID=false
