@@ -50,6 +50,8 @@
 #include "Preprocessor.h"
 #include "VariableEditor.h"
 
+#include "ggr2glsl.h"
+
 #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 namespace Fragmentarium
@@ -139,6 +141,9 @@ void MainWindow::createCommandHelpMenu(QMenu *menu, QWidget *textEdit,
     preprocessorMenu->addAction("#define DontClearOnChange", textEdit, SLOT(insertText()));
     preprocessorMenu->addAction("#define IterationsBetweenRedraws 10", textEdit, SLOT(insertText()));
     preprocessorMenu->addAction("#define SubframeMax 20", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#define providesColor", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#define providesBackground", textEdit, SLOT(insertText()));
+    preprocessorMenu->addAction("#define providesNormal", textEdit, SLOT(insertText()));
 
     QMenu *textureFlagsMenu = new QMenu(tr("2D Texture Options"), nullptr);
     textureFlagsMenu->addAction("#TexParameter textureName GL_TEXTURE_MAG_FILTER GL_NEAREST", textEdit, SLOT(insertText()));
@@ -696,8 +701,11 @@ void MainWindow::init()
     splitter->addWidget( engine );
     tabBar = new QTabBar(this);
     tabBar->setObjectName(QString::fromUtf8("TabBar"));
-    tabBar->setMovable(true);
     tabBar->setTabsClosable(true);
+
+    tabBar->setMovable(false);
+    tabBar->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
     fpsLabel = new QLabel(this);
@@ -1019,26 +1027,15 @@ void MainWindow::runSupportProgram()
         break;
     }
 
-    if(cmndOk && system( cmnd.toStdString().c_str() ) != -1) {
-        // confirm success
-        QMessageBox msgBox(this);
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setText( cmnd );
-        msgBox.setInformativeText(tr("Command executed successfully!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
-    }
-    else {
-        // confirm fail
-        QMessageBox msgBox(this);
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setText( cmnd );
-        msgBox.setInformativeText(tr("Execute command Failed!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
-    }
+    bool success = (cmndOk && system( cmnd.toStdString().c_str() ) != -1);
+
+    // confirm success
+    msgBox.setIcon(success ? QMessageBox::Information : QMessageBox::Critical);
+    msgBox.setText( cmnd );
+    msgBox.setInformativeText(success ? tr("Command succeeded!") : tr("Execute command Failed!"));
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
 
 }
 
@@ -3228,7 +3225,30 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     bool loadingSucceded = false;
     if (filename.isEmpty()) {
         textEdit->setPlainText(s);
-    } else {
+    } else 
+    if (filename.toLower().endsWith(".ggr") && QFile(filename).exists()) {
+        Ggr2Glsl *gradientCode = new Ggr2Glsl(filename);
+        if(gradientCode->isLoaded()) {
+
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            QStringList glslObjectColorText;
+            gradientCode->ggr2glsl( glslObjectColorText, true);
+            QStringList glslBackgroundColorText;
+            gradientCode->ggr2glsl( glslBackgroundColorText, false);
+
+            QStringList glslText = glslObjectColorText;
+            glslText << glslBackgroundColorText;
+            
+            textEdit->setPlainText( glslText.join("\n"));
+
+            QApplication::restoreOverrideCursor();
+            INFO(tr("Converted file: %1").arg(filename));
+            loadingSucceded = true;
+            filename.replace(".ggr",".frag");
+        }
+    }
+    else
+    {
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
             textEdit->setPlainText(tr("// Cannot read file %1:\n// %2\n").arg(filename).arg(file.errorString()) + s);
@@ -3296,7 +3316,6 @@ void MainWindow::resetCamera(bool fullReset)
 
 void MainWindow::tabChanged(int index)
 {
-
     if (index > tabInfo.size()) {
         return;
     }

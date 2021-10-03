@@ -169,6 +169,7 @@ include_directories (
 	ThirdPartyCode)
 
 set ( Fragmentarium_HDRS
+    ThirdPartyCode/ggr2glsl.h
     ThirdPartyCode/ExpSpinBox.h
 	ThirdPartyCode/hdrloader.h
 	ThirdPartyCode/asmbrowser.h
@@ -189,6 +190,7 @@ set ( Fragmentarium_HDRS
 	)
 
 set ( Fragmentarium_SRCS
+    ThirdPartyCode/ggr2glsl.cpp
     ThirdPartyCode/ExpSpinBox.cpp
 	ThirdPartyCode/hdrloader.cpp
 	ThirdPartyCode/asmbrowser.cpp
@@ -390,9 +392,9 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
             SET(CPACK_RPM_PACKAGE_GROUP "Graphics")
             SET(CPACK_RPM_PACKAGE_VENDOR "Digilantism")
             SET(CPACK_RPM_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
-            SET(CPACK_RPM_PACKAGE_PREDEPENDS "libopenexr24")
+            SET(CPACK_RPM_PACKAGE_PREDEPENDS "libopenexr25")
             SET(CPACK_RPM_PACKAGE_DEPENDS "libQt5OpenGL5, libQt5Gui5, libQt5Script5, libQt5Xml5")
-            SET(CPACK_RPM_PACKAGE_PROVIDES "FragM")
+            SET(CPACK_RPM_PACKAGE_PROVIDES "Fragmentarium")
             SET(CPACK_GENERATOR "RPM")
             SET(CPACK_PACKAGE_FILE_NAME ${CPACK_RPM_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}-${CMAKE_SYSTEM_NAME} )
         ENDIF()
@@ -409,7 +411,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
             SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "ffmpeg,mencoder")
             SET(CPACK_DEBIAN_PACKAGE_PREDEPENDS "libopenexr24")
             SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5opengl5, libqt5gui5, libqt5script5, libqt5xml5")
-            SET(CPACK_DEBIAN_PACKAGE_PROVIDES "FragM")
+            SET(CPACK_DEBIAN_PACKAGE_PROVIDES "Fragmentarium")
             SET(CPACK_GENERATOR "DEB")
             SET(CPACK_PACKAGE_FILE_NAME ${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}-${CMAKE_SYSTEM_NAME} )
         ENDIF()

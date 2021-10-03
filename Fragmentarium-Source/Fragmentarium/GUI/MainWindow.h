@@ -720,6 +720,7 @@ private slots:
         lockedAspect = l; l ? aspectLock->setIcon(QIcon(":/Icons/padlocka.png")) : aspectLock->setIcon(QIcon(":/Icons/padlockb.png"));
         currentAspect = (double)bufferXSpinBox->value()/(double)bufferYSpinBox->value();
     };
+    
 private:
 
     QString langID;
