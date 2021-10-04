@@ -42,6 +42,7 @@ OutputDialog::OutputDialog(QWidget *parent) : QDialog(parent)
     }
 
     lockAspect(m_ui.lockAspectCheckBox->isChecked());
+    m_ui.lockAspectCheckBox->setEnabled(!m_ui.lockAspectCheckBox->isChecked());
     tileXSizeChanged(tileWidth);
     tileYSizeChanged(tileHeight);
     updateTotalTiles(0);
@@ -49,6 +50,7 @@ OutputDialog::OutputDialog(QWidget *parent) : QDialog(parent)
     updateFileName();
 
     connect(m_ui.frameRangeSlider, SIGNAL(rangeChanged(QPair<int, int>)), this, SLOT(frameRangeSliderChanged(QPair<int, int>)));
+    
 }
 
 OutputDialog::~OutputDialog()
@@ -70,8 +72,8 @@ void OutputDialog::readOutputSettings()
     m_ui.paddingSlider->setValue(settings.value("padding", 0).toInt());
     m_ui.animCheckBox->setChecked(settings.value("animation", false).toBool());
     m_ui.previewFrameCheckBox->setChecked(settings.value("preview", false).toBool());
-    m_ui.tileWidthSpinBox->setValue(settings.value("tilewidth", 16).toInt());
-    m_ui.tileHeightSpinBox->setValue(settings.value("tileheight", 9).toInt());
+    tileWidth = settings.value("tilewidth", 16).toInt();    m_ui.tileWidthSpinBox->setValue(tileWidth);
+    tileHeight = settings.value("tileheight", 9).toInt();   m_ui.tileHeightSpinBox->setValue(tileHeight);
     m_ui.lockAspectCheckBox->setChecked(settings.value("lockedAspect", false).toBool());
     currentAspect = (double)m_ui.tileWidthSpinBox->value()/(double)m_ui.tileHeightSpinBox->value();
 }
@@ -283,15 +285,24 @@ void OutputDialog::updateTotalTiles(int value)
     // Tiles x subframes x animframes
 }
 
+#define MIN(a,b)(a<b?a:b)
+#define MAX(a,b)(a>b?a:b)
+
 void OutputDialog::tileXSizeChanged(int value)
 {
     if(lockedAspect) {
         m_ui.tileHeightSpinBox->blockSignals(true);
-        m_ui.tileHeightSpinBox->setValue(value/currentAspect);
+        if(currentAspect > 1) {
+            tileHeight = MIN(value, round(value / currentAspect));
+            m_ui.tileHeightSpinBox->setValue(tileHeight);
+        } else {
+            tileHeight =  MAX(value, round(value / currentAspect));
+            m_ui.tileHeightSpinBox->setValue(tileHeight);
+        }
         m_ui.tileHeightSpinBox->blockSignals(false);
     }
+
     tileWidth = m_ui.tileWidthSpinBox->value();
-    tileHeight = m_ui.tileHeightSpinBox->value();
     tilesChanged(getTiles());
 }
 
@@ -299,10 +310,16 @@ void OutputDialog::tileYSizeChanged(int value)
 {
     if(lockedAspect) {
         m_ui.tileWidthSpinBox->blockSignals(true);
-        m_ui.tileWidthSpinBox->setValue(value*currentAspect);
+        if(currentAspect > 1) {
+            tileWidth = MAX(value, round(value * currentAspect));
+            m_ui.tileWidthSpinBox->setValue(tileWidth);
+        } else {
+            tileWidth = MIN(value, round(value * currentAspect));
+            m_ui.tileWidthSpinBox->setValue(tileWidth);
+        }
         m_ui.tileWidthSpinBox->blockSignals(false);
     }
-    tileWidth = m_ui.tileWidthSpinBox->value();
+
     tileHeight = m_ui.tileHeightSpinBox->value();
     tilesChanged(getTiles());
 }
@@ -319,6 +336,7 @@ double OutputDialog::getPadding()
 
 void OutputDialog::lockAspect(bool l){
     lockedAspect = l; l ? m_ui.lockAspectCheckBox->setIcon(QIcon(":/Icons/padlocka.png")) : m_ui.lockAspectCheckBox->setIcon(QIcon(":/Icons/padlockb.png"));
+    m_ui.lockAspectCheckBox->setChecked(lockedAspect);
     currentAspect = (double)m_ui.tileWidthSpinBox->value()/(double)m_ui.tileHeightSpinBox->value();
 }
     

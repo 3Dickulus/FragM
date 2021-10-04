@@ -372,17 +372,19 @@ void MainWindow::bufferSizeYChanged()
         bufferActionChanged(bufferActionCustom);
     }
 }
-
+#define MIN(a,b)(a<b?a:b)
+#define MAX(a,b)(a>b?a:b)
 // value changed
 void MainWindow::bufferXSpinBoxChanged(int value)
 {
     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
         if(lockedAspect) {
             bufferYSpinBox->blockSignals(true);
-            bufferYSpinBox->setValue(value/currentAspect);
+            if(currentAspect > 1)
+                bufferYSpinBox->setValue( MIN(value, round(value / currentAspect)));
+            else bufferYSpinBox->setValue( MAX(value, round(value / currentAspect)));
             bufferYSpinBox->blockSignals(false);
         }
-            bufferActionChanged(bufferActionCustom);
     }
 }
 
@@ -391,10 +393,11 @@ void MainWindow::bufferYSpinBoxChanged(int value)
     if(engine->getState() != DisplayWidget::Tiled && !lockedToWindowSize) {
         if(lockedAspect) {
             bufferXSpinBox->blockSignals(true);
-            bufferXSpinBox->setValue(value*currentAspect);
+            if(currentAspect > 1)
+                bufferXSpinBox->setValue(MAX(value, round(value * currentAspect)));
+            else bufferXSpinBox->setValue(MIN(value, round(value * currentAspect)));
             bufferXSpinBox->blockSignals(false);
         }
-            bufferActionChanged(bufferActionCustom);
     }
 }
 
@@ -695,8 +698,8 @@ void MainWindow::init()
         engine->setMaximumSize(screenGeometry.width()*0.925,screenGeometry.height()*0.65);
 
     engine->setObjectName(QString::fromUtf8("DisplayWidget"));
-    engine->setMinimumSize(1,1);
-    engine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    engine->setMinimumSize(64,32);
+    engine->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     splitter->addWidget( engine );
     tabBar = new QTabBar(this);
@@ -829,10 +832,11 @@ void MainWindow::init()
     if(guiStylesheet.isEmpty()) styleSheetFile = guiStylesheet;
     qApp->setStyleSheet(styleSheetFile);
     
+    QSettings settings;
+    int x = settings.value("tilewidth",456).toInt();
+    int y = settings.value("tileheight",256).toInt();
+
     if(!lockedToWindowSize){
-        QSettings settings;
-        int x = settings.value("tilewidth",456).toInt();
-        int y = settings.value("tileheight",256).toInt();
         bufferSizeControl->blockSignals(true);
         bufferSizeControl->setText( bufferActionCustom->text() );
         bufferSizeControl->blockSignals(false);
@@ -844,11 +848,12 @@ void MainWindow::init()
         bufferXSpinBox->blockSignals(false);
         bufferYSpinBox->blockSignals(false);
 
-        lockAspect(false);
         bufferYSpinBox->setEnabled(!lockedToWindowSize);
         bufferXSpinBox->setEnabled(!lockedToWindowSize);
-        aspectLock->setEnabled(!lockedToWindowSize);
     }
+    currentAspect = (double)x/(double)y;
+    lockAspect(lockedAspect);
+    aspectLock->setEnabled(!lockedToWindowSize);
 }
 
 void MainWindow::initTools()
@@ -1648,6 +1653,7 @@ void MainWindow::tileBasedRender()
         QSettings settings;
         settings.setValue("tilewidth",tmpX);
         settings.setValue("tileheight",tmpY);
+        settings.setValue("lockedAspect", lockedAspect);
         settings.sync();
     }
     OutputDialog od(this);
@@ -1655,10 +1661,12 @@ retry:
     if(tileSizeFromScreen && !runningScript) {
         od.tileXSizeChanged(tmpX);
         od.tileYSizeChanged(tmpY);
+        od.lockAspect(lockedAspect);
     }
 
-    od.setMaxTime(timeMax);
     od.setAspectLock(lockedAspect);
+
+    od.setMaxTime(timeMax);
     bool runFromScript = runningScript;
 
     if(!runFromScript) {
@@ -2238,7 +2246,6 @@ void MainWindow::createToolBars()
     aspectLock->setFixedSize(12,18);
     aspectLock->setCheckable(true);
     aspectLock->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
-    aspectLock->setEnabled(false);
     connect(aspectLock, SIGNAL(toggled(bool)), this, SLOT(lockAspect(bool)));
     bufferToolBar->addWidget(aspectLock);
     
@@ -2601,6 +2608,7 @@ void MainWindow::readSettings()
     guiStylesheet = settings.value("guiStylesheet", "").toString();
     lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
     currentAspect = settings.value("currentAspect", 1.7778).toDouble();
+    lockedAspect = settings.value("lockedAspect", false).toBool();
     tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
 }
 
@@ -3726,24 +3734,28 @@ void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY,
     } else if (!lockedToWindowSize) {
         bufferSizeX = bufferXSpinBox->value();
         bufferSizeY = bufferYSpinBox->value();
-        // Aspect is handled a bit differently here compared to tilebased render
-        // because changes are "live" as the GUI is adjusted by user
-        if(lockedAspect) {
-            double fw = (double)bufferSizeX/(double)w;
-            double fh = (double)bufferSizeY/(double)h;
-            // adjust X
-            if (fw!=1.0 && h > bufferSizeY/fw) {
-                bufferSizeX = w;
-                bufferSizeY = bufferSizeX/currentAspect;
-            }
-            else // adjust y
-            if (fh!=1.0 && w > bufferSizeX/fh) {
-                bufferSizeX = bufferSizeY*currentAspect;
-                bufferSizeY = h;
-            }
-        }
     }
-    
+
+    if(lockedAspect) {
+        double fw = (double)bufferSizeX/(double)w;
+        double fh = (double)bufferSizeY/(double)h;
+        // adjust X
+        if (h > bufferSizeY/fw) {
+            bufferSizeX = w;
+            if(currentAspect > 1)
+                bufferSizeY = MIN(w, round(w / currentAspect));
+            else bufferSizeY = MAX(w, round(w / currentAspect));
+        }
+        else // adjust y
+        if (w > bufferSizeX/fh) {
+            if(currentAspect > 1)
+                bufferSizeX = MAX(h, round(h * currentAspect));
+            else bufferSizeX = MIN(h, round(h * currentAspect));
+            bufferSizeY = h;
+        }
+    } else currentAspect = (double)bufferSizeX/(double)bufferSizeY;
+
+    // update the XY spinboxes
     bufferXSpinBox->blockSignals(true);
     bufferYSpinBox->blockSignals(true);
     bufferXSpinBox->setValue(bufferSizeX);

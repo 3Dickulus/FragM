@@ -2204,10 +2204,10 @@ void DisplayWidget::updateBuffers()
 
 void DisplayWidget::resizeGL(int /* width */, int /* height */)
 {
-    // When resizing the aspect must be recalculated
-    updatePerspective();
     makeBuffers();
     requireRedraw ( true );
+    // When resizing the aspect must be recalculated
+    updatePerspective();
 }
 
 void DisplayWidget::updatePerspective()
@@ -2216,10 +2216,12 @@ void DisplayWidget::updatePerspective()
     if (height() == 0 || width() == 0) {
         return;
     }
+
     QString infoText = tr("[%1x%2] Aspect=%3")
                        .arg(bufferSizeX)
                        .arg(bufferSizeY)
                        .arg((double)bufferSizeX / bufferSizeY);
+
     mainWindow-> statusBar()->showMessage ( infoText, 5000 );
 }
 

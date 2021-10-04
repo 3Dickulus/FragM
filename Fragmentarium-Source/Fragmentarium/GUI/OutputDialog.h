@@ -54,6 +54,7 @@ public:
     };
     void setAspectLock(bool l) {
         m_ui.lockAspectCheckBox->setChecked(l);
+        m_ui.lockAspectCheckBox->setEnabled(!l);
     };
     bool getAspectLock() {
         return m_ui.lockAspectCheckBox->isChecked();

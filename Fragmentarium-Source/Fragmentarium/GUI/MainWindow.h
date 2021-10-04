@@ -717,8 +717,8 @@ private slots:
     void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
 
     void lockAspect(bool l){
+        aspectLock->setChecked(l);
         lockedAspect = l; l ? aspectLock->setIcon(QIcon(":/Icons/padlocka.png")) : aspectLock->setIcon(QIcon(":/Icons/padlockb.png"));
-        currentAspect = (double)bufferXSpinBox->value()/(double)bufferYSpinBox->value();
     };
     
 private:
