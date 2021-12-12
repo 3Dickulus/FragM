@@ -874,6 +874,7 @@ private:
     bool lockedToWindowSize;
     bool lockedAspect;
     double currentAspect;
+    QString gimpGradientsPaths;
 };
 }
 } // namespace Fragmentarium

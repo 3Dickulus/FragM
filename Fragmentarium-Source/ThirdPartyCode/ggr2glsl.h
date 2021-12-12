@@ -10,6 +10,22 @@
 #include <QVector4D>
 #include <QObject>
 #include <QColor>
+#include <QGradient>
+
+typedef enum {
+  SEGMENT_RGB,
+  SEGMENT_HSV_CCW,
+  SEGMENT_HSV_CW
+} SegmentColorType;
+
+typedef enum {
+  SEGMENT_LINEAR,
+  SEGMENT_CURVED,
+  SEGMENT_SINE,
+  SEGMENT_SPHERE_INCREASING,
+  SEGMENT_SPHERE_DECREASING,
+  SEGMENT_STEPPED
+} SegmentBlendType;
 
 struct Segment {
     float left;
@@ -17,8 +33,8 @@ struct Segment {
     float right;
     QColor leftColor;
     QColor rightColor;
-    int blendType;
-    int colorType;
+    SegmentBlendType blendType;
+    SegmentColorType colorType;
 };
 
 struct Segments {
@@ -27,8 +43,8 @@ struct Segments {
     QVector<float> right;
     QVector<QColor> leftColor;
     QVector<QColor> rightColor;
-    QVector<int> blendType;
-    QVector<int> colorType;
+    QVector<SegmentBlendType> blendType;
+    QVector<SegmentColorType> colorType;
 
     void add(Segment const& segment){
     left.push_back(segment.left);
@@ -64,18 +80,24 @@ public slots:
     // input: filename
     // return: status success/fail
     bool readFile(QString filename);
+    
     // check status
     bool isLoaded() { return loadingSucceded; }
+    
     // process the arrays
-    // input: stinglist to hold the generated glsl code
-    // input: bool flag to generate foregraound (object)
+    // input: stinglist pointer to hold the generated glsl code
+    // input: bool flag to generate foreground (object)
     //        or background (sky) code and sliders
     void ggr2glsl(QStringList &glslText, bool fgbg);
 
-protected slots:
-    QString printIntData(QVector<int> data, QString name, QString type);
-    QString printColorData(QVector<QColor> data, QString name, QString type);
-    QString printFloatData(QVector<float> data, QString name, QString type);
+    QString gradName() { return gradientName; }
+    int segmentCount() { return numSegments;  }
+    QGradient getGradient();
+    void setGradient(QGradient *g);
+
+protected:
+    template<typename T>
+    QString printData(QVector<T> data, QString name, QString type, QString pre, QString delim, QString post = "");
 
 private:
     template<typename T>

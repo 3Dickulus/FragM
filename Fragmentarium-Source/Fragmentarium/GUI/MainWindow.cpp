@@ -50,6 +50,8 @@
 #include "Preprocessor.h"
 #include "VariableEditor.h"
 
+#include "qtgradienteditor/qtgradientdialog.h"
+
 #include "ggr2glsl.h"
 
 #define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
@@ -859,7 +861,9 @@ void MainWindow::init()
 void MainWindow::initTools()
 {
     // FIXME need to destroy the old one because none of this will happen if exrToolsMenu has already been built
-    // like when the preferences are changed changes wont take effect without restarting the program
+    // like when the preferences are changed changes wont take effect without restarting the program.
+    // TODO integrate these commands so that users get more than just the help info for commandline execution.
+    // parse help info and create a dialog that accurately represents the available options?
 #ifdef USE_OPEN_EXR
     // do we have any paths?
     if(exrBinaryPath.count() != 0) {
@@ -941,6 +945,15 @@ void MainWindow::initTools()
                     }
                 }
             }
+            // the above code only looks for the ggr2glsl binary in the support programs path
+            // because the EXR tools have their own menu and ggr2glsl is the only one supported
+            // TODO add the ability to use shell scripts from this menu ???
+            // anyhoo this is where we add the action to access the internal ggr2glsl option
+            // add item to menu
+            auto *a = new QAction(tr("Import Gimp Gradient"), this);
+            a->setObjectName("convertgradient");
+            connect(a, SIGNAL(triggered()), this, SLOT(runSupportProgram()));
+            supportProgramsMenu->addAction(a);
         }
     }
 }
@@ -997,7 +1010,10 @@ void MainWindow::runSupportProgram()
     if(cmnd.contains("ggr2glsl", Qt::CaseInsensitive)) {
         // get input file file
         QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
-        QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), "", filter);
+        QString startFolder = gimpGradientsPaths.split(";").at(0);
+        if(!QFile::exists(startFolder) && gimpGradientsPaths.split(";").count() > 1) startFolder = gimpGradientsPaths.split(";").at(1);
+        if(!QFile::exists(startFolder)) startFolder = ""; // tried the first 2 no luck? set to empty
+        QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), startFolder, filter);
         if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
             return;
         }
@@ -1009,39 +1025,51 @@ void MainWindow::runSupportProgram()
             return;
         }
         cmnd += " > \"" + glslFileName + "\""; // in case the fragment name has spaces
+
+        // confirm user request
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setText( cmnd );
+        msgBox.setInformativeText(tr("Do you want to execute this command?"));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        int ret = msgBox.exec();
+        switch (ret) {
+        case QMessageBox::Ok:
+            cmndOk = true;
+            break;
+        case QMessageBox::Cancel:
+            cmnd = ""; cmndOk = false;
+            break;
+        default:
+            // should never be reached
+            cmnd = ""; cmndOk = false;
+            break;
+        }
+
+        bool success = (cmndOk && system( cmnd.toStdString().c_str() ) != -1);
+
+        // confirm success
+        msgBox.setIcon(success ? QMessageBox::Information : QMessageBox::Critical);
+        msgBox.setText( cmnd );
+        msgBox.setInformativeText(success ? tr("Command succeeded!") : tr("Execute command Failed!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
     }
 
-    // confirm user request
-    QMessageBox msgBox(this);
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setText( cmnd );
-    msgBox.setInformativeText(tr("Do you want to execute this command?"));
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    int ret = msgBox.exec();
-    switch (ret) {
-    case QMessageBox::Ok:
-        cmndOk = true;
-        break;
-    case QMessageBox::Cancel:
-        cmnd = ""; cmndOk = false;
-        break;
-    default:
-        // should never be reached
-        cmnd = ""; cmndOk = false;
-        break;
+    if(cmnd.contains("convertgradient", Qt::CaseInsensitive)) {
+        // get input file file
+        QString filter = tr("GIMP gradients (*.ggr);;All Files (*.*)");
+        QString startFolder = gimpGradientsPaths.split(";").at(0);
+        if(!QFile::exists(startFolder) && gimpGradientsPaths.split(";").count() > 1) startFolder = gimpGradientsPaths.split(";").at(1);
+        if(!QFile::exists(startFolder)) startFolder = ""; // tried the first 2 no luck? set to empty
+        
+        QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), startFolder, filter);
+        if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
+            return;
+        } else insertTabPage(ggrFileName);
     }
-
-    bool success = (cmndOk && system( cmnd.toStdString().c_str() ) != -1);
-
-    // confirm success
-    msgBox.setIcon(success ? QMessageBox::Information : QMessageBox::Critical);
-    msgBox.setText( cmnd );
-    msgBox.setInformativeText(success ? tr("Command succeeded!") : tr("Execute command Failed!"));
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.exec();
-
 }
 
 void MainWindow::showWelcomeNote()
@@ -2610,6 +2638,7 @@ void MainWindow::readSettings()
     currentAspect = settings.value("currentAspect", 1.7778).toDouble();
     lockedAspect = settings.value("lockedAspect", false).toBool();
     tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
+    gimpGradientsPaths = settings.value ( "gimpGradientsPaths", "/usr/share/gimp/2.0/gradients/;~/.config/GIMP/2.10/gradients/").toString();
 }
 
 void MainWindow::writeSettings()
@@ -2669,11 +2698,11 @@ void MainWindow::writeSettings()
     }
 
     settings.setValue("openFiles", openFiles);
-    
     settings.setValue("tilewidth",bufferXSpinBox->value());
     settings.setValue("tileheight",bufferYSpinBox->value());
-
     settings.setValue ("tileSizeFromScreen", tileSizeFromScreen);
+    
+    settings.setValue("gimpGradientsPaths", gimpGradientsPaths);
     
     settings.sync();
 
@@ -2961,16 +2990,32 @@ bool MainWindow::initializeFragment()
         return false;
     }
 
-    INFO("\n" + tr("GLSL versions: ") + engine->glslvers.join(", "));
-    INFO(tr("Shaders that do not include a #version directive will be treated as targeting GLSL version 110") + "\n");
+    QString inputText = getTextEdit()->toPlainText();
+    if (inputText.contains("#donotrun")) {
+        INFO(tr("Not a runnable fragment."));
+        return false;
+    }
+        
+    GLint s;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
+    INFO ( tr( "Maximum texture size: %1x%1" ).arg( s ) );
+    INFO("");
+    INFO(tr("GLSL versions: ") + engine->glslvers.join(", "));
+
+    QString versionProfileLine = inputText.split("\n").at(0);
+    if ( versionProfileLine.contains("#version"))
+        INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1) + ((versionProfileLine.contains("compatibility"))?" Compatibility":""));
+    else
+        INFO(tr("Current target: GLSL 110"));
+
+    INFO(tr("Shaders that do not include a #version directive will be treated as targeting GLSL version 110"));
 
     // test for nVidia card and GL > 4.0
-    if (asmAction != nullptr) {
-        editMenu->removeAction(asmAction);
-        if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
-            WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
-
+    if (!(engine->format().majorVersion() > 3 && engine->format().minorVersion() > 0) || !engine->foundnV) {
+        if (asmAction != nullptr) {
+            editMenu->removeAction(asmAction);
         }
+        WARNING(tr("Failed to resolve OpenGL functions required to enable AsmBrowser"));
     }
 
     QStringList imgFileExtensions;
@@ -2988,17 +3033,6 @@ bool MainWindow::initializeFragment()
     engine->setState(DisplayWidget::Progressive);
     stop();
 
-    QString inputText = getTextEdit()->toPlainText();
-    if (inputText.contains("#donotrun")) {
-        INFO(tr("Not a runnable fragment."));
-        return false;
-    }
-    QString versionProfileLine = inputText.split("\n").at(0);
-    if ( versionProfileLine.contains("#version"))
-        INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1) + ((versionProfileLine.contains("compatibility"))?" Compatibility":""));
-    else
-        INFO(tr("Current target: GLSL 110"));
-        
     INFO("");
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
     INFO("");
@@ -3075,8 +3109,6 @@ bool MainWindow::initializeFragment()
 
         highlightBuildButton(false);
 
-        //TODO: remove group tab if it's empty, if all widgets in group are hidden
-        //      they have been optimized out by the glsl compiler
         return false; // does not need rebuild
     }
     WARNING(tr("Failed to compile script (%1 ms).").arg(ms));
@@ -3088,6 +3120,9 @@ bool MainWindow::initializeFragment()
 
 void MainWindow::hideUnusedVariableWidgets()
 {
+    //TODO: remove group tab if it's empty, if all widgets in group are hidden
+    //      they have been optimized out by the glsl compiler
+
     /// hide unused widgets unless the default state is locked
     QStringList wnames = variableEditor->getWidgetNames();
     for (int i = 0; i < wnames.count(); i++) {
@@ -3237,22 +3272,34 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     if (filename.toLower().endsWith(".ggr") && QFile(filename).exists()) {
         Ggr2Glsl *gradientCode = new Ggr2Glsl(filename);
         if(gradientCode->isLoaded()) {
+            // we can now build a gradient editor...
+            QGradient gr = gradientCode->getGradient();
+            bool ok = false;
+            QGradient gradient = QtGradientDialog::getGradient(&ok, gr, this);
+            if(ok) {
+                QApplication::setOverrideCursor(Qt::WaitCursor);
+                gradient.setCoordinateMode(gr.coordinateMode());
+                if(gr != gradient)
+                    gradientCode->setGradient(&gradient);
+                
+                QStringList glslObjectColorText;
+                gradientCode->ggr2glsl( glslObjectColorText, true);
+                QStringList glslBackgroundColorText;
+                gradientCode->ggr2glsl( glslBackgroundColorText, false);
 
-            QApplication::setOverrideCursor(Qt::WaitCursor);
-            QStringList glslObjectColorText;
-            gradientCode->ggr2glsl( glslObjectColorText, true);
-            QStringList glslBackgroundColorText;
-            gradientCode->ggr2glsl( glslBackgroundColorText, false);
+                QStringList glslText = glslObjectColorText;
+                glslText << glslBackgroundColorText;
+                
+                textEdit->setPlainText( glslText.join("\n"));
 
-            QStringList glslText = glslObjectColorText;
-            glslText << glslBackgroundColorText;
+                INFO(tr("Converted file: %1").arg(filename));
+                loadingSucceded = true;
+                filename.replace(".ggr",".frag");
+                QApplication::restoreOverrideCursor();
+
+            } else textEdit->setPlainText(s);
             
-            textEdit->setPlainText( glslText.join("\n"));
-
-            QApplication::restoreOverrideCursor();
-            INFO(tr("Converted file: %1").arg(filename));
-            loadingSucceded = true;
-            filename.replace(".ggr",".frag");
+            loadingSucceded = ok;
         }
     }
     else

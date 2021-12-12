@@ -27,6 +27,7 @@ public:
         connect(m_ui.includePathsToolButton, SIGNAL(released()), this, SLOT(getIncludePaths()));
         connect(m_ui.exrBinPathsToolButton, SIGNAL(released()), this, SLOT(getExrBinPaths()));
         connect(m_ui.guiStylesheetToolButton, SIGNAL(released()), this, SLOT(getGuiStylesheet()));
+        connect(m_ui.gimpGradientsPathsToolButton, SIGNAL(released()), this, SLOT(getGimpGradientsPaths()));
     };
     ~PreferencesDialog() {};
 
@@ -77,6 +78,18 @@ public slots:
             pathNames = dialog.selectedFiles();
         if (!pathNames.isEmpty()) {
             m_ui.supportProgramBinPathsLineEdit->setText(pathNames.join(";"));
+        }
+    }
+
+    void getGimpGradientsPaths() {
+        QStringList pathNames;
+        QFileDialog dialog(this, QString("Select a path."));
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setOption(QFileDialog::ShowDirsOnly, true);
+        if (dialog.exec())
+            pathNames = dialog.selectedFiles();
+        if (!pathNames.isEmpty()) {
+            m_ui.gimpGradientsPathsLineEdit->setText(pathNames.join(";"));
         }
     }
 
@@ -149,6 +162,8 @@ private slots:
         m_ui.editorThemeComboBox->setCurrentIndex( settings.value ( "editorTheme", 0 ).toInt() );
         m_ui.guiStylesheetLineEdit->setText (settings.value ( "guiStylesheet", "" ).toString() );
         m_ui.tileSizeFromScreenCheckBox->setChecked (settings.value ( "tileSizeFromScreen", false ).toBool() );
+        m_ui.gimpGradientsPathsLineEdit->setText (settings.value ( "gimpGradientsPaths", "/usr/share/gimp/2.0/gradients/;~/.config/GIMP/2.10/gradients/" ).toString() );
+
     }
 
     void saveSettings()
@@ -187,6 +202,7 @@ private slots:
         settings.setValue("editorTheme",  m_ui.editorThemeComboBox->currentIndex());
         settings.setValue("guiStylesheet", m_ui.guiStylesheetLineEdit->text());
         settings.setValue ("tileSizeFromScreen", m_ui.tileSizeFromScreenCheckBox->isChecked());
+        settings.setValue("gimpGradientsPaths", m_ui.gimpGradientsPathsLineEdit->text());
         settings.sync();
     }
 
