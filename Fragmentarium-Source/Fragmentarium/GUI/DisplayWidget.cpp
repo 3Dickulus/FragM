@@ -238,6 +238,8 @@ void DisplayWidget::initializeGL()
         if(ver >= 4.5) glslvers << "450";
         if(ver == 4.6) glslvers << "460";
     }
+    
+    glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &m_maxUniforms);
 }
 void DisplayWidget::updateRefreshRate()
 {
@@ -291,9 +293,10 @@ void DisplayWidget::contextMenuEvent(QContextMenuEvent *ev)
 void DisplayWidget::setFragmentShader(FragmentSource fs)
 {
 
-    GLint s;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
-    INFO ( tr( "Maximum texture size: %1x%1" ).arg( s ) );
+//     INFO(tr("Maximum number of uniforms: ") + QString("%1").arg(getMaxUniforms()));
+    INFO("");
+    INFO(tr("Total number of uniforms used: ") + QString("%1").arg(mainWindow->getUserUniforms().count()));
+    INFO("");
     
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
@@ -1103,11 +1106,11 @@ void DisplayWidget::initFragmentTextures()
                 // get a pointer to the char array in QString
                 GLchar *oneName = textureUniformName.toLocal8Bit().data();
                 // returns index of "oneName" in idx;
-                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx);
+                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx); // OpenGL > 3.0
                 // use idx to acquire more info about this uniform
                 glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
                 // set current texture
-                glActiveTexture(GL_TEXTURE0 + u); // non-standard (>OpenGL 1.3) gl extension
+                glActiveTexture(GL_TEXTURE0 + u); // OpenGL > 1.4
 
                 if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
                     // check cache first

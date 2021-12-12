@@ -318,6 +318,8 @@ public slots:
 /// Spline Shaders /////////////////////////////////////////////////////////
     void testVersions();
 
+    int getMaxUniforms() { return m_maxUniforms; };
+    
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
@@ -451,6 +453,8 @@ private:
     glm::mat4 m_modelMatrix; // identity
 
     glm::mat4 m_pvmMatrix;
+
+    int m_maxUniforms;
 
 /// Spline Shaders /////////////////////////////////////////////////////////
 QString vertexShader4 = QString("#version 410 core\n"
