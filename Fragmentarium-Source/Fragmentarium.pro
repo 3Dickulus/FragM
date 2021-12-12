@@ -4,7 +4,7 @@
 
 FRAGM_MAJOR_VERSION=2
 FRAGM_MINOR_VERSION=5
-FRAGM_REVISION=5
+FRAGM_REVISION=6
 
 FRAGM_VERSION=$$FRAGM_MAJOR_VERSION"."$$FRAGM_MINOR_VERSION"."$$FRAGM_REVISION
 
@@ -15,9 +15,11 @@ QT += gui widgets opengl openglextensions script scripttools xml
 
 LIBS += -fPIC
 
+
 win32:CONFIG(release, debug|release) {
 CONFIG += console
-PACKAGE_BUILD=210927
+PACKAGE_BUILD=211212
+TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
 LIBS += -L../OpenEXR/lib/ -lIlmImf-2_4 -lHalf-2_4 -lIex-2_4 -lIexMath-2_4 -lImath-2_4 -lIlmThread-2_4
 LIBS += -LC:\Qt/Qt5.9.9/Tools/mingw530_32/lib -lz
 LIBS += -lopengl32
@@ -25,8 +27,10 @@ LIBS += -mthreads -lmingwthrd -lwinpthread
 }
 else:unix:CONFIG(release, debug|release) {
 PACKAGE_BUILD=$$system("date -u +%y%m%d")
+TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
 LIBS += -lIlmImf -lHalf -lIex -lIexMath -lImath -lIlmThread
 LIBS += -lz -lpthread
+DESTDIR = "./deploy/"$$TARGET
 }
 
 macx:CONFIG(release, debug|release) {
@@ -36,8 +40,6 @@ else:unix:CONFIG(release, debug|release) {
 LIBS += -lGL
 }
 
-TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
-DESTDIR = "./"
 
 DEFINES += FRAGM_MAJOR_VERSION=$$FRAGM_MAJOR_VERSION \
            FRAGM_MINOR_VERSION=$$FRAGM_MINOR_VERSION \
@@ -54,7 +56,8 @@ DEPENDPATH += . \
               Fragmentarium/Parser \
               SyntopiaCore/Exceptions \
               SyntopiaCore/Logging \
-              SyntopiaCore/Misc
+              SyntopiaCore/Misc \
+              ThirdPartyCode/qtgradienteditor
 
 INCLUDEPATH+= . \
               Fragmentarium \
@@ -63,7 +66,8 @@ INCLUDEPATH+= . \
               Fragmentarium/Parser \
               SyntopiaCore/Exceptions \
               SyntopiaCore/Logging \
-              SyntopiaCore/Misc
+              SyntopiaCore/Misc	\
+              ThirdPartyCode/qtgradienteditor
 
 win32:CONFIG(release, debug|release) {
 INCLUDEPATH += ../
@@ -101,6 +105,7 @@ HEADERS += ThirdPartyCode/asmbrowser.h \
            ThirdPartyCode/QtSpline.h \
            ThirdPartyCode/TimeLine.h \
            ThirdPartyCode/VideoDialog.h \
+           ThirdPartyCode/ggr2glsl.h \
            Fragmentarium/GUI/CameraControl.h \
            Fragmentarium/GUI/DisplayWidget.h \
            Fragmentarium/GUI/FileManager.h \
@@ -116,10 +121,28 @@ HEADERS += ThirdPartyCode/asmbrowser.h \
            SyntopiaCore/Logging/Logging.h \
            SyntopiaCore/Misc/MiniParser.h \
            SyntopiaCore/Misc/Misc.h \
-           SyntopiaCore/Misc/Version.h
+           SyntopiaCore/Misc/Version.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopsmodel.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopswidget.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopscontroller.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientwidget.h \
+           ThirdPartyCode/qtgradienteditor/qtgradienteditor.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientdialog.h \
+           ThirdPartyCode/qtgradienteditor/qtcolorbutton.h \
+           ThirdPartyCode/qtgradienteditor/qtcolorline.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientview.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientmanager.h \
+           ThirdPartyCode/qtgradienteditor/qtgradientutils.h \
+           ThirdPartyCode/qtgradienteditor/qtcolorbutton.h
+
 FORMS += ThirdPartyCode/EasingDialog.ui \
          ThirdPartyCode/TimeLineDialog.ui \
          ThirdPartyCode/VideoDialog.ui \
+         ThirdPartyCode/qtgradienteditor/qtgradienteditor.ui \
+         ThirdPartyCode/qtgradienteditor/qtgradientdialog.ui \
+         ThirdPartyCode/qtgradienteditor/qtgradientview.ui \
+         ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.ui \
          Fragmentarium/GUI/OutputDialog.ui \
          Fragmentarium/GUI/PreferencesDialog.ui
 SOURCES += Fragmentarium/Main.cpp \
@@ -132,6 +155,20 @@ SOURCES += Fragmentarium/Main.cpp \
            ThirdPartyCode/QtSpline.cpp \
            ThirdPartyCode/TimeLine.cpp \
            ThirdPartyCode/VideoDialog.cpp \
+           ThirdPartyCode/ggr2glsl.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopsmodel.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopswidget.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientstopscontroller.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientwidget.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradienteditor.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientdialog.cpp \
+           ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp \
+           ThirdPartyCode/qtgradienteditor/qtcolorline.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientview.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientmanager.cpp \
+           ThirdPartyCode/qtgradienteditor/qtgradientutils.cpp \
+           ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp \
            Fragmentarium/GUI/CameraControl.cpp \
            Fragmentarium/GUI/DisplayWidget.cpp \
            Fragmentarium/GUI/FileManager.cpp \
@@ -188,18 +225,17 @@ translations.files = .qm/Fragmentarium_en.qm \
 translations.command = lrelease
 
 win32:CONFIG(release, debug|release) {
-    target.path = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD"-winex/"
+    target.path = $$TARGET"-winex/"
     target.files += "/build.win/release/Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD".exe"
 
-    translations.path = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD"-winex/Languages/"
+    translations.path = $$TARGET"-winex/Languages/"
 } 
 
 unix:CONFIG(release, debug|release) {
-    target.path = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD"/"
-    target.files += "build.ai/Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
+    target.path = $$DESTDIR"/"
 
-    translations.path = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD"/Languages/"
-} 
+    translations.path = $$TARGET"/Languages/"
+}
 
     INSTALLS += translations
     INSTALLS += target

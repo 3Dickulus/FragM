@@ -9,7 +9,7 @@ ENDIF ()
 
 set(FRAGM_MAJOR_VERSION "2")
 set(FRAGM_MINOR_VERSION "5")
-set(FRAGM_REVISION "5")
+set(FRAGM_REVISION "6")
 
 set(FRAGM_VERSION "${FRAGM_MAJOR_VERSION}.${FRAGM_MINOR_VERSION}.${FRAGM_REVISION}")
 
@@ -47,8 +47,8 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 # find_package ( glm REQUIRED )
 
-option (GL_PREFERENCE_GLVND "Open GL preference GLVND" ON)
 set(OpenGL_GL_PREFERENCE "LEGACY")
+option (GL_PREFERENCE_GLVND "Open GL preference GLVND" ON)
 MARK_AS_ADVANCED (GL_PREFERENCE_GLVND)
 IF ( GL_PREFERENCE_GLVND )
     set(OpenGL_GL_PREFERENCE "GLVND")
@@ -166,7 +166,8 @@ include_directories (
 	Fragmentarium/Parser
 	SyntopiaCore/Exceptions
 	SyntopiaCore/Misc
-	ThirdPartyCode)
+	ThirdPartyCode
+	ThirdPartyCode/qtgradienteditor)
 
 set ( Fragmentarium_HDRS
     ThirdPartyCode/ggr2glsl.h
@@ -187,9 +188,35 @@ set ( Fragmentarium_HDRS
 	Fragmentarium/GUI/CameraControl.h
 	Fragmentarium/GUI/FileManager.h
 	Fragmentarium/Parser/Preprocessor.h
+	ThirdPartyCode/qtgradienteditor/qtgradientstopsmodel.h
+	ThirdPartyCode/qtgradienteditor/qtgradientstopswidget.h
+	ThirdPartyCode/qtgradienteditor/qtgradientstopscontroller.h
+	ThirdPartyCode/qtgradienteditor/qtgradientwidget.h
+	ThirdPartyCode/qtgradienteditor/qtgradienteditor.h
+	ThirdPartyCode/qtgradienteditor/qtgradientdialog.h
+	ThirdPartyCode/qtgradienteditor/qtcolorbutton.h
+	ThirdPartyCode/qtgradienteditor/qtcolorline.h
+	ThirdPartyCode/qtgradienteditor/qtgradientview.h
+	ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.h
+	ThirdPartyCode/qtgradienteditor/qtgradientmanager.h
+	ThirdPartyCode/qtgradienteditor/qtgradientutils.h
+	ThirdPartyCode/qtgradienteditor/qtcolorbutton.h
 	)
 
 set ( Fragmentarium_SRCS
+	ThirdPartyCode/qtgradienteditor/qtgradientstopsmodel.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientstopswidget.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientstopscontroller.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientwidget.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradienteditor.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientdialog.cpp
+	ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp
+	ThirdPartyCode/qtgradienteditor/qtcolorline.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientview.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientmanager.cpp
+	ThirdPartyCode/qtgradienteditor/qtgradientutils.cpp
+	ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp
     ThirdPartyCode/ggr2glsl.cpp
     ThirdPartyCode/ExpSpinBox.cpp
 	ThirdPartyCode/hdrloader.cpp
@@ -219,6 +246,7 @@ set ( Fragmentarium_SRCS
 
 set ( Fragmentarium_RSCS
 	Fragmentarium.qrc
+	ThirdPartyCode/qtgradienteditor/qtgradienteditor.qrc
 	)
 
 QT5_ADD_RESOURCES(RSCS ${Fragmentarium_RSCS})
@@ -227,6 +255,10 @@ SET ( Fragmentarium_FORMS
         ThirdPartyCode/VideoDialog.ui
         ThirdPartyCode/TimeLineDialog.ui
         ThirdPartyCode/EasingDialog.ui
+	ThirdPartyCode/qtgradienteditor/qtgradienteditor.ui
+	ThirdPartyCode/qtgradienteditor/qtgradientdialog.ui
+	ThirdPartyCode/qtgradienteditor/qtgradientview.ui
+	ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.ui
         Fragmentarium/GUI/OutputDialog.ui
         Fragmentarium/GUI/PreferencesDialog.ui
 	)
