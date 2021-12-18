@@ -130,7 +130,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     clearOnChange = true;
     drawingState = Progressive;
     hiresBuffer = nullptr;
-    iterationsBetweenRedraws = 0;
+    subframesBetweenRedraws = 0;
     previewBuffer = nullptr;
     doClearBackBuffer = true;
     backBuffer = nullptr;
@@ -300,7 +300,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
-    iterationsBetweenRedraws = fs.iterationsBetweenRedraws;
+    subframesBetweenRedraws = fs.subframesBetweenRedraws;
 
     // Camera setup
     if ( fragmentSource.camera == "" ) {
@@ -1861,7 +1861,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
     QSize s = backBuffer->size();
 
     if ( !drawLast ) {
-        for ( int i = 0; i <= iterationsBetweenRedraws; i++ ) {
+        for ( int i = 0; i <= subframesBetweenRedraws; i++ ) {
             if (backBuffer != nullptr) {
                 // swap backbuffer
                 QOpenGLFramebufferObject* temp = backBuffer;
@@ -2089,47 +2089,49 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
     if ( !progress->wasCanceled() ) {
         for ( int i = 0; i< subframes; i++ ) {
             ( *steps ) ++;
+            progress->setValue ( *steps );
             drawToFrameBufferObject ( hiresBuffer, false );
+
+            // compute ETA in ms
+            int64_t total = progress->maximum();
+            int64_t current = *steps;
+            int64_t elapsed = totalTime.elapsed();
+            int64_t eta = elapsed * (total - current) / (current + !current);
+
+            // format ETA to string
+            const int hour = 60 * 60 * 1000;
+            const int day = 24 * hour;
+            int days = eta / day;
+            eta %= day;
+            bool hours = eta >= hour;
+            QTime t(0,0,0,0);
+            t=t.addMSecs((int) eta);
+            if (days > 0) {
+                renderETA = QString("%1:%2").arg(days).arg( t.toString("hh:mm:ss") );
+            } else if (hours) {
+                renderETA = t.toString("hh:mm:ss");
+            } else {
+                renderETA = t.toString("mm:ss");
+            }
+
+            progress->setLabelText ( tr( "<table width=\"100%\"> \
+            <tr><td>Total</td><td align=\"center\">%1</td><td>&nbsp;&nbsp;Final Size: %2</td></tr> \
+            <tr><td>Current</td><td align=\"center\">Tile: %3</td><td>&nbsp;&nbsp;Subframe: %4</td></tr> \
+            <tr><td>Avg sec/tile</td><td align=\"center\">%5</td><td>&nbsp;&nbsp;ETA: %6</td></tr> \
+            </table>" )
+                                    .arg ( frametile )
+                                    .arg ( framesize )
+                                    .arg ( tile )
+                                    .arg ( subframeCounter )
+                                    .arg ( (tileAVG/(tile+1))/1000.0 )
+                                    .arg ( renderETA ) );
+            
+            if (progress->wasCanceled()) break;
         }
+        (*im) = hiresBuffer->toImage();
+        tileImage = im;
+        subframeCounter=0;
     }
-
-    (*im) = hiresBuffer->toImage();
-    tileImage = im;
-    subframeCounter=0;
-
-    // compute ETA in ms
-    int64_t total = progress->maximum();
-    int64_t current = *steps;
-    int64_t elapsed = totalTime.elapsed();
-    int64_t eta = elapsed * (total - current) / (current + !current); // TODO verify ~ or !
-
-    // format ETA to string
-    const int hour = 60 * 60 * 1000;
-    const int day = 24 * hour;
-    int days = eta / day;
-    eta %= day;
-    bool hours = eta >= hour;
-    QTime t(0,0,0,0);
-    t=t.addMSecs((int) eta);
-    if (days > 0) {
-        renderETA = QString("%1:%2").arg(days).arg( t.toString("hh:mm:ss") );
-    } else if (hours) {
-        renderETA = t.toString("hh:mm:ss");
-    } else {
-        renderETA = t.toString("mm:ss");
-    }
-
-    progress->setLabelText ( tr( "<table width=\"100%\"> \
-    <tr><td>Total</td><td align=\"center\">%1</td><td>Final Size: %2</td></tr> \
-    <tr><td>Current</td><td align=\"center\">Tile: %3</td><td></td></tr> \
-    <tr><td>Avg sec/tile</td><td align=\"center\">%4</td><td>ETA: %5</td></tr> \
-    </table>" )
-                            .arg ( frametile )
-                            .arg ( framesize )
-                            .arg ( tile )
-                            .arg ( (tileAVG/(tile+1))/1000.0 )
-                            .arg ( renderETA ) );
-    
 
     if ( !hiresBuffer->release() ) {
       WARNING ( tr("Failed to release hiresBuffer FBO") );

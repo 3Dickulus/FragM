@@ -418,7 +418,7 @@ public:
 
     FragmentSource* bufferShaderSource;
     bool clearOnChange;
-    int iterationsBetweenRedraws;
+    int subframesBetweenRedraws;
     int subframeMax;
     bool depthToAlpha;
     bool autoFocus;

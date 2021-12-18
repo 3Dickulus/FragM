@@ -38,6 +38,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#pragma once
 
 #ifndef QTCOLORBUTTON_H
 #define QTCOLORBUTTON_H
@@ -51,8 +52,8 @@ class QtColorButton : public QToolButton
     Q_OBJECT
     Q_PROPERTY(bool backgroundCheckered READ isBackgroundCheckered WRITE setBackgroundCheckered)
 public:
-    QtColorButton(QWidget *parent = 0);
-    ~QtColorButton();
+    explicit QtColorButton(QWidget *parent = 0);
+    virtual ~QtColorButton();
 
     bool isBackgroundCheckered() const;
     void setBackgroundCheckered(bool checkered);

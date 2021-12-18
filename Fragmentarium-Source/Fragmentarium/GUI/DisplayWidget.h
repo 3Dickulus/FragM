@@ -431,7 +431,7 @@ private:
     QString oldBufferString;
 
     bool clearOnChange;
-    int iterationsBetweenRedraws;
+    int subframesBetweenRedraws;
     int bufferSizeX;
     int bufferSizeY;
     DrawingState drawingState;

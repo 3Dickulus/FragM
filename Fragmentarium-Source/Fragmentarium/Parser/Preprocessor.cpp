@@ -27,7 +27,7 @@ FragmentSource::FragmentSource() :
     hasPixelSizeUniform(false),
     bufferShaderSource(nullptr),
     clearOnChange(true),
-    iterationsBetweenRedraws(0),
+    subframesBetweenRedraws(0),
     subframeMax(-1),
     depthToAlpha(false),
     autoFocus(false)
@@ -678,7 +678,7 @@ void Preprocessor::parseIterations(FragmentSource *fs)
         WARNING("Could not parse value for 'iterationsbetweenredraws': " + iterationCount);
         return; // continue;
     }
-    fs->iterationsBetweenRedraws = i;
+    fs->subframesBetweenRedraws = i;
 
 }
 

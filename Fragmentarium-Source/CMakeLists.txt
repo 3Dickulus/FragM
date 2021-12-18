@@ -48,7 +48,7 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 # find_package ( glm REQUIRED )
 
 set(OpenGL_GL_PREFERENCE "LEGACY")
-option (GL_PREFERENCE_GLVND "Open GL preference GLVND" ON)
+option (GL_PREFERENCE_GLVND "Open GL preference GLVND" OFF)
 MARK_AS_ADVANCED (GL_PREFERENCE_GLVND)
 IF ( GL_PREFERENCE_GLVND )
     set(OpenGL_GL_PREFERENCE "GLVND")
@@ -77,20 +77,20 @@ IF ( USE_OPEN_EXR )
     ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 ENDIF ()
 
-OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
+OPTION ( BUILD_WIN_ZIP "Build Windows zip package" ON)
 OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
-OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" ON)
+OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
 IF ( WIN32 )
-  set ( MINGW_LIB_PATH "C:/Qt/Qt5.9.9/Tools/mingw530_32/lib" CACHE PATH "set to the mingw lib path" )
+  set ( MINGW_LIB_PATH "C:/Qt/5.12.12/Tools/mingw730_32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
-IF(OPENGL_LIBRARIES_NOTFOUND)
+#IF(OPENGL_LIBRARIES_NOTFOUND)
     IF(WIN32)
         set(OPENGL_LIBRARIES "-lopengl32" )
     ENDIF ()
-ENDIF ()
+#ENDIF ()
 
 MARK_AS_ADVANCED (OPENGL_LIBRARIES)
 
@@ -194,7 +194,6 @@ set ( Fragmentarium_HDRS
 	ThirdPartyCode/qtgradienteditor/qtgradientwidget.h
 	ThirdPartyCode/qtgradienteditor/qtgradienteditor.h
 	ThirdPartyCode/qtgradienteditor/qtgradientdialog.h
-	ThirdPartyCode/qtgradienteditor/qtcolorbutton.h
 	ThirdPartyCode/qtgradienteditor/qtcolorline.h
 	ThirdPartyCode/qtgradienteditor/qtgradientview.h
 	ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.h
@@ -210,7 +209,6 @@ set ( Fragmentarium_SRCS
 	ThirdPartyCode/qtgradienteditor/qtgradientwidget.cpp
 	ThirdPartyCode/qtgradienteditor/qtgradienteditor.cpp
 	ThirdPartyCode/qtgradienteditor/qtgradientdialog.cpp
-	ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp
 	ThirdPartyCode/qtgradienteditor/qtcolorline.cpp
 	ThirdPartyCode/qtgradienteditor/qtgradientview.cpp
 	ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.cpp
@@ -453,7 +451,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP)
     SET(CPACK_PACKAGE_RELOCATABLE "YES")
     SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
     SET(CPACK_PACKAGE_CONTACT "3dickulus@gmail.com")
-    SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build;.git*;")
+    SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;")
 
     IF(WIN32)
             set(CPACK_GENERATOR "ZIP")

@@ -950,6 +950,10 @@ void MainWindow::initTools()
             // TODO add the ability to use shell scripts from this menu ???
             // anyhoo this is where we add the action to access the internal ggr2glsl option
             // add item to menu
+            // we have builtin ggr2glsl now so make sure the menu exists to add an item... again
+            if (supportProgramsMenu == nullptr) {
+                supportProgramsMenu = menuBar()->addMenu(tr("GLSL Tools"));
+            }
             auto *a = new QAction(tr("Import Gimp Gradient"), this);
             a->setObjectName("convertgradient");
             connect(a, SIGNAL(triggered()), this, SLOT(runSupportProgram()));
@@ -1510,6 +1514,14 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
 
 void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
+    QTime imagetime;
+
+    if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
+       TIME(QString("Image Time"));
+       TIME(QString("Start: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+       imagetime.start();
+    }
+
     for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
         QTime tiletime;
         tiletime.start();
@@ -1520,7 +1532,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             im.fill(Qt::black);
 
             // Added sleep of 10 ms so that CPU does not submit too much work to GPU
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(10));
             
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
@@ -1564,11 +1576,24 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             engine->tileAVG += tiletime.elapsed();
         }
     }
+
+    if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
+        QTime thisTime = QTime::fromMSecsSinceStartOfDay(imagetime.elapsed());
+        TIME(QString("Elapsed mins: %1").arg(thisTime.toString("hh:mm:ss")) );
+        TIME(QString("Stop: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+    }
 }
 
 #ifdef USE_OPEN_EXR
 bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
 {
+    QTime imagetime;
+
+    if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
+       TIME(QString("Image Time"));
+       TIME(QString("Start: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+       imagetime.start();
+    }
     //
     // Write a tiled image with one level using a tile-sized framebuffer.
     //
@@ -1611,7 +1636,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             im.fill(Qt::black);
                
             // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
-            std::this_thread::sleep_for(std::chrono::microseconds(10000));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
@@ -1663,6 +1688,12 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
         } else {
             engine->tileAVG += tiletime.elapsed();
         }
+    }
+
+    if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
+        QTime thisTime = QTime::fromMSecsSinceStartOfDay(imagetime.elapsed());
+        TIME(QString("Elapsed mins: %1").arg(thisTime.toString("hh:mm:ss")) );
+        TIME(QString("Stop: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
     }
 
     engine->update();
@@ -1942,7 +1973,7 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-    progress.resize(320, 120);
+    progress.resize(360, 180);
 
     QTime totalTime;
     totalTime.start();
@@ -2099,7 +2130,7 @@ retry:
             if(imageSaved && !progress.wasCanceled()) {
                 INFO(tr("Saved file : ") + name);
             } else {
-                WARNING(tr("Save file failed! : ") + name);
+                WARNING(tr("Render canceled! : ") + name + tr(" not saved!"));
             }
         }
     }

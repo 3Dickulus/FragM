@@ -20,8 +20,8 @@ win32:CONFIG(release, debug|release) {
 CONFIG += console
 PACKAGE_BUILD=211212
 TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
-LIBS += -L../OpenEXR/lib/ -lIlmImf-2_4 -lHalf-2_4 -lIex-2_4 -lIexMath-2_4 -lImath-2_4 -lIlmThread-2_4
-LIBS += -LC:\Qt/Qt5.9.9/Tools/mingw530_32/lib -lz
+LIBS += -L../../OpenEXR/lib/ -lIlmImf-2_4 -lHalf-2_4 -lIex-2_4 -lIexMath-2_4 -lImath-2_4 -lIlmThread-2_4
+LIBS += -LC:\Qt/5.12.12/Tools/mingw730_32/lib -lz
 LIBS += -lopengl32
 LIBS += -mthreads -lmingwthrd -lwinpthread
 }
@@ -59,7 +59,20 @@ DEPENDPATH += . \
               SyntopiaCore/Misc \
               ThirdPartyCode/qtgradienteditor
 
-INCLUDEPATH+= . \
+win32:CONFIG(release, debug|release) {
+INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\
+INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/include/OpenEXR
+INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/include
+DEPENDPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib
+DEPENDPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR
+PRE_TARGETDEPS += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIlmImf-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libHalf-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIex-2_4.a  C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIexMath-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIlmThread-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libImath-2_4.a
+}
+else:unix:CONFIG(release, debug|release) {
+INCLUDEPATH += /usr/include/OpenEXR \
+               /usr/include/glm
+}
+
+INCLUDEPATH += . \
               Fragmentarium \
               ThirdPartyCode \
               Fragmentarium/GUI \
@@ -68,19 +81,6 @@ INCLUDEPATH+= . \
               SyntopiaCore/Logging \
               SyntopiaCore/Misc	\
               ThirdPartyCode/qtgradienteditor
-
-win32:CONFIG(release, debug|release) {
-INCLUDEPATH += ../
-INCLUDEPATH += ../OpenEXR/include/OpenEXR
-INCLUDEPATH += ../OpenEXR/include
-DEPENDPATH += ../OpenEXR/lib
-DEPENDPATH += ../OpenEXR
-PRE_TARGETDEPS += ../OpenEXR/lib/libIlmImf-2_4.a ../OpenEXR/lib/libHalf-2_4.a ../OpenEXR/lib/libIex-2_4.a  ../OpenEXR/lib/libIexMath-2_4.a ../OpenEXR/lib/libIlmThread-2_4.a ../OpenEXR/lib/libImath-2_4.a
-}
-else:unix:CONFIG(release, debug|release) {
-INCLUDEPATH += /usr/include/OpenEXR \
-               /usr/include/glm
-}
 
 # The following define makes your compiler warn you if you use any
 # feature of Qt which has been marked as deprecated (the exact warnings
@@ -128,7 +128,6 @@ HEADERS += ThirdPartyCode/asmbrowser.h \
            ThirdPartyCode/qtgradienteditor/qtgradientwidget.h \
            ThirdPartyCode/qtgradienteditor/qtgradienteditor.h \
            ThirdPartyCode/qtgradienteditor/qtgradientdialog.h \
-           ThirdPartyCode/qtgradienteditor/qtcolorbutton.h \
            ThirdPartyCode/qtgradienteditor/qtcolorline.h \
            ThirdPartyCode/qtgradienteditor/qtgradientview.h \
            ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.h \
@@ -162,7 +161,6 @@ SOURCES += Fragmentarium/Main.cpp \
            ThirdPartyCode/qtgradienteditor/qtgradientwidget.cpp \
            ThirdPartyCode/qtgradienteditor/qtgradienteditor.cpp \
            ThirdPartyCode/qtgradienteditor/qtgradientdialog.cpp \
-           ThirdPartyCode/qtgradienteditor/qtcolorbutton.cpp \
            ThirdPartyCode/qtgradienteditor/qtcolorline.cpp \
            ThirdPartyCode/qtgradienteditor/qtgradientview.cpp \
            ThirdPartyCode/qtgradienteditor/qtgradientviewdialog.cpp \
@@ -183,7 +181,7 @@ SOURCES += Fragmentarium/Main.cpp \
            SyntopiaCore/Misc/MiniParser.cpp \
            SyntopiaCore/Misc/Misc.cpp \
            SyntopiaCore/Misc/Version.cpp
-RESOURCES += Fragmentarium.qrc
+RESOURCES += Fragmentarium.qrc ./ThirdPartyCode/qtgradienteditor/qtgradienteditor.qrc
 TRANSLATIONS = Translations/Fragmentarium_de.ts \
                 Translations/Fragmentarium_en.ts \
                 Translations/Fragmentarium_nl.ts \
@@ -212,7 +210,7 @@ target.files += Examples
 target.files += fqScript
 target.files += Misc
 win32:CONFIG(release, debug|release) {
-    target.files += ../OpenEXR/bin
+    target.files += ../../OpenEXR/bin
 }
 
 target.files += $$OTHER_FILES
@@ -226,7 +224,7 @@ translations.command = lrelease
 
 win32:CONFIG(release, debug|release) {
     target.path = $$TARGET"-winex/"
-    target.files += "/build.win/release/Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD".exe"
+    target.files += "../build.win/release/Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD".exe"
 
     translations.path = $$TARGET"-winex/Languages/"
 } 
