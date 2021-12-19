@@ -864,11 +864,12 @@ void MainWindow::initTools()
     // like when the preferences are changed changes wont take effect without restarting the program.
     // TODO integrate these commands so that users get more than just the help info for commandline execution.
     // parse help info and create a dialog that accurately represents the available options?
+#ifdef Q_OS_LINUX
 #ifdef USE_OPEN_EXR
     // do we have any paths?
     if(exrBinaryPath.count() != 0) {
         // has it been done already?
-    if (exrToolsMenu == nullptr) {
+        if (exrToolsMenu == nullptr) {
             // iterate over the list of paths
             QStringListIterator pathIterator(exrBinaryPath);
             while (pathIterator.hasNext()) {
@@ -905,6 +906,7 @@ void MainWindow::initTools()
             }
         }
     }
+#endif // Q_OS_LINUX
 #endif // USE_OPEN_EXR
 
     // do we have any paths?

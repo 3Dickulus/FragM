@@ -210,7 +210,7 @@ target.files += Examples
 target.files += fqScript
 target.files += Misc
 win32:CONFIG(release, debug|release) {
-    target.files += ../../OpenEXR/bin
+    target.files += ../OpenEXR/bin
 }
 
 target.files += $$OTHER_FILES
