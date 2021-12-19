@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
     }
 
     QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
-    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+    QSplashScreen splash(pixmap);
 
     splash.setMask(pixmap.mask());
     splash.show();

@@ -796,6 +796,7 @@ void MainWindow::init()
                         "\nThis option may be re-enabled through Preferences");
 
             QMessageBox msgBox(this);
+            msgBox.setWindowFlag(Qt::WindowStaysOnTopHint);
             msgBox.setText(s);
             msgBox.setIcon(QMessageBox::Warning);
             QAbstractButton *b = msgBox.addButton(tr("Disable Autorun"), QMessageBox::AcceptRole);
