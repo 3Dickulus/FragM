@@ -252,6 +252,22 @@ int main(int argc, char *argv[])
     // before creating main window record the last run state
     last_run_state = QSettings().value("isStarting").toBool();
 
+    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
+    QSplashScreen splash(pixmap);
+
+    splash.setMask(pixmap.mask());
+    splash.show();
+
+    Fragmentarium::GUI::MainWindow *mainWin;
+    mainWin = new Fragmentarium::GUI::MainWindow();
+
+    // Makes the splash screen wait until the widget mainWin is displayed before calling close() on itself.
+    splash.finish(mainWin);
+
+    mainWin->setObjectName("MainWindow");
+
+    app->setApplicationVersion(mainWin->getVersion());
+
     QCommandLineParser parser;
     parser.setApplicationDescription(QString("\n") + app->translate("main", "Fragmentarium is a cross-platform IDE for exploring pixel based GPU graphics."));
 
@@ -291,22 +307,6 @@ int main(int argc, char *argv[])
             }
         }
     }
-
-    QPixmap pixmap(QDir(Fragmentarium::GUI::MainWindow::getMiscDir()).absoluteFilePath("splash.png"));
-    QSplashScreen splash(pixmap);
-
-    splash.setMask(pixmap.mask());
-    splash.show();
-
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow();
-
-    // Makes the splash screen wait until the widget mainWin is displayed before calling close() on itself.
-    splash.finish(mainWin);
-
-    mainWin->setObjectName("MainWindow");
-
-    app->setApplicationVersion(mainWin->getVersion());
 
     mainWin->setLanguage(langArg);
 
