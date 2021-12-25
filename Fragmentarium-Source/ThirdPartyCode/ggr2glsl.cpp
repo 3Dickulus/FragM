@@ -48,7 +48,6 @@ bool Ggr2Glsl::readFile(QString filename)
                                 int segCount = 0;
                                 while( !in.atEnd() ) {      // process segment data
                                     QStringList t = in.readLine().split(" ");
-                                    qDebug() << t;
                                     Segment s;
                                     if(t.count() > 12) {     // found enough to make a segment
 
@@ -76,7 +75,6 @@ bool Ggr2Glsl::readFile(QString filename)
                                 }
                                 // check if the number of segments found is the same as the count specified
                                 if(ok && segCount == numSegments) {
-                                    qDebug() << "Loaded file: " << filename;
                                     loadingSucceded = true;
                                 } else qDebug() << "Segment count mismatch: " << "stated:" << numSegments << " vs found:" << segCount << " in file " << filename;
                             } else qDebug() << "Gradient number of segments error.";
