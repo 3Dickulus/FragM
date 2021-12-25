@@ -886,6 +886,9 @@ void QtGradientEditor::setGradient(const QGradient &grad)
     d_ptr->m_gradientStopsController->setGradientStops(grad.stops());
     d_ptr->m_ui.gradientWidget->setGradientStops(grad.stops());
     d_ptr->updateGradient(false);
+    // adjust the gradient display handles
+    d_ptr->setStartLinear(QPointF(0.5, 0.0));
+    d_ptr->setEndLinear(QPointF(0.5, 1.0));
 }
 
 QGradient QtGradientEditor::gradient() const
