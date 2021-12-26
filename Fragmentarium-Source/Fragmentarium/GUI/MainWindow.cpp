@@ -1265,12 +1265,12 @@ void MainWindow::createActions()
     screenshotAction = new QAction(tr("Save Screen Shot..."), this);
     connect(screenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
 
-    new2DAction = new QAction(QIcon(":/Icons/new2D.png"), tr("&New2D"), this);
+    new2DAction = new QAction(QIcon(":/Icons/new2D.png"), tr("&New 2D Fragment"), this);
     new2DAction->setShortcut(tr("Ctrl+N"));
     new2DAction->setStatusTip(tr("Create a new 2D fragment"));
     connect(new2DAction, SIGNAL(triggered()), this, SLOT(new2DFile()));
 
-    new3DAction = new QAction(QIcon(":/Icons/new3D.png"), tr("&New3D"), this);
+    new3DAction = new QAction(QIcon(":/Icons/new3D.png"), tr("&New 3D Fragment"), this);
     new3DAction->setShortcut(tr("Ctrl+Shift+N"));
     new3DAction->setStatusTip(tr("Create a new 3D fragment"));
     connect(new3DAction, SIGNAL(triggered()), this, SLOT(new3DFile()));
