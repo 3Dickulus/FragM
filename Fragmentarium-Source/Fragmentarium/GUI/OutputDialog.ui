@@ -152,7 +152,7 @@
      <item row="1" column="2">
       <widget class="QCheckBox" name="lockAspectCheckBox">
        <property name="text">
-        <string/>
+        <string>Aspect</string>
        </property>
        <property name="icon">
         <iconset resource="../../Fragmentarium.qrc">
