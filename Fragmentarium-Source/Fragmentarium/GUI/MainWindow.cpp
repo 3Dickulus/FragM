@@ -248,10 +248,97 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
 }
 
-void MainWindow::newFile()
+void MainWindow::new2DFile()
 {
+    QString s(tr("// New 2D fragment...") + "\r\n\
+#include \"MathUtils.frag\" \r\n\
+#include \"Complex.frag\" \r\n\
+#include \"Progressive2D.frag\" \r\n\
+ \r\n\
+// Escape time fractals iterate a functions for each point \r\n\
+// in the plane, and check if the sequence generated converges. \r\n\
+//  \r\n\
+// Just implement the \'color\' function below. \r\n\
+// It is possible to draw Mandelbrots and Julias \r\n\
+// and customize the coloring. \r\n\
+// \r\n\
+// Here is an example of a Mandelbrot: \r\n\
+ \r\n\
+// The name for the tab for our set of control sliders \r\n\
+#group Mandelbrot \r\n\
+ \r\n\
+// Number of iterations \r\n\
+uniform int  Iterations; slider[10,200,1000] \r\n\
+ \r\n\
+uniform float R; slider[0,0,1] \r\n\
+uniform float G; slider[0,0.4,1] \r\n\
+uniform float B; slider[0,0.7,1] \r\n\
+ \r\n\
+uniform float Power; slider[1,2,10] \r\n\
+uniform float Bailout; slider[0,64,384] \r\n\
+ \r\n\
+// The color scheme here is based on one from Inigo Quilez\'s Shader Toy: \r\n\
+// http://www.iquilezles.org/www/articles/mset_smooth/mset_smooth.htm \r\n\
+vec3 IQColor(float i, vec2 z) { \r\n\
+      float co;  // equivalent optimized smooth interation count \r\n\
+      co = 3.1415+i - log(log2(length(z)))/log(Power); \r\n\
+      co = 6.2831*sqrt(co); \r\n\
+      return .5+.5*cos(co+vec3(R,G,B) ); \r\n\
+} \r\n\
+ \r\n\
+vec3 color(vec2 c) { \r\n\
+ \r\n\
+	vec2 z = vec2(0.0,0.0); \r\n\
+ \r\n\
+	int i; \r\n\
+ \r\n\
+	for (i = 0; i < Iterations; i++) { \r\n\
+		// calculate Z \r\n\
+		z = cPow(z, Power) + c; \r\n\
+		// check bailout \r\n\
+		if (dot(z,z) > Bailout) break; \r\n\
+	} \r\n\
+ \r\n\
+	vec3 rColor=vec3(0.0); \r\n\
+ \r\n\
+	if(i<Iterations) \r\n\
+		rColor = IQColor(float(i),z); \r\n\
+ \r\n\
+	return rColor; \r\n\
+} \r\n\
+ \r\n\
+#preset Default \r\n\
+Center = -0.5,0.0 \r\n\
+Zoom = 0.75 \r\n\
+#endpreset \r\n" );
 
-    insertTabPage("");
+    insertTabPage(s);
+    variableEditor->resetUniforms();
+    applyPresetByName("Default");
+}
+
+void MainWindow::new3DFile()
+{
+    QString s(tr("// New 3D fragment...") + "\r\n\
+#include \"MathUtils.frag\"\r\n\
+#include \"DE-Raytracer.frag\" \r\n\
+\r\n\
+float DE(vec3 pos) {\r\n\
+	return abs(length(abs(pos)+vec3(-1.0))-1.2);\r\n\
+}\r\n\
+\r\n\
+// minimum number of settings for a 3D preset\r\n\
+\r\n\
+#preset Default\r\n\
+FOV = 0.4\r\n\
+Eye = 5.582327,4.881191,-6.709066\r\n\
+Target = -0.44036019,-0.145859154,0.288424741\r\n\
+Up = -0.115126834,0.845289908,0.508173856\r\n\
+#endpreset\r\n");
+
+    insertTabPage(s);
+    variableEditor->resetUniforms();
+    applyPresetByName("Default");
 }
 
 void MainWindow::insertPreset()
@@ -1178,10 +1265,15 @@ void MainWindow::createActions()
     screenshotAction = new QAction(tr("Save Screen Shot..."), this);
     connect(screenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
 
-    newAction = new QAction(QIcon(":/Icons/new.png"), tr("&New"), this);
-    newAction->setShortcut(tr("Ctrl+N"));
-    newAction->setStatusTip(tr("Create a new file"));
-    connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
+    new2DAction = new QAction(QIcon(":/Icons/new2D.png"), tr("&New2D"), this);
+    new2DAction->setShortcut(tr("Ctrl+N"));
+    new2DAction->setStatusTip(tr("Create a new 2D fragment"));
+    connect(new2DAction, SIGNAL(triggered()), this, SLOT(new2DFile()));
+
+    new3DAction = new QAction(QIcon(":/Icons/new3D.png"), tr("&New3D"), this);
+    new3DAction->setShortcut(tr("Ctrl+Shift+N"));
+    new3DAction->setStatusTip(tr("Create a new 3D fragment"));
+    connect(new3DAction, SIGNAL(triggered()), this, SLOT(new3DFile()));
 
     openAction = new QAction(QIcon(":/Icons/open.png"), tr("&Open..."), this);
     openAction->setShortcut(tr("Ctrl+O"));
@@ -1336,7 +1428,8 @@ void MainWindow::createMenus()
 
     // -- File Menu --
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAction);
+    fileMenu->addAction(new2DAction);
+    fileMenu->addAction(new3DAction);
     fileMenu->addAction(openAction);
     fileMenu->addAction(reloadAction);
     fileMenu->addAction(saveAction);
@@ -2272,7 +2365,8 @@ void MainWindow::createToolBars()
 {
 
     fileToolBar = addToolBar(tr("File Toolbar"));
-    fileToolBar->addAction(newAction);
+    fileToolBar->addAction(new2DAction);
+    fileToolBar->addAction(new3DAction);
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(saveAction);
     fileToolBar->addAction(saveAsAction);
@@ -3284,24 +3378,9 @@ TextEdit *MainWindow::insertTabPage(QString filename)
     textEdit->setTabStopWidth(20);
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
-    QString s(tr("// Write fragment code here...") + "\r\n\
-#include \"MathUtils.frag\"\r\n\
-#include \"DE-Raytracer.frag\" \r\n\
-\r\n\
-float DE(vec3 pos) {\r\n\
-	return abs(length(abs(pos)+vec3(-1.0))-1.2);\r\n\
-}\r\n\
-// minimum number of settings for a preset\r\n\
-#preset Default\r\n\
-FOV = 0.4\r\n\
-Eye = 5.582327,4.881191,-6.709066\r\n\
-Target = 0,0,0\r\n\
-Up = -0.1207781,0.8478234,0.5163409\r\n\
-#endpreset\r\n");
-
     bool loadingSucceded = false;
-    if (filename.isEmpty()) {
-        textEdit->setPlainText(s);
+    if (filename.startsWith("// ")) {
+        textEdit->setPlainText(filename);
     } else 
     if (filename.toLower().endsWith(".ggr") && QFile(filename).exists()) {
         Ggr2Glsl *gradientCode = new Ggr2Glsl(filename);
@@ -3331,7 +3410,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
                 filename.replace(".ggr",".frag");
                 QApplication::restoreOverrideCursor();
 
-            } else textEdit->setPlainText(s);
+            } else textEdit->setPlainText(filename);
             
             loadingSucceded = ok;
         }
@@ -3340,7 +3419,7 @@ Up = -0.1207781,0.8478234,0.5163409\r\n\
     {
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            textEdit->setPlainText(tr("// Cannot read file %1:\n// %2\n").arg(filename).arg(file.errorString()) + s);
+            textEdit->setPlainText(tr("// Cannot read file %1:\n// %2\n").arg(filename).arg(file.errorString()));
         } else {
             QTextStream in(&file);
             QApplication::setOverrideCursor(Qt::WaitCursor);

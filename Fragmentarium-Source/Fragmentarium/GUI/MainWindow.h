@@ -676,7 +676,8 @@ private slots:
     void launchReferenceHome2();
     void launchDocumentation();
     void openFile();
-    void newFile();
+    void new2DFile();
+    void new3DFile();
     void insertPreset();
     void open();
     bool save();
@@ -785,7 +786,8 @@ private:
 
     QTime *lastTime;
     int lastStoredTime;
-    QAction *newAction;
+    QAction *new2DAction;
+    QAction *new3DAction;
     QAction *openAction;
     QAction *reloadAction;
     QAction *saveAction;
