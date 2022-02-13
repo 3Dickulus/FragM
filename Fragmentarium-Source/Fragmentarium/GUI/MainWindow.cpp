@@ -3410,7 +3410,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
                 filename.replace(".ggr",".frag");
                 QApplication::restoreOverrideCursor();
 
-            } else textEdit->setPlainText(filename);
+            } else textEdit->setPlainText(tr("// User canceled ggr2glsl conversion.\n// %1\n").arg(filename));
             
             loadingSucceded = ok;
         }

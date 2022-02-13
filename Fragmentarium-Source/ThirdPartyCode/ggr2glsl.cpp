@@ -24,7 +24,8 @@
 Ggr2Glsl::Ggr2Glsl(QString filename) : fileName(filename)
 {
     if( !fileName.isNull() && !fileName.isEmpty() )
-        readFile(fileName);
+        loadingSucceded = readFile(fileName);
+    else loadingSucceded = false;
 }
 
 bool Ggr2Glsl::readFile(QString filename)
