@@ -279,15 +279,16 @@ protected:
         rule.pattern.setCaseSensitivity ( Qt::CaseInsensitive );
         rule.format = textFormat.value ( "UserFunction" );
         highlightingRules.append ( rule );
-
-        rule.group = "Numbers"; // generic
-        rule.pattern = QRegExp ( "\\b[+-]?\\d{1,}[\\.]?\\d*(?:([eE][+-]\\d{1,}|[fF]))?\\b" );
+        // valid integer & floating point format in GLSL
+        QString floatRegX = "((?:(?:[+\\-]{0,}[0-9]{0,}[\\.][0-9]{0,}))(?:[eE]{0,}[+\\-]{0,}[0-9]{1,})|(?:[\\-]{0,}[0-9]{1,}[\\.]{0,1}[eE]{0,}[0-9]{0,}))";
+        rule.group = "Numbers";
+        rule.pattern = QRegExp ( floatRegX );
         rule.pattern.setCaseSensitivity ( Qt::CaseInsensitive );
         rule.format = textFormat.value ( "Numbers" );
         highlightingRules.append ( rule );
 
         rule.group = "Quotes";
-        rule.pattern = QRegExp ( "[\"|\'].*[\'|\"]" );
+        rule.pattern = QRegExp ( "([\"].*[\"])|([\'].*[\'])" );
         rule.pattern.setCaseSensitivity ( Qt::CaseSensitive );
         rule.format = textFormat.value ( "Quotes" );
         highlightingRules.append ( rule );
@@ -327,26 +328,28 @@ protected:
             highlightingRules.append ( rule );
         }
 
-        QString NUMf = QString ( "[ ]?[-+]?\\d{0,}(?:[\\.]\\d{1,})?(?:[eE]{1}[+-]{1}\\d{1,})?" );
-        QString NUMi = QString ( "[ ]?[-+]?\\d{1,}" );
+        QString NUMf = "\\s*" + floatRegX + "\\s*";
+        QString NUMi = "\\s*([+\\-]{0,1}[0-9]{1,})\\s*";
 
         patterns.clear();
         /// Fragmentarium keywords
-        patterns << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+);\\s*slider\\[\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\)\\]"
-                << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+);\\s*slider\\[\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\)\\]"
-                << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+);\\s*slider\\[\\((" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + ")\\),\\((" + NUMf + "),(" + NUMf + ")\\)\\]"
-                << "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+);\\s*color\\[(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\]"
-                << "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+);\\s*color\\[(" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\]"
+        patterns << "^\\s*uniform\\s+([d]{,1}vec4)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*\\]"
+                << "^\\s*uniform\\s+([d]{,1}vec3)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*\\]"
+                << "^\\s*uniform\\s+([d]{,1}vec2)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*\\]"
+                << "^\\s*uniform\\s+([float|double]{5,6})\\s+(\\S+);\\s*slider\\[" + NUMf + "," + NUMf + "," + NUMf + "\\]"
 
-                << "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+);\\s*slider\\[(" + NUMf + "),(" + NUMf + "),(" + NUMf + ")\\]"
-                << "^\\s*uniform\\s+int\\s+(\\S+);\\s*slider\\[(" + NUMi + "),(" + NUMi + "),(" + NUMi + ")\\]"
-                << "^\\s*uniform\\s+int\\s+(\\S+);\\s*menu\\[(" + NUMi + "),(.*)\\]"
-                << "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[([true|false]{1,5})\\]"
-                << "^\\s*uniform\\s+sampler([2D|Cube]{1,4})\\s+(\\S+);\\s*file\\[(\\S+)[,\\s+]{0,1}([\\S+]{1,})\\]"
+                << "^\\s*uniform\\s+([d]{,1}vec3)\\s+(\\S+);\\s*color\\s*\\[" + NUMf + "," + NUMf + "," + NUMf + "\\]"
+                << "^\\s*uniform\\s+([d]{,1}vec4)\\s+(\\S+);\\s*color\\s*\\[" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\]"
+
+                << "^\\s*uniform\\s+int\\s+(\\S+);\\s*menu\\[" + NUMi + ",(.*)\\]"
+                << "^\\s*uniform\\s+int\\s+(\\S+);\\s*slider\\[" + NUMi + "," + NUMi + "," + NUMi + "\\]"
+                << "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[\\s*([true|false]{4,5})\\s*\\]"
+
+                << "^\\s*uniform\\s+[iu]{0,1}sampler([2D|Cube]{2,4})\\s+(\\S+);\\s*file\\[(\\S+)[,\\s+]{,1}([\\S+]{1,})\\]"
                 << "(random\\[" + NUMf + "," + NUMf + "\\])"
                 << "^\\s*uniform\\s+float\\s+(time);"
                 << "^\\s*uniform\\s+int\\s+(subframe);"
-                << "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(pixelSize);";
+                << "^\\s*uniform\\s+([d]{,1}vec2)\\s+(pixelSize);";
 
         foreach ( const QString &pattern, patterns ) {
             rule.group = "Fragmentarium";

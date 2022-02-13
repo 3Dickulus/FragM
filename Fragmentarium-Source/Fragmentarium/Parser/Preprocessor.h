@@ -425,21 +425,24 @@ public:
 };
 
 /// The preprocessor is responsible for including files and resolve user uniform variables
-    const QString sliderTypeString = "\\s*(Linear|Logarithmic)?";
-    const QString lockTypeString = "\\s*(Locked|NotLocked|NotLockable)?\\s*.?$";
+    const QString sliderTypeString = QString ("\\s*(Linear|Logarithmic)?");
+    const QString lockTypeString = QString ("\\s*(Locked|NotLocked|NotLockable)?\\s*.?$");
+    const QString NUMf = QString ("\\s*([-+]{0,1}\\d{0,}(?:[.]\\d{0,})?(?:[eE][+-]{0,1}\\d{1,})?)\\s*");
+    const QString NUMi = QString ("\\s*([-+]?\\d{1,})\\s*");
 
     // Look for patterns like 'uniform float varName; slider[0.1,1,2.0]'
-    static QRegExp float4Slider ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
-    static QRegExp float3Slider ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\),\\((\\S+),(\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
-    static QRegExp float2Slider ( "^\\s*uniform\\s+([d]{0,1}vec2)\\s+(\\S+)\\s*;\\s*slider\\[\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\),\\((\\S+),(\\S+)\\)\\]"+sliderTypeString+lockTypeString );
-    static QRegExp float1Slider ( "^\\s*uniform\\s+([float|double]{1,6})\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float4Slider ( "^\\s*uniform\\s+([d]{,1}vec4)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float3Slider ( "^\\s*uniform\\s+([d]{,1}vec3)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "," + NUMf + "\\)\\s*\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float2Slider ( "^\\s*uniform\\s+([d]{,1}vec2)\\s+(\\S+);\\s*slider\\s*\\[\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*,\\s*\\(" + NUMf + "," + NUMf + "\\)\\s*\\]"+sliderTypeString+lockTypeString );
+    static QRegExp float1Slider ( "^\\s*uniform\\s+([float|double]{5,6})\\s+(\\S+);\\s*slider\\[" + NUMf + "," + NUMf + "," + NUMf + "\\]"+sliderTypeString+lockTypeString );
 
-    static QRegExp colorChooser ( "^\\s*uniform\\s+([d]{0,1}vec3)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
-    static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{0,1}vec4)\\s+(\\S+)\\s*;\\s*color\\[(\\S+),(\\S+),(\\S+),(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
+    static QRegExp colorChooser ( "^\\s*uniform\\s+([d]{,1}vec3)\\s+(\\S+);\\s*color\\s*\\[" + NUMf + "," + NUMf + "," + NUMf + "\\]"+lockTypeString );
+    static QRegExp floatColorChooser ( "^\\s*uniform\\s+([d]{,1}vec4)\\s+(\\S+);\\s*color\\s*\\[" + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "," + NUMf + "\\]"+lockTypeString );
 
-    static QRegExp intMenu ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*menu\\[(\\S+),(.*)\\]"+lockTypeString );
-    static QRegExp intSlider ( "^\\s*uniform\\s+int\\s+(\\S+)\\s*;\\s*slider\\[(\\S+),(\\S+),(\\S+)\\]"+lockTypeString );
-    static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+)\\s*;\\s*checkbox\\[(\\S+)\\]"+lockTypeString );
+    static QRegExp intMenu ( "^\\s*uniform\\s+int\\s+(\\S+);\\s*menu\\[" + NUMi + ",(.*)\\]"+lockTypeString );
+    static QRegExp intSlider ( "^\\s*uniform\\s+int\\s+(\\S+);\\s*slider\\[" + NUMi + "," + NUMi + "," + NUMi + "\\]"+lockTypeString );
+    static QRegExp boolChooser ( "^\\s*uniform\\s+bool\\s+(\\S+);\\s*checkbox\\[\\s*([true|false]{4,5})\\s*\\]"+lockTypeString );
+
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
     
@@ -450,7 +453,7 @@ public:
     static QRegExp usampler2D (        "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
     static QRegExp usampler2DChannel ( "^\\s*uniform\\s+usampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
 
-    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+)\\s*;\\s*file\\[(.*)\\].*$" );
+    static QRegExp samplerCube ( "^\\s*uniform\\s+samplerCube\\s+(\\S+);\\s*file\\[(.*)\\].*$" );
     static QRegExp doneClear ( "^\\s*#define\\s+dontclearonchange$",Qt::CaseInsensitive );
     static QRegExp iterations ( "^\\s*#define\\s+iterationsbetweenredraws\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
     static QRegExp subframeMax ( "^\\s*#define\\s+subframemax\\s*(\\d+)\\s*$",Qt::CaseInsensitive );
