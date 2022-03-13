@@ -466,7 +466,7 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP OR BUILD_SOURCE_ZIP)
 	SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
 	SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;")
 	set(CPACK_SOURCE_GENERATOR "7Z")
-	set(CPACK_SOURCE_IGNORE_FILES"/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;.*~$")
+	set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;.*~$")
 	set(CPACK_VERBATIM_VARIABLES YES)
 	ENDIF()
 
