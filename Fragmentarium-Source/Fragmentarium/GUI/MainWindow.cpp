@@ -3118,18 +3118,13 @@ bool MainWindow::initializeFragment()
         return false;
     }
 
-    QString inputText = getTextEdit()->toPlainText();
-    if (inputText.contains("#donotrun")) {
-        INFO(tr("Not a runnable fragment."));
-        return false;
-    }
-        
     GLint s;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &s); // GL_MAX_3D_TEXTURE_SIZE GL_MAX_CUBE_MAP_TEXTURE_SIZE
     INFO ( tr( "Maximum texture size: %1x%1" ).arg( s ) );
     INFO("");
     INFO(tr("GLSL versions: ") + engine->glslvers.join(", "));
 
+    QString inputText = getTextEdit()->toPlainText();
     QString versionProfileLine = inputText.split("\n").at(0);
     if ( versionProfileLine.contains("#version"))
         INFO(tr("Current target: GLSL ") + versionProfileLine.split(" ").at(1) + ((versionProfileLine.contains("compatibility"))?" Compatibility":""));
@@ -3173,6 +3168,11 @@ bool MainWindow::initializeFragment()
 
     if (variableEditor->hasKeyFrames()) {
         clearKeyFrames();
+    }
+
+    if (inputText.contains("#donotrun")) {
+        INFO(tr("Not a runnable fragment."));
+        //return false;
     }
 
     Preprocessor p(&fileManager);

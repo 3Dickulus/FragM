@@ -285,9 +285,9 @@ protected:
 
     // all public slots are available as script commands
 public slots:
-    void setDefault()
+    bool setDefault()
     {
-        variableEditor->setDefault();
+        return variableEditor->setDefault();
     };
     void processGuiEvents();
     void loadFragFile ( const QString &fileName );
