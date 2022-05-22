@@ -1644,23 +1644,21 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
                 cachedTileImages.insert(tile,im);
             }
 
-            if(!runningScript) {
-                // display scaled tiles
-                float wScaleFactor = enginePixmap.width() / maxTiles;
-                float hScaleFactor = enginePixmap.height() / maxTiles;
-                int dx = (tile / maxTiles);
-                int dy = (maxTiles-1)-(tile % maxTiles);
-                QRect source ( 0, 0, wScaleFactor, hScaleFactor );
-                QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
-                im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-                // render scaled tiles into the overlay pixmap
-                QPainter painter2( &enginePixmap );
-                painter2.drawImage ( target, im, source );
-                painter2.end();
+            // display scaled tiles
+            float wScaleFactor = enginePixmap.width() / maxTiles;
+            float hScaleFactor = enginePixmap.height() / maxTiles;
+            int dx = (tile / maxTiles);
+            int dy = (maxTiles-1)-(tile % maxTiles);
+            QRect source ( 0, 0, wScaleFactor, hScaleFactor );
+            QRect target( (dx * wScaleFactor), (dy * hScaleFactor), wScaleFactor, hScaleFactor );
+            im = im.scaled(wScaleFactor, hScaleFactor, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            // render scaled tiles into the overlay pixmap
+            QPainter painter2( &enginePixmap );
+            painter2.drawImage ( target, im, source );
+            painter2.end();
 
-                // update the GL area overlay
-                engineOverlay->setPixmap(enginePixmap);
-            }            
+            // update the GL area overlay
+            engineOverlay->setPixmap(enginePixmap);
         } else {
             stopScript();
             tile = maxTiles*maxTiles;
@@ -1878,57 +1876,57 @@ retry:
         readSettings();
         Preprocessor p(&fileManager);
 
-        try {
-            QString file = tabInfo[tabBar->currentIndex()].filename;
-            FragmentSource fs = p.createAutosaveFragment(inputText,file);
-            // if the first line is the #version preprocessor command it must stay as
-            // the first line
-            QString firstLine = fs.source[0].trimmed() + "\n";
-            if (firstLine.startsWith("#version")) {
-                fs.source.removeAt(0);
-                fs.lines.removeAt(0);
-            } else {
-                firstLine = "";
-            }
+        QString file = tabInfo[tabBar->currentIndex()].filename;
+        FragmentSource fs = p.createAutosaveFragment(inputText,file);
+        // if the first line is the #version preprocessor command it must stay as
+        // the first line
+        QString firstLine = fs.source[0].trimmed() + "\n";
+        if (firstLine.startsWith("#version")) {
+            fs.source.removeAt(0);
+            fs.lines.removeAt(0);
+        } else {
+            firstLine = "";
+        }
 
-            QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
-            prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
-            QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
+        QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
+        prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
+        QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
 
-            append += "#endpreset\n\n";
+        append += "#endpreset\n\n";
 
-            QString final = prepend + fs.getText() + append;
+        QString final = prepend + fs.getText() + append;
 
-            QString f = od.getFileName();
-            QDir oDir(QFileInfo(f).absolutePath());
-            QString subdirName = od.getFolderName();
-            bool overWrite = false;
-            if (oDir.exists(subdirName)){
-                QMessageBox msgBox(this);
-                msgBox.setIcon(QMessageBox::Warning);
-                msgBox.setText( QString("%1<br>Already exists!").arg(subdirName) );
-                msgBox.setInformativeText(tr("Do you want to use it? <br><br>This will overwrite any existing files!"));
-                msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                int ret = msgBox.exec();
-                switch (ret) {
-                case QMessageBox::Ok:
-                    overWrite = true;
-                    break;
-                case QMessageBox::Cancel:
-                    goto retry;
-                    break;
-                default:
-                    return;
-                }
-            } else            
-            if (!oDir.mkdir(subdirName)) {
-
-              QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+        QString f = od.getFileName();
+        QDir oDir(QFileInfo(f).absolutePath());
+        QString subdirName = od.getFolderName();
+        bool overWrite = false;
+        if (oDir.exists(subdirName)){
+            QMessageBox msgBox(this);
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText( QString("%1<br>Already exists!").arg(subdirName) );
+            msgBox.setInformativeText(tr("Do you want to use it? <br><br>This will overwrite any existing files!"));
+            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            int ret = msgBox.exec();
+            switch (ret) {
+            case QMessageBox::Ok:
+                overWrite = true;
+                break;
+            case QMessageBox::Cancel:
                 goto retry;
+                break;
+            default:
+                return;
             }
-            subdirName = oDir.filePath(subdirName); // full name
+        } else            
+        if (!oDir.mkdir(subdirName)) {
 
+            QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+            goto retry;
+        }
+        subdirName = oDir.filePath(subdirName); // full name
+
+        try {
             if(od.doSaveFragment()) {
                 QFile fileStream(subdirName + "/" + fileName);
                 if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
@@ -2220,7 +2218,7 @@ retry:
               finalImage.setText("frAg", variableEditor->getSettings());
               imageSaved=finalImage.save(name);
             }
-
+            engineOverlay->update();
         }
         if(!preview) {
             if(imageSaved && !progress.wasCanceled()) {
@@ -4317,7 +4315,7 @@ void MainWindow::executeScript()
     if (runningScript) {
         settings.setValue("filename", name);
     }
-    // finished script so...
+    // finished script
 }
 
 void MainWindow::setupScriptEngine()
@@ -4390,9 +4388,12 @@ void MainWindow::slotShortcutF6()
     }
 
     if(loadingSucceded) {
+
         runningScript = true;
 
         QScriptValue result = scriptEngine.evaluate( scriptText, scriptname );
+
+        runningScript=false;
 
         QApplication::restoreOverrideCursor();
 
@@ -4400,7 +4401,6 @@ void MainWindow::slotShortcutF6()
             QString err = result.toString();
             cmdScriptLineNumber = scriptEngine.uncaughtExceptionLineNumber();
             WARNING(tr("Error %1 at line %2").arg(err).arg(cmdScriptLineNumber));
-            runningScript=false;
         } else {
             cmdScriptLineNumber = 0;
         }
