@@ -89,7 +89,7 @@ ENDIF ()
 
 #IF(OPENGL_LIBRARIES_NOTFOUND)
 	IF(WIN32)
-	set(OPENGL_LIBRARIES "-lopengl32" )
+        set(OPENGL_LIBRARIES "-lopengl32" )
 	ENDIF ()
 #ENDIF ()
 
@@ -99,10 +99,10 @@ set (OpenEXTRA_LIBRARIES "")
 set (OpenEXR_INCLUDE_DIRS "")
 
 	IF ( APPLE  )
-	set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../glm )
 	ENDIF ()
 	IF ( WIN32  )
-	set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
+        set ( GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../ )
 	ENDIF ()
 
 MARK_AS_ADVANCED (OpenEXTRA_LIBRARIES)
@@ -112,36 +112,36 @@ MARK_AS_ADVANCED (GLM_INCLUDE_DIRS)
 IF ( USE_OPEN_EXR )
 
 	IF(UNIX AND NOT APPLE)
-	find_package ( OpenEXR REQUIRED )
-	set( OpenEXTRA_LIBRARIES z pthread )
+        find_package ( OpenEXR REQUIRED )
+        set( OpenEXTRA_LIBRARIES z pthread )
 	ENDIF ()
 
 	ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
 	IF ( WIN32 )
-	set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include )
+        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include )
 
-	set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
+        set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
 
-	set( OpenEXR_LIBS
-	IlmImf-2_4
-	Half-2_4
-	Imath-2_4
-	Iex-2_4
-	IexMath-2_4
-	IlmThread-2_4
-	)
+        set( OpenEXR_LIBS
+        IlmImf-2_4
+        Half-2_4
+        Imath-2_4
+        Iex-2_4
+        IexMath-2_4
+        IlmThread-2_4
+        )
 
-	MESSAGE("Using MinGW threads")
-	ADD_DEFINITIONS(-mthreads)
-	set ( OpenEXTRA_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
+        MESSAGE("Using MinGW threads")
+        ADD_DEFINITIONS(-mthreads)
+        set ( OpenEXTRA_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
 
 	ENDIF ()
 
 	IF(APPLE)
-	set( OpenEXTRA_LIBRARIES z pthread )
+        set( OpenEXTRA_LIBRARIES z pthread )
 
-	ADD_DEFINITIONS ( -pthread )
+        ADD_DEFINITIONS ( -pthread )
 
 	ENDIF ()
 
@@ -150,6 +150,8 @@ ENDIF (USE_OPEN_EXR)
 # SET ( CMAKE_CXX_FLAGS " -Wall -Wextra " )
 
 # add_definitions ( -Wall )
+
+set(CMAKE_CXX_FLAGS, " -Wl --stack 100000000 -Wl --heap 100000000 ")
 
 include_directories (
 	${OPENGL_INCLUDE_DIR}
