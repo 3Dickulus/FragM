@@ -93,7 +93,7 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 
 // used immediately after glFunctions() to get line numbers with gl debug output
 // eg:
-// GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str()); glCheckError();
+// GLint index = glGetUniformLocation(programID, uniformName.toStdString()); glCheckError();
 //
 #define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
 #endif
