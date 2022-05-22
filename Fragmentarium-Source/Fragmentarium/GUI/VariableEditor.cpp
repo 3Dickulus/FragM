@@ -242,6 +242,13 @@ void VariableEditor::hideUnusedTabs()
         
         tabWidget->widget(i)->setEnabled(hideMe);
     }
+
+    for(int i=0; i< tabWidget->count(); i++) {
+        if(!tabWidget->widget(i)->isEnabled()) {
+            if (verbose) qDebug() << "Removed empty tab:" << tabWidget->tabText(i);
+            tabWidget->removeTab(i);
+        }
+    }
 }
 
 void VariableEditor::lockGroup()
