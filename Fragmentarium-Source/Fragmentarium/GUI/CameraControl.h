@@ -45,7 +45,7 @@ public:
     {
         return false;
     }
-            virtual bool keyPressEvent(QKeyEvent* /*ev*/);
+    virtual bool keyPressEvent(QKeyEvent* /*ev*/);
     virtual bool wantsRedraw()
     {
         return askForRedraw;

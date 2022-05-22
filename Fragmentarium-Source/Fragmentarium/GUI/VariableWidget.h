@@ -327,6 +327,7 @@ public slots:
     {
         QPalette p = palette();
         QColor c;
+
         c.setRgbF(v.x,v.y,v.z);
         setStyleSheet(QString(
             "* {background: %1;"
