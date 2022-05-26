@@ -2246,8 +2246,7 @@ void DisplayWidget::timerSignal()
         if (buttonDown) {
             pendingRedraws = 1;
         }
-        // using repaint() and render() allows 60 fps when GL is sync'd to 60Hz  monitor
-        repaint();
+        render(this);
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
@@ -2262,7 +2261,7 @@ void DisplayWidget::timerSignal()
 
             // render
             pendingRedraws = 1;
-            render(this);
+           render(this);
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );
             fpsCounter++;
