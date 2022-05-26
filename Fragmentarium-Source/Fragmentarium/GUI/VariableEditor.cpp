@@ -246,7 +246,8 @@ void VariableEditor::hideUnusedTabs()
     for(int i=0; i< tabWidget->count(); i++) {
         if(!tabWidget->widget(i)->isEnabled()) {
             if (verbose) qDebug() << "Removed empty tab:" << tabWidget->tabText(i);
-            tabWidget->removeTab(i);
+            tabs.remove(tabWidget->tabText(i)); // remove from our list
+            tabWidget->removeTab(i); // remove the widget from our gui
         }
     }
 }
@@ -583,6 +584,17 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         iw->setUpdated(true);
         variables.append(iw);
         currentWidget->layout()->addWidget(iw);
+    } else if (dynamic_cast<Parser::IntMenuParameter *>(p) != nullptr) {
+        auto *mp = dynamic_cast<Parser::IntMenuParameter *>(p);
+        QString name = mp->getName();
+        IntMenuWidget *mw = new IntMenuWidget(currentWidget, this, name, mp->getDefaultValue(), mp->getText());
+        mw->setGroup(mp->getGroup());
+        mw->setToolTip(mp->getTooltip());
+//                 mw->setStatusTip(mp->getTooltip());
+        mw->setDefaultLockType(mp->getLockType());
+        mw->setUpdated(true);
+        variables.append(mw);
+        currentWidget->layout()->addWidget(mw);
     } else if (dynamic_cast<Parser::ColorParameter *>(p) != nullptr) {
         auto *cp = dynamic_cast<Parser::ColorParameter *>(p);
         QString name = cp->getName();
@@ -630,17 +642,6 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
         variables.append(sw);
         currentWidget->layout()->addWidget(sw);
 
-    } else if (dynamic_cast<Parser::IntMenuParameter *>(p) != nullptr) {
-        auto *mp = dynamic_cast<Parser::IntMenuParameter *>(p);
-        QString name = mp->getName();
-        IntMenuWidget *mw = new IntMenuWidget(currentWidget, this, name, mp->getDefaultValue(), mp->getText());
-        mw->setGroup(mp->getGroup());
-        mw->setToolTip(mp->getTooltip());
-//                 mw->setStatusTip(mp->getTooltip());
-        mw->setDefaultLockType(mp->getLockType());
-        mw->setUpdated(true);
-        variables.append(mw);
-        currentWidget->layout()->addWidget(mw);
     } else {
         WARNING(tr("Unsupported parameter"));
     }
@@ -674,12 +675,9 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
             variables.remove(i);
             i = 0;
         } else {
+            variables[i]->setUpdated(false);
             i++;
         }
-    }
-
-    for (int i = 0; i < variables.count(); i++) {
-        variables[i]->setUpdated(false);
     }
 
     QMap<QString, bool> tabStillPresent;
@@ -692,10 +690,10 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
         if (g.isEmpty()) {
             g = "Default";
         }
-        if (!tabs.contains(g)) {
+        if (!tabs.contains(g)) { qDebug() << "Creating Group:" << g;
             createGroup(g);
         } else {
-            if (tabStillPresent.contains(g)) {
+            if (tabStillPresent.contains(g)) { qDebug() << "Group present:" << g;
                 tabStillPresent[g] = true;
             }
         }
@@ -712,10 +710,10 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
 
                 variables[j]->setPalette(QApplication::palette(variables[j]));
                 variables[j]->setAutoFillBackground(false);
-
-                //                 if(verbose) qDebug() << "Found existing: " +
-                //                 variables[j]->getName() + QString(" value:
-                //                 %1").arg(variables[j]->getValueAsText());
+                variables[j]->setHidden(false);
+//                 if(verbose) qDebug() << "Found existing: " +
+//                 variables[j]->getName() + QString(" value:
+//                 %1").arg(variables[j]->getValueAsText());
             }
         }
 

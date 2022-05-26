@@ -343,7 +343,6 @@ Up = -0.115126834,0.845289908,0.508173856\r\n\
 
 void MainWindow::insertPreset()
 {
-
     bool ok = false;
     QString newPreset;
     QTextCursor tc = getTextEdit()->textCursor();
@@ -388,7 +387,8 @@ void MainWindow::insertPreset()
 
         if (rebuildRequired)
             setRebuildStatus(initializeFragment()); // once to initialize any textures
-        variableEditor->setPreset(newPresetName); // apply the settings
+
+        rebuildRequired = variableEditor->setPreset(newPresetName); // apply the settings
 
         INFO(tr("Added %1").arg(newPresetName));
     }
@@ -2990,7 +2990,11 @@ bool MainWindow::saveFile(const QString &fileName)
     tabInfo[tabBar->currentIndex()].hasBeenSavedOnce = true;
     tabInfo[tabBar->currentIndex()].unsaved = false;
     tabInfo[tabBar->currentIndex()].filename = fileName;
-    tabChanged(tabBar->currentIndex()); // to update displayed name;
+
+    // to update displayed name;
+    QString tabTitle = QString("%1").arg(strippedName(fileName));
+    tabBar->setTabText(tabBar->currentIndex(), tabTitle);
+    setWindowTitle(QString("%1 - %2").arg(tabTitle).arg("Fragmentarium"));
 
     statusBar()->showMessage(tr("File saved"), 2000);
     setRecentFile(fileName);
@@ -3086,14 +3090,14 @@ void MainWindow::addToWatch(QStringList fileList)
     }
 }
 
+
+
 bool MainWindow::initializeFragment()
 {
-
     if (tabBar->currentIndex() == -1) {
         WARNING(tr("No open tab"));
         return false;
     }
-    
     // always rebuild when called by user otherwise only rebuild if source has changed
     if(sender() != nullptr && !sender()->objectName().isEmpty()) {
         if(sender()->objectName() == QString("renderAction")) {
@@ -3209,8 +3213,10 @@ bool MainWindow::initializeFragment()
             engine->setFragmentShader(fs);
             ms = start.msecsTo(QTime::currentTime());
             lastTime = ms;
+            rebuildRequired = false;
         } catch (Exception& e) {
             WARNING(e.getMessage());
+            rebuildRequired = true;
         }
     } else ms = lastTime;
     QApplication::restoreOverrideCursor();
@@ -3508,12 +3514,13 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    initializeFragment();
+    rebuildRequired = initializeFragment();
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
             setRebuildStatus( variableEditor->setSettings(te->lastSettings()) );
+            rebuildRequired = true;
         }
         setRebuildStatus(initializeFragment());
     }
@@ -3532,7 +3539,6 @@ void MainWindow::closeTab()
 
 void MainWindow::closeTab(int index)
 {
-
     TabInfo t = tabInfo[index];
     if (t.unsaved) {
         QString mess =

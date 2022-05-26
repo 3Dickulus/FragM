@@ -378,7 +378,7 @@ public:
         GuiParameter(group, name, tooltip), defaultValue(defaultValue), texts(texts) {}
 
     virtual QString getUniqueName() {
-        return QString("%1:%2:%3").arg(group).arg(getName()).arg(defaultValue);
+        return QString("%1:%2:%3:%4").arg(group).arg(getName()).arg(defaultValue).arg(texts.join(""));
     }
     int getDefaultValue() {
         return defaultValue;
