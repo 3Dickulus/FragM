@@ -102,7 +102,7 @@ EasingWindow::EasingWindow(QWidget *parent, double min, double max, double start
     m_ui.loopSpinBox->setValue(loops);
     m_ui.pongCheckBox->setChecked(pp != 0);
 
-    if (start != 65355.0) { // set defaults
+    if (start != __DBL_MAX__) { // set defaults
         QEasingCurve dummy;
         m_ui.periodSpinBox->setValue(dummy.period());
         m_ui.amplitudeSpinBox->setValue(dummy.amplitude());

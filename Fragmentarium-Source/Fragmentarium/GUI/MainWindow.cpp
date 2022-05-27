@@ -1339,7 +1339,7 @@ void MainWindow::createActions()
     renderAction->setShortcut(tr("F5"));
     renderAction->setStatusTip(tr("Render the current ruleset"));
     renderAction->setObjectName("renderAction");
-    connect(renderAction, SIGNAL(triggered()), this, SLOT(initializeFragment()));
+    connect(renderAction, SIGNAL(triggered()), this, SLOT(rebuildUniforms()));
 
     videoEncoderAction = new QAction(QIcon(":/Icons/player_eject.png"), tr("&Video Encoding"), this);
     videoEncoderAction->setStatusTip(tr("Encode rendered frames to video"));
@@ -3514,7 +3514,7 @@ void MainWindow::tabChanged(int index)
         return;
     }
 
-    rebuildRequired = initializeFragment();
+    setRebuildStatus(initializeFragment());
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
         te = getTextEdit(); // the currently active one

@@ -623,6 +623,16 @@ public slots:
     bool isPaused() { return pausePlay; };
 
     void testVersions() { getEngine()->testVersions(); };
+
+    void rebuildUniforms()
+    {
+        QString currentSet = variableEditor->getSettings();
+        initializeFragment();
+        variableEditor->resetUniforms(true);
+        variableEditor->setSettings(currentSet);
+        initializeFragment();
+    };
+
 private slots:
     void initTools();
 #ifdef USE_OPEN_EXR

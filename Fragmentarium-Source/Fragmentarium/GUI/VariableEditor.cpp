@@ -524,6 +524,10 @@ void VariableEditor::substituteLockedVariables(Parser::FragmentSource *fs)
 }
 
 void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
+
+    // We need to remove the spacer from bottom.
+    currentWidget->layout()->removeWidget(spacers[currentWidget]);
+
 //             if(verbose) qDebug() << "Creating: " + p->getName();
     if (dynamic_cast<Parser::FloatParameter *>(p) != nullptr) {
         auto *fp = dynamic_cast<Parser::FloatParameter *>(p);
@@ -645,6 +649,9 @@ void VariableEditor::createWidgetFromGuiParameter(Parser::GuiParameter* p) {
     } else {
         WARNING(tr("Unsupported parameter"));
     }
+
+    // We need to add the spacer to the bottom.
+    currentWidget->layout()->addWidget(spacers[currentWidget]);
 }
 
 void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, bool *showGUI*/)
@@ -654,7 +661,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
 
     QVector<Parser::GuiParameter*> ps = fs->params;
 
-    // add variables from BufferShader
+    // add variables from BufferShader to the list
     QVector<Parser::GuiParameter*> bps;
     if (fs->bufferShaderSource != nullptr) bps = fs->bufferShaderSource->params;
     foreach (Parser::GuiParameter *bp, bps) {
@@ -669,7 +676,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
             ps.append(bp);
         }
     }
-
+    // remove system variables and flag the rest for create/update
     for (int i = 0; i < variables.count(); ) {
         if (variables[i]->isSystemVariable()) {
             variables.remove(i);
@@ -680,55 +687,51 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
         }
     }
 
+    // flag all tabs
     QMap<QString, bool> tabStillPresent;
     foreach (QString s, tabs.keys()) {
         tabStillPresent[s] = false;
     }
 
     for (int i = 0; i < ps.count(); i++) {
+        
+        // what group do we want
         QString g = ps[i]->getGroup();
         if (g.isEmpty()) {
             g = "Default";
         }
-        if (!tabs.contains(g)) { qDebug() << "Creating Group:" << g;
+        // doesn't exist then create it or flag as existing
+        if (!tabs.contains(g)) {
             createGroup(g);
         } else {
-            if (tabStillPresent.contains(g)) { qDebug() << "Group present:" << g;
+            if (tabStillPresent.contains(g)) {
                 tabStillPresent[g] = true;
             }
         }
+        // working on this tab widget
         currentWidget = tabs[g];
 
+        // is there already a variableWidget that matches this GuiParameter
         bool found = false;
         for (int j = 0; j < variables.count(); j++) {
             QString name = variables[j]->getUniqueName();
-            //             if(verbose) qDebug() << "Checking " + name + " -> " +
-            //             ps[i]->getUniqueName();
             if (name == ps[i]->getUniqueName()) {
                 found = true;
                 variables[j]->setUpdated(true);
-
                 variables[j]->setPalette(QApplication::palette(variables[j]));
                 variables[j]->setAutoFillBackground(false);
                 variables[j]->setHidden(false);
-//                 if(verbose) qDebug() << "Found existing: " +
-//                 variables[j]->getName() + QString(" value:
-//                 %1").arg(variables[j]->getValueAsText());
             }
         }
 
-        // We need to move the spacer to bottom.
-        currentWidget->layout()->removeWidget(spacers[currentWidget]);
-
+        // if the variableWidget that matches this GuiParameter does not exist then create it
         if (!found) {
             createWidgetFromGuiParameter(ps[i]);
         }
 
-        // We need to move the spacer to bottom.
-        currentWidget->layout()->addWidget(spacers[currentWidget]);
-
     }
 
+    // cleanup any system vars and vars that were not updated
     for (int i = 0; i < variables.count(); ) {
         
         if (variables[i]->isSystemVariable()) {
@@ -746,7 +749,6 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
     QMapIterator<QString, bool> it(tabStillPresent);
     while (it.hasNext()) {
         it.next();
-        // DBOUT << it.key() << tabs[it.key()]->findChildren<VariableWidget *>(QString(),Qt::FindDirectChildrenOnly).count();
         if (it.value()==false) {
             spacers.remove(tabs[it.key()]);
             delete((tabs[it.key()]->parent()));
@@ -963,10 +965,10 @@ void VariableEditor::setEasingCurve()
             }
 
             QEasingCurve::Type curveType = QEasingCurve::Linear; // default curve = 0
-            /// NOTE the value 65355.0 passed when found=true because -1,0,1 are valid start params
-            /// but 65355.0 is not likely, tells EW we have a curve and not to set defaults
+            /// NOTE the value DBL_MAX passed when found=true because -1,0,1 are valid start params
+            /// but DBL_MAX is not likely, tells EW we have a curve and not to set defaults
             auto *ew = new EasingWindow(this, cs->getMin(), cs->getMax(),
-                                 (found==-1) ? cs->getValue() : 65355.0,
+                                 (found==-1) ? cs->getValue() : __DBL_MAX__,
                                  mainWindow->getTimeMax()*mainWindow->renderFPS,
                                  cs->getLoops(), cs->getPong());
 
