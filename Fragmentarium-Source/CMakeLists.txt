@@ -45,7 +45,7 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-# find_package ( glm REQUIRED )
+find_package ( glm REQUIRED )
 
 set(OpenGL_GL_PREFERENCE "LEGACY")
 option (GL_PREFERENCE_GLVND "Open GL preference GLVND" OFF)
