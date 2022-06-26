@@ -130,13 +130,19 @@ public:
     {
 
         QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
         QAction editScaleAction ( tr ( "Edit scale" ), &contextMenu );
         QAction scientificFormatAction ( tr ( "Scientific" ), &contextMenu );
         QAction standardFormatAction ( tr ( "Standard" ), &contextMenu );
+        QAction upperBoundAction ( tr ( "Upper Bound" ), &contextMenu );
+        QAction lowerBoundAction ( tr ( "Lower Bound" ), &contextMenu );
 
+        contextMenu.addAction ( &findInSource );
         contextMenu.addAction ( &editScaleAction );
         contextMenu.addAction ( &scientificFormatAction );
         contextMenu.addAction ( &standardFormatAction );
+        contextMenu.addAction ( &upperBoundAction );
+        contextMenu.addAction ( &lowerBoundAction );
 
         QAction *choice = contextMenu.exec ( ev->globalPos() );
 
@@ -152,6 +158,26 @@ public:
             spinner->setScientificFormat(true);
         } else if ( choice == &standardFormatAction ) {
             spinner->setScientificFormat(false);
+        } else if ( choice == &upperBoundAction ) {
+            bool ok = false;
+            double i = QInputDialog::getDouble ( this, objectName(), tr ( "Slider Upper Bound" ), getMax(), -100000000, 100000000, 1, &ok );
+            if (ok) {
+                slider->setMaximum( (logarithmic ? std::log(std::abs(i)) : i)*scale );
+                spinner->setMaximum(i);
+                emit sliderBoundsChanged( objectName() + QString(" 2 %1").arg(i));
+            }
+
+        } else if ( choice == &lowerBoundAction ) {
+            bool ok = false;
+            double i = QInputDialog::getDouble ( this, objectName(), tr ( "Slider Lower Bound" ), getMin(), -100000000, 100000000, 1, &ok );
+            if (ok) {
+                slider->setMinimum( (logarithmic ? std::log(std::abs(i)) : i)*scale );
+                spinner->setMinimum(i);
+                emit sliderBoundsChanged( objectName() + QString(" 1 %1").arg(i) );
+            }
+            
+        } else if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
         }
 
     }
@@ -255,6 +281,7 @@ public slots:
 
 signals:
     void changed();
+    void sliderBoundsChanged(QString uniqueName);
 
 protected slots:
     void spinnerChanged ( double d )
@@ -264,7 +291,6 @@ protected slots:
         slider->blockSignals(true);
 
         if (logarithmic && ! ((d < 0 && minimum < 0 && maximum < 0 && defaultValue < 0) || (d > 0 && minimum > 0 && maximum > 0 && defaultValue > 0))) {
-            // this warns on every change, but WARNING() in the constructor is invisible
             WARNING("Logarithmic slider " + objectName() + " range contains 0!");
         }
         slider->setValue((logarithmic ? std::log(std::abs(d)) : d)*scale);
@@ -318,6 +344,19 @@ public:
         setLineWidth(1);
     }
 
+    void contextMenuEvent ( QContextMenuEvent *ev)
+    {
+        QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
+        contextMenu.addAction ( &findInSource );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+        
+        if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
+        }
+        
+    }
 public slots:
 // BUG palette gets inherited when using an application level stylesheet loaded
 // via the cmdline option --stylesheet=filename.qss this widget no longer responds
@@ -369,6 +408,7 @@ private slots:
 
 signals:
     void changed();
+    void sliderBoundsChanged(QString uniqueName);
 
 private:
     QColorDialog *qcd;
@@ -415,6 +455,19 @@ public:
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
     }
 
+    void contextMenuEvent ( QContextMenuEvent *ev)
+    {
+        QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
+        contextMenu.addAction ( &findInSource );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+        
+        if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
+        }
+        
+    }
     int getValue()
     {
         return spinner->value();
@@ -426,6 +479,7 @@ public slots:
     }
 
 signals:
+    void sliderBoundsChanged(QString uniqueName);
     void changed();
 
 protected slots:
@@ -495,6 +549,19 @@ public:
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxChanged(int)));
     }
 
+    void contextMenuEvent ( QContextMenuEvent *ev)
+    {
+        QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
+        contextMenu.addAction ( &findInSource );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+        
+        if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
+        }
+        
+    }
     int getValue()
     {
         return spinner->value();
@@ -515,6 +582,7 @@ public slots:
 
 signals:
     void changed();
+    void sliderBoundsChanged(QString uniqueName);
 
 protected slots:
     void spinnerChanged ( int val )
@@ -623,6 +691,7 @@ public:
 public slots:
     void locked(bool l);
     void valueChanged();
+    void comboSliderBoundsChanged( QString name );
 
 signals:
     void changed(bool lockedChanged);
@@ -1072,6 +1141,7 @@ private:
 
 class ColorWidget : public VariableWidget
 {
+    Q_OBJECT
 public:
     /// FloatVariable constructor.
     ColorWidget ( QWidget *parent, QWidget *variableEditor, QString name,
@@ -1134,6 +1204,7 @@ private:
 
 class FloatColorWidget : public VariableWidget
 {
+    Q_OBJECT
 public:
     /// FloatVariable constructor.
     FloatColorWidget ( QWidget *parent, QWidget *variableEditor, QString name,
@@ -1204,6 +1275,7 @@ private:
 
 class IntWidget : public VariableWidget
 {
+    Q_OBJECT
 public:
     /// IntVariable constructor.
     IntWidget ( QWidget *parent, QWidget *variableEditor, QString name,
@@ -1247,6 +1319,9 @@ public:
     };
     void setSliderType(SliderType ){};
 
+signals:
+    void sliderBoundsChanged(QString uniqueName);
+
 private:
     IntComboSlider* comboSlider;
     int defaultValue;
@@ -1256,6 +1331,7 @@ private:
 
 class BoolWidget : public VariableWidget
 {
+    Q_OBJECT
 public:
     /// BoolVariable constructor.
     BoolWidget ( QWidget *parent, QWidget *variableEditor, QString name,
@@ -1294,6 +1370,23 @@ public:
         wantDouble = wd;
     };
     void setSliderType(SliderType ){};
+    
+    void contextMenuEvent ( QContextMenuEvent *ev)
+    {
+        QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
+        contextMenu.addAction ( &findInSource );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+        
+        if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
+        }
+        
+    }
+
+signals:
+    void sliderBoundsChanged(QString uniqueName);
 
 private:
     QCheckBox* checkBox;
@@ -1303,6 +1396,7 @@ private:
 
 class IntMenuWidget : public VariableWidget
 {
+    Q_OBJECT
 public:
     /// Variable constructor.
     IntMenuWidget ( QWidget *parent, QWidget *variableEditor, QString name, int defaultValue, QStringList texts );
@@ -1345,6 +1439,23 @@ public:
         wantDouble = wd;
     };
     void setSliderType(SliderType ){};
+
+    void contextMenuEvent ( QContextMenuEvent *ev)
+    {
+        QMenu contextMenu;
+        QAction findInSource ( tr ( "Select source" ), &contextMenu );
+        contextMenu.addAction ( &findInSource );
+
+        QAction *choice = contextMenu.exec ( ev->globalPos() );
+        
+        if ( choice == &findInSource ) {
+            emit sliderBoundsChanged( objectName() + QString(" 0 0") );
+        }
+        
+    }
+
+signals:
+    void sliderBoundsChanged(QString uniqueName);
 
 private:
     IntComboBox* comboBox;

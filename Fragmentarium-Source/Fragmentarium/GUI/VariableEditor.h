@@ -122,6 +122,7 @@ public:
     {
         verbose = v;
     }
+    MainWindow* getMainWindow(){ return mainWindow; };
 
 signals:
     void changed(bool lockedChanged);

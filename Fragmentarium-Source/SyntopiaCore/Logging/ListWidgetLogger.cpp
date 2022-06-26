@@ -8,6 +8,7 @@
 #include <QTextStream>
 
 #include "ListWidgetLogger.h"
+#include <qdockwidget.h>
 
 namespace SyntopiaCore
 {
@@ -107,9 +108,7 @@ void ListWidgetLogger::log(QString message, LogLevel priority)
     } else {
         i->setBackgroundColor(QColor(220, 220, 220));
     }
-    /// this causes segfault in qtextengine
-    //             listWidget->scrollToItem(i);
-    /// so we use this
+
     listWidget->scrollToBottom();
 }
 

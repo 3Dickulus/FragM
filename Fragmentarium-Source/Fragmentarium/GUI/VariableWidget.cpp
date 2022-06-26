@@ -17,6 +17,9 @@
 #include "../../SyntopiaCore/Logging/ListWidgetLogger.h"
 #include "../../SyntopiaCore/Misc/MiniParser.h"
 #include "MainWindow.h"
+#include "VariableEditor.h"
+#include "TextEdit.h"
+#include "Preprocessor.h"
 
 using namespace SyntopiaCore::Logging;
 
@@ -54,6 +57,143 @@ VariableWidget::VariableWidget(QWidget *parent, QWidget *variableEditor, QString
     widget = new QWidget(this);
     vl->addWidget(widget);
     connect(this, SIGNAL(changed(bool)), variableEditor, SLOT(childChanged(bool)));
+}
+
+void VariableWidget::comboSliderBoundsChanged( QString name ) {
+
+    auto *ve = dynamic_cast<VariableEditor *>(variableEditor);
+    auto *te = dynamic_cast<TextEdit *>(ve->getMainWindow()->getTextEdit());
+
+    QStringList sliderBounds = name.split(" ");
+
+    int bound = 0;
+    bound = sliderBounds[1].toInt();
+
+    int whichSlider = QString(sliderBounds[0][sliderBounds[0].size()-1]).toInt();
+
+     if(whichSlider != 0) sliderBounds[0].chop(1);
+
+    // move cursor to beginning of document in preparation for search
+    QTextCursor cursor(te->textCursor());
+    cursor.setPosition(0);
+    te->setTextCursor(cursor);
+
+    if(te->find( QRegExp( "^.*[ ]{1,}" + sliderBounds[0] + "[ ]{0,};[ ]{0,}.*$" ))) {
+        if(whichSlider != 0 && bound != 0) {
+            QTextCursor cursor(te->textCursor());
+            te->setTextCursor( cursor );
+            QString comboSliderLine = cursor.block().text();
+            
+            QString type;
+            QString name;
+            QString lower;
+            // QString default;
+            QString upper;
+            int pos=0;
+
+            if (float1Slider.indexIn(comboSliderLine) != -1) {
+                type = float1Slider.cap(1);
+                name = float1Slider.cap(2);
+                lower = float1Slider.cap(3); // default = float1Slider.cap(4);
+                upper = float1Slider.cap(5);
+                pos = bound==1 ? float1Slider.pos(3) : bound==2 ? float1Slider.pos(5):0;
+                
+            } else
+            if (float2Slider.indexIn(comboSliderLine) != -1) {
+                type = float2Slider.cap(1);
+                name = float2Slider.cap(2);
+                switch(whichSlider) {
+                    case 1: {
+                        lower = float2Slider.cap(3); // default = float2Slider.cap(5);
+                        upper = float2Slider.cap(7);
+                        pos = bound==1 ? float2Slider.pos(3) : bound==2 ? float2Slider.pos(7):0;
+                    break;
+                    }
+                    case 2: {
+                        lower = float2Slider.cap(4); // default = float2Slider.cap(6);
+                        upper = float2Slider.cap(8);
+                        pos = bound==1 ? float2Slider.pos(4) : bound==2 ? float2Slider.pos(8):0;
+                    break;
+                    }
+                }
+            } else
+            if (float3Slider.indexIn(comboSliderLine) != -1) {
+                type = float3Slider.cap(1);
+                name = float3Slider.cap(2);
+                switch(whichSlider) {
+                    case 1: {
+                        lower = float3Slider.cap(3); // default = float3Slider.cap(6);
+                        upper = float3Slider.cap(9);
+                        pos = bound==1 ? float3Slider.pos(3) : bound==2 ? float3Slider.pos(9):0;
+                    break;
+                    }
+                    case 2: {
+                        lower = float3Slider.cap(4); // default = float3Slider.cap(7);
+                        upper = float3Slider.cap(10);
+                        pos = bound==1 ? float3Slider.pos(4) : bound==2 ? float3Slider.pos(10):0;
+                    break;
+                    }
+                    case 3: {
+                        lower = float3Slider.cap(5); // default = float3Slider.cap(8);
+                        upper = float3Slider.cap(11);
+                        pos = bound==1 ? float3Slider.pos(5) : bound==2 ? float3Slider.pos(11):0;
+                    break;
+                    }
+                }
+            } else
+            if (float4Slider.indexIn(comboSliderLine) != -1) {
+                type = float4Slider.cap(1);
+                name = float4Slider.cap(2);
+                switch(whichSlider) {
+                    case 1: {
+                        lower = float4Slider.cap(3); // default = float4Slider.cap(7);
+                        upper = float4Slider.cap(11);
+                        pos = bound==1 ? float4Slider.pos(3) : bound==2 ? float4Slider.pos(11):0;
+                    break;
+                    }
+                    case 2: {
+                        lower = float4Slider.cap(4); // default = float4Slider.cap(8);
+                        upper = float4Slider.cap(12);
+                        pos = bound==1 ? float4Slider.pos(4) : bound==2 ? float4Slider.pos(12):0;
+                    break;
+                    }
+                    case 3: {
+                        lower = float4Slider.cap(5); // default = float4Slider.cap(9);
+                        upper = float4Slider.cap(13);
+                        pos = bound==1 ? float4Slider.pos(5) : bound==2 ? float4Slider.pos(13):0;
+                    break;
+                    }
+                    case 4: {
+                        lower = float4Slider.cap(6); // default = float4Slider.cap(10);
+                        upper = float4Slider.cap(14);
+                        pos = bound==1 ? float4Slider.pos(6) : bound==2 ? float4Slider.pos(14):0;
+                    break;
+                    }
+                }
+            }
+
+            int len = bound==1 ? lower.length() : bound==2 ? upper.length():0;
+            QString newComboSliderLine = comboSliderLine.replace(pos, len, sliderBounds[2]);
+
+            cursor.removeSelectedText();
+            cursor.insertText(newComboSliderLine);
+        }
+    } else {
+        if(!te->find( QRegExp( "^.*[ ]{1,}" + sliderBounds[0] + ";[ ]{0,}.*$" ))) {
+            ve->getMainWindow()->getLogger()->log(QString("Uniform variable named: " + sliderBounds[0] + " Not Found in user frag!"),ScriptInfoLevel);
+            ve->getMainWindow()->getLogger()->log(QString("Declared in one of the following dependencies..."),ScriptInfoLevel);
+            
+            while(te->find( QRegExp( "#include[ ]{1,}.*.frag.*$" ))) {
+                QTextCursor cursor(te->textCursor());
+                te->setTextCursor( cursor );
+                QRegExp includeFile = QRegExp( "#include[ ]{1,}.(.*.frag)" );
+                if (includeFile.indexIn(cursor.block().text())!=-1) {
+                    QString s = includeFile.cap(1);
+                    ve->getMainWindow()->getLogger()->log(s,InfoLevel);
+                }
+            }
+        }
+    }
 }
 
 bool VariableWidget::isLocked()
@@ -194,6 +334,7 @@ FloatWidget::FloatWidget(QWidget *parent, QWidget *variableEditor, QString name,
     comboSlider1->setObjectName(QString("%1%2").arg(name).arg("1"));
     l->addWidget(comboSlider1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider1, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 }
 
 void FloatWidget::setValue(double f)
@@ -240,12 +381,14 @@ Float2Widget::Float2Widget(QWidget *parent, QWidget *variableEditor, QString nam
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider1, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue.y,
                                    min.y, max.y, logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider2, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 }
 
 QString Float2Widget::toString()
@@ -312,17 +455,20 @@ Float3Widget::Float3Widget(QWidget *parent, QWidget *variableEditor, QString nam
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(n1Changed()));
+    connect(comboSlider1, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1], logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(n2Changed()));
+    connect(comboSlider2, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2], logarithmic);
     comboSlider3->setObjectName( QString("%1%2").arg(name).arg("3") );
     m->addWidget(comboSlider3,2,1);
     connect(comboSlider3, SIGNAL(changed()), this, SLOT(n3Changed()));
     connect(this, SIGNAL(doneChanges()), this, SLOT(valueChanged()));
+    connect(comboSlider3, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
 }
 
@@ -464,21 +610,25 @@ Float4Widget::Float4Widget(QWidget *parent, QWidget *variableEditor, QString nam
     comboSlider1->setObjectName( QString("%1%2").arg(name).arg("1") );
     m->addWidget(comboSlider1,0,1);
     connect(comboSlider1, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider1, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider2 = new ComboSlider(parent, variableEditor, defaultValue[1], min[1], max[1], logarithmic);
     comboSlider2->setObjectName( QString("%1%2").arg(name).arg("2") );
     m->addWidget(comboSlider2,1,1);
     connect(comboSlider2, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider2, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider3 = new ComboSlider(parent, variableEditor, defaultValue[2], min[2], max[2], logarithmic);
     comboSlider3->setObjectName( QString("%1%2").arg(name).arg("3") );
     m->addWidget(comboSlider3,2,1);
     connect(comboSlider3, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider3, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
     comboSlider4 = new ComboSlider(parent, variableEditor, defaultValue[3], min[3], max[3], logarithmic);
     comboSlider4->setObjectName( QString("%1%2").arg(name).arg("4") );
     m->addWidget(comboSlider4,3,1);
     connect(comboSlider4, SIGNAL(changed()), this, SLOT(valueChanged()));
+    connect(comboSlider4, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
 }
 
@@ -549,7 +699,8 @@ ColorWidget::ColorWidget(QWidget *parent, QWidget *variableEditor, QString name,
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
     QApplication::postEvent(widget, new QEvent(QEvent::LayoutRequest));
-    
+    connect(colorChooser, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
+
 }
 
 QString ColorWidget::toString()
@@ -608,6 +759,7 @@ FloatColorWidget::FloatColorWidget(QWidget *parent, QWidget *variableEditor, QSt
     l->addWidget(colorChooser);
     connect(colorChooser, SIGNAL(changed()),  this, SLOT(valueChanged()));
     QApplication::postEvent(widget, new QEvent(QEvent::LayoutRequest));
+    connect(comboSlider, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 }
 
 QString FloatColorWidget::toString()
@@ -667,6 +819,7 @@ IntWidget::IntWidget(QWidget *parent, QWidget *variableEditor, QString name, int
     comboSlider->setObjectName(name);
     l->addWidget(comboSlider);
     connect(comboSlider, SIGNAL(changed()),  this, SLOT(valueChanged()));
+    connect(comboSlider, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
 }
 
@@ -993,6 +1146,7 @@ BoolWidget::BoolWidget(QWidget *parent, QWidget *variableEditor, QString name, b
     checkBox->setObjectName( QString("%1").arg(name) );
     connect(checkBox, SIGNAL(clicked()),  this, SLOT(valueChanged()));
     l->addWidget(checkBox,1,Qt::AlignLeft | Qt::AlignVCenter);
+    connect(this, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 }
 
 QString BoolWidget::toString()
@@ -1034,6 +1188,7 @@ IntMenuWidget::IntMenuWidget(QWidget *parent, QWidget *variableEditor, QString n
     comboBox->setObjectName(name);
     l->addWidget(comboBox);
     connect(comboBox, SIGNAL(changed()),  this, SLOT(valueChanged()));
+    connect(this, SIGNAL(sliderBoundsChanged(QString)), this, SLOT(comboSliderBoundsChanged(QString)));
 
 }
 
