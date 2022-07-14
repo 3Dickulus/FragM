@@ -281,14 +281,14 @@ QString VariableWidget::toSettingsString()
     return toString() + s + l;
 }
 
-bool VariableWidget::fromSettingsString(QString string)
+bool VariableWidget::fromSettingsString(QString str)
 {
     bool requiresRecompile = false;
 
     const QRegExp lockTypeString("(AlwaysLocked|Locked|NotLocked|NotLockable)\\s*.?$");
-    if (lockTypeString.indexIn(string)!=-1) {
+    if (lockTypeString.indexIn(str)!=-1) {
         QString s = lockTypeString.cap(1);
-        string.remove(s);
+        str.remove(s);
         LockType before = lockType;
         lockType.fromString(s);
         if (before!=lockType) {
@@ -301,14 +301,14 @@ bool VariableWidget::fromSettingsString(QString string)
     }
 
     const QRegExp sliderTypeString("(Logarithmic)\\s*.?$");
-    if (sliderTypeString.indexIn(string)!=-1) {
+    if (sliderTypeString.indexIn(str)!=-1) {
         QString s = sliderTypeString.cap(1);
         setSliderType(Logarithmic);
-        string.remove(s);
+        str.remove(s);
 
     } else setSliderType(Linear);
 
-    requiresRecompile |= fromString(string.trimmed());
+    requiresRecompile |= fromString(str.trimmed());
 
     return requiresRecompile;
 }
@@ -348,10 +348,10 @@ QString FloatWidget::toString()
     return QString::number(f,'g',(isDouble() ? DDEC : FDEC));
 }
 
-bool FloatWidget::fromString(QString string)
+bool FloatWidget::fromString(QString str)
 {
     double f;
-    MiniParser(string).getDouble(f);
+    MiniParser(str).getDouble(f);
     if ( f == getValue() ) {
         return false;
     }
@@ -408,10 +408,10 @@ void Float2Widget::setValue(glm::dvec3 v)
     comboSlider2->setValue(v.y);
 }
 
-bool Float2Widget::fromString(QString string)
+bool Float2Widget::fromString(QString str)
 {
     double f1,f2;
-    MiniParser(string).getDouble(f1).getDouble(f2);
+    MiniParser(str).getDouble(f1).getDouble(f2);
     glm::dvec2 f(f1,f2);
 
     if ( f == getValue() ) {
@@ -561,10 +561,10 @@ QString Float3Widget::toString()
            .arg(QString::number(comboSlider3->getValue(),'g',p));
 }
 
-bool Float3Widget::fromString(QString string)
+bool Float3Widget::fromString(QString str)
 {
     double f1,f2,f3;
-    MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
+    MiniParser(str).getDouble(f1).getDouble(f2).getDouble(f3);
     glm::dvec3 f(f1,f2,f3);
 
     if ( f == getValue() ) {
@@ -653,10 +653,10 @@ QString Float4Widget::toString()
            .arg(QString::number(comboSlider4->getValue(),'g',p));
 }
 
-bool Float4Widget::fromString(QString string)
+bool Float4Widget::fromString(QString str)
 {
     double f1,f2,f3,f4;
-    MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
+    MiniParser(str).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f4);
     glm::dvec4 f(f1,f2,f3,f4);
 
     if ( f == getValue() ) {
@@ -718,10 +718,10 @@ QString ColorWidget::toString()
            .arg(QString::number(c.z,'g',p));
 }
 
-bool ColorWidget::fromString(QString string)
+bool ColorWidget::fromString(QString str)
 {
     double f1,f2,f3;
-    MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3);
+    MiniParser(str).getDouble(f1).getDouble(f2).getDouble(f3);
     glm::dvec3 c(f1,f2,f3);
     if ( c == getValue() ) {
         return false;
@@ -778,13 +778,13 @@ QString FloatColorWidget::toString()
 
 }
 
-bool FloatColorWidget::fromString(QString string)
+bool FloatColorWidget::fromString(QString str)
 {
-    if (toString() == string) {
+    if (toString() == str) {
         return false;
     }
     double f,f1,f2,f3;
-    MiniParser(string).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f);
+    MiniParser(str).getDouble(f1).getDouble(f2).getDouble(f3).getDouble(f);
     glm::dvec3 c(f1,f2,f3);
     if ( glm::dvec4(c,f) == getValue() ) {
         return false;
@@ -828,13 +828,13 @@ QString IntWidget::toString()
     return QString("%1").arg(comboSlider->getValue());
 }
 
-bool IntWidget::fromString(QString string)
+bool IntWidget::fromString(QString str)
 {
-    if (comboSlider->getValue() == string.toInt()) {
+    if (comboSlider->getValue() == str.toInt()) {
         return false;
     }
     int i;
-    MiniParser(string).getInt(i);
+    MiniParser(str).getInt(i);
     if (i == getValue()) {
         return false;
     }
@@ -1067,16 +1067,16 @@ QString SamplerWidget::getValue()
     return comboBox->currentText();
 }
 
-bool SamplerWidget::fromString(QString string)
+bool SamplerWidget::fromString(QString str)
 {
 //             INFO("'" + string + "'");
-    if (toString() == string) {
+    if (toString() == str) {
         return false;
     }
-    QStringList test = string.split(" ");
+    QStringList test = str.split(" ");
     QString value = test.at(0);
     comboBox->setEditText(value.trimmed()); // also refreshes channel list from EXR file
-    if(value != string) { // requested channel list is present
+    if(value != str) { // requested channel list is present
         if (value.endsWith(".exr")) {
             QStringList requestedChannels = test.at(1).split(";");
             for (int channel = 0; channel < 4; ++channel)
@@ -1154,13 +1154,13 @@ QString BoolWidget::toString()
     return (checkBox->isChecked()?"true":"false");
 }
 
-bool BoolWidget::fromString(QString string)
+bool BoolWidget::fromString(QString str)
 {
-    if (toString().toLower().trimmed() == string.toLower().trimmed()) {
+    if (toString().toLower().trimmed() == str.toLower().trimmed()) {
         return false;
     }
     bool v = false;
-    if (string.toLower().trimmed() == "true") {
+    if (str.toLower().trimmed() == "true") {
         v = true;
     }
     checkBox->setChecked(v);
@@ -1197,18 +1197,19 @@ QString IntMenuWidget::toString()
     return QString("%1").arg(comboBox->getValue());
 }
 
-bool IntMenuWidget::fromString(QString string)
+bool IntMenuWidget::fromString(QString str)
 {
-    if (comboBox->getValue() == string.toInt()) {
+    if (comboBox->getValue() == str.toInt()) {
         return false;
     }
     int i;
-    MiniParser(string).getInt(i);
+    MiniParser(str).getInt(i);
     if (i == getValue()) {
         return false;
     }
-
+DBOUT << name << i << str;
     comboBox->setValue(i);
+    
     return isLocked();
 }
 

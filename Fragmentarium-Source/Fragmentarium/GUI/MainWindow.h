@@ -626,9 +626,9 @@ public slots:
 
     void rebuildUniforms()
     {
-        QString currentSet = variableEditor->getSettings();
+        QString currentSet = variableEditor->getSettings(false);
+        variableEditor->resetUniforms(false);
         initializeFragment();
-        variableEditor->resetUniforms(true);
         variableEditor->setSettings(currentSet);
         initializeFragment();
     };

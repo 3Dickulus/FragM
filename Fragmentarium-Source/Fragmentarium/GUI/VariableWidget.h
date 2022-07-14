@@ -569,6 +569,7 @@ public:
 public slots:
     void setValue ( int i )
     {
+DBOUT << objectName() << i;
         spinner->setValue ( i );
     }
 
@@ -577,7 +578,7 @@ public slots:
         int index = comboBox->currentIndex();
         comboBox->clear();
         comboBox->addItems(list);
-        spinner->setValue ( index );
+        comboBoxChanged ( index );
     }
 
 signals:
@@ -1416,6 +1417,7 @@ public:
     }
     void setValue ( int i )
     {
+DBOUT << objectName() << i;
         comboBox->setValue ( i );
     }
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);
@@ -1460,6 +1462,8 @@ signals:
 private:
     IntComboBox* comboBox;
     int defaultValue;
+    int min;
+    int max;
     QStringList texts;
 };
 

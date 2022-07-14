@@ -3494,15 +3494,16 @@ void MainWindow::tabChanged(int index)
     if (index < 0) {
         return;
     }
-
     TextEdit *te = getTextEdit();
     te->saveSettings( variableEditor->getSettings(false) );
+    
+    DBOUT << stackedTextEdits->currentIndex() << " -> " << index;
 
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
     stackedTextEdits->setCurrentWidget(ti.textEdit);
     tabBar->setTabText(tabBar->currentIndex(), tabTitle);
-    setWindowTitle(QString("%1 - %2").arg(tabTitle).arg("Fragmentarium"));
+    setWindowTitle(QString("Fragmentarium - %1").arg(tabTitle));
 
     clearKeyFrames();
     setRebuildStatus(true);
@@ -3517,12 +3518,11 @@ void MainWindow::tabChanged(int index)
     setRebuildStatus(initializeFragment());
     // this bit of fudge resets the tab to its last settings
     if(stackedTextEdits->count() > 1 ) {
+        setRebuildStatus(initializeFragment());
         te = getTextEdit(); // the currently active one
         if (!te->lastSettings().isEmpty()) {
             setRebuildStatus( variableEditor->setSettings(te->lastSettings()) );
-            rebuildRequired = true;
         }
-        setRebuildStatus(initializeFragment());
     }
 }
 
