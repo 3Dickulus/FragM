@@ -569,7 +569,6 @@ public:
 public slots:
     void setValue ( int i )
     {
-DBOUT << objectName() << i;
         spinner->setValue ( i );
     }
 
@@ -1417,7 +1416,6 @@ public:
     }
     void setValue ( int i )
     {
-DBOUT << objectName() << i;
         comboBox->setValue ( i );
     }
     virtual void setUserUniform(QOpenGLShaderProgram* shaderProgram);

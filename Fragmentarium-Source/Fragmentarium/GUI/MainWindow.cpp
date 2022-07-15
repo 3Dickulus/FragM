@@ -3497,8 +3497,6 @@ void MainWindow::tabChanged(int index)
     TextEdit *te = getTextEdit();
     te->saveSettings( variableEditor->getSettings(false) );
     
-    DBOUT << stackedTextEdits->currentIndex() << " -> " << index;
-
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
     stackedTextEdits->setCurrentWidget(ti.textEdit);

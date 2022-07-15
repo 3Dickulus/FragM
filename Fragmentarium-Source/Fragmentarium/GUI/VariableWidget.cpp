@@ -1207,7 +1207,7 @@ bool IntMenuWidget::fromString(QString str)
     if (i == getValue()) {
         return false;
     }
-DBOUT << name << i << str;
+
     comboBox->setValue(i);
     
     return isLocked();
