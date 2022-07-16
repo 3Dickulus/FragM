@@ -631,6 +631,7 @@ public slots:
         initializeFragment();
         variableEditor->setSettings(currentSet);
         initializeFragment();
+        variableEditor->setSettings(currentSet);
     };
 
 private slots:
