@@ -4,6 +4,11 @@
 #include "DisplayWidget.h"
 #include "SyntopiaCore/Logging/Logging.h"
 #include "VariableWidget.h"
+#include "FloatWidget.h"
+#include "IntWidget.h"
+#include "ColorWidget.h"
+#include "SamplerWidget.h"
+#include "BoolWidget.h"
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDoubleSpinBox>

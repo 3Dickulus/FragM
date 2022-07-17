@@ -45,7 +45,9 @@ set ( CMAKE_AUTOUIC ON)
 set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
+IF ( NOT WIN32 )
 find_package ( glm REQUIRED )
+ENDIF( NOT WIN32 )
 
 set(OpenGL_GL_PREFERENCE "LEGACY")
 option (GL_PREFERENCE_GLVND "Open GL preference GLVND" OFF)
@@ -177,6 +179,11 @@ set ( Fragmentarium_HDRS
 	Fragmentarium/GUI/TextEdit.h
 	Fragmentarium/GUI/VariableEditor.h
 	Fragmentarium/GUI/VariableWidget.h
+	Fragmentarium/GUI/FloatWidget.h
+	Fragmentarium/GUI/IntWidget.h
+	Fragmentarium/GUI/ColorWidget.h
+	Fragmentarium/GUI/SamplerWidget.h
+	Fragmentarium/GUI/BoolWidget.h
 	Fragmentarium/GUI/DisplayWidget.h
 	Fragmentarium/GUI/PreferencesDialog.h
 	Fragmentarium/GUI/OutputDialog.h
@@ -223,6 +230,11 @@ set ( Fragmentarium_SRCS
 	Fragmentarium/GUI/TextEdit.cpp
 	Fragmentarium/GUI/VariableEditor.cpp
 	Fragmentarium/GUI/VariableWidget.cpp
+	Fragmentarium/GUI/FloatWidget.cpp
+	Fragmentarium/GUI/IntWidget.cpp
+	Fragmentarium/GUI/ColorWidget.cpp
+	Fragmentarium/GUI/SamplerWidget.cpp
+	Fragmentarium/GUI/BoolWidget.cpp
 	Fragmentarium/GUI/DisplayWidget.cpp
 	Fragmentarium/Parser/Preprocessor.cpp
 	Fragmentarium/Main.cpp
@@ -467,13 +479,13 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP OR BUILD_SOURCE_ZIP)
 	SET(CPACK_PACKAGE_RELOCATABLE "YES")
 	SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE.README)
 	SET(CPACK_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;")
-	set(CPACK_SOURCE_GENERATOR "7Z")
+	set(CPACK_SOURCE_GENERATOR "ZIP")
 	set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;.*~$")
 	set(CPACK_VERBATIM_VARIABLES YES)
 	ENDIF()
 
 	IF(WIN32)
-	set(CPACK_GENERATOR "7Z")
+	set(CPACK_GENERATOR "ZIP")
 	ENDIF()
 
 	INCLUDE(CPack)
