@@ -69,7 +69,8 @@ PRE_TARGETDEPS += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIlmImf-2_
 }
 else:unix:CONFIG(release, debug|release) {
 INCLUDEPATH += /usr/include/OpenEXR \
-               /usr/include/glm
+               /usr/include/glm \
+               /usr/include/Imath
 }
 
 INCLUDEPATH += . \
