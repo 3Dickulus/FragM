@@ -89,24 +89,24 @@ void ListWidgetLogger::log(QString message, LogLevel priority)
     // CriticalLevel, AllLevel
 
     if (priority == InfoLevel) {
-        i->setBackgroundColor(QColor(255, 255, 255));
+        i->setBackground(QColor(255, 255, 255));
     } else if (priority == ScriptInfoLevel) {
-        i->setBackgroundColor(QColor(50, 50, 50));
+        i->setBackground(QColor(50, 50, 50));
         i->setForeground(QBrush(QColor(255, 255, 255)));
         QFont f = i->font();
         f.setBold(true);
         i->setFont(f);
     } else if (priority == WarningLevel) {
         parent->show();
-        i->setBackgroundColor(QColor(255, 243, 73));
+        i->setBackground(QColor(255, 243, 73));
     } else if (priority == CriticalLevel) {
         parent->show();
-        i->setBackgroundColor(QColor(255, 2, 0));
+        i->setBackground(QColor(255, 2, 0));
     } else if (priority == TimingLevel) {
         parent->show();
-        i->setBackgroundColor(QColor(25, 255, 0));
+        i->setBackground(QColor(25, 255, 0));
     } else {
-        i->setBackgroundColor(QColor(220, 220, 220));
+        i->setBackground(QColor(220, 220, 220));
     }
 
     listWidget->scrollToBottom();

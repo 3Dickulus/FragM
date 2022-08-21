@@ -371,7 +371,7 @@ glm::dvec3 Camera3D::transform(int width, int height)
 
 bool Camera3D::wheelEvent(QWheelEvent *e)
 {
-    double steps = e->delta() / 120.0;
+    double steps = e->angleDelta().y() / 120.0;
     if (up == nullptr || target == nullptr || eye == nullptr || fov == nullptr) {
         return false;
     }
@@ -644,7 +644,7 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     if (zoom == nullptr) {
         return false;
     }
-    double steps = e->delta() / 120.0;
+    double steps = e->angleDelta().y() / 120.0;
     double factor = 1.15;
     double zoomValue = zoom->getValue();
     // Convert mouse pos to model coordinates
@@ -653,7 +653,7 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     QSettings settings;
     if( settings.value("ddCameraMode").toBool() )
     {
-        glm::dvec3 pos = glm::dvec3((e->pos().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->pos().y() * (1.0 / double(height))), 0.0);
+        glm::dvec3 pos = glm::dvec3((e->position().x() * (1.0 / double(width))) - 0.5, 0.5 - (e->position().y() * (1.0 / double(height))), 0.0);
         pos = glm::dvec3(getTransform() * glm::dvec2(pos), 0.0);
         glm::dvec3 md = pos / zoomValue + centerValue;
 
@@ -669,8 +669,8 @@ bool Camera2D::wheelEvent(QWheelEvent *e)
     {
     double g = steps > 0.0 ? factor : 1.0 / factor;
 
-    double u = (e->pos().x() / double(width) - 0.5) * 2.0 * double(width) / double(height);
-    double v = (e->pos().y() / double(height) - 0.5) * 2.0;
+    double u = (e->position().x() / double(width) - 0.5) * 2.0 * double(width) / double(height);
+    double v = (e->position().y() / double(height) - 0.5) * 2.0;
 
         glm::dvec3 pos = glm::dvec3(-u, v, 0.0);
         pos = glm::dvec3(getTransform() * glm::dvec2(pos), 0.0);

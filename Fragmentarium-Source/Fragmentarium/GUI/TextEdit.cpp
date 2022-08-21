@@ -61,7 +61,7 @@ int TextEdit::lineNumberAreaWidth()
         ++count;
     }
 
-    return 3 + ( fontMetrics().width ( QLatin1Char ( '0' ) ) * count );
+    return 3 + ( fontMetrics().horizontalAdvance ( QLatin1Char ( '0' ) ) * count );
 }
 
 void TextEdit::updateLineNumberAreaWidth ( int /* newBlockCount */ )

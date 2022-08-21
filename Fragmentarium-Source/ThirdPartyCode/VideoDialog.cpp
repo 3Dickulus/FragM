@@ -97,7 +97,6 @@ void VideoDialog::on_startButton_clicked()
     // mencoder mf://$1*.png -mf w=$2:h=$3:fps=$4:type=png -ovc x264 -lavcopts vcodec=libx264 -x264encopts crf=25 -o $1.$2x$3.mp4
     // mencoder file input
     if (program.contains("mencoder", Qt::CaseInsensitive) && !pm.isNull()) {
-        arguments << program;
         arguments << QString("mf://%1").arg(input);
         arguments << QString("-mf w=%1:h=%2:fps=%3:type=%4")
                   .arg(pm.width())
@@ -111,7 +110,6 @@ void VideoDialog::on_startButton_clicked()
     // ffmpeg -f image2 -s $2 -i $1.%05d.png -r 25000/1001 -b:v 2400k -bt 3400k -vcodec libx264 -coder 0 -bf 0 -refs 1 -level 30 -bufsize 1835k -maxrate 30M $1.$2.mp4
     //ffmpeg file input
     if (program.contains("ffmpeg", Qt::CaseInsensitive) && !pm.isNull()) {
-        arguments << program;
         arguments << QString("-f image2 -s %1x%2").arg(pm.width()).arg(pm.height());
         arguments << QString("-i %1.%05d.%2").arg(filepre).arg(filesuf);
         arguments << QString("-r %1/1001").arg(mainWin->renderFPS * 1000);
@@ -120,9 +118,10 @@ void VideoDialog::on_startButton_clicked()
     }
 
     mTranscodingProcess->setProcessChannelMode(QProcess::MergedChannels);
-    m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Running!"));
-    mTranscodingProcess->start(arguments.join(" "));
-
+    if(!arguments.isEmpty() && (program.contains("ffmpeg", Qt::CaseInsensitive) || program.contains("mencoder", Qt::CaseInsensitive)) ) {
+        m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Running!"));
+        mTranscodingProcess->start(program, arguments);
+    } else mTranscodingProcess->terminate();
 }
 
 void VideoDialog::readyReadStandardOutput()
@@ -220,10 +219,10 @@ void VideoDialog::on_playOutputButton_clicked()
     QString program = m_ui->playCmdLineEdit->text();
     QStringList arguments;
     QString output = m_ui->toLineEdit->text();
-    arguments << program << output;
+    arguments << output;
     mOutputPlayProcess->setProcessChannelMode(QProcess::MergedChannels);
     m_ui->transcodingStatusLabel->setText("Encoding Status: Playing...");
-    mOutputPlayProcess->start(arguments.join(" "));
+    mOutputPlayProcess->start(program, arguments);
     connect(mOutputPlayProcess, SIGNAL(finished(int)), this, SLOT(playingFinished(int)));
     m_ui->stopButton->setEnabled(true);
 }

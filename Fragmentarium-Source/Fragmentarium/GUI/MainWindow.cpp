@@ -359,7 +359,7 @@ void MainWindow::insertPreset()
         tc.movePosition(QTextCursor::End);
         getTextEdit()->setTextCursor(tc);
         if (engine->cameraID() == "3D") {
-            newPreset.sprintf("KeyFrame.%.3d", variableEditor->getKeyFrameCount() + 1);
+            newPreset.asprintf("KeyFrame.%.3d", variableEditor->getKeyFrameCount() + 1);
         }
     }
 
@@ -767,7 +767,7 @@ void MainWindow::documentWasModified()
 void MainWindow::init()
 {
 
-    lastTime = new QTime();
+    lastTime = new QElapsedTimer();
     lastTime->start();
 
     splitter = new QSplitter(this);
@@ -1608,18 +1608,18 @@ QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
     return name;
 }
 
-void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time)
 {
-    QTime imagetime;
+    QElapsedTimer imagetime;
 
     if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
        TIME(QString("Image Time"));
-       TIME(QString("Start: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+       TIME(QString("Start: %1").arg(QTime::currentTime().toString("hh:mm:ss")));
        imagetime.start();
     }
 
     for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
-        QTime tiletime;
+        QElapsedTimer tiletime;
         tiletime.start();
 
         if (!progress.wasCanceled()) {
@@ -1673,19 +1673,19 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
 
     if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
         QTime thisTime = QTime::fromMSecsSinceStartOfDay(imagetime.elapsed());
-        TIME(QString("Elapsed mins: %1").arg(thisTime.toString("hh:mm:ss")) );
-        TIME(QString("Stop: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+        TIME(QString("Elapsed: %1").arg(thisTime.toString("hh:mm:ss")) );
+        TIME(QString("Stop: %1").arg(QTime::currentTime().toString("hh:mm:ss")));
     }
 }
 
 #ifdef USE_OPEN_EXR
-bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time)
+bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time)
 {
-    QTime imagetime;
+    QElapsedTimer imagetime;
 
     if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
        TIME(QString("Image Time"));
-       TIME(QString("Start: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+       TIME(QString("Start: %1").arg(QTime::currentTime().toString("hh:mm:ss")));
        imagetime.start();
     }
     //
@@ -1721,7 +1721,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
 
     for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
-        QTime tiletime;
+        QElapsedTimer tiletime;
         tiletime.start();
 
         if (!progress.wasCanceled()) {
@@ -1787,7 +1787,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
     if (!scriptRunning() && engine->getState() != DisplayWidget::Animation) {
         QTime thisTime = QTime::fromMSecsSinceStartOfDay(imagetime.elapsed());
         TIME(QString("Elapsed mins: %1").arg(thisTime.toString("hh:mm:ss")) );
-        TIME(QString("Stop: %1").arg(imagetime.currentTime().toString("hh:mm:ss")));
+        TIME(QString("Stop: %1").arg(QTime::currentTime().toString("hh:mm:ss")));
     }
 
     engine->update();
@@ -2069,7 +2069,7 @@ retry:
     progress.setLabel(lab);
     progress.resize(360, 180);
 
-    QTime totalTime;
+    QElapsedTimer totalTime;
     totalTime.start();
 
     // create an overlay using enginePixmap as background
@@ -2085,7 +2085,7 @@ retry:
   
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    bool isFirst = true;
+//     bool isFirst = true;
     // render tiles and update progress
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
@@ -2137,7 +2137,7 @@ retry:
           }
         }
 
-        QTime frametime;
+        QElapsedTimer frametime;
         frametime.start();
 
         bool pause = pausePlay;
@@ -2160,11 +2160,11 @@ retry:
         } else {
             engine->renderAVG += frametime.elapsed();
         }
-        // fix for sub-set ETA
-        if(isFirst) {
-            totalTime = totalTime.addMSecs( -(startTime*frametime.elapsed()) );
-            isFirst = false;
-        }
+        // FIXME for sub-set ETA
+//         if(isFirst) {
+//             totalTime = totalTime.addMSecs( -(startTime*frametime.elapsed()) );
+//             isFirst = false;
+//         }
         // Now assemble image
         if (!progress.wasCanceled() && (!exrMode || (preview && tileWidth * maxTiles < 32769 && tileHeight * maxTiles < 32769))) {
             int w = cachedTileImages[0].width();
@@ -2275,7 +2275,7 @@ void MainWindow::savePreview()
         if(!fn.isEmpty()) {
             auto *label = qd->findChild<QLabel *>("previewImage");
             if (label != nullptr) {
-                QImage img = label->pixmap()->toImage();
+                QImage img = label->pixmap(Qt::ReturnByValue).toImage();
                 img.setText("frAg", variableEditor->getSettings());
                 img.save(fn);
                 qd->close();
@@ -2746,7 +2746,7 @@ void MainWindow::readSettings()
     editorStylesheet = settings.value("editorStylesheet", "font: 9pt Courier;").toString();
     variableEditor->updateGeometry();
     variableEditor->setSaveEasing(settings.value("saveEasing", true).toBool());
-    fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";", QString::SkipEmptyParts));
+    fileManager.setIncludePaths(settings.value("includePaths", "Examples/Include;").toString().split(";"));
     loggingToFile = settings.value("logToFile", false).toBool();
     logFilePath = settings.value("logFilePath", "fragm.log").toString();
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
@@ -2755,9 +2755,9 @@ void MainWindow::readSettings()
     playRestartMode = settings.value("playRestartMode", false).toBool();
     useMimetypes = settings.value("useMimetypes", false).toBool();
 #ifdef USE_OPEN_EXR
-    exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
+    exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";");
 #endif // USE_OPEN_EXR
-    supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";", QString::SkipEmptyParts);
+    supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";");
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
     lockedToWindowSize = settings.value("lockedToWindowSize", true).toBool();
@@ -3379,7 +3379,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
     connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
 
     textEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
-    textEdit->setTabStopWidth(20);
+    textEdit->setTabStopDistance(20);
     textEdit->fh = new FragmentHighlighter(textEdit->document());
 
     bool loadingSucceded = false;

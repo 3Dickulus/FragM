@@ -387,7 +387,7 @@ void Preprocessor::parseSpecial(FragmentSource *fs, QString s, int i, bool moveM
     } else if (s.trimmed().startsWith("#TexParameter", Qt::CaseInsensitive)) {
         fs->source[i] = "// " + s.trimmed();
         QString c = s.remove("#TexParameter", Qt::CaseInsensitive).trimmed();
-        QStringList l = c.split(" ", QString::SkipEmptyParts);
+        QStringList l = c.split(" ");
         if (l.count() != 3) {
             WARNING("#TexParameter expects three arguments! Found: " + l.join(","));
         } else {

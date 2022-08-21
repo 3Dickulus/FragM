@@ -26,7 +26,7 @@
 
 #include "asmbrowser.h"
 
-AsmBrowser::AsmBrowser(const QStringList &page) : QWidget(nullptr, nullptr)
+AsmBrowser::AsmBrowser(const QStringList &page) : QWidget(nullptr)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);

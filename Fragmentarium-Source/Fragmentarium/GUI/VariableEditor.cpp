@@ -407,7 +407,7 @@ void VariableEditor::createGroup(QString g)
         qDebug() << "Creating new group -> " + g;
     }
 
-    QWidget *w = new QWidget(this, nullptr);
+    QWidget *w = new QWidget(this);
 
     w->setLayout(new QVBoxLayout(w));
 

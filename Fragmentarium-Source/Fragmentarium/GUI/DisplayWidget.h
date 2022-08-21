@@ -137,7 +137,7 @@ public:
     void clearTileBuffer();
     void renderTile ( double pad, double time, int subframes, int w, int h,
                       int tile, int tileMax, QProgressDialog *progress, int *steps,
-                      QImage *im, const QTime &totalTime );
+                      QImage *im, const QElapsedTimer &totalTime );
 
     /// Use this whenever a redraw is required.
     /// Calling this function multiple times will still only result in one redraw

@@ -724,9 +724,9 @@ private slots:
     void slotShortcutShiftF6();
 
 #ifdef USE_OPEN_EXR
-    bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
+    bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time);
 #endif
-    void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QTime &totalTime, double time);
+    void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time);
 
     void lockAspect(bool l){
         aspectLock->setChecked(l);
@@ -795,7 +795,7 @@ private:
     QSpinBox *bufferXSpinBox;
     QSpinBox *bufferYSpinBox;
 
-    QTime *lastTime;
+    QElapsedTimer *lastTime;
     int lastStoredTime;
     QAction *new2DAction;
     QAction *new3DAction;
