@@ -980,7 +980,7 @@ void QtGradientStopsWidget::contextMenuEvent(QContextMenuEvent *e)
 
 void QtGradientStopsWidget::wheelEvent(QWheelEvent *e)
 {
-    int numDegrees = e->delta() / 8;
+    int numDegrees = e->angleDelta().y() / 8;
     int numSteps = numDegrees / 15;
 
     int shift = numSteps;
