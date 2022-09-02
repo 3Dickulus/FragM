@@ -4,7 +4,7 @@
 
 FRAGM_MAJOR_VERSION=2
 FRAGM_MINOR_VERSION=5
-FRAGM_REVISION=6
+FRAGM_REVISION=7
 
 FRAGM_VERSION=$$FRAGM_MAJOR_VERSION"."$$FRAGM_MINOR_VERSION"."$$FRAGM_REVISION
 
@@ -18,10 +18,10 @@ LIBS += -fPIC
 
 win32:CONFIG(release, debug|release) {
 CONFIG += console
-PACKAGE_BUILD=211212
+PACKAGE_BUILD=220821
 TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
 LIBS += -L../../OpenEXR/lib/ -lIlmImf-2_4 -lHalf-2_4 -lIex-2_4 -lIexMath-2_4 -lImath-2_4 -lIlmThread-2_4
-LIBS += -LC:\Qt/5.12.12/Tools/mingw730_32/lib -lz
+LIBS += -LC:\Qt/Tools/mingw810_64/x86_64-w64-mingw32/lib -lz
 LIBS += -lopengl32
 LIBS += -mthreads -lmingwthrd -lwinpthread
 }
@@ -60,12 +60,12 @@ DEPENDPATH += . \
               ThirdPartyCode/qtgradienteditor
 
 win32:CONFIG(release, debug|release) {
-INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\
-INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/include/OpenEXR
-INCLUDEPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/include
-DEPENDPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib
-DEPENDPATH += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR
-PRE_TARGETDEPS += C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIlmImf-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libHalf-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIex-2_4.a  C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIexMath-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libIlmThread-2_4.a C:\Fragmentarium-2.5.6-3Dickulus-full\OpenEXR/lib/libImath-2_4.a
+INCLUDEPATH += C:\Fragmentarium-2.5.7-3Dickulus-full\
+INCLUDEPATH += C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/include/OpenEXR
+INCLUDEPATH += C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/include
+DEPENDPATH += C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib
+DEPENDPATH += C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR
+PRE_TARGETDEPS += C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libIlmImf-2_4.a C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libHalf-2_4.a C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libIex-2_4.a  C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libIexMath-2_4.a C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libIlmThread-2_4.a C:\Fragmentarium-2.5.7-3Dickulus-full\OpenEXR/lib/libImath-2_4.a
 }
 else:unix:CONFIG(release, debug|release) {
 INCLUDEPATH += /usr/include/OpenEXR \

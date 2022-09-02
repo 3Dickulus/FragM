@@ -1,15 +1,15 @@
-IF(UNIX)
 cmake_minimum_required( VERSION 3.2 )
 cmake_policy(SET CMP0043 NEW)
+IF(UNIX)
 cmake_policy(SET CMP0071 NEW)
 ELSE ()
-cmake_minimum_required( VERSION 2.8 )
+cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0048 NEW)
 ENDIF ()
 
 set(FRAGM_MAJOR_VERSION "2")
 set(FRAGM_MINOR_VERSION "5")
-set(FRAGM_REVISION "6")
+set(FRAGM_REVISION "7")
 
 set(FRAGM_VERSION "${FRAGM_MAJOR_VERSION}.${FRAGM_MINOR_VERSION}.${FRAGM_REVISION}")
 
@@ -46,7 +46,7 @@ set ( CMAKE_AUTORCC ON)
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 IF ( NOT WIN32 )
-find_package ( glm REQUIRED )
+    find_package ( glm REQUIRED )
 ENDIF( NOT WIN32 )
 
 set(OpenGL_GL_PREFERENCE "LEGACY")
@@ -57,6 +57,7 @@ IF ( GL_PREFERENCE_GLVND )
 ENDIF ()
 
 find_package ( OpenGL REQUIRED )
+
 find_package ( Qt5LinguistTools REQUIRED )
 
 find_package ( Qt5 COMPONENTS Core OpenGL Widgets Gui Xml Script ScriptTools REQUIRED )
@@ -86,12 +87,12 @@ OPTION ( BUILD_LINUX_RPM "Build Linux RPM package" OFF)
 
 # set to the mingw lib path
 IF ( WIN32 )
-  set ( MINGW_LIB_PATH "C:/Qt/5.12.12/Tools/mingw730_32/lib" CACHE PATH "set to the mingw lib path" )
+  set ( MINGW_LIB_PATH "C:/Qt/Tools/mingw810_64/x86_64-w64-mingw32/lib" CACHE PATH "set to the mingw lib path" )
 ENDIF ()
 
 #IF(OPENGL_LIBRARIES_NOTFOUND)
 	IF(WIN32)
-        set(OPENGL_LIBRARIES "-lopengl32" )
+        set(OPENGL_LIBRARIES -L${MINGW_LIB_PATH} -lopengl32 )
 	ENDIF ()
 #ENDIF ()
 
@@ -116,36 +117,50 @@ IF ( USE_OPEN_EXR )
 	IF(UNIX AND NOT APPLE)
         find_package ( OpenEXR REQUIRED )
         set( OpenEXTRA_LIBRARIES z pthread )
-	ENDIF ()
-
-	ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
+	ENDIF (UNIX AND NOT APPLE)
 
 	IF ( WIN32 )
-        set ( OpenEXR_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../OpenEXR/include )
+        set ( ZLIB_INCLUDE_DIR C:/Qt/Tools/mingw810_64/x86_64-w64-mingw32/include )
+        set ( ZLIB_LIBRARY C:/Qt/Tools/mingw810_64/x86_64-w64-mingw32/lib/libz.a )
 
-        set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib)
+        set ( Imath_DIR ${CMAKE_SOURCE_DIR}/../Imath/lib/cmake/Imath )
+        set ( OpenEXR_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib/cmake/OpenEXR )
+        
+        list(APPEND CMAKE_MODULE_PATH "${Imath_DIR}/../")
+        list(APPEND CMAKE_MODULE_PATH "${OpenEXR_DIR}/../")
+        
+        find_package ( Imath REQUIRED )
+        find_package ( OpenEXR REQUIRED )
+
+        #this is some fudge as OpenEXR uses #include <half.h> instead of #include <Imath/half.h>
+        set ( OpenEXR_INCLUDE_DIRS
+        ${CMAKE_SOURCE_DIR}/../OpenEXR/include
+        ${CMAKE_SOURCE_DIR}/../Imath/include
+        ${CMAKE_SOURCE_DIR}/../Imath/include/Imath)
+
+        set( OpenEXR_LIB_DIR ${CMAKE_SOURCE_DIR}/../OpenEXR/lib )
 
         set( OpenEXR_LIBS
-        IlmImf-2_4
-        Half-2_4
-        Imath-2_4
-        Iex-2_4
-        IexMath-2_4
-        IlmThread-2_4
+            Iex-3_2
+            IlmThread-3_2
+            OpenEXR-3_2
+            OpenEXRCore-3_2
+            OpenEXRUtil-3_2
         )
 
+        MESSAGE("Considered ... ${Imath_CONSIDERED_CONFIGS} ${Imath_CONSIDERED_VERSIONS}" )
+        MESSAGE("Considered ... ${OpenEXR_CONSIDERED_CONFIGS} ${OpenEXR_CONSIDERED_VERSIONS}")
+        
         MESSAGE("Using MinGW threads")
         ADD_DEFINITIONS(-mthreads)
-        set ( OpenEXTRA_LIBRARIES -Bstatic  -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
-
-	ENDIF ()
+        set ( OpenEXTRA_LIBRARIES -Bstatic -L${OpenEXR_LIB_DIR} ${OpenEXR_LIBS} -L${MINGW_LIB_PATH} z mingwthrd winpthread -Bdynamic )
+	
+	ENDIF ( WIN32 )
 
 	IF(APPLE)
         set( OpenEXTRA_LIBRARIES z pthread )
-
         ADD_DEFINITIONS ( -pthread )
-
-	ENDIF ()
+	ENDIF(APPLE)
 
 ENDIF (USE_OPEN_EXR)
 
@@ -333,10 +348,7 @@ IF ( APPLE )
 ELSEIF ( UNIX )
   add_executable ( ${PROJECT_NAME} ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ELSEIF ( WIN32 )
-# one for desktop
   add_executable ( ${PROJECT_NAME} WIN32 ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
-# one for console
-  add_executable ( ${PROJECT_NAME}-console ${QM_FILES} ${Fragmentarium_SRCS} ${UIS} ${RSCS} ${TRS} ${MOCS})
 ENDIF ()
 
 target_link_libraries ( ${PROJECT_NAME}
@@ -353,27 +365,8 @@ ${OPENGL_LIBRARIES}
 	  $<$<TARGET_EXISTS:IlmBase::Iex>:IlmBase::Iex>
 	  $<$<TARGET_EXISTS:IlmBase::IexMath>:IlmBase::IexMath>
 ${OpenEXTRA_LIBRARIES} )
-IF ( WIN32 )
-target_link_libraries ( ${PROJECT_NAME}-console
-${OPENGL_LIBRARIES}
-	# For OpenEXR/Imath 3.x:
-	  $<$<TARGET_EXISTS:OpenEXR::OpenEXR>:OpenEXR::OpenEXR>
-	  $<$<TARGET_EXISTS:Imath::Imath>:Imath::Imath>
-	  $<$<TARGET_EXISTS:Imath::Half>:Imath::Half>
-	# For OpenEXR 2.4/2.5:
-	  $<$<TARGET_EXISTS:OpenEXR::IlmImf>:OpenEXR::IlmImf>
-	  $<$<TARGET_EXISTS:IlmBase::Imath>:IlmBase::Imath>
-	  $<$<TARGET_EXISTS:IlmBase::Half>:IlmBase::Half>
-	  $<$<TARGET_EXISTS:IlmBase::IlmThread>:IlmBase::IlmThread>
-	  $<$<TARGET_EXISTS:IlmBase::Iex>:IlmBase::Iex>
-	  $<$<TARGET_EXISTS:IlmBase::IexMath>:IlmBase::IexMath>
-${OpenEXTRA_LIBRARIES} )
-ENDIF ()
 
 qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script ScriptTools)
-IF ( WIN32 )
-qt5_use_modules(${PROJECT_NAME}-console OpenGL Widgets Gui Xml Script ScriptTools)
-ENDIF ()
 
 # Runtime support files
 IF(APPLE)
@@ -396,7 +389,7 @@ ELSEIF ( WIN32 )
 	set( DESTINATION_NAME ${CMAKE_INSTALL_PREFIX} )
 	# Installation
 	INSTALL ( TARGETS
-	${PROJECT_NAME} ${PROJECT_NAME}-console
+	${PROJECT_NAME}
 	DESTINATION
 	${DESTINATION_NAME}
 	)
@@ -473,6 +466,10 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP OR BUILD_SOURCE_ZIP)
 
 	ENDIF()
 
+	IF(WIN32)
+	set(CPACK_GENERATOR "ZIP")
+	ENDIF()
+
 	IF(BUILD_SOURCE_ZIP)
 	SET(CPACK_PACKAGE_NAME "Fragmentarium")
 	SET(CPACK_PACKAGE_VERSION ${FRAGM_VERSION}-${PACKAGE_BUILD})
@@ -482,10 +479,6 @@ IF(BUILD_LINUX_RPM OR BUILD_LINUX_DEB OR BUILD_WIN_ZIP OR BUILD_SOURCE_ZIP)
 	set(CPACK_SOURCE_GENERATOR "ZIP")
 	set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/.svn/;/.bzr/;/.hg/;/.git/;.swp\$;.#;/#;.kdev4;.directory;build*;.git*;.*~$")
 	set(CPACK_VERBATIM_VARIABLES YES)
-	ENDIF()
-
-	IF(WIN32)
-	set(CPACK_GENERATOR "ZIP")
 	ENDIF()
 
 	INCLUDE(CPack)

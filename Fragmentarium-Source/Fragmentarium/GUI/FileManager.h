@@ -8,7 +8,9 @@
 
 #ifdef USE_OPEN_EXR
 #ifndef Q_OS_MAC
+#ifndef Q_OS_WINDOWS
 #include <OpenEXR/OpenEXRConfig.h>
+#endif
 #endif
 #include <OpenEXR/ImfForward.h>
 #include <OpenEXR/ImfArray.h>
