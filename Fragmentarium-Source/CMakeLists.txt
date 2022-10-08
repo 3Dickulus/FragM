@@ -173,6 +173,7 @@ include_directories (
     ${OpenEXR_INCLUDE_DIRS}
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Script_INCLUDE_DIRS}
+    ${Qt5ScriptTools_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDE_DIRS}
     ${Qt5Xml_INCLUDE_DIRS}
     ${Qt5OpenGL_INCLUDE_DIRS}
@@ -362,8 +363,6 @@ ${OPENGL_LIBRARIES}
       $<$<TARGET_EXISTS:IlmBase::Iex>:IlmBase::Iex>
       $<$<TARGET_EXISTS:IlmBase::IexMath>:IlmBase::IexMath>
 ${OpenEXTRA_LIBRARIES} )
-
-qt5_use_modules(${PROJECT_NAME} OpenGL Widgets Gui Xml Script ScriptTools)
 
 # Runtime support files
 IF(APPLE)
