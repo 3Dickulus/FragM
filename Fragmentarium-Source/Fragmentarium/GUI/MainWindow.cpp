@@ -1008,7 +1008,7 @@ void MainWindow::initTools()
                 QDir spbp(pathIterator.next());
                 // if found at least one valid path
                 if(spbp.exists()) {
-                    QStringList filters; filters << "ggr*";
+                    QStringList filters; filters << "*2glsl";
                     spbp.setNameFilters(filters);
                     QStringList filesList = spbp.entryList();
                     // if found at least one valid tool iterate over the list of tools adding menu items
@@ -2067,7 +2067,7 @@ retry:
     lab->setTextFormat(Qt::RichText);
     lab->setAlignment(Qt::AlignmentFlag::AlignLeft);
     progress.setLabel(lab);
-    progress.resize(360, 180);
+    progress.resize(400, 180);
 
     QElapsedTimer totalTime;
     totalTime.start();
@@ -2545,7 +2545,7 @@ void MainWindow::bufferActionChanged(QAction *action)
         lockedToWindowSize = true;
         lockAspect(false);
         // because there is no layout available in a QSplitter we have to resize manually here
-        engine->resize( splitter->width() - splitter->handle(1)->width() - splitter->handle(1)->pos().x()+1 , splitter->handle(1)->height() );
+        engine->resize( splitter->width() - splitter->handle(1)->width() - splitter->handle(1)->pos().x() , splitter->handle(1)->height() );
     } else if (action == bufferActionCustom) {
         lockedToWindowSize = false;
         lockAspect(lockedAspect);

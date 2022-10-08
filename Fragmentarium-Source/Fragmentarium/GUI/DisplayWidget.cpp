@@ -96,6 +96,9 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 // GLint index = glGetUniformLocation(programID, uniformName.toStdString()); glCheckError();
 //
 #define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
+#else
+#define glCheckError()
+
 #endif
 #endif
 
@@ -176,9 +179,9 @@ void DisplayWidget::initializeGL()
 
     initializeOpenGLFunctions();
 
-    vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) );
-    renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) );
-    glvers = QString ( ( char * ) glGetString ( GL_VERSION ) );
+    vendor = QString ( ( char * ) glGetString ( GL_VENDOR ) ); glCheckError();
+    renderer = QString ( ( char * ) glGetString ( GL_RENDERER ) ); glCheckError();
+    glvers = QString ( ( char * ) glGetString ( GL_VERSION ) ); glCheckError();
     /// test for nVidia card and set the nV flag
     foundnV = vendor.contains ( "NVIDIA", Qt::CaseInsensitive );
 
@@ -208,7 +211,7 @@ void DisplayWidget::initializeGL()
 #ifdef USE_OPENGL_4
     if(ver >= 4.3) { // query the GL to figure it out 
         int max = 0;
-        glGetIntegerv(GL_NUM_SHADING_LANGUAGE_VERSIONS, &max);
+        glGetIntegerv(GL_NUM_SHADING_LANGUAGE_VERSIONS, &max); glCheckError();
 
         while(max--){
             QString v = (char *)glGetStringi(GL_SHADING_LANGUAGE_VERSION, max);
@@ -239,7 +242,7 @@ void DisplayWidget::initializeGL()
         if(ver == 4.6) glslvers << "460";
     }
     
-    glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &m_maxUniforms);
+    glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &m_maxUniforms); glCheckError();
 }
 void DisplayWidget::updateRefreshRate()
 {
@@ -417,17 +420,17 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
             if (!ok) {
                 wantedLevels = 128;
             } // just an arbitrary small number, GL default = 1000
-            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels );
+            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, wantedLevels ); glCheckError();
 
             if (format().majorVersion() > 2 || isCompat()) {
-                glGenerateMipmap(GL_TEXTURE_2D); // Generate mipmaps here!!!
+                glGenerateMipmap(GL_TEXTURE_2D); glCheckError(); // Generate mipmaps here!!!
             }
             else {
-                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // Generate mipmaps here!!!
+                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); glCheckError(); // Generate mipmaps here!!!
             }
 
             // read back and test our value
-            glGetTexParameteriv ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &levels );
+            glGetTexParameteriv ( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &levels ); glCheckError();
 
             if ( wantedLevels != levels ) {
                 WARNING( tr("Asked gpu for %1 mip-map levels.").arg(wantedLevels) );
@@ -439,13 +442,13 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
     if ( map.keys().contains ( "GL_TEXTURE_MAX_ANISOTROPY" ) ) {
         bool ok;
         GLfloat fLargest;
-        glGetFloatv ( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest ); // max max
+        glGetFloatv ( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest ); glCheckError(); // max max
         GLfloat fWanted = map["GL_TEXTURE_MAX_ANISOTROPY"].toFloat ( &ok );
         if (!ok) {
             fWanted = 1.0;
         }
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (fWanted > 1.0) ? (fWanted < fLargest) ? fWanted : fLargest : 1.0);
-        glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (fWanted > 1.0) ? (fWanted < fLargest) ? fWanted : fLargest : 1.0); glCheckError();
+        glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest); glCheckError();
         if ( fLargest != fWanted ) {
             WARNING( tr("Asked gpu for %1 anisotropic filter.").arg(fWanted));
             WARNING( tr("GPU returned %1 anisotropic filter.").arg(fLargest));
@@ -499,7 +502,7 @@ void DisplayWidget::setGlTexParameter(QMap<QString, QString> map)
             continue;
         }
 
-        glTexParameteri ( GL_TEXTURE_2D, k, v );
+        glTexParameteri ( GL_TEXTURE_2D, k, v ); glCheckError();
     }
 }
 
@@ -518,15 +521,15 @@ QStringList DisplayWidget::shaderAsm(bool w)
 
     GLuint progId = w ? shaderProgram->programId() : bufferShaderProgram->programId();
     GLint formats = 0;
-    glGetIntegerv ( GL_NUM_PROGRAM_BINARY_FORMATS, &formats );
+    glGetIntegerv ( GL_NUM_PROGRAM_BINARY_FORMATS, &formats ); glCheckError();
     GLint binaryFormats[formats];
-    glGetIntegerv ( GL_PROGRAM_BINARY_FORMATS, binaryFormats );
+    glGetIntegerv ( GL_PROGRAM_BINARY_FORMATS, binaryFormats ); glCheckError();
 
     GLint len=0;
-    glGetProgramiv ( progId, GL_PROGRAM_BINARY_LENGTH, &len );
+    glGetProgramiv ( progId, GL_PROGRAM_BINARY_LENGTH, &len ); glCheckError();
     uchar binary[ size_t(len+1) ];
 
-    glGetProgramBinary(progId, len, nullptr, (GLenum *)binaryFormats, &binary[0]);
+    glGetProgramBinary(progId, len, nullptr, (GLenum *)binaryFormats, &binary[0]); glCheckError();
 
     QString asmTxt = "";
 
@@ -774,17 +777,17 @@ void DisplayWidget::initFragmentShader()
     
     
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix)); glCheckError();
 
     // Setup backbuffer texture for this shader
     if ( bufferType != 0 ) {
         // Bind first texture to backbuffer
-        glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
+        glActiveTexture ( GL_TEXTURE0 ); glCheckError(); // non-standard (>OpenGL 1.3) gl extension
 
         int l = shaderProgram->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
               GLuint i = backBuffer->texture();
-              glBindTexture ( GL_TEXTURE_2D, i );
+              glBindTexture ( GL_TEXTURE_2D, i ); glCheckError();
               if ( fragmentSource.textureParams.contains ( "backbuffer" ) ) {
                   setGlTexParameter ( fragmentSource.textureParams["backbuffer"] );
               }
@@ -819,7 +822,7 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     bool loaded = HDRLoader::load ( texturePath.toLocal8Bit().data(), result );
     int s;
 
-    glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+    glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s ); glCheckError();
 
     if (type == GL_SAMPLER_2D && (result.width>s || result.height>s) ) {
         WARNING(tr("Loader found HDR image: %1 x %2 is too large! max %3x%3").arg(result.width).arg(result.height, s));
@@ -832,17 +835,17 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
     }
 
     if ( loaded ) {
-        glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID );
+        glBindTexture ( ( type == GL_SAMPLER_CUBE ) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID ); glCheckError();
 
         if ( type == GL_SAMPLER_CUBE ) {
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 0 * 3] );
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 1 * 3] );
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 2 * 3] );
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3] );
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3] );
-            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3] );
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 0 * 3] ); glCheckError();
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 1 * 3] ); glCheckError();
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 2 * 3] ); glCheckError();
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 3 * 3] ); glCheckError();
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 4 * 3] ); glCheckError();
+            glTexImage2D ( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, result.width, result.width, 0, GL_RGB, GL_FLOAT, &result.cols[result.width * 5 * 3] ); glCheckError();
         } else if ( type == GL_SAMPLER_2D ) {
-            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, &result.cols[0] );
+            glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_FLOAT, &result.cols[0] ); glCheckError();
         }
 
     } else {
@@ -896,7 +899,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         int h = dw.max.y - dw.min.y + 1;
         int s;
         
-        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s );
+        glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s ); glCheckError();
 
         if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
             WARNING(tr("Loader found EXR image: %1 x %2 is too large! max %3x%4").arg(w).arg(h).arg(s).arg(s));
@@ -977,17 +980,17 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             }
         }
 
-        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID); glCheckError();
 
         if(type == GL_SAMPLER_CUBE) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 0));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 1));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 2));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 0)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 1)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 2)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 3)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 4)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA32F, w, w, 0, GL_RGBA, GL_FLOAT, base + ((w * w) * 5)); glCheckError();
         } else if ( type == GL_SAMPLER_2D ) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, base);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, base); glCheckError();
         }
 
     } else {
@@ -1010,20 +1013,20 @@ bool DisplayWidget::loadQtTexture(QString texturePath, GLenum type, GLuint textu
     }
 
     if(loaded) {
-        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+        glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID); glCheckError();
 
         if(type == GL_SAMPLER_CUBE) {
             QImage t = im.convertToFormat(QImage::Format_RGBA8888);
 
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 0));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 1));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 2));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 3));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 4));
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 5));
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 0)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 1)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 2)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 3)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 4)); glCheckError();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, t.width(), t.width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.scanLine(t.width() * 5)); glCheckError();
         } else if(type == GL_SAMPLER_2D) {
             QImage t = im.mirrored().convertToFormat(QImage::Format_RGBA8888);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits());
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits()); glCheckError();
         } else {
             WARNING("Texture failed to load!");
             return false;
@@ -1036,11 +1039,11 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
 {
 
     if(type == GL_SAMPLER_CUBE) {
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glCheckError();
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glCheckError();
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); glCheckError();
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); glCheckError();
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); glCheckError();
         return true;
 
     } else if (fragmentSource.textureParams.contains(textureUniformName)) {
@@ -1052,8 +1055,8 @@ bool DisplayWidget::setTextureParms(QString textureUniformName, GLenum type)
         map.insert ( "GL_TEXTURE_MAG_FILTER","GL_LINEAR" );
         map.insert ( "GL_TEXTURE_MIN_FILTER","GL_LINEAR" );
         setGlTexParameter ( map );
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0); glCheckError();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0); glCheckError();
         return true;
     }
     // if we get here something is wrong
@@ -1068,9 +1071,9 @@ void DisplayWidget::initFragmentTextures()
 
     // unbind all textures so texture memory of deleted textures can be reclaimed
     for (int u = 0; u < TextureUnitCache.size(); ++u) {
-      glActiveTexture(GL_TEXTURE0 + 1 + u);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+      glActiveTexture(GL_TEXTURE0 + 1 + u); glCheckError();
+      glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
+      glBindTexture(GL_TEXTURE_CUBE_MAP, 0); glCheckError();
     }
     // clear cache of texture units, it will be regenerated below
     TextureUnitCache = QMap<QString, int>();
@@ -1098,7 +1101,7 @@ void DisplayWidget::initFragmentTextures()
                 GLint size = 0;
                 GLenum type = 0;
                 
-                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+                glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize); glCheckError();
                 GLchar name[bufSize];
                 
                 // bugfix for textures by claude #104 index vs location
@@ -1106,11 +1109,11 @@ void DisplayWidget::initFragmentTextures()
                 // get a pointer to the char array in QString
                 GLchar *oneName = textureUniformName.toLocal8Bit().data();
                 // returns index of "oneName" in idx;
-                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx); // OpenGL > 3.0
+                glGetUniformIndices( shaderProgram->programId(), 1, &oneName, &idx); glCheckError(); // OpenGL > 3.0
                 // use idx to acquire more info about this uniform
-                glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name);
+                glGetActiveUniform(shaderProgram->programId(), idx, bufSize, &length, &size, &type, name); glCheckError();
                 // set current texture
-                glActiveTexture(GL_TEXTURE0 + u); // OpenGL > 1.4
+                glActiveTexture(GL_TEXTURE0 + u); glCheckError(); // OpenGL > 1.4
 
                 if(textureUniformName == QString(name).trimmed() && (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE) ) {
                     // check cache first
@@ -1118,9 +1121,9 @@ void DisplayWidget::initFragmentTextures()
                     QPair<QString, QStringList> textureCacheKey(texturePath, textureChannels);
                     if ( !TextureCache.contains ( textureCacheKey ) ) {
                         // if not in cache then create one and try to load and add to cache
-                        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // byte alignment 4 bytes = 32 bits
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); glCheckError(); // byte alignment 4 bytes = 32 bits
                         // allocate a texture id
-                        glGenTextures ( 1, &textureID );
+                        glGenTextures ( 1, &textureID ); glCheckError();
 
                         if (verbose) {
                             qDebug() << QString("Allocating texture (ID: %1) %2 %3").arg(textureID).arg(texturePath).arg(textureChannels.join(";"));
@@ -1151,7 +1154,7 @@ void DisplayWidget::initFragmentTextures()
                 }
 
                 if ( loaded ) {
-                    glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID);
+                    glBindTexture((type == GL_SAMPLER_CUBE) ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, textureID); glCheckError();
                     TextureUnitCache[textureUniformName] = u;
                     if( setTextureParms(textureUniformName, type) ) {
                         // Texture is loaded and bound successfully
@@ -1187,7 +1190,7 @@ void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *t
             if (!textureCacheUsed->contains(i.key())) {
                 INFO(QString("Removing texture from cache: %1 %2").arg(i.key().first).arg(i.key().second.join(";")));
                 GLuint id = i.value();
-                glDeleteTextures(1, &id);
+                glDeleteTextures(1, &id); glCheckError();
                 i.remove();
             }
 
@@ -1197,7 +1200,7 @@ void DisplayWidget::clearTextureCache(QMap<QPair<QString, QStringList>, bool> *t
         while (i.hasNext()) {
             i.next();
             GLuint id = i.value();
-            glDeleteTextures(1, &id);
+            glDeleteTextures(1, &id); glCheckError();
         }
         TextureCache.clear();
     }
@@ -1288,7 +1291,7 @@ void DisplayWidget::initBufferShader()
     }
     
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(bufferShaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(bufferShaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix)); glCheckError();
 
     bufferUniformsHaveChanged = false;
 }
@@ -1367,14 +1370,14 @@ void DisplayWidget::makeBuffers()
     }
 
     if (format().majorVersion() > 2 || isCompat()) {
-        GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER); glCheckError();
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
             qDebug( ) << tr("FBO Incomplete Error!");
         } else {
-            glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject());
+            glBindFramebuffer(GL_FRAMEBUFFER_EXT, defaultFramebufferObject()); glCheckError();
         }
     } else {
-        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); glCheckError();
     }
 
     QOpenGLFramebufferObjectFormat fbof;
@@ -1387,21 +1390,21 @@ void DisplayWidget::makeBuffers()
     backBuffer = new QOpenGLFramebufferObject ( w, h, fbof );
     doClearBackBuffer = true;
 
-    glGenBuffers( 1, &vbo );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
-	glGenVertexArrays( 1, &vao );
+    glGenBuffers( 1, &vbo ); glCheckError();
+	glBindBuffer( GL_ARRAY_BUFFER, vbo ); glCheckError();
+	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW ); glCheckError();
+	glGenVertexArrays( 1, &vao ); glCheckError();
 }
 
 void DisplayWidget::setViewPort(int w, int h)
 {
 
     if ( drawingState == Tiled ) {
-        glViewport(0, 0, bufferSizeX < w ? bufferSizeX : w, bufferSizeY < h ? bufferSizeY : h);
+        glViewport(0, 0, bufferSizeX < w ? bufferSizeX : w, bufferSizeY < h ? bufferSizeY : h); glCheckError();
     } else if ( fitWindow ) {
-        glViewport ( 0, 0, w, h );
+        glViewport ( 0, 0, w, h ); glCheckError();
     } else {
-        glViewport ( 0, 0,bufferSizeX, bufferSizeY );
+        glViewport ( 0, 0,bufferSizeX, bufferSizeY ); glCheckError();
     }
 }
 
@@ -1471,7 +1474,7 @@ void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName
 
     double x,y,z,w;
 
-    GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str());
+    GLint index = glGetUniformLocation(programID, uniformName.toStdString().c_str()); glCheckError();
 
     bool found = false;
     if(index != -1) {
@@ -1480,7 +1483,7 @@ void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName
                 x = uniformValue.toDouble(&found);
                 foundDouble |= found;
                 if( foundDouble ) {
-                    glUniform1d(index, x);
+                    glUniform1d(index, x); glCheckError();
                     tp = "DOUBLE";
                 }
             break;
@@ -1490,7 +1493,7 @@ void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName
                 y = uniformValue.split(",").at(1).toDouble(&found);
                 foundDouble |= found;
                 if(foundDouble) {
-                    glUniform2d(index, x, y);
+                    glUniform2d(index, x, y); glCheckError();
                     tp = "DOUBLE_VEC2";
                 }
             break;
@@ -1502,7 +1505,7 @@ void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName
                 z = uniformValue.split(",").at(2).toDouble(&found);
                 foundDouble |= found;
                 if(foundDouble) {
-                    glUniform3d(index, x, y, z);
+                    glUniform3d(index, x, y, z); glCheckError();
                     tp = "DOUBLE_VEC3";
                 }
             break;
@@ -1516,7 +1519,7 @@ void DisplayWidget::get64Type(GLuint programID, GLenum type, QString uniformName
                 w = uniformValue.split(",").at(3).toDouble(&found);
                 foundDouble |= found;
                 if(foundDouble) {
-                    glUniform4d(index, x, y, z, w);
+                    glUniform4d(index, x, y, z, w); glCheckError();
                     tp = "DOUBLE_VEC4";
                 }
             break;
@@ -1548,7 +1551,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
 
     int count;
     // this only returns uniforms that have not been optimized out
-    glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count);
+    glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &count); glCheckError();
 
     for (uint i = 0; i < (uint)count; i++) {
 
@@ -1558,7 +1561,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
         GLenum type;
         GLchar name[bufSize];
 
-        glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name);
+        glGetActiveUniform(programID, i, bufSize, &length, &size, &type, name); glCheckError();
 
         QString tp = "";
         get32Type(type, tp);
@@ -1678,9 +1681,9 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
     }
 
     if ( bufferType!=0 ) {
-        glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
+        glActiveTexture ( GL_TEXTURE0 ); glCheckError(); // non-standard (>OpenGL 1.3) gl extension
         GLuint i = backBuffer->texture();
-        glBindTexture ( GL_TEXTURE_2D, i );
+        glBindTexture ( GL_TEXTURE_2D, i ); glCheckError();
 
         l = shaderProg->uniformLocation ( "backbuffer" );
         if ( l != -1 ) {
@@ -1719,16 +1722,16 @@ void DisplayWidget::draw3DHints()
     if ( mainWindow->wantPaths()  && !isContinuous()) {
         if (eyeSpline != nullptr && drawingState != Animation && drawingState != Tiled) {
             if ( mainWindow->wantSplineOcc() ) {
-                glEnable ( GL_DEPTH_TEST ); // only testing
+                glEnable ( GL_DEPTH_TEST ); glCheckError(); // only testing
             } else {
-                glDisable ( GL_DEPTH_TEST );  // disable depth testing
+                glDisable ( GL_DEPTH_TEST ); glCheckError();  // disable depth testing
             }
             setPerspective();
             // this lets splines be visible when DEPTH_TO_ALPHA mode is active
             if (depthToAlpha) {
-                glDepthFunc ( GL_GREATER );
+                glDepthFunc ( GL_GREATER ); glCheckError();
             } else {
-                glDepthFunc ( GL_LESS );  // closer to eye passes test
+                glDepthFunc ( GL_LESS ); glCheckError();  // closer to eye passes test
             }
             drawSplines();
         }
@@ -1750,7 +1753,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
 
     // -- Viewport
     if ( toBuffer ) {
-        glViewport ( 0, 0,w,h );
+        glViewport ( 0, 0,w,h ); glCheckError();
     } else {
         setViewPort ( w,h );
     }
@@ -1763,14 +1766,14 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
     // This allows us to perform tile based rendering.
     // before releasing the program set the projection matrix back to identity
     glm::mat4 identityMatrix = glm::mat4(1);
-    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix));
+    glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix)); glCheckError();
 
     if ( getState() == DisplayWidget::Tiled ) {
         double x = ( tilesCount / tiles ) - ( tiles-1 ) /2.0;
         double y = ( tilesCount % tiles ) - ( tiles-1 ) /2.0;
         glm::mat4 transmatrix = glm::translate(glm::mat4(1.0), glm::vec3(x * ( 2.0/tiles ) , y * ( 2.0/tiles ), 1.0) );
         glm::mat4 scalematrix = glm::scale(transmatrix, glm::vec3( ( 1.0+padding ) /tiles, ( 1.0+padding ) /tiles, 1.0) );
-        glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix));
+        glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(scalematrix)); glCheckError();
     }
 
     // builtin vars provided by FragM like time, subframes, frontbuffer, backbuffer
@@ -1783,17 +1786,17 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
         setShaderUniforms(shaderProgram);
     }
 
-    glFinish(); // wait for GPU to return control noop if Q is empty
-    glDepthFunc ( GL_ALWAYS );   // always passes test so we write color
-    glEnable ( GL_DEPTH_TEST );  // enable depth testing
-    glDepthMask ( GL_TRUE );     // enable depth buffer writing
+    glFinish(); glCheckError(); // wait for GPU to return control noop if Q is empty
+    glDepthFunc ( GL_ALWAYS ); glCheckError();   // always passes test so we write color
+    glEnable ( GL_DEPTH_TEST ); glCheckError();  // enable depth testing
+    glDepthMask ( GL_TRUE ); glCheckError();     // enable depth buffer writing
 
-	glBindVertexArray( vao );
-	glEnableVertexAttribArray( 0 );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
-	glDrawArrays( GL_TRIANGLES, 0, 3 ); // shader draws on this surface
-    glFlush(); // the Q
+	glBindVertexArray( vao ); glCheckError();
+	glEnableVertexAttribArray( 0 ); glCheckError();
+	glBindBuffer( GL_ARRAY_BUFFER, vbo ); glCheckError();
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL ); glCheckError();
+	glDrawArrays( GL_TRIANGLES, 0, 3 ); glCheckError(); // shader draws on this surface
+    glFlush(); glCheckError(); // the Q
 
     // finished with the shader
     shaderProgram->release();
@@ -1805,7 +1808,7 @@ void DisplayWidget::drawFragmentProgram(int w, int h, bool toBuffer)
             /// else depth buffer contains (1.0 + (-1e-05 / clamp (totalDist, 1e-05, 1000.0)))
             /// the first case is for EXR alpha channel, the second is for GL occlusion
             float zatmxy; // GL y is inverse to Qt screen y
-            glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy);
+            glReadPixels(mouseXY.x(), height() - mouseXY.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zatmxy); glCheckError();
             ZAtMXY = zatmxy;
         }
 
@@ -1907,22 +1910,22 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
         }
     } else if (shaderProgram != nullptr) shaderProgram->bind(); // if no buffershader
 
-    glFinish(); // wait for GPU to return control noop if Q is empty
-    glActiveTexture ( GL_TEXTURE0 ); // non-standard (>OpenGL 1.3) gl extension
-    glBindTexture ( GL_TEXTURE_2D, previewBuffer->texture() );
+    glFinish(); glCheckError(); // wait for GPU to return control noop if Q is empty
+    glActiveTexture ( GL_TEXTURE0 ); glCheckError(); // non-standard (>OpenGL 1.3) gl extension
+    glBindTexture ( GL_TEXTURE_2D, previewBuffer->texture() ); glCheckError();
 
-    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); glCheckError();
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); glCheckError();
 
-    glDisable ( GL_DEPTH_TEST ); // No testing: coming from RTB (render to buffer)
-    glDepthMask ( GL_FALSE ); // No writing: output is color data from post effects
+    glDisable ( GL_DEPTH_TEST ); glCheckError(); // No testing: coming from RTB (render to buffer)
+    glDepthMask ( GL_FALSE ); glCheckError(); // No writing: output is color data from post effects
 
-	glBindVertexArray( vao );
-	glEnableVertexAttribArray( 0 );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
-	glDrawArrays( GL_TRIANGLES, 0, 3 );
-    glFlush(); // the Q
+	glBindVertexArray( vao ); glCheckError();
+	glEnableVertexAttribArray( 0 ); glCheckError();
+	glBindBuffer( GL_ARRAY_BUFFER, vbo ); glCheckError();
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL ); glCheckError();
+	glDrawArrays( GL_TRIANGLES, 0, 3 ); glCheckError();
+    glFlush(); glCheckError(); // the Q
 
     if (bufferShaderProgram != nullptr) {
         bufferShaderProgram->release();
@@ -1956,12 +1959,12 @@ void DisplayWidget::clearGL()
 {
     /// proper clear on tile based GPU
     /// http://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-TileBasedArchitectures.pdf
-    glDisable ( GL_SCISSOR_TEST );
-    glColorMask ( GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE );
-    glDepthMask ( GL_TRUE );
-    glStencilMask ( 0xFFFFFFFF );
-    glClearDepth(1.0f);
-    glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
+    glDisable ( GL_SCISSOR_TEST ); glCheckError();
+    glColorMask ( GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE ); glCheckError();
+    glDepthMask ( GL_TRUE ); glCheckError();
+    glStencilMask ( 0xFFFFFFFF ); glCheckError();
+    glClearDepth(1.0f); glCheckError();
+    glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT ); glCheckError();
 }
 
 #ifdef USE_OPEN_EXR
@@ -1980,7 +1983,7 @@ bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
 
     // read colour values from hiresBuffer
     if (retOK) {
-        glReadPixels(0, 0, w, h, GL_RGBA, GL_FLOAT, myImgdata);
+        glReadPixels(0, 0, w, h, GL_RGBA, GL_FLOAT, myImgdata); glCheckError();
     }
 
     if ( !hiresBuffer->release() ) {
@@ -1995,7 +1998,7 @@ bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
       }
         // read depth values from previewBuffer
         if (retOK) {
-            glReadPixels(0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, myDepths);
+            glReadPixels(0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, myDepths); glCheckError();
         }
 
         if ( !previewBuffer->release() ) {
@@ -2035,7 +2038,7 @@ bool DisplayWidget::initPreviewBuffer() {
       ret = false;
     }
 
-    glClearColor ( 0.0f,0.0f,0.0f,0.0f );
+    glClearColor ( 0.0f,0.0f,0.0f,0.0f ); glCheckError();
     clearGL();
 
     if ( !previewBuffer->release() ) {
@@ -2159,7 +2162,7 @@ void DisplayWidget::paintGL()
     }
 
     if (disabled || shaderProgram == nullptr) {
-        glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
+        glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF()); glCheckError();
         clearGL();
         return;
     }
@@ -2174,7 +2177,7 @@ void DisplayWidget::paintGL()
         if ( doClearBackBuffer ) {
             subframeCounter = 0;
             doClearBackBuffer = false;
-            glClearColor ( 0.0f,0.0f,0.0f,0.0f );
+            glClearColor ( 0.0f,0.0f,0.0f,0.0f ); glCheckError();
             clearGL();
         }
     }
@@ -2617,11 +2620,11 @@ void DisplayWidget::clearControlPoints()
 void DisplayWidget::delete_buffer_objects() {
     // delete the buffers if they exist
     if(svao != 0) {
-        glDeleteBuffers(1, &svao);
+        glDeleteBuffers(1, &svao); glCheckError();
         svao = 0;
     }
     if(svbo != 0) {
-        glDeleteBuffers(1, &svbo);
+        glDeleteBuffers(1, &svbo); glCheckError();
         svbo = 0;
     }
 }
@@ -2631,12 +2634,12 @@ void DisplayWidget::init_arrays()
     int kfcnt = mainWindow->getVariableEditor()->getKeyFrameCount();
     uint size = (kfcnt + mainWindow->getFrameMax()) * sizeof ( float ) * 4;
 
-	glGenBuffers( 1, &svbo );
-	glBindBuffer( GL_ARRAY_BUFFER, svbo );
-	glBufferData( GL_ARRAY_BUFFER, size+size, 0, GL_STATIC_DRAW );
+	glGenBuffers( 1, &svbo ); glCheckError();
+	glBindBuffer( GL_ARRAY_BUFFER, svbo ); glCheckError();
+	glBufferData( GL_ARRAY_BUFFER, size+size, 0, GL_STATIC_DRAW ); glCheckError();
 
     // map the buffer object into client's memory
-    glm::vec4 *vptr = (glm::vec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB);
+    glm::vec4 *vptr = (glm::vec4 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY_ARB); glCheckError();
     if(vptr)
     {
         // initialize svbo arrays with precalculated data
@@ -2650,7 +2653,7 @@ void DisplayWidget::init_arrays()
                 vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::vec4(targetSpline->getSplinePoint(j), 1);
             }
             
-        glUnmapBuffer(GL_ARRAY_BUFFER); // release pointer to mapped buffer
+        glUnmapBuffer(GL_ARRAY_BUFFER); glCheckError(); // release pointer to mapped buffer
     } else DBOUT << "spline vertex glMapBuffer() Failed!";
 
 }
@@ -2665,11 +2668,11 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
         if(cloc == -1) { WARNING("No colour uniform location in spline shader!"); return; }
             
         // create the VAO.
-        glGenVertexArrays( 1, &svao );
-        glBindVertexArray( svao );
-        glBindBuffer( GL_ARRAY_BUFFER, svbo );
-        glEnableVertexAttribArray( 0 );
-        glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL );
+        glGenVertexArrays( 1, &svao ); glCheckError();
+        glBindVertexArray( svao ); glCheckError();
+        glBindBuffer( GL_ARRAY_BUFFER, svbo ); glCheckError();
+        glEnableVertexAttribArray( 0 ); glCheckError();
+        glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 0, NULL ); glCheckError();
 
         // control point to highlight = currently selected preset keyframe
         int p = mainWindow->getCurrentCtrlPoint();
@@ -2683,28 +2686,28 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
         // while gl_FragCoord is in pixels (coordinates range from 0.0 to the width/height of the window,
         // and 1.0 is the width/height of a single pixel).
         if(compatibilityProfile) {
-            glEnable(GL_POINT_SPRITE);
-            glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+            glEnable(GL_POINT_SPRITE); glCheckError();
+            glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE); glCheckError();
+            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); glCheckError();
         } else {
-            glEnable(GL_PROGRAM_POINT_SIZE);
-            glPointParameteri( GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT );
+            glEnable(GL_PROGRAM_POINT_SIZE); glCheckError();
+            glPointParameteri( GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT ); glCheckError();
         }
         
         spline_program->bind();
 
-        glUniform1f(spline_program->uniformLocation("pointScale"), pixel_scale);
-        glUniform1f(spline_program->uniformLocation("pointRadius"), psize );
+        glUniform1f(spline_program->uniformLocation("pointScale"), pixel_scale); glCheckError();
+        glUniform1f(spline_program->uniformLocation("pointRadius"), psize ); glCheckError();
 
         glm::vec3 eye = mainWindow->getParameter3f("Eye");
-        glUniform3f(spline_program->uniformLocation("posEye"), eye.x, eye.y, eye.z );
+        glUniform3f(spline_program->uniformLocation("posEye"), eye.x, eye.y, eye.z ); glCheckError();
         float fov = mainWindow->getParameter1f("FOV");
-        glUniform1f(spline_program->uniformLocation("FOV"), fov );
+        glUniform1f(spline_program->uniformLocation("FOV"), fov ); glCheckError();
 
-        glUniformMatrix4fv(spline_program->uniformLocation("pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix));
+        glUniformMatrix4fv(spline_program->uniformLocation("pvmMatrix"), 1,  GL_FALSE, glm::value_ptr(m_pvmMatrix)); glCheckError();
 
         // specify vertex arrays
-        glBindVertexArray( svao );
+        glBindVertexArray( svao ); glCheckError();
         
         if(numberOfPoints == start ) {
             count = start; 
@@ -2718,13 +2721,13 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             for(int i=0;i<count;++i) {
                 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0);
+                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0); glCheckError();
                 }
                 else {
-                    glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
                 }
                 
-                glDrawArrays(GL_POINTS, i, 1 );
+                glDrawArrays(GL_POINTS, i, 1 ); glCheckError();
             }
 
             start = count;
@@ -2733,13 +2736,13 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             for(int i=0;i<count;++i) {
 
                 if(p == i) { // highlight the currently selected keyframe controlpoint
-                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0);
+                    glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0); glCheckError();
                 }
                 else {
-                    glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+                    glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
                 }
 
-                glDrawArrays(GL_POINTS, start+i, 1 );
+                glDrawArrays(GL_POINTS, start+i, 1 ); glCheckError();
             }
         }
         else {
@@ -2747,32 +2750,32 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             start *= 2;
             // highlight lookat vector points for current frame
             int currentframe = mainWindow->getTime();
-            glUniform1f(spline_program->uniformLocation("pointRadius"), 0.75 );
-            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            glUniform1f(spline_program->uniformLocation("pointRadius"), 0.75 ); glCheckError();
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0); glCheckError();
             // highlight the camera position
-            glDrawArrays(GL_POINTS, start+currentframe, 1 );
-            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0);
+            glDrawArrays(GL_POINTS, start+currentframe, 1 ); glCheckError();
+            glUniform4f(cloc, 1.0, 1.0, 0.0, 1.0); glCheckError();
             // highlight the target position
-            glDrawArrays(GL_POINTS, start+count+currentframe, 1 );
+            glDrawArrays(GL_POINTS, start+count+currentframe, 1 ); glCheckError();
             // drawing path points
-            glUniform1f(spline_program->uniformLocation("pointRadius"), psize );
+            glUniform1f(spline_program->uniformLocation("pointRadius"), psize ); glCheckError();
             // get the spline color
             glm::vec4 c = eyeSpline->splineColor();
-            glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
             // render the camera path
-            glDrawArrays(GL_POINTS, start, count );
+            glDrawArrays(GL_POINTS, start, count ); glCheckError();
             // skip the control points and camera path points
             start = start+count;
             // get the spline color
             c = targetSpline->splineColor();
-            glUniform4f(cloc, c.x, c.y, c.z, 1.0);
+            glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
             // render the target path
-            glDrawArrays(GL_POINTS, start, count );
+            glDrawArrays(GL_POINTS, start, count ); glCheckError();
             
         }
 
         // disable arrays
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0); glCheckError();
 
         spline_program->release();
     }
