@@ -2545,7 +2545,7 @@ void MainWindow::bufferActionChanged(QAction *action)
         lockedToWindowSize = true;
         lockAspect(false);
         // because there is no layout available in a QSplitter we have to resize manually here
-        engine->resize( splitter->width() - splitter->handle(1)->width() - splitter->handle(1)->pos().x() , splitter->handle(1)->height() );
+        engine->resize( splitter->width() - splitter->handle(1)->width() - (splitter->handle(1)->pos().x()-1) , splitter->handle(1)->height() );
     } else if (action == bufferActionCustom) {
         lockedToWindowSize = false;
         lockAspect(lockedAspect);
