@@ -96,10 +96,10 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 // GLint index = glGetUniformLocation(programID, uniformName.toStdString()); glCheckError();
 //
 #define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
-#else
-#define glCheckError()
 
 #endif
+#else
+#define glCheckError()
 #endif
 
 DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
