@@ -86,7 +86,7 @@ Status
 
    Recommends:  ffmpeg or mencoder for creating videos from a folder of images using the Video Dialog.
 
-   Pre-depends: OpenEXR v2.4 https://github.com/AcademySoftwareFoundation/openexr/releases ( Win version uses static linked OpenEXR lib )
+   Pre-depends: OpenEXR https://github.com/AcademySoftwareFoundation/openexr/releases ( Win version uses static linked OpenEXR lib )
 
    Pre-depends: GLM https://glm.g-truc.net/ ( at compile time for all OSs )
 
