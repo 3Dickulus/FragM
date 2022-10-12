@@ -69,16 +69,13 @@ MainWindow::MainWindow(QWidget* parent)
     bufferYSpinBox = nullptr;
     lastStoredTime = 0;
     exrMode = false;
-#ifdef USE_OPEN_EXR
     exrToolsMenu = nullptr;
-#endif
     supportProgramsMenu = nullptr;
-
     maxRecentFiles = 5;
     editorTheme = 0;
-
     lastStoredTime = 0;
     engine = nullptr;
+
     setAcceptDrops(true);
 
     setRebuildStatus(true);
@@ -953,7 +950,6 @@ void MainWindow::initTools()
     // TODO integrate these commands so that users get more than just the help info for commandline execution.
     // parse help info and create a dialog that accurately represents the available options?
 #ifdef Q_OS_LINUX
-#ifdef USE_OPEN_EXR
     // do we have any paths?
     if(exrBinaryPath.count() != 0) {
         // has it been done already?
@@ -995,8 +991,6 @@ void MainWindow::initTools()
         }
     }
 #endif // Q_OS_LINUX
-#endif // USE_OPEN_EXR
-
     // do we have any paths?
     if(supportProgramsBinaryPath.count() != 0) {
         // has it been done already?
@@ -1052,7 +1046,6 @@ void MainWindow::initTools()
     }
 }
 
-#ifdef USE_OPEN_EXR
 void MainWindow::runEXRTool()
 {
 
@@ -1094,7 +1087,6 @@ void MainWindow::runEXRTool()
         msgBox.exec();
     }
 }
-#endif // USE_OPEN_EXR
 
 void MainWindow::runSupportProgram()
 {
@@ -1678,7 +1670,6 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
     }
 }
 
-#ifdef USE_OPEN_EXR
 bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time)
 {
     QElapsedTimer imagetime;
@@ -1795,7 +1786,6 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
     return out.isValidLevel(0,0);
 
 }
-#endif
 
 void MainWindow::tileBasedRender()
 {
@@ -2009,14 +1999,11 @@ retry:
     int startTime = od.doAnimation() ? od.startAtFrame() : 0;
     int endTime = od.doAnimation() ? od.endAtFrame()+1 : 0;
     int maxTiles = od.getTiles();
-
     int timeSteps = fps*maxTime;
-
     bool imageSaved = false;
-#ifdef USE_OPEN_EXR
+
     exrMode = fileName.endsWith(".exr", Qt::CaseInsensitive);
     engine->setEXRmode(exrMode);
-#endif
     // check for excessive tile size and allow option to change it
     if ((tileWidth * maxTiles > 32768 || tileHeight * maxTiles > 32768) && !exrMode) {
         QMessageBox msgBox(this);
@@ -2145,12 +2132,10 @@ retry:
 
         statusBar()->showMessage ( QString ( "Rendering: %1" ).arg ( name ) );
 
-#ifdef USE_OPEN_EXR
         if(exrMode && !preview) {
             imageSaved = writeTiledEXR(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, name, progress, cachedTileImages, totalTime, time);
         } else
-#endif
-        renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
+            renderTiled(maxTiles, tileWidth, tileHeight, padding, maxSubframes, steps, progress, cachedTileImages, totalTime, time);
 
         pause ? stop() : play();
 
@@ -2754,9 +2739,7 @@ void MainWindow::readSettings()
     includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
     playRestartMode = settings.value("playRestartMode", false).toBool();
     useMimetypes = settings.value("useMimetypes", false).toBool();
-#ifdef USE_OPEN_EXR
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";");
-#endif // USE_OPEN_EXR
     supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";");
     editorTheme = settings.value("editorTheme", 0).toInt();
     guiStylesheet = settings.value("guiStylesheet", "").toString();
@@ -2784,18 +2767,18 @@ void MainWindow::writeSettings()
     settings.setValue("lineNumbers", wantLineNumbers);
     settings.setValue("loopPlay", wantLoopPlay);
     settings.setValue("editorStylesheet", editorStylesheet);
+
     QString ipaths = fileManager.getIncludePaths().join(";");
     if (fileManager.getIncludePaths().count() == 1) {
         ipaths += ";";
     }
     settings.setValue("includePaths", ipaths);
-#ifdef USE_OPEN_EXR
+
     QString ebpaths = exrBinaryPath.join(";");
     if (exrBinaryPath.count() == 1) {
         ebpaths += ";";
     }
     settings.setValue("exrBinPaths", ebpaths);
-#endif // USE_OPEN_EXR
 
     QString sppaths = supportProgramsBinaryPath.join(";");
     if (supportProgramsBinaryPath.count() == 1) {
@@ -3144,11 +3127,8 @@ bool MainWindow::initializeFragment()
     }
 
     QStringList imgFileExtensions;
-
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
-#ifdef USE_OPEN_EXR
     a.append ( "exr" );
-#endif
     foreach ( QByteArray s, a ) {
         imgFileExtensions.append ( QString ( s ) );
     }

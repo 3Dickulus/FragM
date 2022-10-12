@@ -145,7 +145,7 @@ void SamplerWidget::textChanged(const QString &text)
         channelComboBox[channel]->clear();
         channelComboBox[channel]->setHidden(true);
     }
-#ifdef USE_OPEN_EXR
+
     if(fileName.endsWith(".exr")) {
         try {
             InputFile file ( fileName.toLatin1().data() );
@@ -187,7 +187,7 @@ void SamplerWidget::textChanged(const QString &text)
             channelComboBox[channel]->setHidden(false);
         }
     }
-#endif
+
 
     valueChanged();
 }

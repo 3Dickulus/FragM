@@ -33,10 +33,9 @@ OutputDialog::OutputDialog(QWidget *parent) : QDialog(parent)
     connect(m_ui.tileWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileXSizeChanged(int)));
     connect(m_ui.tileHeightSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tileYSizeChanged(int)));
     connect(m_ui.lockAspectCheckBox,SIGNAL(toggled(bool)), this, SLOT(lockAspect(bool)));
+
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
-#ifdef USE_OPEN_EXR
     a.append("exr");
-#endif
     foreach(QByteArray s, a) {
             extensions.append(QString(s));
     }

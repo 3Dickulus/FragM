@@ -872,10 +872,6 @@ bool DisplayWidget::loadHDRTexture ( QString texturePath, GLenum type, GLuint te
 bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels)
 {
 
-#ifndef USE_OPEN_EXR
-    // Qt loads EXR files
-    return loadQtTexture(texturePath, type, textureID);
-#else
     InputFile file ( texturePath.toLocal8Bit().data() );
     Box2i dw = file.header().dataWindow();
 
@@ -997,7 +993,6 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         WARNING(tr("Exrloader found EXR image: %1 is not complete").arg(texturePath));
         return false;
     }
-#endif
     return true;
 }
 
@@ -1967,7 +1962,6 @@ void DisplayWidget::clearGL()
     glClear ( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT ); glCheckError();
 }
 
-#ifdef USE_OPEN_EXR
 bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
 {
 
@@ -2028,7 +2022,6 @@ bool DisplayWidget::getRGBAFtile(Array2D<RGBAFLOAT> &array, int w, int h)
     return retOK;
 
 }
-#endif
 
 bool DisplayWidget::initPreviewBuffer() {
 

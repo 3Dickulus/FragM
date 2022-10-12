@@ -6,7 +6,6 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 #include <QtGui>
-// #include "MainWindow.h"
 #include "ui_PreferencesDialog.h"
 
 namespace Fragmentarium
@@ -152,9 +151,7 @@ private slots:
         m_ui.playRestartModeCheckBox->setChecked (settings.value ( "playRestartMode", false ).toBool() );
         m_ui.enableGLDebugCheckBox->setChecked (settings.value ( "enableGLDebug", false ).toBool() );
         m_ui.compatPatchCheckBox->setChecked (settings.value ( "compatPatch", true ).toBool() );
-#ifdef USE_OPEN_EXR
         m_ui.exrBinPathsLineEdit->setText (settings.value ( "exrBinPaths", "./bin;/usr/bin;" ).toString() );
-#endif // USE_OPEN_EXR
         m_ui.supportProgramBinPathsLineEdit->setText (settings.value ( "supportProgramBinPaths", "./bin" ).toString() );
         m_ui.editorStylesheetLineEdit->setText (settings.value ( "editorStylesheet", "font: 9pt Courier;" ).toString() );
         m_ui.useMimetypesCheckBox->setChecked (settings.value ( "useMimetypes", false ).toBool() );
@@ -192,9 +189,7 @@ private slots:
         settings.setValue("playRestartMode", m_ui.playRestartModeCheckBox->isChecked() );
         settings.setValue("enableGLDebug", m_ui.enableGLDebugCheckBox->isChecked() );
         settings.setValue("compatPatch", m_ui.compatPatchCheckBox->isChecked() );
-#ifdef USE_OPEN_EXR
         settings.setValue("exrBinPaths", m_ui.exrBinPathsLineEdit->text());
-#endif // USE_OPEN_EXR
         settings.setValue("supportProgramBinPaths", m_ui.supportProgramBinPathsLineEdit->text());
         settings.setValue("editorStylesheet", m_ui.editorStylesheetLineEdit->text());
         settings.setValue("useMimetypes", m_ui.useMimetypesCheckBox->isChecked() );

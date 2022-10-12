@@ -69,15 +69,6 @@ ENDIF ()
 
 ADD_DEFINITIONS ( -DQT_DEVICE_PIXEL_RATIO=1 -Wall )
 
-# ON if you have OpenEXR libs and include files
-OPTION ( USE_OPEN_EXR "Build with OpenEXR" ON)
-IF(APPLE)
-	SET(USE_OPEN_EXR OFF)
-ENDIF ()
-IF ( USE_OPEN_EXR )
-	ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
-ENDIF ()
-
 OPTION ( BUILD_SOURCE_ZIP "Build ZIP sources package" OFF)
 OPTION ( BUILD_WIN_ZIP "Build Windows zip package" OFF)
 OPTION ( BUILD_LINUX_DEB "Build Linux Debian package" OFF)
@@ -108,14 +99,10 @@ MARK_AS_ADVANCED (OpenEXTRA_LIBRARIES)
 MARK_AS_ADVANCED (OpenEXR_INCLUDE_DIRS)
 MARK_AS_ADVANCED (GLM_INCLUDE_DIRS)
 
-IF ( USE_OPEN_EXR )
-
 	IF(UNIX AND NOT APPLE)
         find_package ( OpenEXR REQUIRED )
         set( OpenEXTRA_LIBRARIES z pthread )
 	ENDIF ()
-
-	ADD_DEFINITIONS ( -DUSE_OPEN_EXR=1 )
 
 	IF ( WIN32 )
 	# this assumes that glm imath and openexr are installed in the project folder
@@ -160,8 +147,6 @@ IF ( USE_OPEN_EXR )
         ADD_DEFINITIONS ( -pthread )
 
 	ENDIF ()
-
-ENDIF (USE_OPEN_EXR)
 
 set(CMAKE_CXX_FLAGS, " -Wl --stack 100000000 -Wl --heap 100000000 ")
 

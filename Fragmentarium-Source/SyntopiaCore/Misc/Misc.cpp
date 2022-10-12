@@ -14,11 +14,11 @@ namespace Misc
 QString GetImageFileName(QWidget *parent, QString label)
 {
     QList<QByteArray> a = QImageWriter::supportedImageFormats();
-#ifdef USE_OPEN_EXR
+
     if (!label.contains("screenshot")) {
         a.append("exr");
     }
-#endif
+
     QStringList allowedTypesFilter;
     QStringList allowedTypes;
     for (int i = 0; i < a.count(); i++) {

@@ -60,7 +60,6 @@
 #include <QOpenGLShaderProgram>
 
 
-#ifdef USE_OPEN_EXR
 #ifndef Q_OS_MAC
 #include <OpenEXR/OpenEXRConfig.h>
 #endif
@@ -86,10 +85,7 @@
 #include <OpenEXR/ImfPartHelper.h>
 #include <OpenEXR/ImfPartType.h>
 #include <OpenEXR/ImfTiledInputPart.h>
-
 #include <OpenEXR/Iex.h>
-
-#endif
 
 #include "FileManager.h"
 
@@ -260,15 +256,11 @@ public:
 
     int subframeCounter;
     int tilesCount;
-// #ifdef USE_OPEN_EXR
     void setEXRmode ( bool m )
     {
         exrMode = m;
     }
-#ifdef USE_OPEN_EXR
     bool getRGBAFtile ( Imf::Array2D<RGBAFLOAT>& pixels, int w, int h );
-#endif
-
     void setVerbose ( bool v )
     {
         verbose = v;
@@ -379,9 +371,7 @@ private:
     bool initPreviewBuffer();
 
     bool loadHDRTexture(QString texturePath, GLenum type, GLuint textureID);
-// #ifdef USE_OPEN_EXR
     bool loadEXRTexture(QString texturePath, GLenum type, GLuint textureID, QStringList textureChannels);
-// #endif
     bool loadQtTexture(QString texturePath, GLenum type, GLuint textureID);
 
     bool setTextureParms(QString textureUniformName, GLenum type);

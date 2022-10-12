@@ -6,7 +6,6 @@
 #include <QStringList>
 #include <QVector>
 
-#ifdef USE_OPEN_EXR
 #ifndef Q_OS_MAC
 #ifndef Q_OS_WINDOWS
 #include <OpenEXR/OpenEXRConfig.h>
@@ -37,14 +36,10 @@
 #include <OpenEXR/ImfPartType.h>
 #include <OpenEXR/ImfTiledInputPart.h>
 #include <OpenEXR/ImfTiledOutputPart.h>
-
 #include <OpenEXR/Iex.h>
-
-#endif
 
 #include "SyntopiaCore/Logging/Logging.h"
 
-#ifdef USE_OPEN_EXR
     struct RGBAHALF
     {
         half r;
@@ -107,18 +102,15 @@ struct RGBAFLOAT
             return *this;
         }
     };
-#endif
-    
+
 /// Small class for handling include paths
 namespace Fragmentarium
 {
 namespace GUI
 {
 
-#ifdef USE_OPEN_EXR
 using namespace OPENEXR_IMF_NAMESPACE;
 using namespace IMATH_NAMESPACE;
-#endif
 
 class FileManager : public QObject
 {

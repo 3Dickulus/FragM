@@ -41,10 +41,8 @@ namespace Fragmentarium
 namespace GUI
 {
 
-#ifdef USE_OPEN_EXR
 using namespace OPENEXR_IMF_NAMESPACE;
 using namespace IMATH_NAMESPACE;
-#endif
 
 using namespace SyntopiaCore::Misc;
 using namespace SyntopiaCore::Logging;
@@ -636,9 +634,7 @@ public slots:
 
 private slots:
     void initTools();
-#ifdef USE_OPEN_EXR
     void runEXRTool();
-#endif // USE_OPEN_EXR
     void runSupportProgram();
 
     void veDockChanged ( bool t )
@@ -723,9 +719,7 @@ private slots:
     void slotShortcutF6();
     void slotShortcutShiftF6();
 
-#ifdef USE_OPEN_EXR
     bool writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QString name, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time);
-#endif
     void renderTiled(int maxTiles, int tileWidth, int tileHeight, int padding, int maxSubframes, int &steps, QProgressDialog &progress, QVector<QImage> &cachedTileImages, QElapsedTimer &totalTime, double time);
 
     void lockAspect(bool l){
@@ -864,10 +858,8 @@ private:
     bool playRestartMode;
     bool useMimetypes;
     
-#ifdef USE_OPEN_EXR
     QMenu *exrToolsMenu;
     QStringList exrBinaryPath;
-#endif // USE_OPEN_EXR
 
     QMenu *supportProgramsMenu;
     QStringList supportProgramsBinaryPath;
