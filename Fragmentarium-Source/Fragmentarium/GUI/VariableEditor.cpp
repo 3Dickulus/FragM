@@ -349,6 +349,7 @@ void VariableEditor::resetGroup()
     if (g=="Camera") {
         mainWindow->resetCamera(true);
     }
+    QApplication::postEvent(getMainWindow(), new QEvent(QEvent::LayoutRequest));
 
 }
 

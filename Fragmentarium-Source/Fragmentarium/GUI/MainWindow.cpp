@@ -818,44 +818,38 @@ void MainWindow::init()
     dockLog->setWindowTitle(tr("Log"));
     dockLog->setObjectName(QString::fromUtf8("dockWidget"));
     dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
-    dockLog->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
     auto *vboxLayout1 = new QVBoxLayout(dockLogContents);
     vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
     vboxLayout1->setContentsMargins(0, 0, 0, 0);
-
     logger = new ListWidgetLogger(dockLog);
     connect (logger->getListWidget(), SIGNAL(loadSourceFile(QString, int)), this, SLOT(loadErrorSourceFile(QString, int)));
-
     vboxLayout1->addWidget(logger->getListWidget());
     dockLog->setWidget(dockLogContents);
     addDockWidget(Qt::BottomDockWidgetArea, dockLog);
 
     // Variable editor (in dockable window)
-    editorDockWidget = new QDockWidget(this);
-    editorDockWidget->setMinimumWidth(320);
-    editorDockWidget->setWindowTitle(tr("Variable Editor (uniforms)"));
-    editorDockWidget->setObjectName(QString::fromUtf8("editorDockWidget"));
-    editorDockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    editorDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dockVariableEditor = new QDockWidget(this);
+    dockVariableEditor->setMinimumWidth(320);
+    dockVariableEditor->setWindowTitle(tr("Variable Editor (uniforms)"));
+    dockVariableEditor->setObjectName(QString::fromUtf8("dockVariableEditor"));
+    dockVariableEditor->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
     auto *vboxLayout2 = new QVBoxLayout(editorLogContents);
     vboxLayout2->setObjectName(QString::fromUtf8("vboxLayout2"));
     vboxLayout2->setContentsMargins(0, 0, 0, 0);
-
-    variableEditor = new VariableEditor(editorDockWidget, this);
+    variableEditor = new VariableEditor(dockVariableEditor, this);
     variableEditor->setObjectName(QString::fromUtf8("VariableEditor"));
     variableEditor->setMinimumWidth(320);
-    vboxLayout2->addWidget(variableEditor);
-    editorDockWidget->setWidget(editorLogContents);
-    addDockWidget(Qt::RightDockWidgetArea, editorDockWidget);
     connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
-    connect(editorDockWidget, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
+    vboxLayout2->addWidget(variableEditor);
+    dockVariableEditor->setWidget(editorLogContents);
+    addDockWidget(Qt::RightDockWidgetArea, dockVariableEditor);
 
-    editorDockWidget->setHidden(true);
+    connect(dockVariableEditor, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
+
     setMouseTracking(true);
 
     INFO(tr("Welcome to Fragmentarium version %1. A Syntopia Project.").arg(version.toLongString()));
@@ -3209,7 +3203,7 @@ bool MainWindow::initializeFragment()
         if (getCameraSettings() != camSet) {
             variableEditor->setSettings(camSet);
         }
-        editorDockWidget->setHidden( variableEditor->getWidgetCount() == 0 );
+        dockVariableEditor->setHidden( variableEditor->getWidgetCount() == 0 );
         engine->requireRedraw(true);
         engine->resetTime();
 

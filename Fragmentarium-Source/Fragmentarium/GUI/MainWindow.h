@@ -819,7 +819,7 @@ private:
     QVector<TabInfo> tabInfo;
     QVBoxLayout *frameMainWindow;
     VariableEditor *variableEditor;
-    QDockWidget *editorDockWidget;
+    QDockWidget *dockVariableEditor;
     QVector<QAction *> recentFileActions;
     QAction *recentFileSeparator;
     QLabel *fpsLabel;
