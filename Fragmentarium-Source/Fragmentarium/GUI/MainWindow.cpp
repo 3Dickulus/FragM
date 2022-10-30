@@ -3004,23 +3004,24 @@ void MainWindow::showPreprocessedScript()
     bool moveMain = settings.value("moveMain", true).toBool();
     readSettings();
     Preprocessor p(&fileManager);
+    FragmentSource fs = p.parse(inputText,filename,moveMain);
     try {
-        FragmentSource fs = p.parse(inputText,filename,moveMain);
-//         QString prepend =  "#define highp\n"
-//                            "#define mediump\n"
-//                            "#define lowp\n";
         variableEditor->substituteLockedVariables(&fs);
         if (fs.bufferShaderSource != nullptr) {
             variableEditor->substituteLockedVariables(fs.bufferShaderSource);
         }
-        insertTabPage("")->setPlainText(/*prepend+*/fs.getText());
+        engine->setFragmentShader(fs); // this applies compatibility patches
+        if (fs.bufferShaderSource != nullptr) // when main fragment fails to link it returns before
+            engine->initBufferShader(); // calling initBuffershader to apply patch there so do it here
+        fs = *(engine->getFragmentSource()); // point at the patched glsl
+        insertTabPage("")->setPlainText(fs.getText());
         // Use a real name instead of "unnamed" suggested by FF user Sabine62 18/10/12
         QString fname = QString("FragmentShader_%1").arg(strippedName(filename));
         tabBar->setTabText(tabBar->currentIndex(), fname);
         tabInfo[tabBar->currentIndex()].filename = fname;
         if (fs.bufferShaderSource != nullptr) {
             // present the buffershader as well
-            insertTabPage("")->setPlainText(/*prepend+*/fs.bufferShaderSource->getText());
+            insertTabPage("")->setPlainText(fs.bufferShaderSource->getText());
             fname = QString("BufferShader_%1").arg(strippedName(filename));
             tabBar->setTabText(tabBar->currentIndex(), fname);
             tabInfo[tabBar->currentIndex()].filename = fname;
