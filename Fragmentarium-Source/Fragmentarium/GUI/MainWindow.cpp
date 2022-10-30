@@ -3010,9 +3010,6 @@ void MainWindow::showPreprocessedScript()
         if (fs.bufferShaderSource != nullptr) {
             variableEditor->substituteLockedVariables(fs.bufferShaderSource);
         }
-        engine->setFragmentShader(fs); // this applies compatibility patches
-        if (fs.bufferShaderSource != nullptr) // when main fragment fails to link it returns before
-            engine->initBufferShader(); // calling initBuffershader to apply patch there so do it here
         fs = *(engine->getFragmentSource()); // point at the patched glsl
         insertTabPage("")->setPlainText(fs.getText());
         // Use a real name instead of "unnamed" suggested by FF user Sabine62 18/10/12
