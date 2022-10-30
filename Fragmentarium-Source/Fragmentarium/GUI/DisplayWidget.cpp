@@ -700,12 +700,32 @@ void DisplayWidget::initFragmentShader()
     
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
-        if(!fragmentSource.vertexSource.isEmpty() && !(fragmentSource.vertexSource[1].startsWith("// compatibility patch"))) {
-                fragmentSource.vertexSource.insert(1,fvSourcePatch);
+        if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource.contains("// compatibility patch")) {
+                int startInsert = 0;
+                for (int i = 0; i < fragmentSource.vertexSource.size(); ++i) {
+                    ++startInsert;
+                    QString testLine = fragmentSource.vertexSource[startInsert].trimmed();
+                    if(testLine.isEmpty()) continue;
+                    if(testLine.startsWith("#")) continue;
+                    if(testLine.startsWith("//")) continue;
+                    break;
+                }
+                // insert the patch code
+                fragmentSource.vertexSource.insert(startInsert,fvSourcePatch);
         }
 
-        if(!fragmentSource.source.isEmpty() && !(fragmentSource.source[1].startsWith("// compatibility patch"))) {
-                fragmentSource.source.insert(1,fsSourcePatch);
+        if(!fragmentSource.source.isEmpty() && !fragmentSource.source.contains("// compatibility patch")) {
+                int startInsert = 0;
+                for (int i = 0; i < fragmentSource.source.size(); ++i) {
+                    ++startInsert;
+                    QString testLine = fragmentSource.source[startInsert].trimmed();
+                    if(testLine.isEmpty()) continue;
+                    if(testLine.startsWith("#")) continue;
+                    if(testLine.startsWith("//")) continue;
+                    break;
+                }
+                // insert the patch code
+                fragmentSource.source.insert(startInsert,fsSourcePatch);
         }
     } else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
@@ -1220,12 +1240,32 @@ void DisplayWidget::initBufferShader()
 
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
-        if(!fragmentSource.bufferShaderSource->vertexSource.isEmpty() && !(fragmentSource.bufferShaderSource->vertexSource[1].startsWith("// compatibility patch"))) {
-                fragmentSource.bufferShaderSource->vertexSource.insert(1,fvSourcePatch);
+        if(!fragmentSource.bufferShaderSource->vertexSource.isEmpty() && !fragmentSource.bufferShaderSource->vertexSource.contains("// compatibility patch")) {
+                int startInsert = 0;
+                for (int i = 0; i < fragmentSource.bufferShaderSource->vertexSource.size(); ++i) {
+                    ++startInsert;
+                    QString testLine = fragmentSource.bufferShaderSource->vertexSource[startInsert].trimmed();
+                    if(testLine.isEmpty()) continue;
+                    if(testLine.startsWith("#")) continue;
+                    if(testLine.startsWith("//")) continue;
+                    break;
+                }
+                // insert the patch code
+                fragmentSource.bufferShaderSource->vertexSource.insert(startInsert,fvSourcePatch);
         }
 
-        if(!fragmentSource.bufferShaderSource->source.isEmpty() && !(fragmentSource.bufferShaderSource->source[1].startsWith("// compatibility patch"))) {
-                fragmentSource.bufferShaderSource->source.insert(1,fsSourcePatch);
+        if(!fragmentSource.bufferShaderSource->source.isEmpty() && !fragmentSource.bufferShaderSource->source.contains("// compatibility patch")) {
+                int startInsert = 0;
+                for (int i = 0; i < fragmentSource.bufferShaderSource->source.size(); ++i) {
+                    ++startInsert;
+                    QString testLine = fragmentSource.bufferShaderSource->source[startInsert].trimmed();
+                    if(testLine.isEmpty()) continue;
+                    if(testLine.startsWith("#")) continue;
+                    if(testLine.startsWith("//")) continue;
+                    break;
+                }
+                // insert the patch code
+                fragmentSource.bufferShaderSource->source.insert(startInsert,fsSourcePatch);
         }
     }
 
