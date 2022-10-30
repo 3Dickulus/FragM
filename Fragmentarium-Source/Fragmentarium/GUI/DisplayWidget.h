@@ -265,6 +265,7 @@ public:
     {
         verbose = v;
     };
+    void applyShaderPatch(QStringList &source, QString &patch);
 
 public slots:
     void updateBuffers();

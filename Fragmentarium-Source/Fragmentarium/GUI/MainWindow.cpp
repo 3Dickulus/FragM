@@ -3001,16 +3001,10 @@ void MainWindow::showPreprocessedScript()
     QString inputText = getTextEdit()->toPlainText();
     QString filename = tabInfo[tabBar->currentIndex()].filename;
     QSettings settings;
-    bool moveMain = settings.value("moveMain", true).toBool();
     readSettings();
-    Preprocessor p(&fileManager);
-    FragmentSource fs = p.parse(inputText,filename,moveMain);
+
     try {
-        variableEditor->substituteLockedVariables(&fs);
-        if (fs.bufferShaderSource != nullptr) {
-            variableEditor->substituteLockedVariables(fs.bufferShaderSource);
-        }
-        fs = *(engine->getFragmentSource()); // point at the patched glsl
+        FragmentSource fs = *(engine->getFragmentSource()); // point at the patched glsl
         insertTabPage("")->setPlainText(fs.getText());
         // Use a real name instead of "unnamed" suggested by FF user Sabine62 18/10/12
         QString fname = QString("FragmentShader_%1").arg(strippedName(filename));

@@ -683,6 +683,22 @@ QStringList DisplayWidget::getTextureChannels(QString textureUniformName)
     return result;
 }
 
+void DisplayWidget::applyShaderPatch(QStringList &source, QString &patch)
+{
+    int i = 0;
+    while ( ++i < source.size() ) {
+        QString testLine = source[i].trimmed();
+        if(testLine.isEmpty()) continue;
+        if(testLine.startsWith("#")) continue;
+        if(testLine.startsWith("//")) continue;
+        break;
+    }
+    // when a comment line precedes the the target line then insert before the comment line
+    if(source[i-1].trimmed().startsWith("//") ) --i;
+    // insert the patch code
+    source.insert(i,patch);
+}
+
 void DisplayWidget::initFragmentShader()
 {
 
@@ -701,42 +717,22 @@ void DisplayWidget::initFragmentShader()
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
         if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource.contains("// compatibility patch")) {
-                int startInsert = 0;
-                for (int i = 0; i < fragmentSource.vertexSource.size(); ++i) {
-                    ++startInsert;
-                    QString testLine = fragmentSource.vertexSource[startInsert].trimmed();
-                    if(testLine.isEmpty()) continue;
-                    if(testLine.startsWith("#")) continue;
-                    if(testLine.startsWith("//")) continue;
-                    break;
-                }
-                // insert the patch code
-                fragmentSource.vertexSource.insert(startInsert,fvSourcePatch);
+            applyShaderPatch(fragmentSource.vertexSource,fvSourcePatch);
         }
 
         if(!fragmentSource.source.isEmpty() && !fragmentSource.source.contains("// compatibility patch")) {
-                int startInsert = 0;
-                for (int i = 0; i < fragmentSource.source.size(); ++i) {
-                    ++startInsert;
-                    QString testLine = fragmentSource.source[startInsert].trimmed();
-                    if(testLine.isEmpty()) continue;
-                    if(testLine.startsWith("#")) continue;
-                    if(testLine.startsWith("//")) continue;
-                    break;
-                }
-                // insert the patch code
-                fragmentSource.source.insert(startInsert,fsSourcePatch);
+            applyShaderPatch(fragmentSource.source,fsSourcePatch);
         }
     } else { //:-P a bit of fudge but it seems to work ???
             // projectionMatrix is always passed in as a uniform for all versions
             // location(0) defaults to vertex_position a.k.a. gl_Vertex value when not specified
-        if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource[1].contains("uniform mat4 projectionMatrix;"))
-            fragmentSource.vertexSource.insert(1,
-                                        QString ("\n"
+        if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource.contains("uniform mat4 projectionMatrix;")) {
+                                        QString patch("\n"
                                         "uniform mat4 projectionMatrix;\n"
                                         "#define gl_ProjectionMatrix projectionMatrix\n"
-                                        "\n")
-                                            );
+                                        "\n");
+            applyShaderPatch(fragmentSource.vertexSource,patch);
+        }
     }
     
     // Vertex shader
@@ -1241,31 +1237,11 @@ void DisplayWidget::initBufferShader()
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
         if(!fragmentSource.bufferShaderSource->vertexSource.isEmpty() && !fragmentSource.bufferShaderSource->vertexSource.contains("// compatibility patch")) {
-                int startInsert = 0;
-                for (int i = 0; i < fragmentSource.bufferShaderSource->vertexSource.size(); ++i) {
-                    ++startInsert;
-                    QString testLine = fragmentSource.bufferShaderSource->vertexSource[startInsert].trimmed();
-                    if(testLine.isEmpty()) continue;
-                    if(testLine.startsWith("#")) continue;
-                    if(testLine.startsWith("//")) continue;
-                    break;
-                }
-                // insert the patch code
-                fragmentSource.bufferShaderSource->vertexSource.insert(startInsert,fvSourcePatch);
+                applyShaderPatch(fragmentSource.bufferShaderSource->vertexSource,fvSourcePatch);
         }
 
         if(!fragmentSource.bufferShaderSource->source.isEmpty() && !fragmentSource.bufferShaderSource->source.contains("// compatibility patch")) {
-                int startInsert = 0;
-                for (int i = 0; i < fragmentSource.bufferShaderSource->source.size(); ++i) {
-                    ++startInsert;
-                    QString testLine = fragmentSource.bufferShaderSource->source[startInsert].trimmed();
-                    if(testLine.isEmpty()) continue;
-                    if(testLine.startsWith("#")) continue;
-                    if(testLine.startsWith("//")) continue;
-                    break;
-                }
-                // insert the patch code
-                fragmentSource.bufferShaderSource->source.insert(startInsert,fsSourcePatch);
+                applyShaderPatch(fragmentSource.bufferShaderSource->source,fsSourcePatch);
         }
     }
 
