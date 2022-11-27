@@ -1,4 +1,4 @@
-// dialog.cpp
+// VideoDialog.cpp
 
 #include "MainWindow.h"
 #include "VideoDialog.h"
@@ -23,7 +23,7 @@ VideoDialog::VideoDialog(MainWindow *parent)
     readSettings();
 
     // Play button for output - initially disabled
-    m_ui->playOutputButton->setEnabled(QFile::exists(m_ui->fromLineEdit->text()));
+    m_ui->playOutputButton->setEnabled(QFile::exists(m_ui->toLineEdit->text()));
     // Stop button for enc/play - initially disabled
     m_ui->stopButton->setEnabled(false);
 
@@ -43,11 +43,13 @@ VideoDialog::VideoDialog(MainWindow *parent)
 
 VideoDialog::~VideoDialog()
 {
+    saveSettings();
     delete m_ui;
 }
 
 void VideoDialog::processStarted()
 {
+    m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Running!"));
     m_ui->playOutputButton->setEnabled(false);
     m_ui->stopButton->setEnabled(true);
 }
@@ -110,7 +112,8 @@ void VideoDialog::on_startButton_clicked()
     // ffmpeg -f image2 -s $2 -i $1.%05d.png -r 25000/1001 -b:v 2400k -bt 3400k -vcodec libx264 -coder 0 -bf 0 -refs 1 -level 30 -bufsize 1835k -maxrate 30M $1.$2.mp4
     //ffmpeg file input
     if (program.contains("ffmpeg", Qt::CaseInsensitive) && !pm.isNull()) {
-        arguments << QString("-f image2 -s %1x%2").arg(pm.width()).arg(pm.height());
+        arguments << QString("-f image2");
+        arguments << QString("-s %1x%2").arg(pm.width()).arg(pm.height());
         arguments << QString("-i %1.%05d.%2").arg(filepre).arg(filesuf);
         arguments << QString("-r %1/1001").arg(mainWin->renderFPS * 1000);
         arguments << options;
@@ -119,8 +122,17 @@ void VideoDialog::on_startButton_clicked()
 
     mTranscodingProcess->setProcessChannelMode(QProcess::MergedChannels);
     if(!arguments.isEmpty() && (program.contains("ffmpeg", Qt::CaseInsensitive) || program.contains("mencoder", Qt::CaseInsensitive)) ) {
-        m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg("Running!"));
-        mTranscodingProcess->start(program, arguments);
+        mTranscodingProcess->setProgram(program);
+
+        const QString newArgs = arguments.join(" ");
+#ifdef Q_OS_WIN
+        // this is fudge for windows
+        mTranscodingProcess->setNativeArguments( newArgs );
+#else
+        // this is fudge for linux
+        mTranscodingProcess->setArguments( newArgs.split(" ") );
+#endif
+        mTranscodingProcess->start();
     } else mTranscodingProcess->terminate();
 }
 
@@ -166,7 +178,6 @@ void VideoDialog::encodingFinished(int)
         m_ui->transcodingStatusLabel->setText(QString("Encoding Status: %1").arg(encstat ? "Ready." : "Failed!"));
     } else {
         m_ui->transcodingStatusLabel->setText("Encoding Status: Failed!");
-        qDebug() << "TranscodingProcess failed:" << mTranscodingProcess->errorString();
         encstat = false;
     }
 
@@ -216,13 +227,25 @@ void VideoDialog::playingFinished(int)
 
 void VideoDialog::on_playOutputButton_clicked()
 {
-    QString program = m_ui->playCmdLineEdit->text();
-    QStringList arguments;
+    QString program = m_ui->playCmdLineEdit->text().split(" ").first();
+    QStringList arguments = m_ui->playCmdLineEdit->text().split(" ");
+    arguments.removeFirst();
     QString output = m_ui->toLineEdit->text();
     arguments << output;
     mOutputPlayProcess->setProcessChannelMode(QProcess::MergedChannels);
     m_ui->transcodingStatusLabel->setText("Encoding Status: Playing...");
-    mOutputPlayProcess->start(program, arguments);
+    mOutputPlayProcess->setProgram(program);
+
+    const QString newArgs = arguments.join(" ");
+#ifdef Q_OS_WIN
+        // this is fudge for windows
+        mOutputPlayProcess->setNativeArguments( newArgs );
+#else
+        // this is fudge for linux
+        mOutputPlayProcess->setArguments( newArgs.split(" ") );
+#endif
+
+    mOutputPlayProcess->start();
     connect(mOutputPlayProcess, SIGNAL(finished(int)), this, SLOT(playingFinished(int)));
     m_ui->stopButton->setEnabled(true);
 }

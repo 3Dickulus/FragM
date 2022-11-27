@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>471</width>
-    <height>463</height>
+    <height>482</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -201,6 +201,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QPushButton" name="playOutputButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Play Output</string>
           </property>

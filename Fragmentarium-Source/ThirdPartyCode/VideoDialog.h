@@ -3,12 +3,12 @@
 #ifndef VIDEO_DIALOG_H
 #define VIDEO_DIALOG_H
 
-#include "ui_VideoDialog.h"
 #include <QFile>
 #include <QProcess>
 #include <QtGui>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QTextEdit>
+#include "ui_VideoDialog.h"
 
 class MainWindow;
 
