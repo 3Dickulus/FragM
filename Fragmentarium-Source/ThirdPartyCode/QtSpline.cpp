@@ -88,87 +88,90 @@ public:
 class VectControlPoints : public Vectoid
 {
 public:
-    VectControlPoints(Geometry *g, int num_ctrlpoints, glm::dvec3 *ctrlpoints);
+    VectControlPoints(Geometry *g, int num_ctrlpoints, glm::dvec3 *ctrlpoints)
+    {
+        auto *cp = new Patch(g);
+        // control points
+        for (int i = 0; i < num_ctrlpoints; ++i) {
+            cp->addVertex(ctrlpoints[i]);
+        }
+        cp->pointSize = 6.0;
+
+        cp->start = g->vertices.count() - num_ctrlpoints;
+
+        parts << cp;
+    };
 };
-
-VectControlPoints::VectControlPoints(Geometry *g, int num_ctrlpoints, glm::dvec3 *ctrlpoints)
-{
-    auto *cp = new Patch(g);
-    // control points
-    for (int i = 0; i < num_ctrlpoints; ++i) {
-        cp->addVertex(ctrlpoints[i]);
-    }
-    cp->pointSize = 6.0;
-
-    cp->start = g->vertices.count() - num_ctrlpoints;
-
-    parts << cp;
-}
 
 class VectSpline : public Vectoid
 {
 public:
-    VectSpline(Geometry *g, int num_ctrlpoints, int num_segments);
-
-    // modified from
-    // http://www.iquilezles.org/www/articles/minispline/minispline.htm
-    void spline(const glm::dvec3 *cP, int num, double t, glm::dvec3 *v)
-    {
-        static double coefs[4][4] = {{-1.0, 2.0, -1.0, 0.0},
-            {3.0, -5.0, 0.0, 2.0},
-            {-3.0, 4.0, 1.0, 0.0},
-            {1.0, -1.0, 0.0, 0.0}
-        };
-
-        // find control point
-        double ki = (1.0 / (double)num);
-        int k = 0;
-        while (ki * k < t) {
-            k++;
-        }
-        // interpolant
-        double kj = ki * k;
-        double kk = kj - ki;
-        double h = (t - kk) / (kj - kk);
-        // add basis functions
-        for (int i = 0; i < 4; i++) {
-            int kn = k + i - 2;
-            if (kn < 0) {
-                kn = 0;
-            } else if (kn > (num - 1)) {
-                kn = num - 1;
-            }
-            double b = 0.5f * (((coefs[i][0] * h + coefs[i][1]) * h + coefs[i][2]) * h + coefs[i][3]);
-            v->x=(v->x + (b * cP[kn].x));
-            v->y=(v->y + (b * cP[kn].y));
-            v->z=(v->z + (b * cP[kn].z));
-        }
-    }
+    VectSpline(Geometry *g, int num_ctrlpoints, int num_segments, bool looping);
+public:
+    void spline(const glm::dvec3 *cP, int num, double t, glm::dvec3 *v);
+private:
+    bool loop;
+    double coefs[4][4] = {
+        {-1.0, 2.0, -1.0, 0.0},
+        {3.0, -5.0, 0.0, 2.0},
+        {-3.0, 4.0, 1.0, 0.0},
+        {1.0, -1.0, 0.0, 0.0}
+    };
 };
 
-VectSpline::VectSpline(Geometry *g, int num_ctrlpoints, int num_segments)
+VectSpline::VectSpline(Geometry *g, int num_ctrlpoints, int num_segments, bool looping = false) : loop(looping)
 {
     /// spline points
     auto *sp = new Patch(g);
     /// this bit of fudge lets the end points land on their respective
     /// controlpoints
-    double enD =
+    double enD = loop ? 1.0 / (num_segments - 1.0) :
         (1.0 / ((num_segments - 1.0) + ((num_segments - 1.0) * (1.0 / (num_ctrlpoints - 1.0)))));
-    for (int i = 0; i < num_segments; i++) {
+        // fudge: if this loop isn't +1 then the last frame renders a blank
+    for (int i = 0; i < num_segments+1; i++) {
         glm::dvec3 s(0.0, 0.0, 0.0);
-        spline(g->vertices.constData(), num_ctrlpoints, enD * i, &s);
+        spline(g->vertices.constData(), num_ctrlpoints, enD*i, &s);
         sp->addVertex(s);
     }
+
     sp->pointSize = 1.0;
     sp->start = g->vertices.count() - num_segments;
 
     parts << sp;
 }
 
-// TODO add start frame end frame for control points
-QtSpline::QtSpline(QOpenGLWidget *parent, int nctrl, int nsegs, glm::dvec3 *cv)
-    : prnt(parent), geom(new Geometry())
+// modified from
+// http://www.iquilezles.org/www/articles/minispline/minispline.htm
+void VectSpline::spline(const glm::dvec3 *cP, int num, double t, glm::dvec3 *v)
 {
+    // find control point
+    double ki = (1.0 / num);
+    int k = 0;
+    while (ki * k < t) {
+        k++;
+    }
+
+    // interpolant
+    double kj = ki * k;
+    double kk = kj - ki;
+    double h = (t - kk) / (kj - kk);
+    // add basis functions
+    for (int i = 0; i < 4; i++) {
+        int kn = k + i - 2;
+        if (kn < 0) {
+            loop ? kn = num - 1 : kn = 0;
+        } else if (kn > (num - 1)) {
+            loop ? kn -= num : kn = (num - 1);
+        }
+        double b = 0.5 * (((coefs[i][0] * h + coefs[i][1]) * h + coefs[i][2]) * h + coefs[i][3]);
+        *(v) += b * cP[kn];
+    }
+}
+
+// TODO add start frame end frame for control points
+QtSpline::QtSpline(QOpenGLWidget *parent, int nctrl, int nsegs, glm::dvec3 *cv, bool loop)
+    : prnt(parent), geom(new Geometry()), looping(loop)
+    {
     buildGeometry(nctrl, nsegs, cv);
 }
 
@@ -184,7 +187,7 @@ void QtSpline::buildGeometry(int nctrl, int nsegs, glm::dvec3 *cv)
     parts << ctrl.parts;
     num_c = nctrl;
     num_s = nsegs;
-    VectSpline curve(geom, nctrl, nsegs);
+    VectSpline curve(geom, nctrl, nsegs, looping);
     parts << curve.parts;
 }
 
@@ -228,17 +231,14 @@ void QtSpline::setControlPoint(int n, glm::dvec3 *p)
 {
 
     /// new control point position
-    geom->vertices[n].x=p->x;
-    geom->vertices[n].y=p->y;
-    geom->vertices[n].z=p->z;
-    /// this bit of fudge lets the end points land on their respective
-    /// controlpoints
-    double enD = (1.0 / ((num_s - 1.0) + ((num_s - 1.0) * (1.0 / (parts[0]->count - 1.0)))));
+    geom->vertices[n]=*(p);
+    /// this bit of fudge lets the end points land on their respective controlpoints
+    double enD =  looping ? 1.0 / (num_s-1) :
+     (1.0 / ((num_s+1.0) + ((num_s-1.0) * (1.0 / (parts[0]->count - 1.0)))-1));
     /// new spline curve
     for (int i = 0; i < num_s; i++) {
         glm::dvec3 s(0.0, 0.0, 0.0);
-        ((VectSpline *)parts[1])
-        ->spline(geom->vertices.constData(), num_c, enD * i, &s);
+        ((VectSpline *)parts[1])->spline(geom->vertices.constData(), num_c, enD * i, &s);
         geom->vertices[i + num_c] = s;
     }
 }

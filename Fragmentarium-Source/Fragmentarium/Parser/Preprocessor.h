@@ -312,7 +312,7 @@ public:
     virtual QString getUniqueName() {
         QString d = QString("[%1 %2 %3]").arg(defaultColorValue.x).arg(defaultColorValue.y).arg(defaultColorValue.z);
         return QString("%1:%2:%3:%4:%5:%6").arg(group).arg(getName()).arg(from).arg(defaultValue).arg(to).arg(d);
-        
+
     }
     glm::dvec3 getDefaultColorValue() {
         return defaultColorValue;
@@ -445,7 +445,7 @@ public:
 
     static QRegExp main ( "^\\s*void\\s+main\\s*\\(.*$" );
     static QRegExp replace ( "^#replace\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"\\s*$" ); // Look for #replace "var1" "var2"
-    
+
     static QRegExp sampler2D (        "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );
     static QRegExp sampler2DChannel ( "^\\s*uniform\\s+sampler2D\\s+(\\S+);\\s*file\\[(\\S+),\\s+(\\S+)\\].*$" );
     static QRegExp isampler2D (        "^\\s*uniform\\s+isampler2D\\s+(\\S+);\\s*file\\[(\\S+)\\].*$" );

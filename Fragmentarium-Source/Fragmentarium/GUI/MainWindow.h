@@ -271,6 +271,8 @@ public:
     void setLanguage( QString lang ) { langID = lang; };
     ListWidgetLogger *getLogger() { return logger; };
 
+    QSettings settings;
+
 protected:
     void dragEnterEvent ( QDragEnterEvent *ev );
     void dropEvent ( QDropEvent *ev );
@@ -441,7 +443,6 @@ public slots:
 
     void setAutoRun ( bool arun )
     {
-        QSettings settings;
         settings.setValue ( "autorun",arun );
         settings.sync();
     };
@@ -452,82 +453,69 @@ public slots:
     };
     void setTileWidth ( int w )
     {
-        QSettings settings;
         settings.setValue ( "tilewidth",w );
         settings.sync();
         bufferXSpinBox->setValue ( w );
     };
     void setTileHeight ( int h )
     {
-        QSettings settings;
         settings.setValue ( "tileheight",h );
         settings.sync();
         bufferYSpinBox->setValue ( h );
     };
     void setTileMax ( int m )
     {
-        QSettings settings;
         settings.setValue ( "tiles", m );
         settings.sync();
     };
     void setSubFrames ( int s )
     {
         setSubframeMax( s );
-        QSettings settings;
         settings.setValue ( "subframes", s );
         settings.sync();
     };
     void setOutputBaseFileName ( QString f )
     {
-        QSettings settings;
         settings.setValue ( "filename", f );
         settings.sync();
     };
     void setFps ( int fps )
     {
-        QSettings settings;
         settings.setValue ( "fps", fps );
         settings.sync();
     };
     void setStartFrame ( int sf )
     {
-        QSettings settings;
         settings.setValue ( "startframe", sf );
         settings.sync();
     };
     void setEndFrame ( int ef )
     {
-        QSettings settings;
         settings.setValue ( "endframe", ef );
         settings.sync();
     };
     void setAnimation ( bool a )
     {
-        QSettings settings;
         settings.setValue ( "animation", a );
         settings.sync();
     };
     void setPreview ( bool a )
     {
-        QSettings settings;
         settings.setValue ( "preview", a );
         settings.sync();
     };
     void setAutoSave ( bool s )
     {
-        QSettings settings;
         settings.setValue ( "autosave", s );
         settings.sync();
     }
     void setAutoLoad ( bool l )
     {
-        QSettings settings;
         settings.setValue ( "autoload", l );
         settings.sync();
     }
     void setUniqueID ( bool u )
     {
-        QSettings settings;
         settings.setValue ( "unique", u );
         settings.sync();
     }
@@ -631,6 +619,8 @@ public slots:
         initializeFragment();
         variableEditor->setSettings(currentSet);
     };
+
+    void setCameraPathLoop(bool l);
 
 private slots:
     void initTools();
@@ -772,6 +762,7 @@ private:
     QAction *scriptingParameterAction;
     QAction *scriptingHiresAction;
     QAction *scriptingControlAction;
+    QAction *loopCameraPathAction;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *renderMenu;
@@ -857,6 +848,7 @@ private:
     bool includeWithAutoSave;
     bool playRestartMode;
     bool useMimetypes;
+    bool loopCameraPath;
     
     QMenu *exrToolsMenu;
     QStringList exrBinaryPath;

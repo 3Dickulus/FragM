@@ -100,10 +100,9 @@ MainWindow::MainWindow(QWidget* parent)
     playRestartMode = false;
 
     lockedAspect = false;
-    
+
     init();
 
-    QSettings settings;
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
     splitter->restoreState(settings.value("splitterSizes").toByteArray());
@@ -431,9 +430,15 @@ void MainWindow::clearTextures()
 void MainWindow::testCompileGLSL()
 {
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  engine->testVersions(); 
+  engine->testVersions();
   QApplication::restoreOverrideCursor();
 
+}
+
+void MainWindow::setCameraPathLoop(bool l) {
+    highlightBuildButton(l != loopCameraPath);
+    loopCameraPath = l;
+    engine->setCameraPathLoop(loopCameraPath);
 }
 
 void MainWindow::movedSplitter(int pos, int index)
@@ -859,7 +864,6 @@ void MainWindow::init()
     connect(this->tabBar, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
     {
-        QSettings settings;
         if (settings.value("firstRun", true).toBool()) {
             showWelcomeNote();
         }
@@ -867,7 +871,6 @@ void MainWindow::init()
     }
 
     {
-        QSettings settings;
         if (settings.value("isStarting", false).toBool()) {
             QString s = tr("It looks like the Fragmentarium program crashed during the last startup.\n"
                         "\nTo prevent repeated crashes, you may choose to disable 'Autorun on Load'."
@@ -912,8 +915,7 @@ void MainWindow::init()
     QString styleSheetFile = "file:///"+guiStylesheet;
     if(guiStylesheet.isEmpty()) styleSheetFile = guiStylesheet;
     qApp->setStyleSheet(styleSheetFile);
-    
-    QSettings settings;
+
     int x = settings.value("tilewidth",456).toInt();
     int y = settings.value("tileheight",256).toInt();
 
@@ -921,7 +923,7 @@ void MainWindow::init()
         bufferSizeControl->blockSignals(true);
         bufferSizeControl->setText( bufferActionCustom->text() );
         bufferSizeControl->blockSignals(false);
-        
+
         bufferXSpinBox->blockSignals(true);
         bufferYSpinBox->blockSignals(true);
         bufferXSpinBox->setValue(x);
@@ -1144,7 +1146,7 @@ void MainWindow::runSupportProgram()
         QString startFolder = gimpGradientsPaths.split(";").at(0);
         if(!QFile::exists(startFolder) && gimpGradientsPaths.split(";").count() > 1) startFolder = gimpGradientsPaths.split(";").at(1);
         if(!QFile::exists(startFolder)) startFolder = ""; // tried the first 2 no luck? set to empty
-        
+
         QString ggrFileName = QFileDialog::getOpenFileName(this, tr("Read GIMP Gradient"), startFolder, filter);
         if (ggrFileName.isEmpty() || !ggrFileName.endsWith(".ggr") ) {
             return;
@@ -1369,6 +1371,12 @@ void MainWindow::createActions()
     testCompileGLSLAction->setStatusTip(tr("Tests the current fragment against all supported GLSL versions."));
     connect(testCompileGLSLAction, SIGNAL(triggered()), this, SLOT(testCompileGLSL()));
 
+    loopCameraPathAction = new QAction(tr("Loop Camera Path"), this);
+    loopCameraPathAction->setStatusTip(tr("Makes a looping camera path."));
+    loopCameraPathAction->setCheckable(true);
+    loopCameraPathAction->setChecked(loopCameraPath);
+    connect(loopCameraPathAction, SIGNAL(toggled(bool)), this, SLOT(setCameraPathLoop(bool)));
+
     sfHomeAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Project Homepage (web link)"), this);
     sfHomeAction->setStatusTip(tr("Open the project page in a browser."));
     connect(sfHomeAction, SIGNAL(triggered()), this, SLOT(launchSfHome()));
@@ -1498,6 +1506,7 @@ void MainWindow::createMenus()
     helpMenu->addMenu(mc); // "windows" menu
     helpMenu->addAction(clearTexturesAction);
     helpMenu->addAction(testCompileGLSLAction);
+    helpMenu->addAction(loopCameraPathAction);
     helpMenu->addSeparator();
 
     helpMenu->addAction(sfHomeAction);
@@ -1615,7 +1624,7 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
 
             // Added sleep of 10 ms so that CPU does not submit too much work to GPU
             // std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            
+
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
             if (padding>0.0)  {
@@ -1678,7 +1687,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
     //
 
     bool d2a = engine->wantsDepthToAlpha();
-    
+
     Header header (maxTiles*tileWidth, maxTiles*tileHeight);
     header.channels().insert ("R", Channel (Imf::FLOAT));
     header.channels().insert ("G", Channel (Imf::FLOAT));
@@ -1687,11 +1696,11 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
         header.channels().insert ("Z", Channel (Imf::FLOAT));
     else
         header.channels().insert ("A", Channel (Imf::FLOAT));
-    
+
     header.setTileDescription (TileDescription (tileWidth, tileHeight, ONE_LEVEL));
-    
+
     TiledOutputFile out(name.toLatin1(), header);
-    
+
     Array2D<RGBAFLOAT> pixels (tileHeight, tileWidth);
 
     FrameBuffer frameBuffer;
@@ -1702,7 +1711,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
         frameBuffer.insert ("Z", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
     else
         frameBuffer.insert ("A", Slice (Imf::FLOAT, (char *) &pixels[0][0].a, sizeof (pixels[0][0]) * 1, sizeof (pixels[0][0]) * tileWidth, 1, 1, 0.0, true, true));
-    
+
 
     for (int tile = 0; tile<maxTiles*maxTiles; tile++) {
 
@@ -1713,7 +1722,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
 
             QImage im(tileWidth, tileHeight, QImage::Format_ARGB32);
             im.fill(Qt::black);
-               
+
             // Added sleep of 10 millisecs so that CPU does not submit too much work to GPU
             // std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
@@ -1776,7 +1785,7 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
     }
 
     engine->update();
-    
+
     return out.isValidLevel(0,0);
 
 }
@@ -1787,7 +1796,6 @@ void MainWindow::tileBasedRender()
     int tmpX = bufferXSpinBox->value();
     int tmpY = bufferYSpinBox->value();
     if(tileSizeFromScreen && !runningScript) {
-        QSettings settings;
         settings.setValue("tilewidth",tmpX);
         settings.setValue("tileheight",tmpY);
         settings.setValue("lockedAspect", lockedAspect);
@@ -1902,7 +1910,7 @@ retry:
             default:
                 return;
             }
-        } else            
+        } else
         if (!oDir.mkdir(subdirName)) {
 
             QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
@@ -1926,7 +1934,7 @@ retry:
                 // remap texture file references in final output to local before saving frag
 
                     QMapIterator<QString, QString> it( engine->getFragmentSource()->textures );
-                    
+
                     while( it.hasNext() ) {
                         it.next();
                         QString localReference = it.value().split("/").last();
@@ -2063,7 +2071,7 @@ retry:
     splitter->setSizes(splitSizes);
     int handleWidth = splitter->handleWidth();
     splitter->setHandleWidth(handleWidth/2);
-  
+
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 //     bool isFirst = true;
@@ -2349,7 +2357,6 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveAsAction);
     fileToolBar->setObjectName(QString::fromUtf8("FileToolbar"));
 
-    QSettings settings;
     settings.value("showFileToolbar").toBool() ? fileToolBar->show() : fileToolBar->hide();
 
     editToolBar = addToolBar(tr("Edit Toolbar"));
@@ -2370,7 +2377,7 @@ void MainWindow::createToolBars()
     connect(bufferXSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferXSpinBoxChanged(int)));
     connect(bufferXSpinBox, SIGNAL(editingFinished()), this, SLOT(bufferSizeXChanged()));
     bufferToolBar->addWidget(bufferXSpinBox);
-    
+
     aspectLock = new QPushButton(bufferToolBar);
     aspectLock->setObjectName("lockbutton");
     aspectLock->setFlat(true);
@@ -2381,7 +2388,7 @@ void MainWindow::createToolBars()
     aspectLock->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
     connect(aspectLock, SIGNAL(toggled(bool)), this, SLOT(lockAspect(bool)));
     bufferToolBar->addWidget(aspectLock);
-    
+
     bufferToolBar->addWidget(new QLabel(tr("Y: "), this));
     bufferYSpinBox = new QSpinBox(bufferToolBar);
     bufferYSpinBox->setRange(1,4096);
@@ -2540,7 +2547,7 @@ void MainWindow::timeLineRequest(QPoint p)
 {
 
     Q_UNUSED(p)
-    
+
     auto *timeDialog = new TimeLineDialog(this, keyframeMap);
     timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
     timeDialog->exec();
@@ -2568,7 +2575,6 @@ void MainWindow::timeChanged(int value)
 void MainWindow::timeMaxChanged(int value)
 {
     // so the render output dialog picks up the change immediately
-    QSettings settings;
     settings.setValue("timeMax", value);
 
     lastTime->restart();
@@ -2714,7 +2720,6 @@ void MainWindow::createStatusBar()
 void MainWindow::readSettings()
 {
 
-    QSettings settings;
     maxRecentFiles = settings.value("maxRecentFiles", 5).toInt();
     renderFPS = settings.value("fps", 25).toInt();
     timeMax = settings.value("timeMax", 10).toInt();
@@ -2742,12 +2747,12 @@ void MainWindow::readSettings()
     lockedAspect = settings.value("lockedAspect", false).toBool();
     tileSizeFromScreen = settings.value ( "tileSizeFromScreen", false ).toBool();
     gimpGradientsPaths = settings.value ( "gimpGradientsPaths", "/usr/share/gimp/2.0/gradients/;~/.config/GIMP/2.10/gradients/").toString();
+    loopCameraPath = settings.value("loopCameraPath", false).toBool();
 }
 
 void MainWindow::writeSettings()
 {
 
-    QSettings settings;
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     settings.setValue("splitterSizes", splitter->saveState());
@@ -2792,6 +2797,7 @@ void MainWindow::writeSettings()
     settings.setValue("lockedToWindowSize", lockedToWindowSize);
     settings.setValue("lockedAspect", lockedAspect);
     settings.setValue("currentAspect", currentAspect);
+    settings.setValue("loopCameraPath", loopCameraPath);
 
     QStringList openFiles;
     if (!tabInfo.isEmpty()) {
@@ -2804,9 +2810,9 @@ void MainWindow::writeSettings()
     settings.setValue("tilewidth",bufferXSpinBox->value());
     settings.setValue("tileheight",bufferYSpinBox->value());
     settings.setValue ("tileSizeFromScreen", tileSizeFromScreen);
-    
+
     settings.setValue("gimpGradientsPaths", gimpGradientsPaths);
-    
+
     settings.sync();
 
 }
@@ -2928,7 +2934,7 @@ void MainWindow::loadFragFile(const QString &fileName)
             processGuiEvents();
         }
         setSubframeMax(sfmax);
-        
+
         QSettings().setValue("isStarting", false);
         engine->setState(oldstate);
         pp?stop():play();
@@ -3000,7 +3006,6 @@ void MainWindow::showPreprocessedScript()
     INFO(tr("Showing preprocessed output in new tabs"));
     QString inputText = getTextEdit()->toPlainText();
     QString filename = tabInfo[tabBar->currentIndex()].filename;
-    QSettings settings;
     readSettings();
 
     try {
@@ -3127,9 +3132,8 @@ bool MainWindow::initializeFragment()
     INFO("");
     INFO ( tr("Available image formats: ") + imgFileExtensions.join ( ", " ) );
     INFO("");
-    
+
     QString filename = tabInfo[tabBar->currentIndex()].filename;
-    QSettings settings;
     bool moveMain = settings.value("moveMain", true).toBool();
 
     fileManager.setOriginalFileName(filename);
@@ -3152,7 +3156,8 @@ bool MainWindow::initializeFragment()
     FragmentSource fs = p.parse(inputText,filename,moveMain);
 
     engine->useCompat( !fs.source[0].contains("core") );
-
+    engine->setCameraPathLoop(loopCameraPath);
+    
     if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
             addToWatch( QStringList(filename) );
     }
@@ -3162,7 +3167,7 @@ bool MainWindow::initializeFragment()
     variableEditor->updateTextures(&fs, &fileManager);
     variableEditor->substituteLockedVariables(&fs);
     variableEditor->updateCamera(engine->getCameraControl());
-    
+
     if (fs.bufferShaderSource != nullptr) {
         variableEditor->substituteLockedVariables(fs.bufferShaderSource);
     }
@@ -3241,14 +3246,14 @@ void MainWindow::hideUnusedVariableWidgets()
                     !(vw->getLockType() == Parser::Locked ||
                       vw->getDefaultLockType() == Parser::AlwaysLocked ||
                       vw->getDefaultLockType() == Parser::NotLockable) &&
-                    !wnames.at(i).contains("AutoFocus")  )  {
+                    !wnames.at(i).contains("AutoFocus") )  {
                 vw->hide();
             } else {
                 vw->show();
             }
         }
     }
-    
+
     variableEditor->hideUnusedTabs();
 }
 
@@ -3351,7 +3356,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
     bool loadingSucceded = false;
     if (filename.startsWith("// ")) {
         textEdit->setPlainText(filename);
-    } else 
+    } else
     if (filename.toLower().endsWith(".ggr") && QFile(filename).exists()) {
         Ggr2Glsl *gradientCode = new Ggr2Glsl(filename);
         if(gradientCode->isLoaded()) {
@@ -3364,7 +3369,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
                 gradient.setCoordinateMode(gr.coordinateMode());
                 if(gr != gradient)
                     gradientCode->setGradient(&gradient);
-                
+
                 QStringList glslObjectColorText;
                 gradientCode->ggr2glsl( glslObjectColorText, true);
                 QStringList glslBackgroundColorText;
@@ -3372,7 +3377,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
 
                 QStringList glslText = glslObjectColorText;
                 glslText << glslBackgroundColorText;
-                
+
                 textEdit->setPlainText( glslText.join("\n"));
 
                 INFO(tr("Converted file: %1").arg(filename));
@@ -3381,7 +3386,7 @@ TextEdit *MainWindow::insertTabPage(QString filename)
                 QApplication::restoreOverrideCursor();
 
             } else textEdit->setPlainText(tr("// User canceled ggr2glsl conversion.\n// %1\n").arg(filename));
-            
+
             loadingSucceded = ok;
         }
     }
@@ -3462,7 +3467,7 @@ void MainWindow::tabChanged(int index)
     }
     TextEdit *te = getTextEdit();
     te->saveSettings( variableEditor->getSettings(false) );
-    
+
     TabInfo ti = tabInfo[index];
     QString tabTitle = QString("%1%3").arg(strippedName(ti.filename)).arg(ti.unsaved ? "*" : "");
     stackedTextEdits->setCurrentWidget(ti.textEdit);
@@ -3773,8 +3778,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
 void MainWindow::setRecentFile(const QString &fileName)
 {
 
-    QSettings settings;
-
     QStringList files = settings.value("recentFileList").toStringList();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList").toBool();
 
@@ -3824,6 +3827,7 @@ void MainWindow::preferences()
     PreferencesDialog pd(this);
     pd.exec();
     readSettings();
+   
     QString styleSheetFile = "file:///"+guiStylesheet;
     if(guiStylesheet.isEmpty()) styleSheetFile = "";
     qApp->setStyleSheet(styleSheetFile);
@@ -3839,6 +3843,7 @@ void MainWindow::preferences()
     }
 
     initTools();
+    loopCameraPathAction->setChecked(loopCameraPath);
 }
 
 void MainWindow::getBufferSize(int w, int h, int &bufferSizeX, int &bufferSizeY, bool &fitWindow)
@@ -3967,8 +3972,9 @@ void MainWindow::setCameraSettings(glm::dvec3 e, glm::dvec3 t, glm::dvec3 u)
                 double d = distance(e, t);
                 r += QString("FocalPlane = %1\n").arg(d);
             }
+        }
     }
-    }
+    engine->setCameraPathLoop(loopCameraPath);
     variableEditor->setSettings(r);
     variableEditor->blockSignals(false);
 }
@@ -4026,7 +4032,7 @@ void MainWindow::initKeyFrameControl()
             }
 
             // after keyframeMap is complete create camera path splines in the engine
-            engine->createSplines(k,getFrameMax()+1);
+            engine->createSplines(k,getFrameMax());
         }
     }
 }
@@ -4143,7 +4149,6 @@ void MainWindow::loadCmdScript()
 
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
     QString fileName = QFileDialog::getOpenFileName(this, QString(), QString(), filter);
-    QSettings settings;
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
@@ -4237,7 +4242,6 @@ void MainWindow::executeScript()
 {
     QTextEdit *e = nullptr;
 
-    QSettings settings;
     QString name = settings.value("filename").toString();
     QString scriptname = settings.value("cmdscriptfilename").toString();
 
@@ -4334,7 +4338,6 @@ void MainWindow::loadErrorSourceFile(QString fileName, int LineNumber)
  * */
 void MainWindow::slotShortcutF6()
 {
-    QSettings settings;
     QString scriptname = settings.value("cmdscriptfilename").toString();
 
     bool loadingSucceded = false;
@@ -4374,19 +4377,18 @@ void MainWindow::slotShortcutF6()
         } else {
             cmdScriptLineNumber = 0;
         }
-        
+
     } else runningScript = false;
 }
 
 /* Slot handler of Shift+F6
- * 
+ *
  * Bind an fqScript to F6 hotkey
  * */
 void MainWindow::slotShortcutShiftF6()
 {
-    QSettings settings;
     static QString lastBoundCmdScript = "";
-    
+
     QString filter = tr("CMD Script (*.fqs);;All Files (*.*)");
     QString fileName =
         QFileDialog::getOpenFileName(this, tr("Bind CMD script to F6 key"), lastBoundCmdScript, filter);
@@ -4394,7 +4396,7 @@ void MainWindow::slotShortcutShiftF6()
         lastBoundCmdScript = fileName;
         INFO("Bound " + fileName + " to F6");
     } else fileName = lastBoundCmdScript;
-    
+
     settings.setValue("cmdscriptfilename", fileName);
 }
 

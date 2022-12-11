@@ -37,7 +37,7 @@ MessageCallback( GLenum source,
                  const void* userParam )
 {
     // ignore non-significant error/warning codes ???
-    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
     std::cout << "GL Debug message (" << id << "): " <<  message << " ";
 
@@ -56,7 +56,7 @@ MessageCallback( GLenum source,
     {
         case GL_DEBUG_TYPE_ERROR:               std::cout << "Error "; break;
         case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Deprecated Behaviour "; break;
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Undefined Behaviour "; break; 
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Undefined Behaviour "; break;
         case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Portability "; break;
         case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Performance "; break;
         case GL_DEBUG_TYPE_MARKER:              std::cout << "Marker "; break;
@@ -65,7 +65,7 @@ MessageCallback( GLenum source,
         case GL_DEBUG_TYPE_OTHER:               std::cout << "Other "; break;
         default:           std::cout << "Type:" << type << " unknown"; break;
     }
-    
+
     switch (severity)
     {
         case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high "; break;
@@ -81,7 +81,7 @@ MessageCallback( GLenum source,
 GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
 {
     GLenum errorCode = GL_NO_ERROR;
-    
+
     if( glDebugEnabled ) {
         while ((errorCode = glGetError()) != GL_NO_ERROR)
         {
@@ -95,7 +95,7 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 // eg:
 // GLint index = glGetUniformLocation(programID, uniformName.toStdString()); glCheckError();
 //
-#define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__) 
+#define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__)
 
 #endif
 #else
@@ -165,6 +165,7 @@ DisplayWidget::DisplayWidget ( MainWindow* mainWin, QWidget* parent )
     foundnV = false;
     exrMode = false;
     depthToAlpha = false;
+    loopCameraPath = false;
     ZAtMXY=0.0;
     buttonDown = false;
     glDebugEnabled = false;
@@ -209,7 +210,7 @@ void DisplayWidget::initializeGL()
     glslvers.clear();
 
 #ifdef USE_OPENGL_4
-    if(ver >= 4.3) { // query the GL to figure it out 
+    if(ver >= 4.3) { // query the GL to figure it out
         int max = 0;
         glGetIntegerv(GL_NUM_SHADING_LANGUAGE_VERSIONS, &max); glCheckError();
 
@@ -241,7 +242,7 @@ void DisplayWidget::initializeGL()
         if(ver >= 4.5) glslvers << "450";
         if(ver == 4.6) glslvers << "460";
     }
-    
+
     glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &m_maxUniforms); glCheckError();
 }
 void DisplayWidget::updateRefreshRate()
@@ -300,7 +301,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     INFO("");
     INFO(tr("Total number of uniforms used: ") + QString("%1").arg(mainWindow->getUserUniforms().count()));
     INFO("");
-    
+
     fragmentSource = fs;
     clearOnChange = fs.clearOnChange;
     subframesBetweenRedraws = fs.subframesBetweenRedraws;
@@ -344,7 +345,7 @@ void DisplayWidget::setFragmentShader(FragmentSource fs)
     INFO ( tr("Created front and back buffers as ") + b );
 
     initFragmentShader();
-    
+
     if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong so do not try to setup textures or buffer shader
         return;
     }
@@ -647,7 +648,7 @@ void DisplayWidget::createErrorLineLog ( QString message, QString log, LogLevel 
         }
 
         if(errorCount > maxLines) break;
-        
+
         // emit a single log widget line for each line in the log
         LOG ( newStr, priority );
 
@@ -713,7 +714,7 @@ void DisplayWidget::initFragmentShader()
     QSettings settings;
 
     shaderProgram = new QOpenGLShaderProgram ( this );
-    
+
     if(settings.value ( "compatPatch", true ).toBool()) {
         // patch
         if(!fragmentSource.vertexSource.isEmpty() && !fragmentSource.vertexSource.contains("// compatibility patch")) {
@@ -734,7 +735,7 @@ void DisplayWidget::initFragmentShader()
             applyShaderPatch(fragmentSource.vertexSource,patch);
         }
     }
-    
+
     // Vertex shader
     bool s = shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, fragmentSource.vertexSource.join("\n"));
     if ( fragmentSource.vertexSource.count() == 0 ) {
@@ -790,8 +791,8 @@ void DisplayWidget::initFragmentShader()
         shaderProgram = nullptr;
         return;
     }
-    
-    
+
+
     glm::mat4 identityMatrix = glm::mat4(1);
     glUniformMatrix4fv(shaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix)); glCheckError();
 
@@ -820,7 +821,7 @@ void DisplayWidget::initFragmentShader()
     shaderProgram->release();
     // and should initialize spline shader just in case GLSL version has changed
     if(!mainWindow->scriptRunning() && hasKeyFrames) init_spline_shader();
-    
+
 }
 
 /*
@@ -902,15 +903,15 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             channelCount++;
         }
 
-        if(channelCount == 0) { 
+        if(channelCount == 0) {
             WARNING(tr("Loader found no channels in EXR image: %1").arg(texturePath));
             return false; // uhoh :(
         }
-        
+
         int w  = dw.max.x - dw.min.x + 1;
         int h = dw.max.y - dw.min.y + 1;
         int s;
-        
+
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &s ); glCheckError();
 
         if (type == GL_SAMPLER_2D && (w>s || h>s) ) {
@@ -922,7 +923,7 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
             WARNING(tr("Loader found EXR image: %1 x %2 is not a cube map!").arg(w).arg(h));
             return false;
         }
-        
+
         // OpenEXR doesn't like reading the same channel name into
         // more than one slice of a single framebuffer, so we need
         // to keep track and copy the data manually
@@ -965,11 +966,11 @@ bool DisplayWidget::loadEXRTexture(QString texturePath, GLenum type, GLuint text
         if (sliceCount > 0) {
             file.setFrameBuffer (fb);
             file.readPixels(dw.min.y, dw.max.y);
-        } else { 
+        } else {
             WARNING(tr("No slices found in file!"));
             return false;
         }
-        
+
         for (int channel = 0; channel < 4; ++channel) {
             if (sliceChannel[channel].isEmpty()) {
                 float src_val = channel < 3 ? 0 : 1;
@@ -1111,10 +1112,10 @@ void DisplayWidget::initFragmentTextures()
                 GLsizei length = 0;
                 GLint size = 0;
                 GLenum type = 0;
-                
+
                 glGetProgramiv(shaderProgram->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize); glCheckError();
                 GLchar name[bufSize];
-                
+
                 // bugfix for textures by claude #104 index vs location
                 GLuint idx;
                 // get a pointer to the char array in QString
@@ -1229,7 +1230,7 @@ void DisplayWidget::initBufferShader()
     if (fragmentSource.bufferShaderSource == nullptr) {
         return;
     }
-    
+
     QSettings settings;
 
     bufferShaderProgram = new QOpenGLShaderProgram ( this );
@@ -1300,7 +1301,7 @@ void DisplayWidget::initBufferShader()
         bufferShaderProgram = nullptr;
         return;
     }
-    
+
     glm::mat4 identityMatrix = glm::mat4(1);
     glUniformMatrix4fv(bufferShaderProgram->uniformLocation("projectionMatrix"), 1,  GL_FALSE, glm::value_ptr(identityMatrix)); glCheckError();
 
@@ -1331,7 +1332,7 @@ void DisplayWidget::makeBuffers()
                 blockSignals ( true );
                 resize ( bufferSizeX,bufferSizeY );
                 blockSignals ( false );
-            } 
+            }
         }
     }
 
@@ -1626,7 +1627,7 @@ void DisplayWidget::setShaderUniforms(QOpenGLShaderProgram *shaderProg)
                             sw->texID = TextureUnitCache[uniformName];
                             sw->setUserUniform(shaderProg);
                          }
-                    } else { 
+                    } else {
                         vw[n]->setIsDouble(foundDouble); // ensure float sliders set to float decimals
                         vw[n]->setUserUniform(shaderProg);
                     }
@@ -1714,7 +1715,7 @@ void DisplayWidget::setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int
             // if(verbose) qDebug() << QString("Setting subframe: %1").arg(subframeCounter);
         }
     }
-    
+
         l = shaderProg->uniformLocation ( "frontbuffer" );
 
         if ( l != -1 ) {
@@ -1881,7 +1882,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
                 QOpenGLFramebufferObject* temp = backBuffer;
                 backBuffer = previewBuffer;
                 previewBuffer = temp;
-            
+
             subframeCounter++;
             makeCurrent();
             }
@@ -1892,7 +1893,7 @@ void DisplayWidget::drawToFrameBufferObject(QOpenGLFramebufferObject *buffer, bo
             }
 
             drawFragmentProgram ( s.width(),s.height(), hasBufferShader() );
-            
+
             if ( !previewBuffer->release() ) {
               WARNING ( tr("Failed to release FBO") );
                 return;
@@ -2137,7 +2138,7 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
                                     .arg ( subframeCounter )
                                     .arg ( (tileAVG/(tile+1))/1000.0 )
                                     .arg ( renderETA ) );
-            
+
             if (progress->wasCanceled()) break;
         }
         (*im) = hiresBuffer->toImage();
@@ -2209,6 +2210,8 @@ void DisplayWidget::paintGL()
         }
     }
 
+    if(loopCameraPath && (mainWindow->getFrameMax() == mainWindow->getFrame()) && drawingState == DisplayWidget::Animation) return;
+
     drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0) );
 
 
@@ -2258,6 +2261,7 @@ void DisplayWidget::timerSignal()
         if (buttonDown) {
             pendingRedraws = 1;
         }
+
         render(this);
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
@@ -2273,7 +2277,7 @@ void DisplayWidget::timerSignal()
 
             // render
             pendingRedraws = 1;
-           render(this);
+            render(this);
             QTime cur = QTime::currentTime();
             long ms = t.msecsTo ( cur );
             fpsCounter++;
@@ -2549,7 +2553,7 @@ void DisplayWidget::setPerspective()
     cv = cs.filter ( "Up" ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
     glm::dvec3 up = glm::dvec3(cv.at(0).toDouble(), cv.at(1).toDouble(), cv.at(2).toDouble());
 
-    auto aspectRatio = double((double)bufferSizeX / (double)bufferSizeY); 
+    auto aspectRatio = double((double)bufferSizeX / (double)bufferSizeY);
     double zNear = 0.00001;
     double zFar = 1000.0;
     double vertAngle = 2.0 * atan2 ( 1.0, ( 1.0/fov ) );
@@ -2593,16 +2597,16 @@ void DisplayWidget::createSplines(int numberOfControlPoints, int numberOfFrames)
         auto *upCp = (glm::dvec3 *)upControlPoints.constData();
 
         if (eyeCp != nullptr && tarCp != nullptr && upCp != nullptr) {
-            eyeSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, eyeCp);
-            targetSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, tarCp);
-            upSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, upCp);
+            eyeSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, eyeCp, loopCameraPath);
+            targetSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, tarCp, loopCameraPath);
+            upSpline = new QtSpline(this, numberOfControlPoints, numberOfFrames, upCp, loopCameraPath);
 
             eyeSpline->setSplineColor( QColor("red") );
             eyeSpline->setControlColor( QColor("green"));
 
             targetSpline->setSplineColor( QColor("blue"));
             targetSpline->setControlColor( QColor("green"));
-            
+
             init_arrays();
         }
     }
@@ -2661,21 +2665,21 @@ void DisplayWidget::init_arrays()
                 vptr[j+kfcnt+kfcnt] = glm::vec4(eyeSpline->getSplinePoint(j), 1);
                 vptr[j+kfcnt+kfcnt+mainWindow->getFrameMax()] = glm::vec4(targetSpline->getSplinePoint(j), 1);
             }
-            
+
         glUnmapBuffer(GL_ARRAY_BUFFER); glCheckError(); // release pointer to mapped buffer
     } else DBOUT << "spline vertex glMapBuffer() Failed!";
 
 }
 
 // XYZ vectors @ control points aligned to upSpline vector
-// option to show vectors for all points vs controlpoints (keyframes) only
+// TODO option to show vectors for all points vs controlpoints (keyframes) only
 void DisplayWidget::render_splines(int numberOfPoints, double psize)
 {
     if(spline_program != nullptr) {
-        
+
         GLint cloc = spline_program->uniformLocation("vertex_colour");
         if(cloc == -1) { WARNING("No colour uniform location in spline shader!"); return; }
-            
+
         // create the VAO.
         glGenVertexArrays( 1, &svao ); glCheckError();
         glBindVertexArray( svao ); glCheckError();
@@ -2688,7 +2692,7 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
 
         int start = mainWindow->getVariableEditor()->getKeyFrameCount();
         int count = mainWindow->getFrameMax();
-        
+
         // GL_POINT_SPRITE is effectively forced on in the core profile (which doesn’t support non-sprite points).
         // In the compatibility profile, point sprites are an option (and are disabled by default).
         // gl_PointCoord is normalised (coordinates range from 0.0 to 1.0, so 1.0 is the width of the point),
@@ -2702,7 +2706,7 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             glEnable(GL_PROGRAM_POINT_SIZE); glCheckError();
             glPointParameteri( GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT ); glCheckError();
         }
-        
+
         spline_program->bind();
 
         glUniform1f(spline_program->uniformLocation("pointScale"), pixel_scale); glCheckError();
@@ -2717,9 +2721,9 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
 
         // specify vertex arrays
         glBindVertexArray( svao ); glCheckError();
-        
+
         if(numberOfPoints == start ) {
-            count = start; 
+            count = start;
             start=0;
         }
 
@@ -2728,14 +2732,14 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             glm::vec4 c = eyeSpline->controlColor();
 
             for(int i=0;i<count;++i) {
-                
+
                 if(p == i) { // highlight the currently selected keyframe controlpoint
                     glUniform4f(cloc, 1.0, 0.75, 0.0, 1.0); glCheckError();
                 }
                 else {
                     glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
                 }
-                
+
                 glDrawArrays(GL_POINTS, i, 1 ); glCheckError();
             }
 
@@ -2780,7 +2784,7 @@ void DisplayWidget::render_splines(int numberOfPoints, double psize)
             glUniform4f(cloc, c.x, c.y, c.z, 1.0); glCheckError();
             // render the target path
             glDrawArrays(GL_POINTS, start, count ); glCheckError();
-            
+
         }
 
         // disable arrays
@@ -2797,18 +2801,18 @@ uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsourc
         delete ( spline_program );
         spline_program = nullptr;
     }
-    
+
     makeCurrent();
-    
+
     spline_program = new QOpenGLShaderProgram ( this );
-    
+
     // Vertex shader
     bool s = spline_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vsource);
     if ( fragmentSource.vertexSource.count() == 0 ) {
         WARNING ( tr("No vertex shader found!") );
         s = false;
     }
-    
+
     if ( !s ) {
         createErrorLineLog( tr("Could not create vertex shader: "), spline_program->log(), WarningLevel, false );
         delete ( spline_program );
@@ -2818,27 +2822,27 @@ uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsourc
     if (!spline_program->log().isEmpty()) {
         createErrorLineLog( tr("Vertex shader compiled with warnings: "), spline_program->log(), InfoLevel ,false );
     }
-    
+
     // Fragment shader
     s = spline_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fsource);
-    
+
     if (s) { // Requests the shader program's id to be created immediately.
         s = spline_program->create();
     }
-    
+
     if ( !s ) {
         createErrorLineLog( tr("Could not create fragment shader: "), spline_program->log(), WarningLevel, false );
         delete ( spline_program );
         spline_program = nullptr;
         return 0;
     }
-    
+
     if (!spline_program->log().isEmpty()) {
         createErrorLineLog( tr("Fragment shader compiled with warnings: "), spline_program->log(), InfoLevel, false );
     }
-    
+
     s = spline_program->link();
-    
+
     if ( !s ) {
         WARNING ( tr("Could not link shader: ") );
         CRITICAL ( spline_program->log() );
@@ -2846,11 +2850,11 @@ uint DisplayWidget::compile_shader(const QString &vsource, const QString &fsourc
         spline_program = nullptr;
         return 0;
     }
-    
+
     if (!spline_program->log().isEmpty()) {
         createErrorLineLog( tr("Fragment shader compiled with warnings: "), spline_program->log(), InfoLevel, false );
     }
-    
+
     s = spline_program->bind();
     if ( !s ) {
         WARNING ( tr("Could not bind shaders: ") + spline_program->log() );
@@ -2867,13 +2871,13 @@ void DisplayWidget::init_spline_shader()
     // if user specifies GLSL version add it to spline shaders
     if(!fragmentSource.source.isEmpty() && fragmentSource.source[0].startsWith("#version")) {
         int vers = fragmentSource.source[0].split(" ").at(1).toInt();
-        
+
         QStringList tmp = vertexShader4.split("\n");
         if(vers > 120) { // sync version statement
             tmp[0] = fragmentSource.source[0];
         }
         vertexShader4 = tmp.join("\n");
-        
+
         tmp = spherePixelShader4.split("\n");
         if(vers > 120) { // sync version statement
             tmp[0] = fragmentSource.source[0];
@@ -2890,9 +2894,9 @@ void DisplayWidget::init_spline_shader()
         tmp[0]=QString("#version 120");
         spherePixelShader4 = tmp.join("\n");
     }
-    
+
     if(compile_shader(vertexShader4, spherePixelShader4) == 0) WARNING(tr("Spline pixel shader failed!"));
-    
+
 }
 
 void DisplayWidget::testVersions()
@@ -2908,7 +2912,7 @@ void DisplayWidget::testVersions()
         logText = tr("No GL profile.");
     }
     if(logToConsole) qDebug() << logText; else INFO(logText);
-        
+
     QString ftmp = fragmentSource.source[0];
     QString vtmp = fragmentSource.vertexSource[0];
     QString bftmp = "";
@@ -2921,7 +2925,7 @@ void DisplayWidget::testVersions()
 
     logText = tr("\nTesting GLSL versions: ") + glslvers.join(", ");
     if(logToConsole) qDebug() << logText; else LOG(logText, InfoLevel);
-    
+
     foreach ( const QString &str, glslvers ) {
         logText = tr("\nTest: ") + str;
         if(logToConsole) qDebug() << logText; else LOG(logText, InfoLevel);
@@ -2931,7 +2935,7 @@ void DisplayWidget::testVersions()
         makeBuffers();
 
         initFragmentShader();
-        
+
         if (shaderProgram == nullptr || !shaderProgram->isLinked()) { // something went wrong
             logText = tr("Logged fragment shader fail! GLSL version ") + str;
             if(logToConsole) qDebug() << logText; else LOG(logText, CriticalLevel);
@@ -2942,12 +2946,12 @@ void DisplayWidget::testVersions()
         }
 
         if(!(nullptr == fragmentSource.bufferShaderSource)) {
-            
+
             fragmentSource.bufferShaderSource->source[0] = QString("#version %1").arg(str);
             fragmentSource.bufferShaderSource->vertexSource[0] = QString("#version %1").arg(str);
-            
+
             initBufferShader();
-            
+
             if(bufferShaderProgram == nullptr || !bufferShaderProgram->isLinked()) { // something went wrong
                 logText = tr("Logged buffer shader fail! GLSL Version ") + str;
                 if(logToConsole) qDebug() << logText; else LOG(logText, CriticalLevel);
@@ -2956,14 +2960,14 @@ void DisplayWidget::testVersions()
                 logText = tr("Buffer shader success");
                 if(logToConsole) qDebug() << logText; else LOG(logText, TimingLevel);
             }
-        }    
+        }
     }
 
     makeBuffers();
 
     fragmentSource.source[0] = ftmp;
     fragmentSource.vertexSource[0] = vtmp;
-    
+
     initFragmentShader();
 
     if(!(nullptr == fragmentSource.bufferShaderSource)) {

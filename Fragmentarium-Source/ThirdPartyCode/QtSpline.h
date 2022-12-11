@@ -56,14 +56,12 @@ namespace GUI
 struct Geometry {
     QVector<glm::dvec3> vertices;
     void appendVertex ( const glm::dvec3 &a );
-//     void loadArrays() const;
 };
 
 class Patch
 {
 public:
     Patch ( Geometry * );
-//     void draw ( int n = 0, int p = 0 ) const;
     void addVertex ( const glm::dvec3 &a );
     GLuint start;
     GLuint count;
@@ -75,7 +73,7 @@ public:
 class QtSpline : public QObject
 {
 public:
-    QtSpline ( QOpenGLWidget *parent, int nctrl = 0, int nsegs = 0, glm::dvec3 *cv = 0 );
+    QtSpline ( QOpenGLWidget *parent, int nctrl = 0, int nsegs = 0, glm::dvec3 *cv = 0, bool loop = false );
     ~QtSpline();
 
     void setSplineColor ( QColor c ) const;
@@ -85,11 +83,12 @@ public:
 
     QVector<glm::dvec3>getControlPoints(){ return parts[0]->geom->vertices; };
     QVector<glm::dvec3>getSplinePoints(){ return parts[1]->geom->vertices; };
-    
+
     glm::dvec3 getControlPoint ( int n );
     glm::dvec3 getSplinePoint ( int n );
     void setControlPoint ( int n, glm::dvec3 *p );
     void recalc ( int nc, int ns, glm::dvec3 *cv );
+    void setLooping ( bool l ){ looping = l; };
 
 private:
     void buildGeometry ( int nctrl, int nsegs, glm::dvec3 *cv );
@@ -97,6 +96,7 @@ private:
     Geometry *geom;
     QList<Patch *> parts;
     int num_c, num_s;
+    bool looping;
 };
 } // namespace GUI
 

@@ -298,7 +298,7 @@ public slots:
     {
         return cameraControl->getID();
     }
-    
+
     bool isCompat(){ return compatibilityProfile; };
     void useCompat(bool c) {
         if( format().profile() == QSurfaceFormat::CompatibilityProfile ) compatibilityProfile = c;
@@ -312,7 +312,8 @@ public slots:
     void testVersions();
 
     int getMaxUniforms() { return m_maxUniforms; };
-    
+    void setCameraPathLoop( bool l ) { loopCameraPath = l; };
+
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );
     void drawToFrameBufferObject ( QOpenGLFramebufferObject* buffer, bool drawLast );
@@ -352,7 +353,7 @@ private:
     QOpenGLShaderProgram* shaderProgram;
     QOpenGLShaderProgram* bufferShaderProgram;
     QOpenGLShaderProgram* spline_program;
-    
+
 /// for Main Shaders
 	GLuint vbo;
 	GLuint vao;
@@ -386,12 +387,12 @@ private:
     void setupShaderVars(QOpenGLShaderProgram *shaderProg, int w, int h);
     void draw3DHints();
     bool FBOcheck();
-    
+
     GLenum glCheckError_(const char *file, int line, const char *func);
-    
+
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
-    
+
     QColor backgroundColor;
 
     QMenu* contextMenu;
@@ -434,6 +435,7 @@ private:
     double ZAtMXY;
     QPoint mouseXY;
     bool depthToAlpha;
+    bool loopCameraPath;
     bool verbose;
     bool bufferShaderOnly;
     bool glDebugEnabled;
