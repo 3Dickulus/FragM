@@ -783,6 +783,8 @@ void MainWindow::init()
 
     engine = new DisplayWidget(this, splitter );
 
+    connect(engine, SIGNAL(easingCurveError(QString)), this, SLOT(easingMessage(QString)));
+
     if(fullScreenEnabled)
         engine->setMaximumSize(screenGeometry.width(),screenGeometry.height());
     else
@@ -2084,7 +2086,8 @@ retry:
         }
         if((totalSteps/maxTiles/maxTiles/maxSubframes) > 1) {
             if(variableEditor->hasEasing()) {
-                engine->updateEasingCurves( timeStep ); // current frame
+                if(!engine->updateEasingCurves( timeStep )) // current frame
+                    if(verbose) DBOUT << "updateEasingCurves failed!";
             }
 
             if ( variableEditor->hasKeyFrames() ) {
@@ -3157,7 +3160,7 @@ bool MainWindow::initializeFragment()
 
     engine->useCompat( !fs.source[0].contains("core") );
     engine->setCameraPathLoop(loopCameraPath);
-    
+
     if (filename != "Unnamed" && !fragWatch->files().contains(filename)) { // file has been saved
             addToWatch( QStringList(filename) );
     }
@@ -3827,7 +3830,7 @@ void MainWindow::preferences()
     PreferencesDialog pd(this);
     pd.exec();
     readSettings();
-   
+
     QString styleSheetFile = "file:///"+guiStylesheet;
     if(guiStylesheet.isEmpty()) styleSheetFile = "";
     qApp->setStyleSheet(styleSheetFile);

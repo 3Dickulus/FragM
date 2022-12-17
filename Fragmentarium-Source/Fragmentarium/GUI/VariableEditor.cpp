@@ -88,7 +88,7 @@ VariableEditor::VariableEditor(QWidget *parent, MainWindow *mainWin)
     keyFramesEnabled = false;
     saveEasing = false;
     verbose = false;
-    
+
     installEventFilter(this);
 }
 
@@ -239,7 +239,7 @@ void VariableEditor::hideUnusedTabs()
                 hideMe |= !variable->isHidden();
             }
         }
-        
+
         tabWidget->widget(i)->setEnabled(hideMe);
     }
 
@@ -320,7 +320,7 @@ void VariableEditor::groupToPreset() {
     }
 
     INFO(tr("Created ") + g + tr(" Preset."));
-    
+
     QTextCursor tc = mainWindow->getTextEdit()->textCursor();
     tc.movePosition(QTextCursor::End);
     mainWindow->getTextEdit()->setTextCursor(tc);
@@ -459,19 +459,19 @@ void VariableEditor::createGroup(QString g)
     c->setLayout(new QHBoxLayout(c));
     c->layout()->setSpacing(0);
     c->layout()->setContentsMargins (0,0,0,0);
-    
+
     pb = new QPushButton(c);
     pb->setText("Reset group");
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(resetGroup()));
-    
+
     pb = new QPushButton(c);
     pb->setText("Group to Preset");
     c->layout()->addWidget(pb);
     connect(pb, SIGNAL(clicked()), this, SLOT(groupToPreset()));
-    
+
     a->layout()->addWidget(c);
-    
+
     auto *verticalSpacer = new QSpacerItem(288, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
     a->layout()->addItem(verticalSpacer);
     w->layout()->addWidget(a);
@@ -695,7 +695,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
     }
 
     for (int i = 0; i < ps.count(); i++) {
-        
+
         // what group do we want
         QString g = ps[i]->getGroup();
         if (g.isEmpty()) {
@@ -734,7 +734,7 @@ void VariableEditor::updateFromFragmentSource(Parser::FragmentSource *fs /*, boo
 
     // cleanup any system vars and vars that were not updated
     for (int i = 0; i < variables.count(); ) {
-        
+
         if (variables[i]->isSystemVariable()) {
             variables.remove(i);
             i = 0;
@@ -1133,7 +1133,7 @@ void VariableEditor::setEasingCurves(QString ecset)
 
             cs->propertyAnimation()->setStartValue(s);
             cs->propertyAnimation()->setEndValue(f);
-            cs->propertyAnimation()->setDuration((lf - ff) * ((1.0 / mainWindow->renderFPS) * 1000));
+            cs->propertyAnimation()->setDuration((lf - ff) * 40); // magic number
             cs->propertyAnimation()->setLoopCount(l);
             cs->propertyAnimation()->start();
             cs->propertyAnimation()->setPaused(true);

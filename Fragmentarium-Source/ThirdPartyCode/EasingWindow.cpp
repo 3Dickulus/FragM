@@ -45,6 +45,7 @@ namespace Fragmentarium
 {
 namespace GUI
 {
+#define DBOUT qDebug() << QString(__FILE__).split(QDir::separator()).last() << __LINE__ << __FUNCTION__
 
 EasingWindow::EasingWindow(QWidget *parent, double min, double max, double start, int animLength, int loops, int pp)
     : QDialog(parent), m_iconSize(64, 64)
@@ -208,9 +209,9 @@ void EasingWindow::curveChanged(int row)
 void EasingWindow::directionChange()
 {
     static bool loop = true;
-    QAbstractAnimation::Direction flip = loop ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
 
     if (m_ui.pongCheckBox->isChecked()) {
+        QAbstractAnimation::Direction flip = loop ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
         pong = 1;
         m_anim->setDirection(flip);
         if (flip == QAbstractAnimation::Backward) {

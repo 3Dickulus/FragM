@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Fragmentarium-2.5.7-221010
+Name=Fragmentarium-2.5.7-221217
 Comment=Experimental GLSL IDE An integrated environment for exploring GPU pixel graphics.
-TryExec=Fragmentarium-2.5.7-221010
+TryExec=Fragmentarium-2.5.7-221217
 Exec=Fragmentarium-2.5.7
 Icon=FragMicon
 NoDisplay=false

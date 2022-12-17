@@ -375,7 +375,7 @@ public slots:
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec2(x,0.0);
         }
-        
+
         return glm::vec2(x,y);
     };
 
@@ -397,13 +397,13 @@ public slots:
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec3(x,0.0,0.0);
         }
-        
+
         z = s.at(2).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec3(x,y,0.0);
         }
-        
+
         return glm::vec3(x,y,z);
     };
 
@@ -425,19 +425,19 @@ public slots:
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec4(x,0.0,0.0,0.0);
         }
-        
+
         z = s.at(2).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec4(x,y,0.0,0.0);
         }
-        
+
         w = s.at(3).toFloat(&ok);
         if ( !ok ) {
             WARNING ( QString ( "Parameter %1 not found!" ).arg ( name ) );
             return glm::vec4(x,y,z,0.0);
         }
-        
+
         return glm::vec4(x,y,z,w);
     };
 
@@ -605,7 +605,7 @@ public slots:
     QString getPresetNames ( bool keyframesORpresets = false );
 
     void readSettings();
-    
+
     bool isPaused() { return pausePlay; };
 
     void testVersions() { getEngine()->testVersions(); };
@@ -692,6 +692,10 @@ private slots:
         tabInfo[tabBar->currentIndex()].unsaved = ( variableEditor->hasEasing() ) ? true : tabInfo[tabBar->currentIndex()].unsaved;
     }
 
+    void easingMessage(QString mess) {
+        QMessageBox::warning(this, tr("Easing Curve Message"), mess);
+    }
+
     void timeMaxChanged ( int value );
     void editScript();
 
@@ -716,7 +720,7 @@ private slots:
         aspectLock->setChecked(l);
         lockedAspect = l; l ? aspectLock->setIcon(QIcon(":/Icons/padlocka.png")) : aspectLock->setIcon(QIcon(":/Icons/padlockb.png"));
     };
-    
+
 private:
 
     QString langID;
@@ -849,7 +853,7 @@ private:
     bool playRestartMode;
     bool useMimetypes;
     bool loopCameraPath;
-    
+
     QMenu *exrToolsMenu;
     QStringList exrBinaryPath;
 
@@ -863,7 +867,7 @@ private:
 
     QShortcut       *keyF6;           // Entity of F6 hotkey
     QShortcut       *keyShiftF6;      // Entity of Shift+F6 hotkey
-    
+
     QPixmap enginePixmap;
     QLabel* engineOverlay;
     QPushButton *aspectLock;

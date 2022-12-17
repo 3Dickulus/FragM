@@ -270,7 +270,7 @@ public:
 public slots:
     void updateBuffers();
     void timerSignal();
-    void updateEasingCurves ( int currentframe );
+    bool updateEasingCurves ( int currentframe );
     void setRenderFPS ( int fps )
     {
         renderFPS = fps;
@@ -313,6 +313,9 @@ public slots:
 
     int getMaxUniforms() { return m_maxUniforms; };
     void setCameraPathLoop( bool l ) { loopCameraPath = l; };
+
+signals:
+    void easingCurveError(QString);
 
 protected:
     void drawFragmentProgram ( int w,int h, bool toBuffer );

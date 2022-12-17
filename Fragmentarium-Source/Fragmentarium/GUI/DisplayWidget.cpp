@@ -2153,7 +2153,6 @@ void DisplayWidget::renderTile(double pad, double time, int subframes, int w,
 
 void DisplayWidget::setState(DrawingState state)
 {
-
     drawingState = state;
 }
 
@@ -2193,9 +2192,6 @@ void DisplayWidget::paintGL()
     }
 
     if ( subframeCounter==0 && drawingState == DisplayWidget::Animation ) {
-        if ( mainWindow->getVariableEditor()->hasEasing() ) {
-            updateEasingCurves ( mainWindow->getFrame() ); // current frame
-        }
         if (eyeSpline != nullptr && cameraID() == "3D") {
             int index = mainWindow->getFrame();
             glm::dvec3 e = eyeSpline->getSplinePoint ( index );
@@ -2205,15 +2201,12 @@ void DisplayWidget::paintGL()
             glm::dvec3 u = upSpline->getSplinePoint ( index );
             glm::dvec3 zero = glm::dvec3(0.0,0.0,0.0);
             if ( e!=zero && t!=zero && u!=zero ) {
-                mainWindow->setCameraSettings(e, t, normalize(u)); // normalizing Up here allows spline path animating
+                 mainWindow->setCameraSettings(e, t, normalize(u)); // normalizing Up here allows spline path animating
             }
         }
     }
 
-    if(loopCameraPath && (mainWindow->getFrameMax() == mainWindow->getFrame()) && drawingState == DisplayWidget::Animation) return;
-
     drawToFrameBufferObject( nullptr, (subframeCounter >= maxSubFrames && maxSubFrames > 0) );
-
 
 }
 
@@ -2257,12 +2250,18 @@ void DisplayWidget::timerSignal()
         cameraControl->updateState();
     }
 
+    if ( subframeCounter==1 && drawingState == DisplayWidget::Animation ) {
+        if ( mainWindow->getVariableEditor()->hasEasing() ) {
+            if(!updateEasingCurves ( mainWindow->getFrame() ) ) // current frame
+                if(verbose) DBOUT << "updateEasingCurves failed!";
+        }
+    }
+
     if (pendingRedraws != 0) {
         if (buttonDown) {
             pendingRedraws = 1;
         }
-
-        render(this);
+         render(this);
     } else if ( continuous ) {
         if ( drawingState == Progressive &&
                 ( subframeCounter>=maxSubFrames && maxSubFrames>0 ) ) {
@@ -2274,7 +2273,6 @@ void DisplayWidget::timerSignal()
             }
 
             QTime t = QTime::currentTime();
-
             // render
             pendingRedraws = 1;
             render(this);
@@ -2459,12 +2457,12 @@ void DisplayWidget::keyReleaseEvent(QKeyEvent *ev)
     }
 }
 
-void DisplayWidget::updateEasingCurves(int currentframe)
+bool DisplayWidget::updateEasingCurves(int currentframe)
 {
-
     static int cf = 0; // prevent getting called more than once per frame ?
     if (cf == currentframe) {
-        return;
+        if(verbose) DBOUT << "updateEasingCurves called twice on same frame!";
+        return false;
     }
     cf = currentframe;
 
@@ -2478,49 +2476,51 @@ void DisplayWidget::updateEasingCurves(int currentframe)
         ComboSlider *cs = (ComboSlider *)(mainWindow->getVariableEditor()->findChild<ComboSlider *>(QString("%1%2").arg(wName).arg(wNum)));
 
         if (cs->propertyAnimation() != nullptr) {
+
             cs->blockSignals ( true );
             int animframe = currentframe-cs->getFrameStart();
             int loopduration = cs->getLoopDuration();
-            int singleframe = ( 1.0/renderFPS ) *1000; // in msecs
             auto maxttime = (int)(mainWindow->getTimeMax() * renderFPS);
             int endframe = cs->getFrameFin();
             if (cs->getLoops() > 0) {
                 endframe *= cs->getLoops();
             }
+            int singleframe = 40; // magic number
 
             // test end frame against maxTime warn and stop if greater
             if ( endframe > maxttime ) {
+                mainWindow->stop();
                 VariableWidget *vw = (VariableWidget *)(mainWindow->getVariableEditor()->findChild<VariableWidget *>(wName));
-              QString gr;
+                QString gr;
                 if (vw != nullptr) {
                     gr = vw->getGroup();
                 } else {
                     gr = tr("Fix me");
                 }
 
-                QString mess = tr("Easingcurve end frame %1 is greater than maximum %2 \
-              <br><br>Select <b>%3 -> %4</b> and press \"F7\" \
-              <br><br>Or set the <b>animation length</b> greater than <b>%5</b>" )
+                pendingRedraws = 0;
+                cs->propertyAnimation()->stop();
+
+                QString mess = tr("Easingcurve end frame %1 is greater than maximum %2 <br><br>Select <b>%3 -> %4</b> and press \"F7\" <br><br>Or set the <b>animation length</b> greater than <b>%5</b>" )
                     .arg(endframe)
                     .arg(maxttime)
                     .arg(gr)
                     .arg(wName)
                     .arg((int)((cs->getFrameStart() + endframe) / renderFPS));
-                QMessageBox::warning(this, tr("Easing Curve Error"), mess);
 
-              mainWindow->setTimeSliderValue ( currentframe );
-              mainWindow->stop();
 
-              return;
+                emit easingCurveError(mess);
+
+                mainWindow->setTimeSliderValue ( currentframe );
+
+                return false;
             }
             if ( currentframe < cs->getFrameStart() ) {
-                cs->propertyAnimation()->setCurrentTime(1); // preserve the startvalue for prior frames
-            } else if (currentframe < cs->getFrameStart() + (loopduration * cs->getLoops())) { // active!
+                cs->propertyAnimation()->setCurrentTime(0); // preserve the startvalue for prior frames
+            }else if (currentframe < cs->getFrameStart() + (loopduration * cs->getLoops()) && currentframe >= cs->getFrameStart()) { // active!
 
                 if (cs->getPong() == 1) { // pingpong = 1 loop per so 4 loops = ping pong ping pong
-
                     int test = ( animframe/loopduration ); // for even or odd loop
-
                     if ( ( int ) ( test*0.5 ) *2 == test ) {
                         cs->propertyAnimation()->setCurrentTime ( ( animframe*singleframe ) +1 );
                     } else {
@@ -2531,14 +2531,15 @@ void DisplayWidget::updateEasingCurves(int currentframe)
                 }
             } else { // preserve the end value for remaining frames
                 if (cs->getPong() == 1 && (int)(cs->getLoops() * 0.5) * 2 == cs->getLoops()) { // even or odd loop
-                  cs->propertyAnimation()->setCurrentTime ( 1 );
+                  cs->propertyAnimation()->setCurrentTime ( 0 );
                 } else {
-                  cs->propertyAnimation()->setCurrentTime ( cs->propertyAnimation()->duration()-1 );
+                  cs->propertyAnimation()->setCurrentTime ( cs->propertyAnimation()->duration() );
                 }
             }
             cs->blockSignals ( false );
         }
     }
+    return true;
 }
 
 void DisplayWidget::setPerspective()
