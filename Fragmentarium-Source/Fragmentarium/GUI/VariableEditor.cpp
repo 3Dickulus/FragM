@@ -1132,8 +1132,8 @@ void VariableEditor::setEasingCurves(QString ecset)
             cs->setPong(pp);
 
             cs->propertyAnimation()->setStartValue(s);
-            cs->propertyAnimation()->setEndValue(f);
-            cs->propertyAnimation()->setDuration((lf - ff) * 40); // magic number
+            cs->propertyAnimation()->setEndValue(f + (1.0/((lf - ff)/(f-s)))); // magic number
+            cs->propertyAnimation()->setDuration((lf - ff)+1);
             cs->propertyAnimation()->setLoopCount(l);
             cs->propertyAnimation()->start();
             cs->propertyAnimation()->setPaused(true);

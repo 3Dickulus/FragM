@@ -2076,7 +2076,6 @@ retry:
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-//     bool isFirst = true;
     // render tiles and update progress
     for (int timeStep = startTime; timeStep<timeSteps ; timeStep++) {
         double time = (double)timeStep/(double)fps;
@@ -2086,8 +2085,7 @@ retry:
         }
         if((totalSteps/maxTiles/maxTiles/maxSubframes) > 1) {
             if(variableEditor->hasEasing()) {
-                if(!engine->updateEasingCurves( timeStep )) // current frame
-                    if(verbose) DBOUT << "updateEasingCurves failed!";
+                engine->updateEasingCurves( timeStep );
             }
 
             if ( variableEditor->hasKeyFrames() ) {

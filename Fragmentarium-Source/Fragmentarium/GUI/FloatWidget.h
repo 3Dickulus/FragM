@@ -94,7 +94,7 @@ public:
         spinner->setMinimumSize(FDEC*20,20);
         spinner->setMaximumSize(2048,20);
         spinner->setSizePolicy (QSizePolicy ( QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-       
+
         l->addWidget(spinner);
         spinner->update();
 
@@ -164,7 +164,7 @@ public:
                 spinner->setMinimum(i);
                 emit sliderBoundsChanged( objectName() + QString(" 1 %1").arg(i) );
             }
-            
+
         } else if ( choice == &findInSource ) {
             emit sliderBoundsChanged( objectName() + QString(" 0 0") );
         }
@@ -210,7 +210,7 @@ public:
     }
     int getLoopDuration()
     {
-        return m_framefin-m_framestart;
+        return (m_framefin-m_framestart)+1;
     }
     void setFrameStart( int s )
     {

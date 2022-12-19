@@ -270,7 +270,7 @@ public:
 public slots:
     void updateBuffers();
     void timerSignal();
-    bool updateEasingCurves ( int currentframe );
+    void updateEasingCurves ( int currentframe );
     void setRenderFPS ( int fps )
     {
         renderFPS = fps;
