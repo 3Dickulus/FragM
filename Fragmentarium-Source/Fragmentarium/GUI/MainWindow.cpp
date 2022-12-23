@@ -355,7 +355,7 @@ void MainWindow::insertPreset()
         tc.movePosition(QTextCursor::End);
         getTextEdit()->setTextCursor(tc);
         if (engine->cameraID() == "3D") {
-            newPreset.asprintf("KeyFrame.%.3d", variableEditor->getKeyFrameCount() + 1);
+            newPreset = QStringLiteral("KeyFrame.%1").arg(variableEditor->getKeyFrameCount() + 1, 4, 10, QLatin1Char('0'));
         }
     }
 

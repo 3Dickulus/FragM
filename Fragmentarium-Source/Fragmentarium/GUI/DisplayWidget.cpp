@@ -2515,8 +2515,7 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
             if ( currentframe <= cs->getFrameStart() ) {
                 cs->propertyAnimation()->setCurrentTime(0); // preserve the startvalue for prior frames
-            }else if (currentframe < cs->getFrameStart() + (loopduration * cs->getLoops()) && currentframe >= cs->getFrameStart()) { // active!
-
+            }else if (currentframe <= endframe) { // active!
                 if (cs->getPong() == 1) { // pingpong = 1 loop per so 4 loops = ping pong ping pong
                     if ( even ) {
                         cs->propertyAnimation()->setCurrentTime ( animframe%loopduration );
@@ -2526,8 +2525,9 @@ void DisplayWidget::updateEasingCurves(int currentframe)
                 } else {
                     cs->propertyAnimation()->setCurrentTime(animframe);
                 }
-            } else { // preserve the end value for remaining frames
+            } else if(currentframe > endframe){ // preserve the end value for remaining frames
                 if (cs->getPong() == 1) {
+                    even = ( (int)(cs->getLoops()*0.5)*2 == cs->getLoops() );
                     if( even ) { // even or odd loop
                         cs->propertyAnimation()->setCurrentTime ( 0 );
                     } else {
@@ -2545,6 +2545,7 @@ void DisplayWidget::updateEasingCurves(int currentframe)
 
 void DisplayWidget::setPerspective()
 {
+
     QStringList cs = mainWindow->getCameraSettings().split ( "\n" );
     double fov = cs.filter ( "FOV" ).at ( 0 ).split ( "=" ).at ( 1 ).toDouble();
     QStringList cv = cs.filter ( "Eye " ).at ( 0 ).split ( "=" ).at ( 1 ).split ( "," );
@@ -2564,6 +2565,7 @@ void DisplayWidget::setPerspective()
     m_viewMatrix = glm::lookAt ( eye,target,up );
     m_modelMatrix = glm::mat4(1); // identity
     m_pvmMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+
 }
 
 QStringList DisplayWidget::getCurveSettings()

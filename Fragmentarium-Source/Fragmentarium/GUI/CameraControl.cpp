@@ -288,7 +288,7 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
         return false;
     }
 
-    glm::dvec3 pos = glm::dvec3(e->pos().x() / (float(h)), e->pos().y() / (float(h)), 0.0);
+    glm::dvec3 pos = glm::dvec3(e->pos().x() / (float(w)), e->pos().y() / (float(h)), 0.0);
 
     // Store down params
     if (e->type() ==  QEvent::MouseButtonPress) {
@@ -305,57 +305,49 @@ bool Camera3D::mouseEvent(QMouseEvent *e, int w, int h)
     if (mouseDown.z != -1 && e->buttons() != Qt::NoButton) {
         glm::dvec3 dp = mouseDown - pos;
 
-        double mouseSpeed = stepSize * 10.0;    // for anything related to movement (rotate arround origin/target, "zoom" & translate)
-        double sensitivity = fovDown * 100.;    // for fly mode
+        double sensitivity = fovDown + 0.5;
+        double mouseSpeed = stepSize * sensitivity;
 
         glm::dvec3 directionDown = (targetDown - eyeDown);
-        glm::dvec3 rightDown = normalize(cross(normalize(directionDown), upDown));
+        glm::dvec3 rightDown = cross(normalize(directionDown), upDown);
+
+        glm::dmat4 mx = glm::identity<glm::dmat4>();
+        mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 100.0), upDown);
+        glm::dmat4 my = glm::identity<glm::dmat4>();
+        my = rotate(my, glm::radians(-dp.y * mouseSpeed * 100.0), normalize(rightDown));
 
         if (e->buttons() == Qt::RightButton) {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // Translate in screen plane
-                glm::dvec3 offset = (-upDown * dp.y * mouseSpeed * 2.0) + (rightDown * dp.x * mouseSpeed);
+                dp *= 10.0;
+                glm::dvec3 offset = (-upDown * dp.y * mouseSpeed) + (rightDown * dp.x * mouseSpeed);
                 eye->setValue(eyeDown + offset);
                 target->setValue(targetDown + offset);
                 return true;
             }
-        } else if (e->buttons() == (Qt::RightButton | Qt::LeftButton)) {
+        }
+        if (e->buttons() == (Qt::RightButton | Qt::LeftButton)) {
             // Zoom
             glm::dvec3 newEye = eyeDown - directionDown * dp.x * mouseSpeed;
             eye->setValue(newEye);
             target->setValue(directionDown + newEye);
             return true;
-        } else if (e->buttons() == Qt::LeftButton) { // Left mouse button
-
-            if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
-                // Rotate about origo
-                glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 100.0), upDown);
-                glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 100.0), rightDown);
-                glm::dvec3 oDir = (my * mx) * (-eyeDown);
-                eye->setValue(-oDir);
-                target->setValue((my * mx)*directionDown - oDir);
+        }
+        if (e->buttons() == Qt::LeftButton) { // Left mouse button
+            if (QApplication::keyboardModifiers() == (Qt::ShiftModifier)) {
+                glm::dvec3 oDir = (my * mx) * (eyeDown); // rotate around world 0,0,0
+                eye->setValue(oDir);
+                target->setValue((my * mx)*directionDown + oDir);
                 up->setValue((my * mx)*upDown);
-            } else if (QApplication::keyboardModifiers() == (Qt::ShiftModifier | Qt::AltModifier)) {
-                // Rotate around target thanks to M.Benesi
-                glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, glm::radians(-dp.x * mouseSpeed * 100.0), upDown);
-                glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, glm::radians(-dp.y * mouseSpeed * 100.0), rightDown);
-                glm::dvec3 oDir = (my * mx) * (directionDown); //was -eyeDown
+            } else if (QApplication::keyboardModifiers() == (Qt::ShiftModifier|Qt::AltModifier)) {
+                glm::dvec3 oDir = (my * mx) * (directionDown); // Rotate around target thanks to M.Benesi
                 eye->setValue(targetDown - oDir);
                 up->setValue((my * mx)*upDown);
             } else if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 // orient camera
-                glm::dmat4 mx = glm::identity<glm::dmat4>();
-                mx = rotate(mx, glm::radians(-dp.x * sensitivity), upDown);
-                glm::dmat4 my = glm::identity<glm::dmat4>();
-                my = rotate(my, glm::radians(-dp.y * sensitivity), rightDown);
-                target->setValue((my * mx) * directionDown + eye->getValue()); // before: eyeDown
+                target->setValue((my * mx) * normalize(directionDown) + eye->getValue()); // before: eyeDown
                 up->setValue((my * mx)*upDown);
             }
-
             return true;
         }
     }
@@ -405,7 +397,7 @@ bool Camera3D::wheelEvent(QWheelEvent *e)
 glm::dvec3 Camera3D::screenTo3D(int sx, int sy, double sz)
 {
     if(eye == nullptr || target == nullptr || up == nullptr) return glm::dvec3(0,0,0);
-    
+
     glm::dvec3 eye2 = eye->getValue(), target2 = target->getValue(), up2 = up->getValue();
     double coordX = (double(sx) / double(height) * 2.0 - double(width) / double(height));
     double coordY = (double(height - sy) / double(height) * 2.0 - 1.0);
