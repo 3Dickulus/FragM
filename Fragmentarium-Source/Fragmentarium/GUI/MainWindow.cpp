@@ -73,7 +73,6 @@ MainWindow::MainWindow(QWidget* parent)
     supportProgramsMenu = nullptr;
     maxRecentFiles = 5;
     editorTheme = 0;
-    lastStoredTime = 0;
     engine = nullptr;
 
     setAcceptDrops(true);
@@ -97,7 +96,6 @@ MainWindow::MainWindow(QWidget* parent)
     maxLogFileSize = 125000;
     fullPathInRecentFilesList = false;
     includeWithAutoSave = true;
-    playRestartMode = false;
 
     lockedAspect = false;
 
@@ -251,8 +249,8 @@ void MainWindow::new2DFile()
 #include \"Complex.frag\" \r\n\
 #include \"Progressive2D.frag\" \r\n\
  \r\n\
-// Escape time fractals iterate a functions for each point \r\n\
-// in the plane, and check if the sequence generated converges. \r\n\
+// Escape time fractals iterate a function for each point \r\n\
+// in the plane, and checks if the sequence generated converges. \r\n\
 //  \r\n\
 // Just implement the \'color\' function below. \r\n\
 // It is possible to draw Mandelbrots and Julias \r\n\
@@ -541,8 +539,8 @@ void MainWindow::showHelpMessage(const QString title, const QString mess)
     mb.setText(mess);
     mb.setWindowTitle(title);
     mb.setIconPixmap(getMiscDir() + "/" + "Fragmentarium-sm.png");
-    auto *layout = (QGridLayout *)mb.layout();
-    layout->setColumnMinimumWidth( 2, 640);
+    QGridLayout *glayout = (QGridLayout *)mb.layout();
+    glayout->setColumnMinimumWidth( 2, 640);
     mb.exec();
 
 }
@@ -827,7 +825,7 @@ void MainWindow::init()
     dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-    auto *vboxLayout1 = new QVBoxLayout(dockLogContents);
+    QVBoxLayout *vboxLayout1 = new QVBoxLayout(dockLogContents);
     vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
     vboxLayout1->setContentsMargins(0, 0, 0, 0);
     logger = new ListWidgetLogger(dockLog);
@@ -844,7 +842,7 @@ void MainWindow::init()
     dockVariableEditor->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
-    auto *vboxLayout2 = new QVBoxLayout(editorLogContents);
+    QVBoxLayout *vboxLayout2 = new QVBoxLayout(editorLogContents);
     vboxLayout2->setObjectName(QString::fromUtf8("vboxLayout2"));
     vboxLayout2->setContentsMargins(0, 0, 0, 0);
     variableEditor = new VariableEditor(dockVariableEditor, this);
@@ -976,7 +974,7 @@ void MainWindow::initTools()
                                     exrToolsMenu = menuBar()->addMenu(tr("EXR Tools"));
                                 }
                                 // add item to menu
-                                auto *a = new QAction(qfi.fileName(), this);
+                                QAction *a = new QAction(qfi.fileName(), this);
                                 a->setData(toolName);
                                 a->setObjectName(toolName);
                                 connect(a, SIGNAL(triggered()), this, SLOT(runEXRTool()));
@@ -1017,7 +1015,7 @@ void MainWindow::initTools()
                                     supportProgramsMenu = menuBar()->addMenu(tr("GLSL Tools"));
                                 }
                                 // add item to menu
-                                auto *a = new QAction(qfi.fileName(), this);
+                                QAction *a = new QAction(qfi.fileName(), this);
                                 a->setData(toolName);
                                 a->setObjectName(toolName);
                                 connect(a, SIGNAL(triggered()), this, SLOT(runSupportProgram()));
@@ -1036,7 +1034,7 @@ void MainWindow::initTools()
             if (supportProgramsMenu == nullptr) {
                 supportProgramsMenu = menuBar()->addMenu(tr("GLSL Tools"));
             }
-            auto *a = new QAction(tr("Import Gimp Gradient"), this);
+            QAction *a = new QAction(tr("Import Gimp Gradient"), this);
             a->setObjectName("convertgradient");
             connect(a, SIGNAL(triggered()), this, SLOT(runSupportProgram()));
             supportProgramsMenu->addAction(a);
@@ -1061,6 +1059,7 @@ void MainWindow::runEXRTool()
         QString helpText;
         while (!file.atEnd()) {
             QByteArray line = file.readLine();
+            if(QString(line).contains(QDir::separator())) line = QString(line).split(QDir::separator()).last().toLocal8Bit();
             if (QString(line).contains("Options") && QString(line).contains(":")) {
                 break;
             }
@@ -1214,6 +1213,7 @@ void MainWindow::createOpenGLContextMenu()
     openGLContextMenu->addMenu(renderMenu);
     openGLContextMenu->addMenu(examplesMenu);
     openGLContextMenu->addMenu(helpMenu);
+    openGLContextMenu->addMenu(optionsMenu);
     openGLContextMenu->addAction(exitAction);
     engine->setContextMenu(openGLContextMenu);
 }
@@ -1367,10 +1367,17 @@ void MainWindow::createActions()
     connect(scriptingControlAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
     clearTexturesAction = new QAction(tr("Clear Texture Cache"), this);
+    clearTexturesAction->setObjectName(QString::fromUtf8("clearTexturesAction"));
     connect(clearTexturesAction, SIGNAL(triggered()), this, SLOT(clearTextures()));
+
+    clearAnimationObjectsAction = new QAction(tr("Clear Animation Actions"), this);
+    clearAnimationObjectsAction->setStatusTip(tr("Clears camera control and Easingcurve cache"));
+    clearAnimationObjectsAction->setObjectName(QString::fromUtf8("clearAnimationObjectsAction"));
+    connect(clearAnimationObjectsAction, SIGNAL(triggered()), this, SLOT(clearKeyFrames()));
 
     testCompileGLSLAction = new QAction(tr("Test versions"), this);
     testCompileGLSLAction->setStatusTip(tr("Tests the current fragment against all supported GLSL versions."));
+    testCompileGLSLAction->setObjectName(QString::fromUtf8("testCompileGLSLAction"));
     connect(testCompileGLSLAction, SIGNAL(triggered()), this, SLOT(testCompileGLSL()));
 
     loopCameraPathAction = new QAction(tr("Loop Camera Path"), this);
@@ -1383,17 +1390,13 @@ void MainWindow::createActions()
     sfHomeAction->setStatusTip(tr("Open the project page in a browser."));
     connect(sfHomeAction, SIGNAL(triggered()), this, SLOT(launchSfHome()));
 
-    referenceAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium@FractalForums (web link)"), this);
-    referenceAction->setStatusTip(tr("Open a FractalForums.com Fragmentarium web page in a browser."));
-    connect(referenceAction, SIGNAL(triggered()), this, SLOT(launchReferenceHome()));
+    ffReferenceAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium@FractalForums (web link)"), this);
+    ffReferenceAction->setStatusTip(tr("Open a FractalForums.com Fragmentarium web page in a browser."));
+    connect(ffReferenceAction, SIGNAL(triggered()), this, SLOT(launchReferenceHome()));
 
-    referenceAction2 = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium 3Dickulus (web link)"), this);
-    referenceAction2->setStatusTip(tr("Open a Fragmentarium reference web page in a browser."));
-    connect(referenceAction2, SIGNAL(triggered()), this, SLOT(launchReferenceHome2()));
-
-    referenceAction3 = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium Documentation (web link)"), this);
-    referenceAction3->setStatusTip(tr("Open a Fragmentarium reference web page in a browser."));
-    connect(referenceAction3, SIGNAL(triggered()), this, SLOT(launchDocumentation()));
+    fragmReferenceAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Fragmentarium Documentation (web link)"), this);
+    fragmReferenceAction->setStatusTip(tr("Open a Fragmentarium reference web page in a browser."));
+    connect(fragmReferenceAction, SIGNAL(triggered()), this, SLOT(launchDocumentation()));
 
     galleryAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Flickr Fragmentarium Group (web link)"), this);
     galleryAction->setStatusTip(tr("Opens the main Flickr group for Fragmentarium creations."));
@@ -1410,7 +1413,7 @@ void MainWindow::createActions()
     connect(faqAction, SIGNAL(triggered()), this, SLOT(launchFAQ()));
 
     for (int i = 0; i < maxRecentFiles; ++i) {
-        auto *a = new QAction(this);
+        QAction *a = new QAction(this);
         a->setVisible(false);
         connect(a, SIGNAL(triggered()), this, SLOT(openFile()));
         recentFileActions.append(a);
@@ -1505,20 +1508,21 @@ void MainWindow::createMenus()
     helpMenu->addAction(scriptingControlAction);
 
     helpMenu->addSeparator();
-    helpMenu->addMenu(mc); // "windows" menu
-    helpMenu->addAction(clearTexturesAction);
-    helpMenu->addAction(testCompileGLSLAction);
-    helpMenu->addAction(loopCameraPathAction);
-    helpMenu->addSeparator();
 
     helpMenu->addAction(sfHomeAction);
-    helpMenu->addAction(referenceAction);
-    helpMenu->addAction(referenceAction2);
-    helpMenu->addAction(referenceAction3);
+    helpMenu->addAction(ffReferenceAction);
+    helpMenu->addAction(fragmReferenceAction);
     helpMenu->addAction(galleryAction);
     helpMenu->addAction(glslHomeAction);
     helpMenu->addAction(faqAction);
     helpMenu->addAction(introAction);
+
+    optionsMenu = menuBar()->addMenu(tr("&Options"));
+    optionsMenu->addMenu(mc); // "windows" menu
+    optionsMenu->addAction(clearTexturesAction);
+    optionsMenu->addAction(clearAnimationObjectsAction);
+    optionsMenu->addAction(testCompileGLSLAction);
+    optionsMenu->addAction(loopCameraPathAction);
 
     createOpenGLContextMenu();
 
@@ -1556,21 +1560,22 @@ void MainWindow::buildExamplesMenu()
 
             QStringList sl = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
             for (int i = 0; i < sl.size(); i++) {
-                auto *menu = new QMenu(sl[i]);
-                QString absPath = QDir(path + "/" +  sl[i]).absolutePath();
-                menuMap[absPath] = menu;
-                currentMenu->addMenu(menu);
-                menu->setIcon(QIcon(":/Icons/folder.png"));
-                pathStack.push(absPath);
+                if(!sl[i].contains("Include")) {
+                    QMenu *menu = new QMenu(sl[i]);
+                    QString absPath = QDir(path + "/" +  sl[i]).absolutePath();
+                    menuMap[absPath] = menu;
+                    currentMenu->addMenu(menu);
+                    menu->setIcon(QIcon(":/Icons/folder.png"));
+                    pathStack.push(absPath);
+                }
             }
 
             dir.setNameFilters(filters);
 
             sl = dir.entryList();
             for (int i = 0; i < sl.size(); i++) {
-                auto *a = new QAction(sl[i], this);
+                QAction *a = new QAction(sl[i], this);
                 a->setIcon(QIcon(":/Icons/mail_new.png"));
-
 
                 QString absPath = QDir(path ).absoluteFilePath(sl[i]);
 
@@ -1582,8 +1587,7 @@ void MainWindow::buildExamplesMenu()
     }
 }
 
-QString MainWindow::makeImgFileName(int timeStep, int timeSteps,
-                                    const QString fileName)
+QString MainWindow::makeImgFileName(int timeStep, int timeSteps, const QString fileName)
 {
 
     QString name = fileName;
@@ -1630,8 +1634,8 @@ void MainWindow::renderTiled(int maxTiles, int tileWidth, int tileHeight, int pa
             engine->renderTile(padding, time, maxSubframes, tileWidth, tileHeight, tile, maxTiles, &progress, &steps, &im, totalTime);
 
             if (padding>0.0)  {
-                auto nw = (int)(tileWidth / (1.0 + padding));
-                auto nh = (int)(tileHeight / (1.0 + padding));
+                int nw = (int)(tileWidth / (1.0 + padding));
+                int nh = (int)(tileHeight / (1.0 + padding));
                 int ox = (tileWidth-nw)/2;
                 int oy = (tileHeight-nh)/2;
                 im = im.copy(ox,oy,nw,nh);
@@ -1733,8 +1737,8 @@ bool MainWindow::writeTiledEXR(int maxTiles, int tileWidth, int tileHeight, int 
             if (padding>0.0)  {
                 int w = im.width();
                 int h = im.height();
-                auto nw = (int)(w / (1.0 + padding));
-                auto nh = (int)(h / (1.0 + padding));
+                int nw = (int)(w / (1.0 + padding));
+                int nh = (int)(h / (1.0 + padding));
                 int ox = (w-nw)/2;
                 int oy = (h-nh)/2;
                 im = im.copy(ox,oy,nw,nh);
@@ -2183,13 +2187,13 @@ retry:
                 qd = new QDialog(this);
                 qd->setObjectName(QString::fromUtf8("PREVIEW"));
 
-                auto *l = new QVBoxLayout;
+                QVBoxLayout *l = new QVBoxLayout(qd);
 
-                QLabel* label = new QLabel();
+                QLabel* label = new QLabel(qd);
                 label->setObjectName(QString::fromUtf8("previewImage"));
                 label->setPixmap(QPixmap::fromImage(finalImage));
 
-                auto *scrollArea = new QScrollArea;
+                QScrollArea *scrollArea = new QScrollArea;
                 scrollArea->setBackgroundRole(QPalette::Dark);
                 scrollArea->setWidget(label);
                 l->addWidget(scrollArea);
@@ -2261,7 +2265,7 @@ void MainWindow::savePreview()
         QString fn;
         fn = QFileDialog::getSaveFileName(qd, tr("Save preview image..."), "preview.png", ext);
         if(!fn.isEmpty()) {
-            auto *label = qd->findChild<QLabel *>("previewImage");
+            QLabel *label = qd->findChild<QLabel *>("previewImage");
             if (label != nullptr) {
                 QImage img = label->pixmap(Qt::ReturnByValue).toImage();
                 img.setText("frAg", variableEditor->getSettings());
@@ -2398,7 +2402,7 @@ void MainWindow::createToolBars()
     connect(bufferYSpinBox, SIGNAL(valueChanged(int)), this, SLOT(bufferYSpinBoxChanged(int)));
     connect(bufferYSpinBox, SIGNAL(editingFinished()), this, SLOT(bufferSizeYChanged()));
     bufferSizeControl = new QPushButton(tr("Lock to window size"), bufferToolBar);
-    auto *menu = new QMenu();
+    QMenu *menu = new QMenu(bufferToolBar);
     bufferAction1 = menu->addAction(tr("Lock to window size"));
     menu->addSeparator();
     bufferActionCustom = menu->addAction(tr("Custom size"));
@@ -2425,7 +2429,7 @@ void MainWindow::createToolBars()
     animationButton = new QPushButton( tr("Animation"),renderModeToolBar);
     animationButton->setCheckable(true);
 
-    auto *bg = new QButtonGroup(renderModeToolBar);
+    QButtonGroup *bg = new QButtonGroup(renderModeToolBar);
     bg->addButton(progressiveButton);
     bg->addButton(animationButton);
 
@@ -2549,7 +2553,7 @@ void MainWindow::timeLineRequest(QPoint p)
 
     Q_UNUSED(p)
 
-    auto *timeDialog = new TimeLineDialog(this, keyframeMap);
+    TimeLineDialog *timeDialog = new TimeLineDialog(this, keyframeMap);
     timeDialog->setWindowTitle(strippedName(tabInfo[tabBar->currentIndex()].filename));
     timeDialog->exec();
 
@@ -2558,7 +2562,7 @@ void MainWindow::timeLineRequest(QPoint p)
 void MainWindow::videoEncoderRequest()
 {
 
-    auto *vDialog = new VideoDialog(this);
+    VideoDialog *vDialog = new VideoDialog(this);
     vDialog->exec();
 
 };
@@ -2596,18 +2600,17 @@ void MainWindow::rewind()
     lastTime->restart();
     lastStoredTime = 0;
     getTime();
+    if(variableEditor->hasEasing()) engine->updateEasingCurves(0);
     engine->requireRedraw(true);
     engine->update();
 }
 
-void MainWindow::play( bool restart )
+void MainWindow::play()
 {
 
     playAction->setEnabled(false);
     stopAction->setEnabled(true);
-    if (restart) {
     lastTime->restart();
-    }
     getTime();
     pausePlay=false;
     engine->setContinuous(true);
@@ -2615,11 +2618,10 @@ void MainWindow::play( bool restart )
 
 void MainWindow::stop()
 {
-
-    engine->setContinuous(false);
     playAction->setEnabled(true);
     stopAction->setEnabled(false);
     lastStoredTime = getTime();
+    engine->setContinuous(false);
 
     if (engine->getState() == DisplayWidget::Animation) {
         INFO( tr("Stopping: last stored time set to %1").arg((double)lastStoredTime / renderFPS) );
@@ -2737,7 +2739,6 @@ void MainWindow::readSettings()
     maxLogFileSize = settings.value("maxLogFileSize", 125).toInt();
     fullPathInRecentFilesList = settings.value("fullPathInRecentFilesList", false).toBool();
     includeWithAutoSave = settings.value("includeWithAutoSave", false).toBool();
-    playRestartMode = settings.value("playRestartMode", false).toBool();
     useMimetypes = settings.value("useMimetypes", false).toBool();
     exrBinaryPath = settings.value("exrBinPaths", "/usr/bin;bin;").toString().split(";");
     supportProgramsBinaryPath = settings.value("supportProgramBinPaths", "/usr/bin;bin;").toString().split(";");
@@ -2790,7 +2791,6 @@ void MainWindow::writeSettings()
     settings.setValue("showEditToolbar", !editToolBar->isHidden() );
     settings.setValue("fullPathInRecentFilesList", fullPathInRecentFilesList );
     settings.setValue("includeWithAutoSave", includeWithAutoSave );
-    settings.setValue("playRestartMode", playRestartMode );
     settings.setValue("useMimetypes", useMimetypes );
     settings.setValue("editorTheme", editorTheme);
     settings.setValue("guiStylesheet", guiStylesheet);
@@ -2810,7 +2810,7 @@ void MainWindow::writeSettings()
     settings.setValue("openFiles", openFiles);
     settings.setValue("tilewidth",bufferXSpinBox->value());
     settings.setValue("tileheight",bufferYSpinBox->value());
-    settings.setValue ("tileSizeFromScreen", tileSizeFromScreen);
+    settings.setValue("tileSizeFromScreen", tileSizeFromScreen);
 
     settings.setValue("gimpGradientsPaths", gimpGradientsPaths);
 
@@ -2821,7 +2821,7 @@ void MainWindow::writeSettings()
 void MainWindow::openFile()
 {
 
-    auto *action = qobject_cast<QAction *>(sender());
+    QAction *action = qobject_cast<QAction *>(sender());
     if (action != nullptr) {
         loadFragFile(action->data().toString());
     } else {
@@ -2848,7 +2848,7 @@ void MainWindow::reloadFragFile( int index )
 
     QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        WARNING(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
+            WARNING(tr("Cannot read file %1:\n%2.").arg(filename).arg(file.errorString()));
         } else {
             te->clear();
             QTextStream in(&file);
@@ -3207,7 +3207,7 @@ bool MainWindow::initializeFragment()
 
         INFO(tr("Compiled script in %1 ms.").arg(ms));
         engine->setState(oldState);
-        pause ? stop() : play(!playRestartMode);
+        pause ? stop() : play();
 
         hideUnusedVariableWidgets();
 
@@ -3231,7 +3231,7 @@ void MainWindow::hideUnusedVariableWidgets()
     QStringList wnames = variableEditor->getWidgetNames();
     for (int i = 0; i < wnames.count(); i++) {
         // find a widget in the variable editor
-        auto *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
+        VariableWidget *vw = variableEditor->findChild<VariableWidget *>(wnames.at(i));
         if (vw != nullptr) {
             /// get the uniform location from the shader
             int uloc = vw->uniformLocation(engine->getShader());
@@ -3344,7 +3344,7 @@ void MainWindow::cursorPositionChanged()
 TextEdit *MainWindow::insertTabPage(QString filename)
 {
 
-    auto *textEdit = new TextEdit(this);
+    TextEdit *textEdit = new TextEdit(this);
     if(editorStylesheet.isEmpty()) textEdit->setStyleSheet("* {font: 9pt Courier;}");
     else textEdit->setStyleSheet("* {" + editorStylesheet + "}");
 
@@ -3559,7 +3559,7 @@ void MainWindow::launchDocumentation()
 {
 
     INFO(tr("Launching web browser..."));
-    bool s = QDesktopServices::openUrl(QUrl("https://en.wikibooks.org/wiki/Fractals/fragmentarium"));
+    bool s = QDesktopServices::openUrl(QUrl("https://github.com/3Dickulus/FragM/wiki"));
     if (!s) {
         WARNING(tr("Failed to open browser..."));
     }
@@ -3610,16 +3610,6 @@ void MainWindow::launchReferenceHome()
 
     INFO("Launching web browser...");
     bool s = QDesktopServices::openUrl(QUrl("http://www.fractalforums.com/fragmentarium/"));
-    if (!s) {
-        WARNING(tr("Failed to open browser..."));
-    }
-}
-
-void MainWindow::launchReferenceHome2()
-{
-
-    INFO("Launching web browser...");
-    bool s = QDesktopServices::openUrl(QUrl("http://www.digilanti.org/fragmentarium/"));
     if (!s) {
         WARNING(tr("Failed to open browser..."));
     }
@@ -4121,7 +4111,7 @@ void MainWindow::dumpShaderAsm()
 void MainWindow::saveCmdScript()
 {
 
-    auto *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
+    QTextEdit *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
     scriptText = e->toPlainText();
 
     QString filter = tr("Cmd Script (*.fqs);;All Files (*.*)");
@@ -4167,7 +4157,7 @@ void MainWindow::loadCmdScript()
         INFO(tr("Cmd Script loaded from file: ") + fileName);
         settings.setValue("cmdscriptfilename", fileName);
         // is the editor open? overwrite current script.
-        auto *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
+        QTextEdit *e = sender()->parent()->findChild<QTextEdit *>("cmdScriptEditor", Qt::FindChildrenRecursively);
         if (e != nullptr) {
             e->setPlainText(scriptText);
         }
@@ -4196,7 +4186,7 @@ void MainWindow::editScript()
     QPushButton *executeButton = new QPushButton(tr("&Execute"));
     QPushButton *stopButton = new QPushButton(tr("&Stop"));
     QPushButton *closeButton = new QPushButton(tr("&Close"));
-    auto *buttonLayout = new QHBoxLayout;
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(saveButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(loadButton);
@@ -4207,7 +4197,7 @@ void MainWindow::editScript()
     buttonLayout->addStretch();
     buttonLayout->addWidget(closeButton);
     // setup the main layout with text editor
-    auto *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(t);
     mainLayout->addLayout(buttonLayout);
     d->setLayout(mainLayout);

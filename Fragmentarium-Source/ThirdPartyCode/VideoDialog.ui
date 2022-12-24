@@ -81,7 +81,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="encCmdLineEdit"/>
+         <widget class="QLineEdit" name="encCmdLineEdit">
+          <property name="toolTip">
+           <string>Set by FragM, ffmpeg: -f -s -i -r , mencoder: mf:// -w -h -fps -type , from gui.</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="encCmdButton">

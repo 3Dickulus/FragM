@@ -148,7 +148,6 @@ public:
     {
         return continuous;
     }
-    void reset();
     void setContextMenu ( QMenu *contextMenu )
     {
         this->contextMenu = contextMenu;

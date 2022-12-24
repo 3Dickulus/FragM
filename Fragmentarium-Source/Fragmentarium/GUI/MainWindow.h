@@ -581,7 +581,7 @@ public slots:
     void documentWasModified();
     void closeTab ( int index );
     void rewind();
-    void play( bool restart = true );
+    void play();
     void stop();
     // for benchmark script
     int getTileAVG()
@@ -621,9 +621,9 @@ public slots:
     };
 
     void setCameraPathLoop(bool l);
+    void initTools();
 
 private slots:
-    void initTools();
     void runEXRTool();
     void runSupportProgram();
 
@@ -670,7 +670,6 @@ private slots:
     void launchFAQ();
     void launchIntro();
     void launchReferenceHome();
-    void launchReferenceHome2();
     void launchDocumentation();
     void openFile();
     void new2DFile();
@@ -758,14 +757,14 @@ private:
     QAction *glslHomeAction;
     QAction *introAction;
     QAction *faqAction;
-    QAction *referenceAction;
-    QAction *referenceAction2;
-    QAction *referenceAction3;
+    QAction *ffReferenceAction;
+    QAction *fragmReferenceAction;
     QAction *galleryAction;
     QAction *scriptingGeneralAction;
     QAction *scriptingParameterAction;
     QAction *scriptingHiresAction;
     QAction *scriptingControlAction;
+    QAction *clearAnimationObjectsAction;
     QAction *loopCameraPathAction;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -773,6 +772,7 @@ private:
     QMenu *parametersMenu;
     QMenu *examplesMenu;
     QMenu *helpMenu;
+    QMenu *optionsMenu;
     QToolBar *fileToolBar;
     QToolBar *renderToolBar;
     QToolBar *renderModeToolBar;
@@ -850,7 +850,6 @@ private:
     bool verbose;
     bool fullPathInRecentFilesList;
     bool includeWithAutoSave;
-    bool playRestartMode;
     bool useMimetypes;
     bool loopCameraPath;
 

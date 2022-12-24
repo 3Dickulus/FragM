@@ -98,7 +98,8 @@ EasingWindow::EasingWindow(QWidget *parent, double min, double max, double start
     connect(m_ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(m_ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>(1, animLength + 1));
+    m_ui.frameRangeSlider->setCutoffRange(QPair<int, int>(1, animLength));
+    m_ui.loopRangeSlider->setCutoffRange(QPair<int, int>(1, animLength));
     m_ui.valueRangeSlider->setCutoffRange(QPair<double, double>(min, max));
     m_ui.loopSpinBox->setValue(loops);
     m_ui.pongCheckBox->setChecked(pp != 0);
@@ -118,6 +119,7 @@ EasingWindow::EasingWindow(QWidget *parent, double min, double max, double start
         lastFrame = 1;
         pong = 0;
         m_ui.frameRangeSlider->setRange(QPair<int, int>(1, 1));
+        m_ui.loopRangeSlider->setRange(QPair<int, int>(1, 1));
         m_ui.valueRangeSlider->setRange(QPair<double, double>(start, start));
         m_ui.loopSpinBox->setValue(1);
         m_ui.pongCheckBox->setChecked(false);
@@ -125,7 +127,7 @@ EasingWindow::EasingWindow(QWidget *parent, double min, double max, double start
 
     connect(m_ui.frameRangeSlider, SIGNAL(rangeChanged(QPair<int, int>)), this, SLOT(frameRangeSliderChanged(QPair<int, int>)));
     connect(m_ui.valueRangeSlider, SIGNAL(rangeChanged(QPair<double, double>)), this, SLOT(valueRangeSliderChanged(QPair<double, double>)));
-
+    m_ui.loopRangeSlider->setEnabled(false);
     pathChanged(0);
 
     connect(m_anim, SIGNAL(finished()), this, SLOT(directionChange()));
@@ -278,23 +280,22 @@ void EasingWindow::firstChanged(int f)
     firstFrame = f;
     lastFrame = f > lastFrame ? f : lastFrame;
     m_ui.frameRangeSlider->setRange(QPair<int, int>(firstFrame, lastFrame));
+    m_ui.loopRangeSlider->setRange(QPair<int, int>(firstFrame, lastFrame));
 
     if ((lastFrame - firstFrame) > 1) {
         m_ui.loopSpinBox->setMaximum((animFrames - firstFrame) / (lastFrame - firstFrame));
         if (m_ui.loopSpinBox->value() < 1) {
-            m_ui.totalLoopFrames->setText(QString("00000"));
+            m_ui.totalLoopFrames->setText(QString("0000"));
         } else {
             loopChanged(m_ui.loopSpinBox->value());
         }
     }
+    setLoopRange();
 }
 
 void EasingWindow::loopChanged(int loop)
 {
     loopCount = loop;
-    if (loop > 0) {
-        m_ui.totalLoopFrames->setText(QString("%1").arg(loop * (lastFrame - (firstFrame-1))));
-    }
 
     if (loop != 0 && loop != 1) {
         m_ui.pinglabel->setEnabled(true);
@@ -303,6 +304,7 @@ void EasingWindow::loopChanged(int loop)
         m_ui.pinglabel->setEnabled(false);
         m_ui.pongCheckBox->setEnabled(false);
     }
+    setLoopRange();
 }
 
 void EasingWindow::lastChanged(int f)
@@ -310,15 +312,17 @@ void EasingWindow::lastChanged(int f)
     lastFrame = f;
     firstFrame = f < firstFrame ? f : firstFrame;
     m_ui.frameRangeSlider->setRange(QPair<int, int>(firstFrame, lastFrame));
+    m_ui.loopRangeSlider->setRange(QPair<int, int>(firstFrame, lastFrame));
 
     if ((lastFrame - firstFrame) > 1) {
         m_ui.loopSpinBox->setMaximum((animFrames - firstFrame) / (lastFrame - firstFrame));
         if (m_ui.loopSpinBox->value() < 0) {
-            m_ui.totalLoopFrames->setText(QString("00000"));
+            m_ui.totalLoopFrames->setText(QString("0000"));
         } else {
             loopChanged(m_ui.loopSpinBox->value());
         }
     }
+    setLoopRange();
 }
 
 void EasingWindow::frameRangeSliderChanged(QPair<int, int> fR)
@@ -344,5 +348,18 @@ void EasingWindow::setValueRange(QPair<double, double> vA)
     m_ui.valueRangeSlider->setCutoffRange(vA);
     valueRangeSliderChanged(vA);
 }
+
+// always based on frame in and frame out
+void EasingWindow::setLoopRange()
+{
+    if(loopCount > 1)
+        m_ui.loopRangeSlider->setRange(QPair<int, int>(firstFrame, firstFrame+(loopCount * (lastFrame - firstFrame))));
+    else
+        m_ui.loopRangeSlider->setRange(QPair<int, int>(firstFrame, lastFrame));
+
+    QString loopFrameCount = QStringLiteral("%1").arg(loopCount * (lastFrame - (firstFrame-1)), 4, 10, QLatin1Char('0'));
+    m_ui.totalLoopFrames->setText(loopFrameCount);
+}
+
 } // namespace GUI
 } // namespace Fragmentarium

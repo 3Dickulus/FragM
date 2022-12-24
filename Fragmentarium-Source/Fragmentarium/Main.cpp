@@ -154,7 +154,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString *err
             printf( "%s\n", qPrintable(qApp->translate("main", "enabled.")) );
         }
     }
-    
+
     if( parser.isSet(QString("compatpatch")) ) {
         printf( "%s", qPrintable(qApp->translate("main", "Compatibility patch ")) );
         if(parser.value(QString("compatpatch")) == "false") {
@@ -200,7 +200,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString *err
 
         printf("%s\n", qPrintable(qApp->translate("main", "Frag editor theme set to ") + themeName));
     }
-    
+
     const QStringList positionalArguments = parser.positionalArguments();
     if (positionalArguments.isEmpty()) {
         *errorMessage = qApp->translate("main", "Argument 'filename' missing.");
@@ -216,6 +216,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString *err
 
 int main(int argc, char *argv[])
 {
+
 
 #ifdef Q_OS_WIN
     qApp->addLibraryPath("./");
@@ -242,12 +243,12 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(Fragmentarium);
 
-    qApp->setOrganizationName(QString("Syntopia_Software"));
-    qApp->setApplicationName(QString("Fragmentarium"));
-    qApp->setOrganizationDomain(QString("fractalforums.org"));
-
-    QScopedPointer<QApplication> app(new QApplication(argc, argv));
+    QApplication *app(new QApplication(argc, argv));
     app->setObjectName("Application");
+
+    app->setOrganizationName(QString("Syntopia_Software"));
+    app->setApplicationName(QString("Fragmentarium"));
+    app->setOrganizationDomain(QString("fractalforums.org"));
 
     // before creating main window record the last run state
     last_run_state = QSettings().value("isStarting").toBool();
@@ -258,8 +259,7 @@ int main(int argc, char *argv[])
     splash.setMask(pixmap.mask());
     splash.show();
 
-    Fragmentarium::GUI::MainWindow *mainWin;
-    mainWin = new Fragmentarium::GUI::MainWindow();
+    Fragmentarium::GUI::MainWindow *mainWin = new Fragmentarium::GUI::MainWindow();
 
     // Makes the splash screen wait until the widget mainWin is displayed before calling close() on itself.
     splash.finish(mainWin);
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
             // exits in showHelp function and never returns here
             Q_UNREACHABLE();
     }
-    
+
     QString langArg = QString("en"); // default english
     QTranslator myappTranslator;
     if(parser.isSet(QString("language"))) {
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
 
     mainWin->setVerbose(parser.isSet("verbose"));
 
-    mainWin->setWindowTitle(QString("%1 %2").arg(qApp->applicationName()).arg(qApp->applicationVersion()));
+    mainWin->setWindowTitle(QString("%1 %2").arg(app->applicationName()).arg(app->applicationVersion()));
 
     mainWin->readSettings();
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
+    <width>817</width>
     <height>689</height>
    </rect>
   </property>
@@ -21,16 +21,6 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="6" column="0" colspan="2">
-       <widget class="QCheckBox" name="playRestartModeCheckBox">
-        <property name="text">
-         <string>Animation update on=continuous off=last set</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
          <widget class="QLabel" name="guiStylesheetLabel">
@@ -55,30 +45,14 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>320</width>
-          <height>3</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="drawGLPathsCheckBox">
-        <property name="toolTip">
-         <string>Some engines use non GL matrices.</string>
-        </property>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="splineOccCheckBox">
         <property name="text">
-         <string>Draw spline paths for camera and target</string>
+         <string>Spline Occlusion</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="maxRecentFilesLabel">
@@ -99,16 +73,6 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0" colspan="2">
-       <widget class="QCheckBox" name="ddCameraModeCheckBox">
-        <property name="text">
-         <string>2D Camera Mode on=traveling off=fixed</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="loopPlayCheckBox">
         <property name="text">
@@ -116,14 +80,20 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
-        <property name="text">
-         <string>Full path in recent files menu.</string>
-        </property>
-       </widget>
-      </item>
       <item row="9" column="0" colspan="2">
+       <spacer name="verticalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>320</width>
+          <height>3</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="8" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
          <widget class="QLabel" name="logLinesLabel">
@@ -144,10 +114,30 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="splineOccCheckBox">
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="fullPathInRecentFilesListCheckBox">
         <property name="text">
-         <string>Spline Occlusion</string>
+         <string>Full path in recent files menu.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="drawGLPathsCheckBox">
+        <property name="toolTip">
+         <string>Some engines use non GL matrices.</string>
+        </property>
+        <property name="text">
+         <string>Draw spline paths for camera and target</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="ddCameraModeCheckBox">
+        <property name="text">
+         <string>2D Camera Mode on=traveling off=fixed</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

@@ -180,7 +180,7 @@ private slots:
     void directionChange();
     void frameRangeSliderChanged ( QPair<int, int> fR );
     void valueRangeSliderChanged ( QPair<double, double> vA );
-
+    void setLoopRange();
 private:
     void createCurveIcons();
     void startAnimation();
