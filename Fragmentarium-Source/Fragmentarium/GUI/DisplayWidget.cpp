@@ -75,10 +75,13 @@ MessageCallback( GLenum source,
         default:           std::cout << "Severity:" << severity << " unknown"; break;
     }
 
+    if(userParam != nullptr)
+        std::cout << std::endl << length;
+
     std::cout << std::endl;
 }
 
-GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func)
+GLenum DisplayWidget::glCheckError_(const char *file, const char *func, int line)
 {
     GLenum errorCode = GL_NO_ERROR;
 
@@ -95,7 +98,7 @@ GLenum DisplayWidget::glCheckError_(const char *file, int line, const char *func
 // eg:
 // GLint index = glGetUniformLocation(programID, uniformName.toStdString()); glCheckError();
 //
-#define glCheckError() glCheckError_(__FILE__, __LINE__, __FUNCTION__)
+#define glCheckError() glCheckError_(__FILE__, __FUNCTION__, __LINE__)
 
 #endif
 #else
@@ -251,7 +254,7 @@ void DisplayWidget::updateRefreshRate()
     QSettings settings;
     int i = settings.value ( "refreshRate", 40 ).toInt(); // 25 fps
     if (timer == nullptr) {
-        timer = new QTimer();
+        timer = new QTimer(this);
         timer->setTimerType(Qt::PreciseTimer);
         connect ( timer, SIGNAL ( timeout() ), this, SLOT ( timerSignal() ) );
     }
@@ -278,6 +281,8 @@ void DisplayWidget::paintEvent(QPaintEvent *ev)
     if (shaderProgram != nullptr) {
         shaderProgram->release();
     }
+
+    ev->ignore();
     QOpenGLWidget::paintEvent(ev);
 }
 
