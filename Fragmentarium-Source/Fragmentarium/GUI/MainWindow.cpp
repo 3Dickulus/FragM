@@ -1335,6 +1335,7 @@ void MainWindow::createActions()
     videoEncoderAction->setStatusTip(tr("Encode rendered frames to video"));
     connect(videoEncoderAction, SIGNAL(triggered()), this, SLOT(videoEncoderRequest()));
 
+    // Help menu local
     aboutAction = new QAction(QIcon(":/Icons/documentinfo.png"), tr("&About"), this);
     aboutAction->setStatusTip(tr("Shows the About box"));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -1366,26 +1367,7 @@ void MainWindow::createActions()
     scriptingControlAction->setObjectName(QString::fromUtf8("scriptingControlAction"));
     connect(scriptingControlAction, SIGNAL(triggered()), this, SLOT(showScriptingHelp()));
 
-    clearTexturesAction = new QAction(tr("Clear Texture Cache"), this);
-    clearTexturesAction->setObjectName(QString::fromUtf8("clearTexturesAction"));
-    connect(clearTexturesAction, SIGNAL(triggered()), this, SLOT(clearTextures()));
-
-    clearAnimationObjectsAction = new QAction(tr("Clear Animation Actions"), this);
-    clearAnimationObjectsAction->setStatusTip(tr("Clears camera control and Easingcurve cache"));
-    clearAnimationObjectsAction->setObjectName(QString::fromUtf8("clearAnimationObjectsAction"));
-    connect(clearAnimationObjectsAction, SIGNAL(triggered()), this, SLOT(clearKeyFrames()));
-
-    testCompileGLSLAction = new QAction(tr("Test versions"), this);
-    testCompileGLSLAction->setStatusTip(tr("Tests the current fragment against all supported GLSL versions."));
-    testCompileGLSLAction->setObjectName(QString::fromUtf8("testCompileGLSLAction"));
-    connect(testCompileGLSLAction, SIGNAL(triggered()), this, SLOT(testCompileGLSL()));
-
-    loopCameraPathAction = new QAction(tr("Loop Camera Path"), this);
-    loopCameraPathAction->setStatusTip(tr("Makes a looping camera path."));
-    loopCameraPathAction->setCheckable(true);
-    loopCameraPathAction->setChecked(loopCameraPath);
-    connect(loopCameraPathAction, SIGNAL(toggled(bool)), this, SLOT(setCameraPathLoop(bool)));
-
+    // Help menu remote
     sfHomeAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("&Project Homepage (web link)"), this);
     sfHomeAction->setStatusTip(tr("Open the project page in a browser."));
     connect(sfHomeAction, SIGNAL(triggered()), this, SLOT(launchSfHome()));
@@ -1411,6 +1393,27 @@ void MainWindow::createActions()
 
     faqAction = new QAction(QIcon(":/Icons/agt_internet.png"), tr("Fragmentarium FAQ (web link)"), this);
     connect(faqAction, SIGNAL(triggered()), this, SLOT(launchFAQ()));
+
+    // Options menu
+    clearTexturesAction = new QAction(tr("Clear Texture Cache"), this);
+    clearTexturesAction->setObjectName(QString::fromUtf8("clearTexturesAction"));
+    connect(clearTexturesAction, SIGNAL(triggered()), this, SLOT(clearTextures()));
+
+    clearAnimationObjectsAction = new QAction(tr("Clear Animation Actions"), this);
+    clearAnimationObjectsAction->setStatusTip(tr("Clears camera control and Easingcurve cache"));
+    clearAnimationObjectsAction->setObjectName(QString::fromUtf8("clearAnimationObjectsAction"));
+    connect(clearAnimationObjectsAction, SIGNAL(triggered()), this, SLOT(clearKeyFrames()));
+
+    testCompileGLSLAction = new QAction(tr("Test versions"), this);
+    testCompileGLSLAction->setStatusTip(tr("Tests the current fragment against all supported GLSL versions."));
+    testCompileGLSLAction->setObjectName(QString::fromUtf8("testCompileGLSLAction"));
+    connect(testCompileGLSLAction, SIGNAL(triggered()), this, SLOT(testCompileGLSL()));
+
+    loopCameraPathAction = new QAction(tr("Loop Camera Path"), this);
+    loopCameraPathAction->setStatusTip(tr("Makes a looping camera path."));
+    loopCameraPathAction->setCheckable(true);
+    loopCameraPathAction->setChecked(loopCameraPath);
+    connect(loopCameraPathAction, SIGNAL(toggled(bool)), this, SLOT(setCameraPathLoop(bool)));
 
     for (int i = 0; i < maxRecentFiles; ++i) {
         QAction *a = new QAction(this);
