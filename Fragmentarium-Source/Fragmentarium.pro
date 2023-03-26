@@ -18,7 +18,7 @@ LIBS += -fPIC
 
 win32:CONFIG(release, debug|release) {
 CONFIG += console
-PACKAGE_BUILD=220821
+PACKAGE_BUILD=230218
 TARGET = "Fragmentarium-"$$FRAGM_VERSION"-"$$PACKAGE_BUILD
 LIBS += -L../../OpenEXR/lib/ -lIlmImf-2_4 -lHalf-2_4 -lIex-2_4 -lIexMath-2_4 -lImath-2_4 -lIlmThread-2_4
 LIBS += -LC:\Qt/Tools/mingw810_64/x86_64-w64-mingw32/lib -lz

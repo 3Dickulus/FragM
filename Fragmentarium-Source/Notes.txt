@@ -46,10 +46,3 @@ file -> 3Dickulus-HOW-TO.txt
 
 All changes since v0.95:
 file -> 3Dickulus.changes
-
-2.0.b testing double types: (GL => 4.0 required)
-* Examples/Experimental/DoubleTest.frag
-* Examples/Include/Progressive2D-4.frag
-* Examples/Include/BufferShader-4.frag
-
-
