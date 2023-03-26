@@ -390,7 +390,7 @@ private:
     void draw3DHints();
     bool FBOcheck();
 
-    GLenum glCheckError_(const char *file, int line, const char *func);
+    GLenum glCheckError_(const char* file, const char* func, int line);
 
     int pendingRedraws; // the number of times we must redraw
     bool bufferUniformsHaveChanged;
@@ -526,7 +526,7 @@ QString spherePixelShader4 = QString("#version 410 core\n"
 // with all desktop GL versions and profiles.
 // Injecting this at the beginning of vertex and fragment source before
 // compile will allow the legacy frags to run under ES and CORE as well as
-// COMPATIBILITY profiles with out having to edit any existing files.
+// COMPATIBILITY profiles without having to edit any existing files.
 // This can be dis/enabled in the Edit->Preferences dialog.
 
 // Vertex shader
