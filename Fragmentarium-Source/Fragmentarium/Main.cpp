@@ -273,27 +273,30 @@ int main(int argc, char *argv[])
 
     // this checks the commandline options for proper format and flags, shows help text and error message then exits if anything is wrong
     QString errorMessage;
-    switch(parseCommandLine(parser, &errorMessage)) {
-       case CommandLineOk: break;
-       case CommandLineError:
-            QSettings().setValue("isStarting", last_run_state);
-            fputs("\n\n", stderr);
-            fputs(qPrintable(errorMessage), stderr);
-            fputs("\n\n", stderr);
-            fputs(qPrintable(parser.helpText()), stderr);
-            return 1;
-        case CommandLineVersionRequested:
-            QSettings().setValue("isStarting", last_run_state);
-            printf("%s %s\n", qPrintable(QCoreApplication::applicationName()),
-                    qPrintable(QCoreApplication::applicationVersion()));
-            return 0;
-        case CommandLineHelpRequested:
-            QSettings().setValue("isStarting", last_run_state);
-            parser.showHelp();
-            // exits in showHelp function and never returns here
-            Q_UNREACHABLE();
-    }
 
+    CommandLineParseResult clpr = parseCommandLine(parser, &errorMessage);
+    if(clpr != CommandLineOk) {
+        switch(clpr) {
+        case CommandLineError:
+                QSettings().setValue("isStarting", last_run_state);
+                fputs("\n\n", stderr);
+                fputs(qPrintable(errorMessage), stderr);
+                fputs("\n\n", stderr);
+                fputs(qPrintable(parser.helpText()), stderr);
+                return 1;
+            case CommandLineVersionRequested:
+                QSettings().setValue("isStarting", last_run_state);
+                printf("%s %s\n", qPrintable(QCoreApplication::applicationName()),
+                        qPrintable(QCoreApplication::applicationVersion()));
+                return 0;
+            case CommandLineHelpRequested:
+                QSettings().setValue("isStarting", last_run_state);
+                parser.showHelp();
+                // exits in showHelp function and never returns here
+                Q_UNREACHABLE();
+            default:;
+        }
+    }
     QString langArg = QString("en"); // default english
     QTranslator myappTranslator;
     if(parser.isSet(QString("language"))) {
@@ -366,7 +369,7 @@ int main(int argc, char *argv[])
                 exit(0);
             }
         } else {
-            printf("%s",qPrintable(app->translate("main","Script file requires .fqs extention!\n")));
+            printf("%s",qPrintable(app->translate("main","Script file requires .fqs extension!\n")));
             exit(0);
         }
     } else {
