@@ -822,7 +822,7 @@ void MainWindow::init()
     dockLog = new QDockWidget(this);
     dockLog->setWindowTitle(tr("Log"));
     dockLog->setObjectName(QString::fromUtf8("dockWidget"));
-    dockLog->setAllowedAreas(Qt::RightDockWidgetArea|Qt::BottomDockWidgetArea);
+    dockLog->setAllowedAreas(Qt::BottomDockWidgetArea);
     QWidget* dockLogContents = new QWidget(dockLog);
     dockLogContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
     QVBoxLayout *vboxLayout1 = new QVBoxLayout(dockLogContents);
@@ -839,7 +839,7 @@ void MainWindow::init()
     dockVariableEditor->setMinimumWidth(320);
     dockVariableEditor->setWindowTitle(tr("Variable Editor (uniforms)"));
     dockVariableEditor->setObjectName(QString::fromUtf8("dockVariableEditor"));
-    dockVariableEditor->setAllowedAreas(Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    dockVariableEditor->setAllowedAreas(Qt::BottomDockWidgetArea);
     QWidget* editorLogContents = new QWidget(dockLog);
     editorLogContents->setObjectName(QString::fromUtf8("editorLogContents"));
     QVBoxLayout *vboxLayout2 = new QVBoxLayout(editorLogContents);
@@ -851,7 +851,7 @@ void MainWindow::init()
     connect(variableEditor, SIGNAL(changed(bool)), this, SLOT(variablesChanged(bool)));
     vboxLayout2->addWidget(variableEditor);
     dockVariableEditor->setWidget(editorLogContents);
-    addDockWidget(Qt::RightDockWidgetArea, dockVariableEditor);
+    addDockWidget(Qt::BottomDockWidgetArea, dockVariableEditor);
 
     connect(dockVariableEditor, SIGNAL(topLevelChanged(bool)), this, SLOT(veDockChanged(bool))); // 05/22/17 Sabine ;)
 
@@ -1865,135 +1865,10 @@ retry:
     lockAspect(false);
     bufferXSpinBox->setValue(tileWidth);
     bufferYSpinBox->setValue(tileHeight);
-    // save the source files if required
+
+    // save the source files if required -1 error 0 retry 1 success
     if ( (od.doSaveFragment() || od.doAnimation()) && !od.preview()) {
-        QString fileName = od.getFragmentFileName();
-        logger->getListWidget()->clear();
-        if (tabBar->currentIndex() == -1) {
-            WARNING(tr("No open tab"));
-            return;
-        }
-        QString inputText = getTextEdit()->toPlainText();
-        readSettings();
-        Preprocessor p(&fileManager);
-
-        QString file = tabInfo[tabBar->currentIndex()].filename;
-        FragmentSource fs = p.createAutosaveFragment(inputText,file);
-        // if the first line is the #version preprocessor command it must stay as
-        // the first line
-        QString firstLine = fs.source[0].trimmed() + "\n";
-        if (firstLine.startsWith("#version")) {
-            fs.source.removeAt(0);
-            fs.lines.removeAt(0);
-        } else {
-            firstLine = "";
-        }
-
-        QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
-        prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
-        QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
-
-        append += "#endpreset\n\n";
-
-        QString final = prepend + fs.getText() + append;
-
-        QString f = od.getFileName();
-        QDir oDir(QFileInfo(f).absolutePath());
-        QString subdirName = od.getFolderName();
-        bool overWrite = false;
-        if (oDir.exists(subdirName)){
-            QMessageBox msgBox(this);
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText( QString("%1<br>Already exists!").arg(subdirName) );
-            msgBox.setInformativeText(tr("Do you want to use it? <br><br>This will overwrite any existing files!"));
-            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            int ret = msgBox.exec();
-            switch (ret) {
-            case QMessageBox::Ok:
-                overWrite = true;
-                break;
-            case QMessageBox::Cancel:
-                goto retry;
-                break;
-            default:
-                return;
-            }
-        } else
-        if (!oDir.mkdir(subdirName)) {
-
-            QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
-            goto retry;
-        }
-        subdirName = oDir.filePath(subdirName); // full name
-
-        try {
-            if(od.doSaveFragment()) {
-                QFile fileStream(subdirName + "/" + fileName);
-                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
-                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fileName).arg(fileStream.errorString()));
-                    return;
-                }
-
-                if(od.doReleaseFiles()) {
-                // if releaseFiles flag copy all textures to frag dir and adjust for local referencing
-                // can't assume that local dist files have not been added or altered by user so copy all
-                // the texture references in currently running FragmentSource are full path names
-                // test if actual reference in final output is full path, truncate to filename only
-                // remap texture file references in final output to local before saving frag
-
-                    QMapIterator<QString, QString> it( engine->getFragmentSource()->textures );
-
-                    while( it.hasNext() ) {
-                        it.next();
-                        QString localReference = it.value().split("/").last();
-                        // there may be other textures still in the cache so test final for filename
-                        // only copy textures that are actually used
-                        if(final.contains(localReference)) {
-                            // remap full path to local reference
-                            final.replace(it.value(), localReference);
-                            QString newFullName = subdirName + "/" + localReference;
-                            QFile(it.value()).copy(newFullName);
-                            if(QFile::exists(newFullName) && overWrite) {
-                                if (!QFile::remove(newFullName)) {
-                                    QMessageBox::warning(
-                                        this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(newFullName));
-                                }
-                            }
-                            if (!QFile::copy(it.value(),newFullName)) {
-                                QMessageBox::warning(
-                                    this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(it.value()).arg(newFullName));
-                            }
-                        }
-                    }
-                }
-                // save fragment source
-                QTextStream out(&fileStream);
-                out << final;
-
-                INFO(tr("Saved fragment + settings as: ") + subdirName + "/" + fileName);
-
-                if(includeWithAutoSave) {
-                    // Copy files.
-                    QStringList ll = p.getDependencies();
-                    foreach (QString from, ll) {
-                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
-                        if(QFile::exists(to) && overWrite) {
-                            if (!QFile::remove(to)) {
-                                QMessageBox::warning(
-                                    this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(to));
-                            }
-                        }
-                        if (!QFile::copy(from,to)) {
-                            QMessageBox::warning(
-                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
-                        }
-                    }
-                }
-            }
-        } catch (Exception& e) {
-            WARNING(e.getMessage());
-        }
+        if( saveFragments(od) == 0 ) goto retry;
     }
 
     DisplayWidget::DrawingState oldState = engine->getState();
@@ -2249,6 +2124,146 @@ retry:
 
     // reset locked aspect status
     lockAspect(ta);
+}
+
+// -1 error 0 retry 1 success
+int MainWindow::saveFragments(OutputDialog &od)
+{
+        QString fragFileName = od.getFragmentFileName();
+        QString uniqueFilename = od.getFileName();
+        QString subdirName = od.getFolderName();
+		bool saving = od.doSaveFragment();
+		bool releaseFiles = od.doReleaseFiles();
+
+        logger->getListWidget()->clear();
+        if (tabBar->currentIndex() == -1) {
+            WARNING(tr("No open tab"));
+            return -1;
+        }
+
+        QString inputText = getTextEdit()->toPlainText();
+        readSettings();
+        Preprocessor p(&fileManager);
+
+        QString file = tabInfo[tabBar->currentIndex()].filename;
+        FragmentSource fs = p.createAutosaveFragment(inputText,file);
+        // if the first line is the #version preprocessor command it must stay as
+        // the first line
+        QString firstLine = fs.source[0].trimmed() + "\n";
+
+        if (firstLine.startsWith("#version")) {
+            fs.source.removeAt(0);
+            fs.lines.removeAt(0);
+        } else {
+            firstLine = "";
+        }
+
+        QString prepend = firstLine + tr("// Output generated from file: ") + file + "\n";
+        prepend += tr("// Created: ") + QDateTime::currentDateTime().toString() + "\n";
+        QString append = "\n\n#preset Default\n" + variableEditor->getSettings() + "\n";
+
+        append += "#endpreset\n\n";
+
+        QString final = prepend + fs.getText() + append;
+
+        QDir oDir(QFileInfo(uniqueFilename).absolutePath());
+
+        bool overWrite = false;
+
+        if (oDir.exists(subdirName)){
+            QMessageBox msgBox(this);
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText( QString("%1<br>Already exists!").arg(subdirName) );
+            msgBox.setInformativeText(tr("Do you want to use it? <br><br>This will overwrite any existing files!"));
+            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            int ret = msgBox.exec();
+            switch (ret) {
+            case QMessageBox::Ok:
+                overWrite = true;
+                break;
+            case QMessageBox::Cancel:
+                return 0;
+                break;
+            default:
+                return -1;
+            }
+        } else
+        if (!oDir.mkdir(subdirName)) {
+
+            QMessageBox::warning(this, tr("Fragmentarium"), tr("Could not create directory %1:\n.").arg(oDir.filePath(subdirName)));
+            return 0;
+        }
+        subdirName = oDir.filePath(subdirName); // full name
+
+        try {
+            if(saving) {
+                QFile fileStream(subdirName + "/" + fragFileName);
+                if (!fileStream.open(QFile::WriteOnly | QFile::Text)) {
+                    QMessageBox::warning(this, tr("Fragmentarium"), tr("Cannot write file %1:\n%2.").arg(fragFileName).arg(fileStream.errorString()));
+                    return -1;
+                }
+
+                if(releaseFiles) {
+                // if releaseFiles flag copy all textures to frag dir and adjust for local referencing
+                // can't assume that local dist files have not been added or altered by user so copy all
+                // the texture references in currently running FragmentSource are full path names
+                // test if actual reference in final output is full path, truncate to filename only
+                // remap texture file references in final output to local before saving frag
+
+                    QMapIterator<QString, QString> it( engine->getFragmentSource()->textures );
+
+                    while( it.hasNext() ) {
+                        it.next();
+                        QString localReference = it.value().split("/").last();
+                        // there may be other textures still in the cache so test final for filename
+                        // only copy textures that are actually used
+                        if(final.contains(localReference)) {
+                            // remap full path to local reference
+                            final.replace(it.value(), localReference);
+                            QString newFullName = subdirName + "/" + localReference;
+                            QFile(it.value()).copy(newFullName);
+                            if(QFile::exists(newFullName) && overWrite) {
+                                if (!QFile::remove(newFullName)) {
+                                    QMessageBox::warning(
+                                        this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(newFullName));
+                                }
+                            }
+                            if (!QFile::copy(it.value(),newFullName)) {
+                                QMessageBox::warning(
+                                    this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(it.value()).arg(newFullName));
+                            }
+                        }
+                    }
+                }
+                // save fragment source
+                QTextStream out(&fileStream);
+                out << final;
+
+                INFO(tr("Saved fragment + settings as: ") + subdirName + "/" + fragFileName);
+
+                if(includeWithAutoSave) {
+                    // Copy files.
+                    QStringList ll = p.getDependencies();
+                    foreach (QString from, ll) {
+                        QString to(QDir(subdirName).absoluteFilePath(QFileInfo(from).fileName()));
+                        if(QFile::exists(to) && overWrite) {
+                            if (!QFile::remove(to)) {
+                                QMessageBox::warning(
+                                    this, tr("Fragmentarium"), tr("Could not remove existing:\n'%1'").arg(to));
+                            }
+                        }
+                        if (!QFile::copy(from,to)) {
+                            QMessageBox::warning(
+                                this, tr("Fragmentarium"), tr("Could not copy dependency:\n'%1' to \n'%2'.").arg(from).arg(to));
+                        }
+                    }
+                }
+            }
+        } catch (Exception& e) {
+            WARNING(e.getMessage());
+        }
+return 1;
 }
 
 void MainWindow::savePreview()
