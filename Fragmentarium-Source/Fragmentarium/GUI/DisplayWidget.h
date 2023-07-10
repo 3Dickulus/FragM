@@ -6,6 +6,8 @@
 #include <QPropertyAnimation>
 #include <QVector>
 
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
+
 #include <QOpenGLWidget>
 #include <QSurfaceFormat>
 
