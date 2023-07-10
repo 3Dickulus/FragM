@@ -521,6 +521,8 @@ public slots:
     }
 
     void tileBasedRender();
+    int saveFragments(OutputDialog& od);
+
     void setFrame ( int value )
     {
         setStartFrame ( value );
