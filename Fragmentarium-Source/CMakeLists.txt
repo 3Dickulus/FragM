@@ -32,7 +32,7 @@ set( CMAKE_MODULE_PATH /usr/share/cmake/Modules )
 
 IF(UNIX AND NOT APPLE)
 
-	find_package(ECM REQUIRED)
+	find_package(ECM QUIET)
 
 	set(CMAKE_MODULE_PATH
 	${CMAKE_MODULE_PATH}
