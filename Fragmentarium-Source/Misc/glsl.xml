@@ -3,14 +3,14 @@
 <!-- the version of this file shows the largest supported OpenGL version, second digit is the minor patch level (Y.XP = supports GLSL X.Y0 with patchlevel P -->
 <language name="GLSL" section="Sources" extensions="*.glsl;*.vsh;*.vert;*.tcsh;*.tcs;*.tesh;*.tes;*.gsh;*.geo;*.geom;*.fsh;*.frag;*.csh;*.cs" mimetype="text/x-glslsrc" version="4.50" kateversion="2.4" author="Robert Menzel (mail@renderingpipeline.com), Nicolas Guillemot (nlguillemot@gmail.com)" license="LGPL"> 
 	<highlighting>
-	
+		
 		<!-- ####################################################################################################### keywords -->
 		<list name="keywordsCompatibility">
 			<!-- compatibility mode, older GLSL versions -->
 			<item>attribute</item>
 			<item>varying</item>
 		</list>
-	
+		
 		<list name="keywords110">
 			<!-- keywords in the GLSL spec, also keywordsCompatibility -->
 			<item>const</item>
@@ -36,12 +36,12 @@
 			<!-- also all of keywords110 -->
 			<item>invariant</item>
 		</list>
-
+		
 		<list name="keywords120">
 			<!-- also all of keywords100ES-->
 			<item>centroid</item>
 		</list>
-
+		
 		<list name="keywords130">
 			<!-- also all of 120 -->
 			<item>flat</item>
@@ -56,14 +56,14 @@
 			<!-- also all of 130 -->
 			<item>layout</item>
 		</list>
-
+		
 		<list name="keywords400">
 			<!-- also all of 140 -->
 			<item>patch</item>
 			<item>sample</item>
 			<item>subroutine</item>
 		</list>
-
+		
 		<list name="keywords420">
 			<!-- also all of 400 -->
 			<item>coherent</item>
@@ -88,7 +88,7 @@
 		</list>
 		
 		<!-- ####################################################################################################### variables -->
-
+		
 		<list name="keywordstypes100es">
 			<!-- 100ES -->
 			<item>float</item>
@@ -131,7 +131,7 @@
 			<item>mat3x4</item>
 			<item>mat4x4</item>
 		</list>
-
+		
 		<list name="keywordstypes130">
 			<!-- also all of keywordstypes120 -->
 			<item>uint</item>
@@ -396,7 +396,7 @@
 			<item>r32i</item>
 			<item>r16i</item>
 			<item>r8i</item>
-			 <!-- uint-image-format-qualifier -->
+			<!-- uint-image-format-qualifier -->
 			<item>rgba32ui</item>
 			<item>rgba16ui</item>
 			<item>rgb10_a2ui</item>
@@ -464,16 +464,16 @@
 			<item>gl_ModelViewMatrixTranspose</item>
 			<item>gl_ProjectionMatrixTranspose</item>
 			<item>gl_ModelViewProjectionMatrixTranspose</item>
-
+			
 			<item>gl_TextureMatrixTranspose</item>
 			<item>gl_ModelViewMatrixInverseTranspose</item>
 			<item>gl_ProjectionMatrixInverseTranspose</item>
 			<item>gl_ModelViewProjectionMatrixInverseTranspose</item>
-
+			
 			<item>gl_TextureMatrixInverseTranspose</item>
 			<item>gl_NormalScale</item>
 			<item>gl_DepthRangeParameters</item>
-
+			
 			<item>gl_DepthRangeParameters</item>
 			<item>gl_DepthRange</item>
 			<item>gl_ClipPlane</item>
@@ -508,7 +508,7 @@
 			<item>gl_FrontColor</item>
 			<item>gl_BackColor</item>
 			<item>gl_FrontSecondaryColor</item>
-
+			
 			<item>gl_BackSecondaryColor</item>
 			<item>gl_TexCoord</item>
 			<item>gl_Color</item>
@@ -784,7 +784,7 @@
 			<item>all</item>
 			<item>not</item>
 		</list>
-			
+		
 		<list name="buildinfunctions110">
 			<!-- also buildinfunctions100ES and buildinfunctionsDeprecated -->
 			<item>dFdx</item>
@@ -936,8 +936,8 @@
 		</list>
 		
 		<!-- ################################################################################################################ 
-		     ####################################################################################################### contexts 
-		     ################################################################################################################ -->
+		####################################################################################################### contexts 
+		################################################################################################################ -->
 		<contexts>
 			<!-- default -->
 			<!-- ################################################################################################# GLSL version 110 -->
@@ -1035,6 +1035,7 @@
 				<StringDetect attribute="Preprocessor" String="430" context="v430" />
 				<StringDetect attribute="Preprocessor" String="440" context="v440" />
 				<StringDetect attribute="Preprocessor" String="450" context="v450" />
+				<StringDetect attribute="Preprocessor" String="460" context="v460" />
 			</context>
 			
 			<!-- ################################################################################################# GLSL version GLES 2 -->
@@ -1984,10 +1985,91 @@
 				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
 				<!-- preprocessor -->
 				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
-			</context>			<!-- #################################################################################################### GLSL version 440 -->
+			</context>
+			<!-- #################################################################################################### GLSL version 450 -->
 			<context name="v450" attribute="Normaltext" lineEndContext="#stay">
 				<!-- special rules for layouts -->
 				<StringDetect attribute="Keyword" String="layout" context="Layout450"/>
+				
+				<!-- language features -->
+				<keyword attribute="Reserved"               String="keywordsCompatibility"  context="#stay" />
+				<keyword attribute="Keyword"                String="keywordsPrecision"      context="#stay" />
+				<keyword attribute="Keyword"                String="keywords100ES"          context="#stay" />
+				<keyword attribute="Keyword"                String="keywords110"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords120"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords130"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords140"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords400"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords420"            context="#stay" />
+				<keyword attribute="Keyword"                String="keywords430"            context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes100es"     context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes110"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes120"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes130"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes140"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes150"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes400"       context="#stay" />
+				<keyword attribute="Keywordstypes"          String="keywordstypes420"       context="#stay" />
+				
+				<keyword attribute="Reserved"               String="reservedkeywords" context="#stay" />
+				
+				<keyword attribute="Buildinvariables"       String="buildinvariables110"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables120"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables140"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables150"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables400"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables410"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables430"    context="#stay" />
+				<keyword attribute="Buildinvariables"       String="buildinvariables450"    context="#stay" />
+				<keyword attribute="Reserved"               String="buildinvariablesDeprecated"    context="#stay" />
+				
+				<keyword attribute="Buildconstants"         String="buildinconstants110"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants130"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants150"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants400"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants410"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants420"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants430"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants440"    context="#stay" />
+				<keyword attribute="Buildconstants"         String="buildinconstants450"    context="#stay" />
+				
+				<keyword attribute="Reserved"               String="buildinfunctionsDeprecated"    context="#stay" />
+				<keyword attribute="Reserved"               String="buildinfunctionsDeprecatedES"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions100ES"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions110"    context="#stay" />
+				<!-- noise functions are marked as deprecated in 440 and always return 0 -->
+				<keyword attribute="Reserved"               String="buildinfunctions110Noise"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions120"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions130"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions140"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions150"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions330"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions400"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions420"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions430"    context="#stay" />
+				<keyword attribute="Buildinfunctions"       String="buildinfunctions450"    context="#stay" />
+				
+				<!-- numbers -->
+				<Float attribute="Float" context="#stay">
+					<AnyChar String="fF" attribute="Float" context="#stay"/>
+					<Detect2Chars attribute="Float" context="#stay" char="l" char1="f"/>
+					<Detect2Chars attribute="Float" context="#stay" char="L" char1="F"/>
+				</Float>
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<!-- identifiers -->
+				<DetectIdentifier attribute="Identifier" context="#stay" />
+				<!-- comments -->
+				<Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
+				<Detect2Chars attribute="Comment" context="CommentMultiLine" char="/" char1="*" beginRegion="Comment"/>
+				<!-- preprocessor -->
+				<DetectChar attribute="Preprocessor" context="Preprocessor" char="#" firstNonSpace="true"/>
+			</context>
+			<!-- #################################################################################################### GLSL version 460 -->
+			<context name="v460" attribute="Normaltext" lineEndContext="#stay">
+				<!-- special rules for layouts -->
+				<StringDetect attribute="Keyword" String="layout" context="Layout460"/>
 				
 				<!-- language features -->
 				<keyword attribute="Reserved"               String="keywordsCompatibility"  context="#stay" />
@@ -2192,6 +2274,23 @@
 				<DetectIdentifier attribute="Identifier" context="#stay" />
 			</context>
 			<!-- layout declarations -->
+			<context name="Layout460" attribute="Normaltext" lineEndContext="#stay">
+				<DetectChar attribute="Normaltext" context="LayoutOpen460" char="("/>
+			</context>
+			<context name="LayoutOpen460" attribute="Normaltext" lineEndContext="#stay">
+				<DetectChar attribute="Normaltext" context="#pop#pop" char=")"/>
+				<keyword attribute="Keyword"         String="layoutqualifier150"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier330"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier400"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier420"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier430"      context="#stay" />
+				<keyword attribute="Keyword"         String="layoutqualifier440"      context="#stay" />
+				<HlCOct attribute="Octal" context="#stay"><AnyChar String="uU" attribute="Octal" context="#stay"/></HlCOct>
+				<HlCHex attribute="Hex"   context="#stay" ><AnyChar String="uU" attribute="Hex" context="#stay"/></HlCHex>
+				<Int    attribute="Decimal" context="#stay" ><StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/></Int>
+				<DetectIdentifier attribute="Identifier" context="#stay" />
+			</context>
+			<!-- layout declarations -->
 			<context name="Layout300ES" attribute="Normaltext" lineEndContext="#stay">
 				<DetectChar attribute="Normaltext" context="LayoutOpen300ES" char="("/>
 			</context>
@@ -2223,13 +2322,13 @@
 		
 		
 		<!-- ################################################################################################################
-		     ####################################################################################################### coloring
-		     // color                use Qt::Color names like "black" "blue" darkBlue" or rgb values "#334455" etc...
-		     // italic               true,false = 1,0
-		     // bold                 true,false = 1,0
-		     // underline            true,false = 1,0
-		     // strikeout            true,false = 1,0
-		     ################################################################################################################ -->
+		####################################################################################################### coloring
+		// color                use Qt::Color names like "black" "blue" darkBlue" or rgb values "#334455" etc...
+		// italic               true,false = 1,0
+		// bold                 true,false = 1,0
+		// underline            true,false = 1,0
+		// strikeout            true,false = 1,0
+		################################################################################################################ -->
 		<itemDatas>
 			<!-- coloring definition -->
 			<itemData name="Normaltext"       style="Normal"                            color="black"/>
@@ -2239,16 +2338,16 @@
 			<itemData name="Buildinvariables" style="DataType"                          color="darkYellow"/>
 			<itemData name="Buildconstants"   style="DataType"                          color="darkMagenta"/>
 			<itemData name="Buildinfunctions" style="Keyword"  bold="1"                 color="#886600"/>
-
+			
 			<itemData name="Float"          style="Float"        color="#888800"/>
 			<itemData name="Octal"          style="BaseN"        color="#888800"/>
 			<itemData name="Hex"            style="BaseN"        color="#888800"/>
 			<itemData name="Decimal"        style="DecVal"       color="#888800"/>
-
+			
 			<itemData name="Preprocessor"   style="DataType" bold="1"   color="blue"/>
-            <itemData name="Comment"        style="Comment"  italic="1" color="darkGreen"/>
-            <itemData name="MultiComment"   style="Comment"  italic="1" color="darkBlue"/>
-            <itemData name="Identifier"     style="Normal"/>
+			<itemData name="Comment"        style="Comment"  italic="1" color="darkGreen"/>
+			<itemData name="MultiComment"   style="Comment"  italic="1" color="darkBlue"/>
+			<itemData name="Identifier"     style="Normal"/>
 		</itemDatas>
 	</highlighting>
 	

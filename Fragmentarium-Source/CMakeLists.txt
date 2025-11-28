@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.18 )
+cmake_minimum_required( VERSION 3.20)
 IF(UNIX)
 cmake_policy(SET CMP0043 NEW)
 cmake_policy(SET CMP0071 NEW)
@@ -8,7 +8,7 @@ ENDIF ()
 
 set(FRAGM_MAJOR_VERSION "2")
 set(FRAGM_MINOR_VERSION "5")
-set(FRAGM_REVISION "7")
+set(FRAGM_REVISION "8")
 
 set(FRAGM_VERSION "${FRAGM_MAJOR_VERSION}.${FRAGM_MINOR_VERSION}.${FRAGM_REVISION}")
 
@@ -28,15 +28,19 @@ project(Fragmentarium-${FRAGM_VERSION} VERSION ${FRAGM_VERSION} LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 11)
 
+set( CMAKE_MODULE_PATH /usr/share/cmake/Modules )
+
 IF(UNIX AND NOT APPLE)
 
-	find_package(ECM REQUIRED NO_MODULE)
+	find_package(ECM REQUIRED)
 
 	set(CMAKE_MODULE_PATH
 	${CMAKE_MODULE_PATH}
 	${ECM_MODULE_PATH}
 	)
 ENDIF ()
+
+find_package(Qt5 COMPONENTS Widgets Core OpenGL Gui Xml Script ScriptTools REQUIRED)
 
 set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_AUTOMOC ON )

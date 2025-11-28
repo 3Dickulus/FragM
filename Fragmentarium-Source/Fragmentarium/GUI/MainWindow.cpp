@@ -3209,10 +3209,10 @@ bool MainWindow::initializeFragment()
             rebuildRequired = true;
         }
     } else ms = lastTime;
-    QApplication::restoreOverrideCursor();
-
     // Added sleep of 10 millisecs so that CPU waits a bit for GPU
     std::this_thread::sleep_for(std::chrono::microseconds(10000));
+
+    QApplication::restoreOverrideCursor();
 
     if (engine->hasShader()) {
         // BUG Fixs Up vector
